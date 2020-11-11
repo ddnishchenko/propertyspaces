@@ -1,0 +1,6 @@
+<ul>
+    <li *ngFor="let model of models">
+        <a [routerLink]="['model', model]">{{model}}</a>
+    </li>
+</ul>
+<router-outlet></router-outlet>
