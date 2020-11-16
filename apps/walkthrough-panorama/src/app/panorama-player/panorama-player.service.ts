@@ -1,7 +1,8 @@
 import { Injectable, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import * as THREE from 'three';
 import { Subject } from 'rxjs';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from './orbit-control';
+import { DeviceOrientationControls } from './device-control';
 import { ModelData } from '../model-data.resolver';
 
 @Injectable({
@@ -11,10 +12,13 @@ export class PanoramaPlayerService implements OnDestroy {
   private panos: any[];
   private loadedTextures: any[];
 
-  private controls: OrbitControls;
+  private OrbitControls;
+  private DeviceOrientationControls;
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
+  private cameraFrustum: THREE.Frustum;
+  private cameraViewProjectionMatrix: THREE.Matrix4;
   private scene: THREE.Scene;
   private light: THREE.AmbientLight;
 
@@ -71,18 +75,18 @@ export class PanoramaPlayerService implements OnDestroy {
     }
 
     this.camera.position.set(currPos.x, currPos.y + 0.1, currPos.z)
-    if (this.controls) {
-      let pangle = this.controls.getPolarAngle();
-      let aangle = this.controls.getAzimuthalAngle();
-      this.controls.target.set(currPos.x, currPos.y, currPos.z)
+    if (this.OrbitControls) {
+      let pangle = this.OrbitControls.getPolarAngle();
+      let aangle = this.OrbitControls.getAzimuthalAngle();
+      this.OrbitControls.target.set(currPos.x, currPos.y, currPos.z)
 
-      this.controls.minPolarAngle = pangle;
-      this.controls.minAzimuthAngle = aangle;
-      this.controls.maxAzimuthAngle = aangle;
-      this.controls.update();
-      this.controls.minAzimuthAngle = -Infinity;
-      this.controls.maxAzimuthAngle = Infinity;
-      this.controls.minPolarAngle = 0;
+      this.OrbitControls.minPolarAngle = pangle;
+      this.OrbitControls.minAzimuthAngle = aangle;
+      this.OrbitControls.maxAzimuthAngle = aangle;
+      this.OrbitControls.update();
+      this.OrbitControls.minAzimuthAngle = -Infinity;
+      this.OrbitControls.maxAzimuthAngle = Infinity;
+      this.OrbitControls.minPolarAngle = 0;
     }
 
     this.transitionMesh.material.opacity = this.transition.state
@@ -108,7 +112,7 @@ export class PanoramaPlayerService implements OnDestroy {
       if (this.transition.state > 1) this.transition.state = 1
       this.runTransition()
     }
-    this.controlsTarget = {x: this.controls.target.x, y: this.controls.target.y, z: this.controls.target.z};
+    this.controlsTarget = {x: this.OrbitControls.target.x, y: this.OrbitControls.target.y, z: this.OrbitControls.target.z};
   };
 
   updateDotInfo(dotInfo: any) {
@@ -116,28 +120,30 @@ export class PanoramaPlayerService implements OnDestroy {
   }
 
   setSettingsControls() {
+    // this.OrbitControls.enableDamping = true;
+    // this.OrbitControls.minDistance = 1;
+    // this.OrbitControls.maxDistance = Infinity;
     /*
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.25;
-    this.controls.minDistance = 1;
-    this.controls.maxDistance = 360;
-    this.controls.rotateSpeed = 0.3;
+    
+    this.OrbitControls.dampingFactor = 0.25;
+    
+    this.OrbitControls.rotateSpeed = 0.3;
 
     if (this.controlsTarget) {
-      this.controls.target.set(this.controlsTarget.x, this.controlsTarget.y, this.controlsTarget.z);
+      this.OrbitControls.target.set(this.controlsTarget.x, this.controlsTarget.y, this.controlsTarget.z);
     } else {
-      this.controls.minAzimuthAngle = 0.5;
-      this.controls.maxAzimuthAngle = 0.5;
+      this.OrbitControls.minAzimuthAngle = 0.5;
+      this.OrbitControls.maxAzimuthAngle = 0.5;
     }
-    this.controls.update();
-    this.controls.minAzimuthAngle = -Infinity;
-    this.controls.maxAzimuthAngle = Infinity;
+    this.OrbitControls.update();
+    this.OrbitControls.minAzimuthAngle = -Infinity;
+    this.OrbitControls.maxAzimuthAngle = Infinity;
     */
     // @ts-ignore
-    this.controls.name = 'orbit';
-    this.controls.minDistance = 1;
+    // this.OrbitControls.name = 'orbit';
+    // this.OrbitControls.minDistance = 1;
     // @ts-ignore
-    this.controls.noPan = true;
+    // this.OrbitControls.noPan = true;
 
     // Observable
     this.updateDotInfo(this.currentPanoId);
@@ -196,11 +202,11 @@ export class PanoramaPlayerService implements OnDestroy {
   }
 
   loadTextures(model) {
-    this.loadedTextures = this.panos.map(sweep => THREE.ImageUtils.loadTexture(`./assets/models/${model.sid}/${sweep.uuid}.jpg`));
+    this.loadedTextures = this.panos.map((sweep) => THREE.ImageUtils.loadTexture(`./assets/models/${model.sid}/${sweep.index}.jpg`));
   }
 
   addPanosMarks() {
-    this.panos.forEach(pano => {
+    this.panos.forEach((pano) => {
       if (!pano.object) {
         let s = new THREE.Mesh(
           new THREE.SphereGeometry(.8, 8, 8),
@@ -210,7 +216,12 @@ export class PanoramaPlayerService implements OnDestroy {
         this.scene.add(s);
       }
       let pos = this.scaleToModel(pano.position);
-      pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
+      if (!pano.index) {
+        pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
+      } else {
+        pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
+      }
+      
     });
   }
 
@@ -262,7 +273,7 @@ export class PanoramaPlayerService implements OnDestroy {
       this.render();
     });
     // Rendering start
-    this.controls.update();
+    this.OrbitControls.update();
     // end
     this.renderer.render(this.scene, this.camera);
   }
@@ -276,6 +287,7 @@ export class PanoramaPlayerService implements OnDestroy {
   createScene(canvas: ElementRef<HTMLCanvasElement>, model: ModelData): void {
     // The first step is to get the reference of the canvas element from our HTML document
     this.canvas = canvas.nativeElement;
+    
     // Create the renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -284,38 +296,57 @@ export class PanoramaPlayerService implements OnDestroy {
     });
     this.element = this.renderer.domElement;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio( window.devicePixelRatio );
+    this.renderer.setSize( this.element.clientWidth, this.element.clientHeight );
+    this.renderer.setClearColor( 0x000000, 1 );
+    this.renderer.autoClear = false;
     this.renderer.sortObjects = false;
 
     // create the scene
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera(
-      45, window.innerWidth / window.innerHeight, 0.1, 1000
-    );
+    this.camera = new THREE.PerspectiveCamera(60, this.element.clientWidth / this.element.clientHeight, 1, 1000);
+    this.cameraFrustum = new THREE.Frustum();
+    this.cameraViewProjectionMatrix = new THREE.Matrix4();
     // @ts-ignore
-    this.camera.target = new THREE.Vector3(0, 0, 0);
-    this.camera.position.set(0, 0, 10);
+    // this.camera.target = new THREE.Vector3(0, 0, 0);
+    // this.camera.position.set(0, 0, 10);
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    
+    this.OrbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+    // @ts-ignore
+    this.OrbitControls.id = 'orbit';
+    this.OrbitControls.minDistance = 1;
+    // @ts-ignore
+    this.OrbitControls.noPan = true;
+    this.OrbitControls.autoRotate = false;
+    this.OrbitControls.autoRotateSpeed = 2.0;
 
+    this.DeviceOrientationControls = new DeviceOrientationControls( this.camera, this.renderer.domElement );
+    // @ts-ignore
+    this.DeviceOrientationControls.name = 'device-orientation';
+    this.DeviceOrientationControls.enabled = false;
+    this.camera.position.z = 1;
+
+    let y = -1.65;
     // 1
     this.loaderModel = new THREE.TextureLoader();
-    this.sphereGeometryModel = new THREE.SphereGeometry(300, 60, 40);
+    this.sphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
     this.sphereGeometryModel.scale(-1, 1, 1);
     this.meshModel = new THREE.Mesh(this.sphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 1}));
-    this.meshModel.rotation.y = -1.2;
+    this.meshModel.rotation.y = y;
     this.scene.add(this.meshModel);
     this.meshModel.position.set(0, 0, 0);
 
     // 2
-    let tSphereGeometryModel = new THREE.SphereGeometry(200, 60, 40);
+    let tSphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
     tSphereGeometryModel.scale(-1, 1, 1);
     this.transitionMesh = new THREE.Mesh(tSphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 0}));
-    this.transitionMesh.rotation.y = -1.2;
+    this.transitionMesh.rotation.y = y;
     this.scene.add(this.transitionMesh);
     this.addNavPoints(model);
     this.setSettingsControls();
+
+    console.log(this.OrbitControls);
   }
 
   /**
@@ -335,6 +366,9 @@ export class PanoramaPlayerService implements OnDestroy {
 
       document.addEventListener( 'click', (event) => this.onDocumentMouseDown(event), false );
       document.addEventListener( 'mousemove', (event) => this.onDocumentMouseMove(event), false );
+      this.OrbitControls.addEventListener('mousewheel', event => {
+        console.log(this.OrbitControls);
+      })
 
     });
   }

@@ -18,7 +18,8 @@
                 "y": 89.1644162613015,
                 "z": -0.06475342062369767
             },
-            "floor": 0
+            "floor": 0,
+            "index": 0
         },
         {
             "uuid": "5a3d5faf3a20458790722bab31c8e1a3",
@@ -37,7 +38,8 @@
                 "y": -110.94088335649424,
                 "z": -0.06515377142714693
             },
-            "floor": 0
+            "floor": 0,
+            "index": 1
         },
         {
             "uuid": "d9458dbde81b4a9e896ef84c9a98aa83",
@@ -57,7 +59,8 @@
                 "y": -41.30134375349463,
                 "z": 0.03261304913452074
             },
-            "floor": 0
+            "floor": 0,
+            "index": 2
         },
         {
             "uuid": "ac2d2037dcb24ca19d0664e530c11f66",
@@ -78,7 +81,8 @@
                 "y": -8.356531011485313,
                 "z": -0.07177071068035693
             },
-            "floor": 0
+            "floor": 0,
+            "index": 3
         },
         {
             "uuid": "96afbd5d8462418da5869fd494b7109c",
@@ -98,7 +102,8 @@
                 "y": -64.12746723249246,
                 "z": 0.1031302417595887
             },
-            "floor": 0
+            "floor": 0,
+            "index": 4
         },
         {
             "uuid": "214241a6657440bb84a91cf2ac5e0c67",
@@ -118,7 +123,8 @@
                 "y": -56.62010597032601,
                 "z": 0.4754954598550687
             },
-            "floor": 0
+            "floor": 0,
+            "index": 5
         },
         {
             "uuid": "38b73d55292d4ed6a9ce527c3e6f8ed4",
@@ -138,8 +144,18 @@
                 "y": 162.7479805729599,
                 "z": 0.19788501411424328
             },
-            "floor": 0
+            "floor": 0,
+            "index": 6
         }
     ],
-    "modelSupportsVr": true
+    "modelSupportsVr": true,
+    "name": "3183 Taviton Crt",
+    "presentedBy": "",
+    "summary": "",
+    "formattedAddress": "3183 Taviton Crt, Mississauga, ON, L4X 2J9",
+    "contactEmail": "",
+    "contactName": "",
+    "phone": "",
+    "formattedContactPhone": "",
+    "externalUrl": ""
 }
