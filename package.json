@@ -8,6 +8,7 @@
     "nx": "nx",
     "start": "ng serve",
     "build": "ng build",
+    "deploy:git": "ng build --prod --output-path apps/walkthrough-panorama/docs --base-href https://ddnishchenko.github.io/propertyspaces/ && cp apps/walkthrough-panorama/docs/index.html apps/walkthrough-panorama/docs/404.html",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
     "e2e": "ng e2e",
