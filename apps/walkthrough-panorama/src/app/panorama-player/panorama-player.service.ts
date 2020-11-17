@@ -152,8 +152,11 @@ export class PanoramaPlayerService implements OnDestroy {
 
   getPanoId(event) {
     let boundBox = this.element.getBoundingClientRect();
-    this.mouseModel.x = ( (event.pageX - boundBox.x) / boundBox.width ) * 2 - 1;
-    this.mouseModel.y = - ( (event.clientY - boundBox.y) / boundBox.height ) * 2 + 1;
+    const isTouch = event.changedTouches && event.changedTouches.length;
+    const x = isTouch ? event.changedTouches[0].pageX : event.pageX;
+    const y = isTouch ? event.changedTouches[0].pageY : event.pageY;
+    this.mouseModel.x = ( (x - boundBox.x) / boundBox.width ) * 2 - 1;
+    this.mouseModel.y = - ( (y - boundBox.y) / boundBox.height ) * 2 + 1;
     this.raycasterModel.setFromCamera( this.mouseModel, this.camera );
 
     let intersects = this.raycasterModel.intersectObjects( this.scene.children, true );
@@ -327,7 +330,7 @@ export class PanoramaPlayerService implements OnDestroy {
     this.DeviceOrientationControls.enabled = false;
     this.camera.position.z = 1;
 
-    let y = -1.65;
+    const y = -1.65;
     // 1
     this.loaderModel = new THREE.TextureLoader();
     this.sphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
@@ -364,11 +367,9 @@ export class PanoramaPlayerService implements OnDestroy {
 
       window.addEventListener('resize', () => this.resize());
 
-      document.addEventListener( 'click', (event) => this.onDocumentMouseDown(event), false );
-      document.addEventListener( 'mousemove', (event) => this.onDocumentMouseMove(event), false );
-      this.OrbitControls.addEventListener('mousewheel', event => {
-        console.log(this.OrbitControls);
-      })
+      document.addEventListener( 'mousedown', (event) => this.onDocumentMouseDown(event), { passive: false } );
+      document.addEventListener( 'touchend', (event) => this.onDocumentMouseDown(event), false );
+      document.addEventListener( 'mousemove', (event) => this.onDocumentMouseMove(event), { passive: false } );
 
     });
   }
