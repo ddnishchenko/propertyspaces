@@ -1,0 +1,115 @@
+{
+  "sid": "new_model",
+  "sweeps": [
+      {
+          "uuid": "5548f63721c440a28f65260bbac22480",
+          "alignmentType": "aligned",
+          "neighbors": [
+              "5a3d5faf3a20458790722bab31c8e1a3",
+              "d9458dbde81b4a9e896ef84c9a98aa83"
+          ],
+          "position": {
+              "x": 0.4182673692703247,
+              "y": 1.25,
+              "z": 0.12644881010055542
+          },
+          "rotation": {
+              "x": -0.04305828847972768,
+              "y": 89.1644162613015,
+              "z": -0.06475342062369767
+          },
+          "floor": 0,
+          "index": 0
+      },
+      {
+          "uuid": "5a3d5faf3a20458790722bab31c8e1a3",
+          "alignmentType": "aligned",
+          "neighbors": [
+              "5548f63721c440a28f65260bbac22480",
+              "d9458dbde81b4a9e896ef84c9a98aa83"
+          ],
+          "position": {
+              "x": -0.30894744396209717,
+              "y": 1.25,
+              "z": 1.3850687742233276
+          },
+          "rotation": {
+              "x": -0.08985248713797463,
+              "y": -110.94088335649424,
+              "z": -0.06515377142714693
+          },
+          "floor": 0,
+          "index": 1
+      },
+      {
+          "uuid": "d9458dbde81b4a9e896ef84c9a98aa83",
+          "alignmentType": "aligned",
+          "neighbors": [
+              "5548f63721c440a28f65260bbac22480",
+              "5a3d5faf3a20458790722bab31c8e1a3",
+              "ac2d2037dcb24ca19d0664e530c11f66"
+          ],
+          "position": {
+              "x": -2.045943260192871,
+              "y": 1.25,
+              "z": 2.790895462036133
+          },
+          "rotation": {
+              "x": -4.215857982635498,
+              "y": 1.25,
+              "z": 3.8723905086517334
+          },
+          "floor": 0,
+          "index": 2
+      },
+      {
+          "uuid": "ac2d2037dcb24ca19d0664e530c11f66",
+          "alignmentType": "aligned",
+          "neighbors": [
+              "d9458dbde81b4a9e896ef84c9a98aa83",
+              "96afbd5d8462418da5869fd494b7109c"
+          ],
+          "position": {
+              "x": -4.215857982635498,
+              "y": 1.25,
+              "z": 3.8723905086517334
+          },
+          "rotation": {
+              "x": -0.05305249224335478,
+              "y": -8.356531011485313,
+              "z": -0.07177071068035693
+          },
+          "floor": 0,
+          "index": 3
+      },
+      {
+          "uuid": "96afbd5d8462418da5869fd494b7109c",
+          "alignmentType": "aligned",
+          "neighbors": [
+              "ac2d2037dcb24ca19d0664e530c11f66"
+          ],
+          "position": {
+              "x": -5.089738368988037,
+              "y": 1.25,
+              "z": 5.543730735778809
+          },
+          "rotation": {
+              "x": 0.07412861129894636,
+              "y": -64.12746723249246,
+              "z": 0.1031302417595887
+          },
+          "floor": 0,
+          "index": 4
+      }
+  ],
+  "modelSupportsVr": true,
+  "name": "3183 Taviton Crt",
+  "presentedBy": "",
+  "summary": "",
+  "formattedAddress": "3183 Taviton Crt, Mississauga, ON, L4X 2J9",
+  "contactEmail": "",
+  "contactName": "",
+  "phone": "",
+  "formattedContactPhone": "",
+  "externalUrl": ""
+}

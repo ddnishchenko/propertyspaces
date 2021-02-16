@@ -8,6 +8,11 @@ import { Message } from '@propertyspaces/api-interfaces';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  models = ['HXjD8g5pMev', 'RE249ed7S7A', 'Re2dgaSVCRj'];
+  models = [
+    'HXjD8g5pMev',
+    'RE249ed7S7A',
+    'Re2dgaSVCRj',
+    'new_model'
+  ];
   constructor(private http: HttpClient) {}
 }

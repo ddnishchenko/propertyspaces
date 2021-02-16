@@ -45,7 +45,7 @@ export class PanoramaPlayerService implements OnDestroy {
     texture: null
   };
 
-  private raycasterModel = new THREE.Raycaster(); 
+  private raycasterModel = new THREE.Raycaster();
   private mouseModel = new THREE.Vector2();
   private element;
   private controlsTarget;
@@ -124,9 +124,9 @@ export class PanoramaPlayerService implements OnDestroy {
     // this.OrbitControls.minDistance = 1;
     // this.OrbitControls.maxDistance = Infinity;
     /*
-    
+
     this.OrbitControls.dampingFactor = 0.25;
-    
+
     this.OrbitControls.rotateSpeed = 0.3;
 
     if (this.controlsTarget) {
@@ -224,7 +224,7 @@ export class PanoramaPlayerService implements OnDestroy {
       } else {
         pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
       }
-      
+
     });
   }
 
@@ -283,14 +283,14 @@ export class PanoramaPlayerService implements OnDestroy {
 
   /**
    * Initialiaztion of the scene
-   * 
+   *
    * @param canvas ElementRef<HTMLCanvasElement>
    * @param model ModelData
    */
   createScene(canvas: ElementRef<HTMLCanvasElement>, model: ModelData): void {
     // The first step is to get the reference of the canvas element from our HTML document
     this.canvas = canvas.nativeElement;
-    
+
     // Create the renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -330,7 +330,7 @@ export class PanoramaPlayerService implements OnDestroy {
     this.DeviceOrientationControls.enabled = false;
     this.camera.position.z = 1;
 
-    const y = -1.65;
+    const y = -2.65;
     // 1
     this.loaderModel = new THREE.TextureLoader();
     this.sphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
