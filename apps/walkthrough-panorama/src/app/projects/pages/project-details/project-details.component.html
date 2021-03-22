@@ -1,0 +1,47 @@
+<ng-container *ngIf="project$ | async as project">
+  <h1 class="text-center my-5">{{project.name}}</h1>
+  <div class="card shadow mb-4">
+
+    <div class="card-header text-right d-md-flex justify-content-md-center align-items-md-center py-3">
+      <div class="row">
+          <div class="col d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center align-items-md-center align-items-lg-center justify-content-xl-end align-items-xl-center">
+            <button class="btn btn-primary mx-3" type="button" (click)="openCreateForm(project)">
+              <i class="fa fa-plus"></i>
+              <span>Add Panoramas</span>
+            </button>
+            <button class="btn btn-danger" type="button" (click)="deletePanoramas()">Delete</button>
+          </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <h4 class="text-center">Walkthrough URL</h4>
+
+      <p class="text-center text-primary h5">
+        <a [routerLink]="['/model', project.id]" class="text-underline">www.slideshowcloud.com/{{project.id}}</a>
+      </p>
+
+      <ng-container *ngIf="panoramas$ | async as panoramas">
+
+        <div class="row border-bottom py-3" *ngFor="let panorama of panoramas.data">
+          <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center justify-content-md-center align-items-md-center justify-content-lg-center align-items-lg-center justify-content-xl-center align-items-xl-center">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+              <label class="form-check-label" for="flexCheckChecked">{{ panorama.name }}</label>
+            </div>
+          </div>
+          <div class="col d-sm-flex align-items-sm-center">
+            <strong></strong>
+          </div>
+          <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center">
+            <a href="javascript: void 0" (click)="openEditPanorama(panorama, panoramas)"><i class="fa fa-edit fa-3x"></i></a>
+          </div>
+        </div>
+
+      </ng-container>
+
+    </div>
+
+  </div>
+
+</ng-container>

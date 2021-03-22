@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  apiHost: 'http://brochures.propertyspaces.itera-research.com/'
 };
 
 /*

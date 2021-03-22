@@ -1,0 +1,38 @@
+<h1 class="text-center my-5">Create panoramic walkthough</h1>
+<div class="card shadow mb-4">
+
+  <div class="card-header text-right d-md-flex justify-content-md-center align-items-md-center py-3">
+    <div class="row">
+        <div class="col d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center align-items-md-center align-items-lg-center justify-content-xl-end align-items-xl-center">
+          <button class="btn btn-primary mx-3" type="button" (click)="openCreateForm()">
+            <i class="fa fa-plus"></i>Create New Project</button>
+          <button class="btn btn-danger" type="button" (click)="deleteProjects()">Delete</button>
+        </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <h4 class="text-center">Project Panoramas</h4>
+
+    <div class="row border-bottom py-3" *ngFor="let project of projects$ | async">
+      <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center justify-content-md-center align-items-md-center justify-content-lg-center align-items-lg-center justify-content-xl-center align-items-xl-center">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+          <label class="form-check-label" for="flexCheckChecked"></label>
+        </div>
+      </div>
+      <div class="col d-sm-flex align-items-sm-center">
+        <strong>{{ project.name }}</strong>
+      </div>
+      <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center justify-content-md-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center">
+          <span>{{ project.date }}</span>
+      </div>
+      <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center align-items-md-center justify-content-lg-center align-items-lg-center align-items-xl-center">
+        <a [routerLink]="[project.id]">
+          <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>

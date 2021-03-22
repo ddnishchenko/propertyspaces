@@ -8,11 +8,6 @@ import { Message } from '@propertyspaces/api-interfaces';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  models = [
-    'HXjD8g5pMev',
-    'RE249ed7S7A',
-    'Re2dgaSVCRj',
-    'new_model'
-  ];
+  models$ = this.http.get(`./assets/models/list.json`);
   constructor(private http: HttpClient) {}
 }
