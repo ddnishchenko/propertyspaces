@@ -9,7 +9,8 @@ const routes: Routes = [
     resolve: {
       model: ModelDataResolver
     }
-  }
+  },
+  { path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule) }
 ];
 
 @NgModule({

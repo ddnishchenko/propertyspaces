@@ -1,0 +1,74 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ title }}</h5>
+  <button type="button" (click)="activeModal.close()" class="close" data-bs-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+
+  <div *ngIf="!isEdit">
+
+    <div class="row">
+      <div class="col text-center">
+        <button class="btn btn-primary" type="button" (click)="fileInput.click()"><i class="fa fa-upload"></i> Upload Panorama</button>
+        <input hidden type="file" #fileInput (change)="uploadImage($event)">
+        <i *ngIf="loading" class="fa fa-spin fa-spinner d-xl-flex justify-content-xl-center"></i>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col">
+          <ul class="list-group">
+              <li class="list-group-item d-sm-flex d-xl-flex justify-content-sm-center justify-content-xl-center">
+                <img class="img-fluid" *ngIf="this.form.value.url" [src]="this.form.value.url" [alt]="this.form.value.name">
+              </li>
+          </ul>
+      </div>
+  </div>
+
+  </div>
+
+  <div *ngIf="isEdit">
+
+    <div class="row">
+      <div class="col-12 text-center">
+        <img [src]="mediaPath" class="img-fluid" [alt]="panorama.name">
+      </div>
+      <div class="col-12 text-center my-4">
+        <button class="btn btn-primary" (click)="fileInput.click()" type="button"><i class="fa fa-exchange"></i> Replace</button>
+        <input type="file" accept="images/*" #fileInput hidden (change)="uploadFile($event)">
+      </div>
+      <div class="col-12">
+        <h5 class="text-center">Edit Panorama Coordinates</h5>
+      </div>
+      <div class="col text-center">
+        <form class="row g-3" [formGroup]="form">
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="coord_x">x</span>
+              <input type="number" class="form-control" formControlName="x" placeholder="x">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="coord_y">y</span>
+              <input type="number" class="form-control" formControlName="y" placeholder="y">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="coord_y">y</span>
+              <input type="number" class="form-control" formControlName="z" placeholder="y">
+            </div>
+          </div>
+        </form>
+      </div>
+  </div>
+
+  </div>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.close(false)">Close</button>
+  <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>
+</div>
