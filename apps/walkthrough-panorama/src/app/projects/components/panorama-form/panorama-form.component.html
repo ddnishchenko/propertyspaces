@@ -32,11 +32,12 @@
 
     <div class="row">
       <div class="col-12 text-center">
-        <img [src]="mediaPath" class="img-fluid" [alt]="panorama.name">
+        <img *ngIf="this.form.value.url" [src]="this.form.value.url" class="img-fluid" [alt]="this.form.value.name">
+        <img *ngIf="!this.form.value.url" [src]="mediaPath + this.form.value.name" class="img-fluid" [alt]="this.form.value.name">
       </div>
       <div class="col-12 text-center my-4">
-        <button class="btn btn-primary" (click)="fileInput.click()" type="button"><i class="fa fa-exchange"></i> Replace</button>
-        <input type="file" accept="images/*" #fileInput hidden (change)="uploadFile($event)">
+        <button class="btn btn-primary" (click)="fileInput1.click()" type="button"><i class="fa fa-exchange"></i> Replace</button>
+        <input type="file" accept="images/*" #fileInput1 hidden (change)="uploadImage($event)">
       </div>
       <div class="col-12">
         <h5 class="text-center">Edit Panorama Coordinates</h5>

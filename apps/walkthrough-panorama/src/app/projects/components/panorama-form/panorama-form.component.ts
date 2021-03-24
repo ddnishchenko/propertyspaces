@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../../environments/environment';
 
@@ -31,16 +31,17 @@ export class PanoramaFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.isEdit) {
-      this.mediaPath = environment.apiHost + this.panoData.path + this.panorama.name;
+      this.mediaPath = environment.apiHost + this.panoData.path;
     }
     this.createForm();
   }
   createForm() {
     this.form = new FormGroup({
-      name: new FormControl(''),
+      name: new FormControl(this.panorama?.name),
       x: new FormControl(this.panorama?.panoramas.x),
       y: new FormControl(this.panorama?.panoramas.y),
       z: new FormControl(this.panorama?.panoramas.z),
+      // neighbors: new FormControl(this.panorama?.panoramas.neighbors),
       url: new FormControl('')
     });
   }
@@ -52,9 +53,10 @@ export class PanoramaFormComponent implements OnInit {
       const fileNameParts = fileName.split('_');
       const [ name, x, y, z ] = fileNameParts;
       const url = await fileToBase64(file);
-      this.form.patchValue({
-        name: file.name, x, y, z, url
-      });
+      this.form.patchValue({x, y, z, url});
+      if (!this.isEdit) {
+        this.form.patchValue({name});
+      }
       this.loading = false;
     }
   }
@@ -64,7 +66,7 @@ export class PanoramaFormComponent implements OnInit {
       name: this.form.value.name,
       panoramas: {
         panorama: this.form.value.url,
-        neighbors: [],
+        // neighbors: this.form.value.neighbors,
         x: this.form.value.x,
         y: this.form.value.y,
         z: this.form.value.z

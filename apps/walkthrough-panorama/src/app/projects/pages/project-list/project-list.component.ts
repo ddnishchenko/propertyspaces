@@ -11,6 +11,7 @@ import { ProjectsService } from '../../service/projects.service';
 })
 export class ProjectListComponent implements OnInit {
   projects$;
+  projectIds = [];
   constructor(
     private modalService: NgbModal,
     private projectsService: ProjectsService
@@ -45,8 +46,21 @@ export class ProjectListComponent implements OnInit {
     modalRef.result.then(value => {
       if (value) {
         // Delete projects
+        alert(`Projects with ids (${this.projectIds.join(', ')}) has been deleted.`);
       }
     });
+  }
+
+  onCheckChange($event) {
+    const v = $event.target.value;
+    if (this.projectIds.includes(v) ) {
+      this.projectIds = this.projectIds.filter(id => id !== v);
+    } else {
+      this.projectIds = [
+        ...this.projectIds,
+        v
+      ];
+    }
   }
 
 }

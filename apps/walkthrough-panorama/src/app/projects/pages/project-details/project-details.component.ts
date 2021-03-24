@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { forkJoin } from 'rxjs';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
 import { ProjectsService } from '../../service/projects.service';
@@ -13,6 +14,7 @@ import { ProjectsService } from '../../service/projects.service';
 export class ProjectDetailsComponent implements OnInit {
   project$;
   panoramas$;
+  panoNames = [];
   constructor(
     private modalService: NgbModal,
     private route: ActivatedRoute,
@@ -53,6 +55,11 @@ export class ProjectDetailsComponent implements OnInit {
     modalRef.result.then(value => {
       if (value) {
         // Edit Pano
+        const id = this.route.snapshot.params.id;
+        this.projectsService.updatePanorama(id, value).subscribe(res => {
+          console.log(res);
+          this.initData();
+        });
       }
     });
   }
@@ -63,8 +70,27 @@ export class ProjectDetailsComponent implements OnInit {
     modalRef.result.then(value => {
       if (value) {
         // Delete projects
+        const deleteRequests = this.panoNames.map(n => this.projectsService.deletePanoramaProject(this.route.snapshot.params.id, n));
+        forkJoin(deleteRequests).subscribe(res => {
+          alert(`Projects with ids (${this.panoNames.join(', ')}) has been deleted.`);
+          this.panoNames = [];
+          this.initData();
+        })
+
       }
     });
+  }
+
+  onCheckChange($event) {
+    const v = $event.target.value;
+    if (this.panoNames.includes(v) ) {
+      this.panoNames = this.panoNames.filter(n => n !== v);
+    } else {
+      this.panoNames = [
+        ...this.panoNames,
+        v
+      ];
+    }
   }
 
 }

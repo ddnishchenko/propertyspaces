@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 
@@ -22,7 +23,7 @@ export class ProjectsService {
     return this.http.post(host + 'get-panoramas-projects', {client_id: 1295});
   }
 
-  getProject(project_id) {
+  getProject(project_id): Observable<any> {
     return this.http.post(host + 'get-panoramas-project', {client_id: 1295, project_id});
   }
 
@@ -33,5 +34,11 @@ export class ProjectsService {
 
   createPanorama(project_id, panorama_data) {
     return this.http.post(host + 'create-panorama', {project_id, panorama_data});
+  }
+  updatePanorama(project_id, panorama_data) {
+    return this.http.post(host  + 'update-panorama', {client_id: 1295, project_id, panorama_data});
+  }
+  deletePanoramaProject(project_id, name) {
+    return this.http.post(host + 'delete-panorama-project', {client_id: 1295, project_id, name});
   }
 }

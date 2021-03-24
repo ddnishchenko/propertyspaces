@@ -3,8 +3,10 @@ import * as THREE from 'three';
 import { Subject } from 'rxjs';
 import { OrbitControls } from './orbit-control';
 import { DeviceOrientationControls } from './device-control';
-import { ModelData } from '../model-data.resolver';
+import { Project } from '../interfaces/project';
+import { environment } from '../../environments/environment';
 
+const host = environment.apiHost;
 @Injectable({
   providedIn: 'root'
 })
@@ -97,9 +99,7 @@ export class PanoramaPlayerService implements OnDestroy {
       this.meshModel.position.set(currPos.x, currPos.y, currPos.z)
       this.transitionMesh.visible = false
       this.panos.forEach(pano => {
-        if (this.currentPano.neighbors.indexOf(pano.uuid) != -1) {
           pano.object.visible = true
-        }
       })
     }
     this.meshModel.material.needsUpdate = true
@@ -204,8 +204,10 @@ export class PanoramaPlayerService implements OnDestroy {
     return result;
   }
 
-  loadTextures(model) {
-    this.loadedTextures = this.panos.map((sweep) => THREE.ImageUtils.loadTexture(`./assets/models/${model.sid}/${sweep.index}.jpg`));
+  loadTextures(project) {
+    const loader = new THREE.TextureLoader();
+    this.loadedTextures = this.panos.map((pano) => loader.load(`${host}${project.path}${pano.name}`));
+
   }
 
   addPanosMarks() {
@@ -218,18 +220,13 @@ export class PanoramaPlayerService implements OnDestroy {
         pano.object = s;
         this.scene.add(s);
       }
-      let pos = this.scaleToModel(pano.position);
-      if (!pano.index) {
-        pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
-      } else {
-        pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
-      }
-
+      const pos = this.scaleToModel(pano.position);
+      pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
     });
   }
 
-  addNavPoints(model: ModelData) {
-    this.panos = model.sweeps;
+  addNavPoints(model: Project) {
+    this.panos = model.data.filter(p => p.name).map(p => ({...p, position: p.panoramas}));
     this.loadTextures(model);
     this.addPanosMarks();
   }
@@ -287,7 +284,7 @@ export class PanoramaPlayerService implements OnDestroy {
    * @param canvas ElementRef<HTMLCanvasElement>
    * @param model ModelData
    */
-  createScene(canvas: ElementRef<HTMLCanvasElement>, model: ModelData): void {
+  createScene(canvas: ElementRef<HTMLCanvasElement>, model: Project): void {
     // The first step is to get the reference of the canvas element from our HTML document
     this.canvas = canvas.nativeElement;
 

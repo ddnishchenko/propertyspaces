@@ -26,8 +26,12 @@
         <div class="row border-bottom py-3" *ngFor="let panorama of panoramas.data">
           <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center justify-content-md-center align-items-md-center justify-content-lg-center align-items-lg-center justify-content-xl-center align-items-xl-center">
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
-              <label class="form-check-label" for="flexCheckChecked">{{ panorama.name }}</label>
+              <input type="checkbox"
+                class="form-check-input"
+                [value]="panorama.name"
+                [id]="'flexCheckChecked_' + panorama.name"
+                (change)="onCheckChange($event)">
+              <label class="form-check-label" [for]="'flexCheckChecked_' + panorama.name">{{ panorama.name }}</label>
             </div>
           </div>
           <div class="col d-sm-flex align-items-sm-center">
