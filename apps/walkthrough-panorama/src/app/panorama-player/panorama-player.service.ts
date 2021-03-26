@@ -7,6 +7,30 @@ import { Project } from '../interfaces/project';
 import { environment } from '../../environments/environment';
 
 const host = environment.apiHost;
+
+function ringsShape() {
+  const outerRingGeometry = new THREE.RingGeometry( 1.90, 2, 30, 1, 0 );
+  const outerRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
+  const outerRingMesh = new THREE.Mesh( outerRingGeometry, outerRingMaterial );
+
+  const innerRingGeometry = new THREE.RingGeometry( 1.5, 1.8, 30, 1, 0 );
+  const innerRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
+  const innerRingMesh = new THREE.Mesh( innerRingGeometry, innerRingMaterial );
+
+  const circleGeometry = new THREE.CircleGeometry( 2, 30 );
+  const circleMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, transparent: true, opacity: 0 } );
+  const circleMesh = new THREE.Mesh( circleGeometry, circleMaterial );
+
+  const group = new THREE.Group();
+  group.add(outerRingMesh);
+  group.add(innerRingMesh);
+  group.add(circleMesh);
+
+  group.rotation.set(11, 0, 0);
+
+  return group;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -167,7 +191,8 @@ export class PanoramaPlayerService implements OnDestroy {
       }
 
       for (let i = 0; i < this.panos.length; i++) {
-        if (this.panos[i].object.uuid == item.object.uuid) {
+        const panoUuids = this.panos[i].object.children.map(m => m.uuid);
+        if (panoUuids.includes(item.object.uuid)) {
           target = i
         }
       }
@@ -213,12 +238,10 @@ export class PanoramaPlayerService implements OnDestroy {
   addPanosMarks() {
     this.panos.forEach((pano) => {
       if (!pano.object) {
-        let s = new THREE.Mesh(
-          new THREE.SphereGeometry(.8, 8, 8),
-          new THREE.MeshBasicMaterial( {color: 0x00ff00, transparent: true, opacity: 0.25} ),
-        );
-        pano.object = s;
-        this.scene.add(s);
+        const mesh = ringsShape();
+        pano.object = mesh;
+        this.scene.add(mesh);
+
       }
       const pos = this.scaleToModel(pano.position);
       pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
@@ -243,11 +266,23 @@ export class PanoramaPlayerService implements OnDestroy {
 
   onDocumentMouseMove(event) {
     this.panos.forEach(pano => {
-      pano.object.material.opacity = 0.25
+      // pano.object.material.opacity = 0.25
+      pano.object.children.forEach(mesh => {
+        if (mesh.geometry !== 'CircleGeometry') {
+          mesh.material.opacity = 0.25;
+        }
+
+      });
     })
     let panoId = this.getPanoId(event)
     if (panoId !== null) {
-      this.panos[panoId].object.material.opacity = 0.5
+      // this.panos[panoId].object.material.opacity = 0.5
+      this.panos[panoId].object.children.forEach(mesh => {
+        if (mesh.geometry !== 'CircleGeometry') {
+          mesh.material.opacity = 0.5;
+        }
+
+      });
     }
   }
 
@@ -327,7 +362,7 @@ export class PanoramaPlayerService implements OnDestroy {
     this.DeviceOrientationControls.enabled = false;
     this.camera.position.z = 1;
 
-    const y = -2.65;
+    const y = 3.5;
     // 1
     this.loaderModel = new THREE.TextureLoader();
     this.sphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
