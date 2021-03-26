@@ -38,7 +38,8 @@ export class ProjectDetailsComponent implements OnInit {
     modalRef.componentInstance.title = 'Create Panorama';
     modalRef.result.then(value => {
       if (value) {
-        this.projectsService.createPanorama(project.id, value).subscribe(res => {
+        const reqs = value.map(v => this.projectsService.createPanorama(project.id, v))
+        forkJoin(reqs).subscribe(res => {
           this.initData();
         });
       }

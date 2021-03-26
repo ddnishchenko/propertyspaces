@@ -35,42 +35,77 @@ export class PanoramaFormComponent implements OnInit {
     }
     this.createForm();
   }
-  createForm() {
-    this.form = new FormGroup({
-      name: new FormControl(this.panorama?.name),
-      x: new FormControl(this.panorama?.panoramas.x),
-      y: new FormControl(this.panorama?.panoramas.y),
-      z: new FormControl(this.panorama?.panoramas.z),
-      // neighbors: new FormControl(this.panorama?.panoramas.neighbors),
-      url: new FormControl('')
+
+  createPanoFormGroup(data) {
+    return new FormGroup({
+      name: new FormControl(data?.name),
+      x: new FormControl(data?.panoramas.x),
+      y: new FormControl(data?.panoramas.y),
+      z: new FormControl(data?.panoramas.z),
+      url: new FormControl(data.url)
     });
+  }
+
+  createForm() {
+    if (this.isEdit) {
+      this.form = this.createPanoFormGroup(this.panorama);
+    } else {
+      this.form = new FormGroup({
+        panoramas: new FormArray([])
+      });
+    }
+
   }
   async uploadImage($event) {
     if ($event.target.files.length) {
       this.loading = true;
-      const file: File = $event.target.files[0];
-      const fileName = file.name.split('.').slice(0, -1).join('.');
-      const fileNameParts = fileName.split('_');
-      const [ name, x, y, z ] = fileNameParts;
-      const url = await fileToBase64(file);
-      this.form.patchValue({x, y, z, url});
-      if (!this.isEdit) {
-        this.form.patchValue({name});
+      const files: File[] = Array.from($event.target.files);
+      for (let file of files) {
+        const fileName = file.name.split('.').slice(0, -1).join('.');
+        const fileNameParts = fileName.split('_');
+        const [ name, x, y, z ] = fileNameParts;
+        const url = await fileToBase64(file);
+        const fg = this.createPanoFormGroup({
+          name, url, panoramas: {x, y, z}
+        });
+
+
+        if (this.isEdit) {
+          this.form.patchValue({x, y, z, url});
+        } else {
+          this.form.get('panoramas').push(fg);
+        }
       }
+
+
       this.loading = false;
     }
   }
 
   submit() {
-    this.activeModal.close({
-      name: this.form.value.name,
-      panoramas: {
-        panorama: this.form.value.url,
-        // neighbors: this.form.value.neighbors,
-        x: this.form.value.x,
-        y: this.form.value.y,
-        z: this.form.value.z
-      }
-    });
+    if (this.isEdit) {
+      this.activeModal.close({
+        name: this.form.value.name,
+        panoramas: {
+          panorama: this.form.value.url,
+          // neighbors: this.form.value.neighbors,
+          x: this.form.value.x,
+          y: this.form.value.y,
+          z: this.form.value.z
+        }
+      });
+    } else {
+      const formatData = this.form.value.panoramas.map(p => ({
+        name: p.name,
+        panoramas: {
+          panorama: p.url,
+          x: p.x,
+          y: p.y,
+          z: p.z
+        }
+      }));
+      this.activeModal.close(formatData);
+    }
+
   }
 }

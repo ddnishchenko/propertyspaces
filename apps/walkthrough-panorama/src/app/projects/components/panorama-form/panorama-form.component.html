@@ -11,7 +11,7 @@
     <div class="row">
       <div class="col text-center">
         <button class="btn btn-primary" type="button" (click)="fileInput.click()"><i class="fa fa-upload"></i> Upload Panorama</button>
-        <input hidden type="file" #fileInput (change)="uploadImage($event)">
+        <input hidden type="file" accept="images/*" multiple #fileInput (change)="uploadImage($event)">
         <i *ngIf="loading" class="fa fa-spin fa-spinner d-xl-flex justify-content-xl-center"></i>
       </div>
     </div>
@@ -19,8 +19,8 @@
     <div class="row mt-4">
       <div class="col">
           <ul class="list-group">
-              <li class="list-group-item d-sm-flex d-xl-flex justify-content-sm-center justify-content-xl-center">
-                <img class="img-fluid" *ngIf="this.form.value.url" [src]="this.form.value.url" [alt]="this.form.value.name">
+              <li *ngFor="let c of form.controls.panoramas?.controls" class="list-group-item d-sm-flex d-xl-flex justify-content-sm-center justify-content-xl-center">
+                <img class="img-fluid" *ngIf="c.value.url" [src]="c.value.url" [alt]="c.value.name">
               </li>
           </ul>
       </div>
@@ -58,8 +58,8 @@
           </div>
           <div class="col-4">
             <div class="input-group mb-3">
-              <span class="input-group-text" id="coord_y">y</span>
-              <input type="number" class="form-control" formControlName="z" placeholder="y">
+              <span class="input-group-text" id="coord_y">z</span>
+              <input type="number" class="form-control" formControlName="z" placeholder="z">
             </div>
           </div>
         </form>
