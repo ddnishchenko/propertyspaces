@@ -19,6 +19,18 @@ export class ProjectsService {
     return this.http.post(host + 'create-panoramas-project', {client_id: 1295, ...project});
   }
 
+  deleteProject(project_id) {
+    return this.http.post(host + 'delete-panoramas-project', {client_id: 1295, project_id})
+  }
+
+  copyProject(project_id) {
+    return this.http.post(host + 'copy-panoramas-project', {client_id: 1295, project_id});
+  }
+
+  editProjectName(project_id, name) {
+    return this.http.post(host + 'update-name-project', {client_id: 1295, project_id, name});
+  }
+
   getProjects() {
     return this.http.post(host + 'get-panoramas-projects', {client_id: 1295});
   }
@@ -35,10 +47,16 @@ export class ProjectsService {
   createPanorama(project_id, panorama_data) {
     return this.http.post(host + 'create-panorama', {project_id, panorama_data});
   }
+
   updatePanorama(project_id, panorama_data) {
     return this.http.post(host  + 'update-panorama', {client_id: 1295, project_id, panorama_data});
   }
+
   deletePanoramaProject(project_id, name) {
     return this.http.post(host + 'delete-panorama-project', {client_id: 1295, project_id, name});
+  }
+
+  updateRotationProject(project_id, rotation_y) {
+    return this.http.post(host + 'update-rotation-project', {client_id: 1295, project_id, rotation_y})
   }
 }

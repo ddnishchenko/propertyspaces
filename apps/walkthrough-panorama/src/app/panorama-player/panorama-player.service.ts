@@ -382,6 +382,11 @@ export class PanoramaPlayerService implements OnDestroy {
     this.setSettingsControls();
 
     console.log(this.OrbitControls);
+    this.OrbitControls.addEventListener('change', (e) => {
+      console.log(e.target.object.position, e.target.object.rotation);
+      // this.meshModel.rotation.y = e.target.object.rotation.y;
+      // this.transitionMesh.rotation.y = e.target.object.rotation.y;
+    })
   }
 
   /**

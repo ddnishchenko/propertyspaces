@@ -15,6 +15,8 @@ export class ProjectDetailsComponent implements OnInit {
   project$;
   panoramas$;
   panoNames = [];
+  isEditName = false;
+  projectName;
   constructor(
     private modalService: NgbModal,
     private route: ActivatedRoute,
@@ -92,6 +94,21 @@ export class ProjectDetailsComponent implements OnInit {
         v
       ];
     }
+  }
+
+  editName(projectName) {
+    this.isEditName = true;
+    this.projectName = projectName;
+  }
+
+  saveName(projectId) {
+    this.projectsService.editProjectName(projectId, this.projectName).subscribe(r => {
+      this.isEditName = false;
+      this.initData();
+    });
+    this.projectsService.updateRotationProject(projectId, '3.5').subscribe(res => {
+      console.log(res);
+    });
   }
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { forkJoin } from 'rxjs';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
 import { ProjectsService } from '../../service/projects.service';
@@ -46,7 +47,10 @@ export class ProjectListComponent implements OnInit {
     modalRef.result.then(value => {
       if (value) {
         // Delete projects
-        alert(`Projects with ids (${this.projectIds.join(', ')}) has been deleted.`);
+        const deleteRequests = this.projectIds.map(id => this.projectsService.deleteProject(id));
+        forkJoin(deleteRequests).subscribe(res => {
+          this.init();
+        })
       }
     });
   }
@@ -61,6 +65,12 @@ export class ProjectListComponent implements OnInit {
         v
       ];
     }
+  }
+
+  copyProject(id) {
+    this.projectsService.copyProject(id).subscribe(r => {
+      this.init();
+    })
   }
 
 }
