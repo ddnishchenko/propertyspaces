@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PanoramaPlayerService } from './panorama-player.service';
 
@@ -7,7 +7,7 @@ import { PanoramaPlayerService } from './panorama-player.service';
   templateUrl: './panorama-player.component.html',
   styleUrls: ['./panorama-player.component.scss']
 })
-export class PanoramaPlayerComponent implements OnInit {
+export class PanoramaPlayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('mainScene', { static: true }) mainScene: ElementRef<HTMLCanvasElement>;
 
@@ -17,11 +17,18 @@ export class PanoramaPlayerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+  }
+
+  ngAfterViewInit() {
     this.route.data.subscribe(data => {
       this.panoramaPlayer.createScene(this.mainScene, data.model);
       this.panoramaPlayer.animate();
     });
-    
+  }
+
+  ngOnDestroy() {
+    this.panoramaPlayer.destroy();
   }
 
 }

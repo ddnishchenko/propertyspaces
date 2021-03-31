@@ -71,7 +71,10 @@ export class PanoramaFormComponent implements OnInit {
 
 
         if (this.isEdit) {
-          this.form.patchValue({x, y, z, url});
+          if (x && y && z) {
+            this.form.patchValue({x, y, z});
+          }
+          this.form.patchValue({url});
         } else {
           this.form.get('panoramas').push(fg);
         }

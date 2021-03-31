@@ -34,7 +34,7 @@ function ringsShape() {
 @Injectable({
   providedIn: 'root'
 })
-export class PanoramaPlayerService implements OnDestroy {
+export class PanoramaPlayerService {
   private panos: any[];
   private loadedTextures: any[];
 
@@ -78,15 +78,23 @@ export class PanoramaPlayerService implements OnDestroy {
 
   // Observable string sources
   private dotSource = new Subject<string>();
+  private modelSource = new Subject<Project>();
   // Observable string streams
   dotInfo$ = this.dotSource.asObservable();
+  modelData$ = this.modelSource.asObservable();
 
   constructor(private ngZone: NgZone) { }
 
-  ngOnDestroy(): void {
+  destroy(): void {
     if (this.frameId != null) {
       cancelAnimationFrame(this.frameId);
     }
+    this.modelSource.next(null);
+  }
+
+  changeMeshY(y: number) {
+    this.meshModel.rotation.y = y;
+    this.transitionMesh.rotation.y = y;
   }
 
   goToDot(dotInfo) {
@@ -122,8 +130,8 @@ export class PanoramaPlayerService implements OnDestroy {
       this.meshModel.material.opacity = 1
       this.meshModel.position.set(currPos.x, currPos.y, currPos.z)
       this.transitionMesh.visible = false
-      this.panos.forEach(pano => {
-          pano.object.visible = true
+      this.panos.forEach((pano, index) => {
+          pano.object.visible = true; //this.currentPanoId !== index;
       })
     }
     this.meshModel.material.needsUpdate = true
@@ -201,7 +209,7 @@ export class PanoramaPlayerService implements OnDestroy {
   }
 
   moveMark(panoId) {
-    this.panos.forEach(pano => {
+    this.panos.forEach((pano, index) => {
       pano.object.visible = false
     })
 
@@ -224,7 +232,7 @@ export class PanoramaPlayerService implements OnDestroy {
   scaleToModel(pos) {
     let result = { x: pos.x, y: pos.y, z: pos.z };
     result.x *= this.panoScaleFactor;
-    result.y;
+    // result.y;
     result.z *= this.panoScaleFactor;
     return result;
   }
@@ -244,7 +252,8 @@ export class PanoramaPlayerService implements OnDestroy {
 
       }
       const pos = this.scaleToModel(pano.position);
-      pano.object.position.set(pos.x, pos.y - 13.25, pos.z);
+      const yCef = 13.25; // this is for moving dot to floor
+      pano.object.position.set(pos.x, pos.y - yCef, pos.z);
     });
   }
 
@@ -345,7 +354,11 @@ export class PanoramaPlayerService implements OnDestroy {
     this.cameraViewProjectionMatrix = new THREE.Matrix4();
     // @ts-ignore
     // this.camera.target = new THREE.Vector3(0, 0, 0);
-    // this.camera.position.set(0, 0, 10);
+    const firstPano = model.data[0].panoramas
+    // 3.265433684854263, y: 1.3049540485298539, z: 1.6590141718188454
+    // this.camera.position.z = 1.6590141718188454;
+    // this.camera.position.x = 3.265433684854263;
+    // this.camera.position.y = 1.3049540485298539;
 
     this.OrbitControls = new OrbitControls(this.camera, this.renderer.domElement);
     // @ts-ignore
@@ -355,20 +368,22 @@ export class PanoramaPlayerService implements OnDestroy {
     this.OrbitControls.noPan = true;
     this.OrbitControls.autoRotate = false;
     this.OrbitControls.autoRotateSpeed = 2.0;
+    // this.OrbitControls.object.position.z = 1;
 
     this.DeviceOrientationControls = new DeviceOrientationControls( this.camera, this.renderer.domElement );
     // @ts-ignore
     this.DeviceOrientationControls.name = 'device-orientation';
     this.DeviceOrientationControls.enabled = false;
-    this.camera.position.z = 1;
+    // this.camera.position.z = 1;
 
-    const y = 3.5;
+    const defaultY = 3.5;
+    const y = model.rotation_y || defaultY;
     // 1
     this.loaderModel = new THREE.TextureLoader();
     this.sphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
     this.sphereGeometryModel.scale(-1, 1, 1);
     this.meshModel = new THREE.Mesh(this.sphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 1}));
-    this.meshModel.rotation.y = y;
+    // this.meshModel.rotation.y = y;
     this.scene.add(this.meshModel);
     this.meshModel.position.set(0, 0, 0);
 
@@ -376,17 +391,20 @@ export class PanoramaPlayerService implements OnDestroy {
     let tSphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
     tSphereGeometryModel.scale(-1, 1, 1);
     this.transitionMesh = new THREE.Mesh(tSphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 0}));
-    this.transitionMesh.rotation.y = y;
+    // this.transitionMesh.rotation.y = y;
     this.scene.add(this.transitionMesh);
     this.addNavPoints(model);
     this.setSettingsControls();
 
     console.log(this.OrbitControls);
-    this.OrbitControls.addEventListener('change', (e) => {
-      console.log(e.target.object.position, e.target.object.rotation);
-      // this.meshModel.rotation.y = e.target.object.rotation.y;
-      // this.transitionMesh.rotation.y = e.target.object.rotation.y;
-    })
+    this.OrbitControls.addEventListener('end', (e) => {
+      console.log(e);
+      console.log(e.target.object.position);
+      console.log(e.target.object.rotation);
+      // this.meshModel.rotation.y = e.target.object.rotation.y * 1.2;
+      // this.transitionMesh.rotation.y = e.target.object.rotation.y + defaultY;
+    });
+    this.modelSource.next(model);
   }
 
   /**

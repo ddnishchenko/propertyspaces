@@ -6,9 +6,10 @@ export interface Project {
   path?: string;
   project_id?: string;
   rowid?: string;
+  rotation_y?: number | string;
   __permissions?: {
     canUpdate?: boolean;
     canRemove?: boolean;
   }
-  data?: Panorama[]
+  data?: Panorama[];
 }
