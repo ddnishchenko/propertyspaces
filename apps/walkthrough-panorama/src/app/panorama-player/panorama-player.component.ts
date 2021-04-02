@@ -49,7 +49,9 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   saveY(id) {
-    this.projcetService.updateRotationProject(id, this.form.value.rotationY);
+    this.projcetService.updateRotationProject(id, this.form.value.rotationY).subscribe(() => {
+      alert('Rotation saved')
+    });
   }
 
 }
