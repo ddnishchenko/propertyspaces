@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@propertyspaces/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+      "@propertyspaces/api-interfaces": ["libs/api-interfaces/src/index.ts"],
+      "@propertyspaces/virtual-tour": ["libs/virtual-tour/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

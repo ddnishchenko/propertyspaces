@@ -4,6 +4,11 @@ import { ModelDataResolver } from './model-data.resolver';
 
 const routes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'projects'
+  },
+  {
     path: 'model/:id',
     loadChildren: () => import('./panorama-player/panorama-player.module').then(m => m.PanoramaPlayerModule),
     resolve: {

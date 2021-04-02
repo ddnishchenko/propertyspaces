@@ -1,12 +1,8 @@
-import { Injectable, ElementRef, NgZone } from '@angular/core';
+import { Injectable, ElementRef, NgZone, EventEmitter } from '@angular/core';
 import * as THREE from 'three';
 import { Subject } from 'rxjs';
 import { OrbitControls } from './orbit-control';
 import { DeviceOrientationControls } from './device-control';
-import { Project } from '../interfaces/project';
-import { environment } from '../../environments/environment';
-
-const host = environment.apiHost;
 
 function ringsShape() {
   const outerRingGeometry = new THREE.RingGeometry( 1.90, 2, 30, 1, 0 );
@@ -31,10 +27,13 @@ function ringsShape() {
   return group;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class PanoramaPlayerService {
+@Injectable()
+export class VirtualTourService {
+  static EVENTS = {
+    INIT: 'ROTATION_CHANGE',
+    ROTATION_CHANGE: 'ROTATION_CHANGE'
+
+  };
   private panos: any[];
   private loadedTextures: any[];
 
@@ -78,18 +77,30 @@ export class PanoramaPlayerService {
 
   // Observable string sources
   private dotSource = new Subject<string>();
-  private modelSource = new Subject<Project>();
+
+  get mesh() {
+    return this.meshModel;
+  }
+
+  configureNavigationMode = false;
+  confNavStart = false;
   // Observable string streams
   dotInfo$ = this.dotSource.asObservable();
-  modelData$ = this.modelSource.asObservable();
+  config;
+
+  events = new EventEmitter();
 
   constructor(private ngZone: NgZone) { }
+
+  toggleNavMode(mode) {
+    this.configureNavigationMode = mode;
+    this.confNavStart = mode;
+  }
 
   destroy(): void {
     if (this.frameId != null) {
       cancelAnimationFrame(this.frameId);
     }
-    this.modelSource.next(null);
   }
 
   changeMeshY(y: number) {
@@ -226,7 +237,8 @@ export class PanoramaPlayerService {
     this.transitionMesh.position.set(cameraPos.x, cameraPos.y, cameraPos.z)
     this.transitionMesh.material.map = this.transition.texture
     this.transitionMesh.material.needsUpdate = true
-    this.transitionMesh.visible = true
+    this.transitionMesh.visible = true;
+
   }
 
   scaleToModel(pos) {
@@ -239,7 +251,19 @@ export class PanoramaPlayerService {
 
   loadTextures(project) {
     const loader = new THREE.TextureLoader();
-    this.loadedTextures = this.panos.map((pano) => loader.load(`${host}${project.path}${pano.name}`));
+    const asyncLoader = (path, progressHandler) => (
+      new Promise(
+        (resolve, reject) => loader.load(path, resolve, progressHandler, reject)
+      )
+    );
+    this.loadedTextures = this.panos.map((pano, i) => loader.load(`${this.config.hostname}${project.path}${pano.name}`, (t) => {
+      if (!i) {
+        this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
+        this.events.emit({type: VirtualTourService.EVENTS.INIT, data: t})
+      }
+    }));
+
+    // asyncLoader()
 
   }
 
@@ -257,10 +281,19 @@ export class PanoramaPlayerService {
     });
   }
 
-  addNavPoints(model: Project) {
+  addNavPoints(model: any) {
     this.panos = model.data.filter(p => p.name).map(p => ({...p, position: p.panoramas}));
     this.loadTextures(model);
     this.addPanosMarks();
+  }
+
+  changeMeshRotation(y) {
+    this.meshModel.rotation.y = y;
+    // this.transitionMesh.rotation.y = y;
+    this.events.emit({
+      type: VirtualTourService.EVENTS.ROTATION_CHANGE,
+      data: this.meshModel.rotation.y
+    });
   }
 
   onDocumentMouseDown(event) {
@@ -326,10 +359,11 @@ export class PanoramaPlayerService {
    * Initialiaztion of the scene
    *
    * @param canvas ElementRef<HTMLCanvasElement>
-   * @param model ModelData
+   * @param config
    */
-  createScene(canvas: ElementRef<HTMLCanvasElement>, model: Project): void {
+  createScene(canvas: ElementRef<HTMLCanvasElement>, config: any): void {
     // The first step is to get the reference of the canvas element from our HTML document
+    this.config = config;
     this.canvas = canvas.nativeElement;
 
     // Create the renderer
@@ -354,11 +388,7 @@ export class PanoramaPlayerService {
     this.cameraViewProjectionMatrix = new THREE.Matrix4();
     // @ts-ignore
     // this.camera.target = new THREE.Vector3(0, 0, 0);
-    const firstPano = model.data[0].panoramas
-    // 3.265433684854263, y: 1.3049540485298539, z: 1.6590141718188454
-    // this.camera.position.z = 1.6590141718188454;
-    // this.camera.position.x = 3.265433684854263;
-    // this.camera.position.y = 1.3049540485298539;
+    this.camera.position.setZ(10);
 
     this.OrbitControls = new OrbitControls(this.camera, this.renderer.domElement);
     // @ts-ignore
@@ -377,7 +407,8 @@ export class PanoramaPlayerService {
     // this.camera.position.z = 1;
 
     const defaultY = 3.5;
-    const y = model.rotation_y || defaultY;
+    const y = +config.rotation_y || defaultY;
+
     // 1
     this.loaderModel = new THREE.TextureLoader();
     this.sphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
@@ -393,18 +424,20 @@ export class PanoramaPlayerService {
     this.transitionMesh = new THREE.Mesh(tSphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 0}));
     this.transitionMesh.rotation.y = y;
     this.scene.add(this.transitionMesh);
-    this.addNavPoints(model);
+    this.addNavPoints(config);
     this.setSettingsControls();
-
     console.log(this.OrbitControls);
     this.OrbitControls.addEventListener('change', (e) => {
-      // console.log(e.target.getAzimuthalAngle());
-      // console.log(e.target.object.position);
-      // console.log(e.target.object.rotation);
-      // this.meshModel.rotation.y = e.target.getAzimuthalAngle();
-      // this.transitionMesh.rotation.y = e.target.object.rotation.y + defaultY;
+      if (this.configureNavigationMode) {
+        let startValue = 0;
+        if (this.confNavStart) {
+          startValue = this.transitionMesh.rotation.y;
+        } else {
+          this.confNavStart = false;
+        }
+        this.changeMeshRotation(startValue + e.target.getAzimuthalAngle());
+      }
     });
-    // this.modelSource.next(model);
   }
 
   /**

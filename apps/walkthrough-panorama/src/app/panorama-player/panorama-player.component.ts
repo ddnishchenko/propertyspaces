@@ -1,34 +1,55 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PanoramaPlayerService } from './panorama-player.service';
+import { ProjectsService } from '../projects/service/projects.service';
+import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'propertyspaces-panorama-player',
   templateUrl: './panorama-player.component.html',
   styleUrls: ['./panorama-player.component.scss']
 })
-export class PanoramaPlayerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PanoramaPlayerComponent implements OnInit {
 
-  @ViewChild('mainScene', { static: true }) mainScene: ElementRef<HTMLCanvasElement>;
+  @ViewChild(VirtualTourDirective) virtualTour;
 
+  data$;
+  form;
   constructor(
-    private panoramaPlayer: PanoramaPlayerService,
+    private projcetService: ProjectsService,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-
+    this.createForm();
+    this.data$ = this.route.data.pipe(
+      map(data => ({...data.model, hostname: environment.apiHost}))
+    );
   }
 
-  ngAfterViewInit() {
-    this.route.data.subscribe(data => {
-      this.panoramaPlayer.createScene(this.mainScene, data.model);
-      this.panoramaPlayer.animate();
+  createForm() {
+    this.form = new FormGroup({
+      rotationY: new FormControl(''),
+      editMode: new FormControl(false)
     });
   }
 
-  ngOnDestroy() {
-    this.panoramaPlayer.destroy();
+  vrInit() {
+    this.form.patchValue({rotationY: +this.virtualTour.virtualTourService.mesh.rotation.y});
+  }
+
+  editModeSwitch() {
+    this.virtualTour.virtualTourService.toggleNavMode(this.form.value.editMode);
+  }
+
+  rotationYChange() {
+    this.virtualTour.virtualTourService.changeMeshRotation(this.form.value.rotationY);
+  }
+
+  saveY(id) {
+    this.projcetService.updateRotationProject(id, this.form.value.rotationY);
   }
 
 }
