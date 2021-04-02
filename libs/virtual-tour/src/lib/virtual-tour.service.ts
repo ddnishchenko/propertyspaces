@@ -427,6 +427,7 @@ export class VirtualTourService {
     this.addNavPoints(config);
     this.setSettingsControls();
     console.log(this.OrbitControls);
+    /*
     this.OrbitControls.addEventListener('change', (e) => {
       if (this.configureNavigationMode) {
         let startValue = 0;
@@ -438,6 +439,7 @@ export class VirtualTourService {
         this.changeMeshRotation(startValue + e.target.getAzimuthalAngle());
       }
     });
+    */
   }
 
   /**

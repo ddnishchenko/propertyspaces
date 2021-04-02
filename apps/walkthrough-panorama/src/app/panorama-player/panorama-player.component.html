@@ -8,22 +8,38 @@
         </ul>
 
         <form [formGroup]="form" class="col-12 col-lg-auto d-flex">
-          <div class="mb-3 mb-lg-0 me-lg-3">
-            <input *ngIf="form.value.editMode"
-              (change)="rotationYChange()"
-              type="number"
-              class="form-control form-control-dark"
-              formControlName="rotationY"
-              step="0.1"
-              placeholder="number">
-          </div>
+          <ng-container *ngIf="form.value.editMode">
+            <div class="mb-3 mb-lg-0 me-lg-3">
+              <input
+                (change)="rotationYChange()"
+                type="number"
+                class="form-control form-control-dark"
+                formControlName="rotationY"
+                step="0.1"
+                min="0"
+                max="6.3"
+                placeholder="number" style="min-width: 100px;">
+            </div>
 
-          <div class="text-end" *ngIf="form.value.editMode">
-            <button type="button" class="btn btn-outline-light me-2" (click)="rotationYChange()">Edit</button>
-            <button type="button" class="btn btn-outline-light me-2" (click)="saveY(data.project_id)">Save</button>
-          </div>
+            <div class="range-slider">
+              <input class="range-slider__range"
+                (input)="rotationYChange()"
+                type="range"
+                formControlName="rotationY"
+                step="0.1"
+                min="0"
+                max="6.3">
+              <span class="range-slider__value">{{ form.value.rotationY }}</span>
+            </div>
 
-          <div class="custom-control custom-switch">
+            <div class="d-flex" *ngIf="form.value.editMode">
+              <button type="button" class="btn btn-outline-light me-2" (click)="rotationYChange()">Edit</button>
+              <button type="button" class="btn btn-outline-light me-2" (click)="saveY(data.project_id)">Save</button>
+            </div>
+          </ng-container>
+
+
+          <div class="custom-control custom-switch" style="min-width: 115px;">
             <input type="checkbox" class="custom-control-input" id="editMode" formControlName="editMode" (change)="editModeSwitch()">
             <label class="custom-control-label" for="editMode">Edit mode</label>
           </div>
@@ -32,7 +48,9 @@
       </div>
     </div>
   </header>
+  <div class="vt-map">
 
+  </div>
   <div class="main-scene-wrapper">
     <canvas #virtualTour id="virtualTour" [propertyspacesVirtualTour]="data" (init)="vrInit()"></canvas>
   </div>
