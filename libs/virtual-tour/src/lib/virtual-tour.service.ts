@@ -81,7 +81,7 @@ export class VirtualTourService {
   get mesh() {
     return this.meshModel;
   }
-
+  activeIndex;
   configureNavigationMode = false;
   confNavStart = false;
   // Observable string streams
@@ -224,8 +224,10 @@ export class VirtualTourService {
       pano.object.visible = false
     })
 
-    let pano = this.panos[panoId]
-    this.currentPano = pano
+    let pano = this.panos[panoId];
+    this.activeIndex = panoId;
+    this.currentPano = pano;
+    this.currentPanoId
     let cameraPos = this.scaleToModel(pano.position)
     this.transition.state = 0;
     let camPos = this.camera.position

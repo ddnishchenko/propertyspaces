@@ -15,6 +15,10 @@ export class PanoramaPlayerComponent implements OnInit {
 
   @ViewChild(VirtualTourDirective) virtualTour;
 
+  get activePoint() {
+    return this.virtualTour ? this.virtualTour.virtualTourService.activeIndex : -1;
+  }
+
   data$;
   form;
   constructor(
@@ -54,4 +58,7 @@ export class PanoramaPlayerComponent implements OnInit {
     });
   }
 
+  navTo(i) {
+    this.virtualTour.virtualTourService.moveMark(i);
+  }
 }
