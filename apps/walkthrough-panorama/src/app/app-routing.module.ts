@@ -15,6 +15,14 @@ const routes: Routes = [
       model: ModelDataResolver
     }
   },
+  {
+    path: 'embed/:id',
+    loadChildren: () => import('./panorama-player/panorama-player.module').then(m => m.PanoramaPlayerModule),
+    resolve: {
+      model: ModelDataResolver
+    },
+    data: {}
+  },
   { path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule) }
 ];
 

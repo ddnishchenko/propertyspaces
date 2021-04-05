@@ -1,5 +1,5 @@
 <ng-container *ngIf="data$ | async as data">
-  <header class="p-3 bg-dark text-white">
+  <header class="p-3 bg-dark text-white" *ngIf="isEdit">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-between">
 
@@ -56,6 +56,9 @@
     [style.left]="(p.panoramas.x * 30) + 200 + 'px'">{{ i + 1 }}</div>
   </div>
   <div class="main-scene-wrapper">
-    <canvas #virtualTour id="virtualTour" [propertyspacesVirtualTour]="data" (init)="vrInit()"></canvas>
+    <canvas #virtualTour
+    id="virtualTour"
+    [propertyspacesVirtualTour]="data"
+    (init)="vrInit()" (navigationChange)="changeActive($event)"></canvas>
   </div>
 </ng-container>

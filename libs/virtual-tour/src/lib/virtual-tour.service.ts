@@ -31,8 +31,8 @@ function ringsShape() {
 export class VirtualTourService {
   static EVENTS = {
     INIT: 'ROTATION_CHANGE',
-    ROTATION_CHANGE: 'ROTATION_CHANGE'
-
+    ROTATION_CHANGE: 'ROTATION_CHANGE',
+    NAV_TO: 'NAV_TO'
   };
   private panos: any[];
   private loadedTextures: any[];
@@ -240,7 +240,7 @@ export class VirtualTourService {
     this.transitionMesh.material.map = this.transition.texture
     this.transitionMesh.material.needsUpdate = true
     this.transitionMesh.visible = true;
-
+    this.events.emit({type: VirtualTourService.EVENTS.NAV_TO, data: this.activeIndex})
   }
 
   scaleToModel(pos) {

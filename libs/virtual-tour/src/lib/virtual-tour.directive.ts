@@ -10,6 +10,7 @@ export class VirtualTourDirective implements OnInit, OnDestroy {
   private _virtualTourEvents: Subscription;
   @Input() propertyspacesVirtualTour;
   @Output() init = new EventEmitter();
+  @Output() navigationChange = new EventEmitter();
   constructor(
     private el: ElementRef<HTMLCanvasElement>,
     public virtualTourService: VirtualTourService
@@ -23,6 +24,8 @@ export class VirtualTourDirective implements OnInit, OnDestroy {
         case VirtualTourService.EVENTS.INIT:
           this.init.emit();
           break;
+        case VirtualTourService.EVENTS.NAV_TO:
+          this.navigationChange.emit(e.data);
       }
     });
   }

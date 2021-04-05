@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectsService } from '../projects/service/projects.service';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -15,18 +15,19 @@ export class PanoramaPlayerComponent implements OnInit {
 
   @ViewChild(VirtualTourDirective) virtualTour;
 
-  get activePoint() {
-    return this.virtualTour ? this.virtualTour.virtualTourService.activeIndex : -1;
-  }
+  activePoint = 0;
 
   data$;
   form;
+  isEdit = false;
   constructor(
     private projcetService: ProjectsService,
+    private router: Router,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    this.isEdit = this.router.url.includes('model');
     this.createForm();
     this.data$ = this.route.data.pipe(
       map(data => ({...data.model, hostname: environment.apiHost}))
@@ -59,6 +60,12 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   navTo(i) {
+    this.activePoint = i;
     this.virtualTour.virtualTourService.moveMark(i);
+  }
+
+  changeActive($event) {
+    console.log($event);
+    this.activePoint = $event;
   }
 }
