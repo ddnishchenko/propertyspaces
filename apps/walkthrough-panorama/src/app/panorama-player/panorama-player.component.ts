@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'propertyspaces-panorama-player',
@@ -37,12 +38,16 @@ export class PanoramaPlayerComponent implements OnInit {
   createForm() {
     this.form = new FormGroup({
       rotationY: new FormControl(''),
-      editMode: new FormControl(false)
+      editMode: new FormControl(false),
+      zoom: new FormControl(0)
     });
   }
 
   vrInit() {
-    this.form.patchValue({rotationY: +this.virtualTour.virtualTourService.mesh.rotation.y});
+    this.form.patchValue({
+      rotationY: +this.virtualTour.virtualTourService.mesh.rotation.y,
+      zoom: this.virtualTour.virtualTourService.OrbitControls.object.fov
+    });
   }
 
   editModeSwitch() {
@@ -54,8 +59,11 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   saveY(id) {
-    this.projcetService.updateRotationProject(id, this.form.value.rotationY).subscribe(() => {
-      alert('Rotation saved')
+    const updateY = this.projcetService.updateRotationProject(id, this.form.value.rotationY);
+    const updateData = this.projcetService.updateDataProject(id, {zoom: this.form.value.zoom, rotation_y: this.form.value.rotationY});
+
+    forkJoin([updateY, updateData]).subscribe(res => {
+      alert('saved');
     });
   }
 
@@ -67,5 +75,11 @@ export class PanoramaPlayerComponent implements OnInit {
   changeActive($event) {
     console.log($event);
     this.activePoint = $event;
+  }
+  zoomChange() {
+    this.virtualTour.virtualTourService.changeZoom(+this.form.value.zoom)
+  }
+  viewChange($event) {
+    this.form.get('zoom').patchValue($event.object.fov);
   }
 }

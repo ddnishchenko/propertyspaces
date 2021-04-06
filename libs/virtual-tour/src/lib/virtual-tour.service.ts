@@ -30,9 +30,11 @@ function ringsShape() {
 @Injectable()
 export class VirtualTourService {
   static EVENTS = {
-    INIT: 'ROTATION_CHANGE',
+    INIT: 'INIT',
     ROTATION_CHANGE: 'ROTATION_CHANGE',
-    NAV_TO: 'NAV_TO'
+    NAV_TO: 'NAV_TO',
+    ZOOM: 'ZOOM',
+    CHANGE: 'CHANGE'
   };
   private panos: any[];
   private loadedTextures: any[];
@@ -330,6 +332,11 @@ export class VirtualTourService {
     }
   }
 
+  changeZoom(fov) {
+    this.OrbitControls.object.fov = fov;
+    this.OrbitControls.object.updateProjectionMatrix();
+  }
+
   /**
    * Repainting on window resizing
    */
@@ -384,8 +391,11 @@ export class VirtualTourService {
 
     // create the scene
     this.scene = new THREE.Scene();
-
-    this.camera = new THREE.PerspectiveCamera(60, this.element.clientWidth / this.element.clientHeight, 1, 1000);
+    let defaultFov = 60;
+    if (config.additional_data) {
+      defaultFov = config.additional_data.zoom;
+    }
+    this.camera = new THREE.PerspectiveCamera(defaultFov, this.element.clientWidth / this.element.clientHeight, 1, 1000);
     this.cameraFrustum = new THREE.Frustum();
     this.cameraViewProjectionMatrix = new THREE.Matrix4();
     // @ts-ignore
@@ -429,19 +439,24 @@ export class VirtualTourService {
     this.addNavPoints(config);
     this.setSettingsControls();
     console.log(this.OrbitControls);
-    /*
-    this.OrbitControls.addEventListener('change', (e) => {
-      if (this.configureNavigationMode) {
-        let startValue = 0;
-        if (this.confNavStart) {
-          startValue = this.transitionMesh.rotation.y;
-        } else {
-          this.confNavStart = false;
-        }
-        this.changeMeshRotation(startValue + e.target.getAzimuthalAngle());
-      }
+
+    this.OrbitControls.addEventListener('end', (e) => {
+      this.events.emit({type: VirtualTourService.EVENTS.CHANGE, data: e.target});
+      // if (this.configureNavigationMode) {
+      //   let startValue = 0;
+      //   if (this.confNavStart) {
+      //     startValue = this.transitionMesh.rotation.y;
+      //   } else {
+      //     this.confNavStart = false;
+      //   }
+      //   this.changeMeshRotation(startValue + e.target.getAzimuthalAngle());
+      // }
     });
-    */
+
+   this.camera.addEventListener('zoom', (e) => {
+     this.events.emit({type: VirtualTourService.EVENTS.ZOOM, data: e.target.object.fov});
+     console.log(e);
+   })
   }
 
   /**

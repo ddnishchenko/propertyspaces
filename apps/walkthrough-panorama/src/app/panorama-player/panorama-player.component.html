@@ -9,6 +9,32 @@
 
         <form [formGroup]="form" class="col-12 col-lg-auto d-flex">
           <ng-container *ngIf="form.value.editMode">
+
+            <div class="mb-3 mb-lg-0 me-lg-3">
+              <input
+                (change)="zoomChange()"
+                type="number"
+                class="form-control form-control-dark"
+                formControlName="zoom"
+                [value]="form.value.zoom"
+                step="1"
+                min="30"
+                max="120"
+                placeholder="number" style="min-width: 100px;">
+            </div>
+
+            <div class="range-slider">
+              <input class="range-slider__range"
+                (input)="zoomChange()"
+                (change)="zoomChange()"
+                type="range"
+                formControlName="zoom"
+                step="0"
+                min="30"
+                max="120">
+              <span class="range-slider__value">{{ form.value.zoom }}</span>
+            </div>
+
             <div class="mb-3 mb-lg-0 me-lg-3">
               <input
                 (change)="rotationYChange()"
@@ -59,6 +85,7 @@
     <canvas #virtualTour
     id="virtualTour"
     [propertyspacesVirtualTour]="data"
-    (init)="vrInit()" (navigationChange)="changeActive($event)"></canvas>
+    (init)="vrInit()"
+    (navigationChange)="changeActive($event)" (change)="viewChange($event)"></canvas>
   </div>
 </ng-container>

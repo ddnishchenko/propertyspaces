@@ -11,6 +11,8 @@ export class VirtualTourDirective implements OnInit, OnDestroy {
   @Input() propertyspacesVirtualTour;
   @Output() init = new EventEmitter();
   @Output() navigationChange = new EventEmitter();
+  @Output() change = new EventEmitter();
+  @Output() zoom = new EventEmitter();
   constructor(
     private el: ElementRef<HTMLCanvasElement>,
     public virtualTourService: VirtualTourService
@@ -26,6 +28,12 @@ export class VirtualTourDirective implements OnInit, OnDestroy {
           break;
         case VirtualTourService.EVENTS.NAV_TO:
           this.navigationChange.emit(e.data);
+          break;
+        case VirtualTourService.EVENTS.CHANGE:
+          this.change.emit(e.data);
+          break;
+        case VirtualTourService.EVENTS.ZOOM:
+          this.zoom.emit(e.data);
       }
     });
   }

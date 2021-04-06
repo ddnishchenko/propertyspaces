@@ -47,6 +47,9 @@ export class ProjectDetailsComponent implements OnInit {
       }
     });
   }
+
+  openFloorplanForm(project) {}
+
   openEditPanorama(panorama, panoData) {
     const modalRef = this.modalService.open(PanoramaFormComponent, {
       size: 'lg'

@@ -59,4 +59,7 @@ export class ProjectsService {
   updateRotationProject(project_id, rotation_y) {
     return this.http.post(host + 'update-rotation-project', {client_id: 1295, project_id, rotation_y})
   }
+  updateDataProject(project_id, additional_data) {
+    return this.http.post(host + 'update-data-project', {client_id: 1295, project_id, additional_data})
+  }
 }

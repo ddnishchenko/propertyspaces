@@ -10,6 +10,7 @@ import { ProjectFormComponent } from './components/project-form/project-form.com
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { PanoramaFormComponent } from './components/panorama-form/panorama-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FloorplanFormComponent } from './components/floorplan-form/floorplan-form.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ProjectDetailsComponent,
     ProjectFormComponent,
     ConfirmationModalComponent,
-    PanoramaFormComponent
+    PanoramaFormComponent,
+    FloorplanFormComponent
   ],
   imports: [
     CommonModule,
