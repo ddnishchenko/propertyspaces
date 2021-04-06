@@ -75,6 +75,7 @@
     </div>
   </header>
   <div class="vt-map">
+    <img *ngIf="data.additional_data?.floorplan" [src]="data.additional_data?.floorplan">
     <div class="vt-map-point" *ngFor="let p of data.data; index as i"
     (click)="navTo(i)"
     [class.active]="activePoint === i"

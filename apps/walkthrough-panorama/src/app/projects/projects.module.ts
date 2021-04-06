@@ -11,6 +11,7 @@ import { ConfirmationModalComponent } from './components/confirmation-modal/conf
 import { PanoramaFormComponent } from './components/panorama-form/panorama-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FloorplanFormComponent } from './components/floorplan-form/floorplan-form.component';
+import { SafePipe } from '../pipes/safe.pipe';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { FloorplanFormComponent } from './components/floorplan-form/floorplan-fo
     ProjectFormComponent,
     ConfirmationModalComponent,
     PanoramaFormComponent,
-    FloorplanFormComponent
+    FloorplanFormComponent,
+    SafePipe
   ],
   imports: [
     CommonModule,
@@ -32,6 +34,7 @@ import { FloorplanFormComponent } from './components/floorplan-form/floorplan-fo
   ],
   entryComponents: [
     ProjectFormComponent,
+    FloorplanFormComponent,
     ConfirmationModalComponent
   ]
 })

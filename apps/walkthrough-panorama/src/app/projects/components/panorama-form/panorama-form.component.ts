@@ -2,15 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../../environments/environment';
-
-export function fileToBase64(file: File): Promise<string | ArrayBuffer | null> {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.onload = (ev: ProgressEvent<FileReader>) => resolve(ev.target.result);
-    fileReader.onerror = reject;
-    fileReader.readAsDataURL(file);
-  });
-}
+import { fileToBase64 } from '../../../utils';
 
 @Component({
   selector: 'propertyspaces-panorama-form',

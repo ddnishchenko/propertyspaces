@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin } from 'rxjs';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
+import { FloorplanFormComponent } from '../../components/floorplan-form/floorplan-form.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
 import { ProjectsService } from '../../service/projects.service';
 
@@ -48,7 +49,22 @@ export class ProjectDetailsComponent implements OnInit {
     });
   }
 
-  openFloorplanForm(project) {}
+  openFloorplanForm(project, panoramas) {
+    const modalRef = this.modalService.open(FloorplanFormComponent, {
+      size: 'lg'
+    });
+    if (panoramas.additional_data?.floorpan) {
+      modalRef.componentInstance.floorplan = project.additional_data.floorpan;
+    }
+
+    modalRef.result.then(value => {
+      if (value) {
+        this.projectsService.updateDataProject(project.id, {floorplan: value}).subscribe(res => {
+          this.initData();
+        });
+      }
+    });
+  }
 
   openEditPanorama(panorama, panoData) {
     const modalRef = this.modalService.open(PanoramaFormComponent, {
