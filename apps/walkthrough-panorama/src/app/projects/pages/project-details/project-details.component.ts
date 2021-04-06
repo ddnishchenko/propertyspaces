@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
 import { forkJoin } from 'rxjs';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { FloorplanFormComponent } from '../../components/floorplan-form/floorplan-form.component';
@@ -53,9 +54,10 @@ export class ProjectDetailsComponent implements OnInit {
     const modalRef = this.modalService.open(FloorplanFormComponent, {
       size: 'lg'
     });
-    if (panoramas.additional_data?.floorpan) {
-      modalRef.componentInstance.floorplan = project.additional_data.floorpan;
+    if (panoramas.additional_data?.floorplan) {
+      modalRef.componentInstance.floorplan = panoramas.additional_data.floorplan;
     }
+    modalRef.componentInstance.mediaPath = environment.apiHost + panoramas.path
 
     modalRef.result.then(value => {
       if (value) {

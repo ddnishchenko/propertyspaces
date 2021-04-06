@@ -13,6 +13,7 @@ export class FloorplanFormComponent implements OnInit {
   title = 'Floorplan';
   loading = false;
   floorplan = '';
+  mediaPath = '';
   constructor(
     public activeModal: NgbActiveModal
   ) { }
