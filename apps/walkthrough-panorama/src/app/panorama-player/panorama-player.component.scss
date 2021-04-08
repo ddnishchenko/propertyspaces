@@ -143,13 +143,17 @@ input::-moz-focus-outer {
 
 .vt-map {
   position: fixed;
-  width: 300px;
-  height: 300px;
   background-color: #fff;
   border: 2px solid #000;
   border-radius: 10px;
+  padding-right: 26px;
+  padding-bottom: 26px;
+  &-wrapper {
+    position: relative;
+  }
   &-point {
     position: absolute;
+    background-color: #fff;
     width: 26px;
     height: 26px;
     border-radius: 50%;
@@ -162,4 +166,17 @@ input::-moz-focus-outer {
       border: 2px solid #1abc9c;
     }
   }
+}
+.pointer {
+  background: radial-gradient(
+    at 0 0,
+    rgba(24, 90, 189, 0.38),
+    #ffffff00,
+    #ffffff00
+  );
+  transform-origin: 0 0;
+  padding: 25px;
+  position: relative;
+  top: 11px;
+  left: 12px;
 }

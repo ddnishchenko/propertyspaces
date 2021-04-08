@@ -74,13 +74,42 @@
       </div>
     </div>
   </header>
-  <div class="vt-map">
-    <img *ngIf="data.additional_data?.floorplan" [src]="data.additional_data?.floorplan">
-    <div class="vt-map-point" *ngFor="let p of data.data; index as i"
+  <!-- [ngStyle]="{width: data.floorplan.xSide + 'px', height: data.floorplan.zSide * 30 + 'px'}" -->
+  <div class="vt-map" *ngIf="data.additional_data && data.additional_data['floorplan.svg']">
+    <div class="vt-map-wrapper">
+
+      <img #floorplanImage [src]="data.hostname + data.path + data.additional_data['floorplan.svg']"
+      [ngStyle]="{width: data.width + 'px', height: data.height + 'px'}">
+      <ng-container *ngFor="let p of data.floorplanMap; index as i">
+        <div class="vt-map-point"
+          (click)="navTo(i)"
+          [class.active]="activePoint === i"
+          [style.top]="p.z + '%'"
+          [style.left]="p.x + '%'">
+          {{ i + 1 }}
+        </div>
+
+        <ng-container *ngIf="activePoint === i">
+          <div [className]="'vt-map-point active'"
+            [style.top]="p.z + '%'"
+            [style.left]="p.x + '%'">
+              <div class="pointer"
+                  [style.transform]="'rotate(' + rotationAngle + 'rad)'"></div>
+                  <!-- (lon + currentDot.rotation_angle) -->
+          </div>
+        </ng-container>
+      </ng-container>
+
+    </div>
+
+
+
+    <!-- <div class="vt-map-point" *ngFor="let p of data.data; index as i"
     (click)="navTo(i)"
     [class.active]="activePoint === i"
-    [style.top]="(p.panoramas.z * 30 ) + 50 + 'px'"
-    [style.left]="(p.panoramas.x * 30) + 200 + 'px'">{{ i + 1 }}</div>
+    [style.top]="(floorplanImage.offsetHeight / 2) + (289 / 100)*p.panoramas.z + 'px'"
+    [style.left]="(floorplanImage.offsetWidth / 2) + (289 / 100)*p.panoramas.x + 'px'">{{ p.panoramas.x }} {{ floorplanImage.offsetWidth }}</div> -->
+
   </div>
   <div class="main-scene-wrapper">
     <canvas #virtualTour

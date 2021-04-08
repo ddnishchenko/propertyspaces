@@ -54,14 +54,14 @@ export class ProjectDetailsComponent implements OnInit {
     const modalRef = this.modalService.open(FloorplanFormComponent, {
       size: 'lg'
     });
-    if (panoramas.additional_data?.floorplan) {
-      modalRef.componentInstance.floorplan = panoramas.additional_data.floorplan;
+    if (panoramas.additional_data && panoramas.additional_data['floorplan.svg']) {
+      modalRef.componentInstance.floorplan = panoramas.additional_data['floorplan.svg'];
     }
     modalRef.componentInstance.mediaPath = environment.apiHost + panoramas.path
 
     modalRef.result.then(value => {
       if (value) {
-        this.projectsService.updateDataProject(project.id, {floorplan: value}).subscribe(res => {
+        this.projectsService.updateDataProject(project.id, {['floorplan.svg']: value}).subscribe(res => {
           this.initData();
         });
       }

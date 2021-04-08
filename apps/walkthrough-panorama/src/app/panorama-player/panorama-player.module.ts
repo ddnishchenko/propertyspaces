@@ -6,9 +6,10 @@ import { PanoramaPlayerComponent } from './panorama-player.component';
 
 import { VirtualTourModule } from '@propertyspaces/virtual-tour';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 
 @NgModule({
-  declarations: [PanoramaPlayerComponent],
+  declarations: [PanoramaPlayerComponent, FloorplanEditorComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
