@@ -1,1 +1,42 @@
-<p>floorplan-editor works!</p>
+<div class="modal-header">
+  <h5 class="modal-title">Floorplan editor</h5>
+  <button type="button" (click)="activeModal.close()" class="close" data-bs-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="form-row">
+      <div class="col">
+        <input formControlName="scale" type="number" class="form-control" placeholder="Scale">
+      </div>
+      <div class="col">
+        <input formControlName="offsetTop" type="number" class="form-control" placeholder="Offset top">
+      </div>
+      <div class="col">
+        <input formControlName="offsetLeft" type="number" class="form-control" placeholder="Offest left">
+      </div>
+      <div class="col">
+        <input formControlName="rotation" type="number" class="form-control" placeholder="Rotation">
+      </div>
+    </div>
+  </form>
+  <div class="floorplan d-flex justify-content-center align-items-center">
+    <div class="floorplan__navigation" *ngIf="data">
+      <img [src]="data.floorplanPath" alt="">
+      <div class="floorplan__point-wrapper" [style.transform]="'rotate('+ form.value.rotation +'deg)'">
+        <div class="floorplan__point"
+          *ngFor="let p of data.data; index as i"
+          [style.top]="(p.panoramas.x * form.value.scale) + (+form.value.offsetTop) + 'px'"
+          [style.left]="(p.panoramas.z * form.value.scale) + (+form.value.offsetLeft) + 'px'">
+          {{i + 1}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.close(false)">Close</button>
+  <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>
+</div>

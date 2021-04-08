@@ -69,6 +69,9 @@
             <input type="checkbox" class="custom-control-input" id="editMode" formControlName="editMode" (change)="editModeSwitch()">
             <label class="custom-control-label" for="editMode">Edit mode</label>
           </div>
+          <div>
+            <button type="button" class="btn btn-warning" (click)="openFloorplanEditor(data)">Add floorplan</button>
+          </div>
         </form>
 
       </div>
@@ -78,21 +81,21 @@
   <div class="vt-map" *ngIf="data.additional_data && data.additional_data['floorplan.svg']">
     <div class="vt-map-wrapper">
 
-      <img #floorplanImage [src]="data.hostname + data.path + data.additional_data['floorplan.svg']"
+      <img #floorplanImage [src]="data.floorplanPath"
       [ngStyle]="{width: data.width + 'px', height: data.height + 'px'}">
       <ng-container *ngFor="let p of data.floorplanMap; index as i">
         <div class="vt-map-point"
           (click)="navTo(i)"
           [class.active]="activePoint === i"
-          [style.top]="p.z + '%'"
-          [style.left]="p.x + '%'">
+          [style.top]="p.x + '%'"
+          [style.left]="p.z + '%'">
           {{ i + 1 }}
         </div>
 
         <ng-container *ngIf="activePoint === i">
           <div [className]="'vt-map-point active'"
-            [style.top]="p.z + '%'"
-            [style.left]="p.x + '%'">
+            [style.top]="p.x + '%'"
+            [style.left]="p.z + '%'">
               <div class="pointer"
                   [style.transform]="'rotate(' + rotationAngle + 'rad)'"></div>
                   <!-- (lon + currentDot.rotation_angle) -->

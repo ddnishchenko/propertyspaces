@@ -6,6 +6,8 @@ import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 
 @Component({
   selector: 'propertyspaces-panorama-player',
@@ -25,7 +27,8 @@ export class PanoramaPlayerComponent implements OnInit {
   constructor(
     private projcetService: ProjectsService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -63,7 +66,15 @@ export class PanoramaPlayerComponent implements OnInit {
         const width = (zSide  + (zMin*2)) * size;
         const height = (xSide  + (zMin*2)) * size;
         console.log(floorplanMap);
-        return {...data.model, floorplanMap, floorplanArea, width, height, hostname: environment.apiHost}
+        return {
+          ...data.model,
+          floorplanMap,
+          floorplanArea,
+          width,
+          height,
+          hostname: environment.apiHost,
+          floorplanPath: environment.apiHost + data.model.path + data.model.additional_data['floorplan.svg']
+        }
       })
     );
   }
@@ -81,7 +92,7 @@ export class PanoramaPlayerComponent implements OnInit {
       rotationY: +this.virtualTour.virtualTourService.mesh.rotation.y,
       zoom: this.virtualTour.virtualTourService.OrbitControls.object.fov
     });
-    this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - Math.PI / (+this.virtualTour.virtualTourService.mesh.rotation.y - 0.3);
+    this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
   }
 
   editModeSwitch() {
@@ -115,6 +126,16 @@ export class PanoramaPlayerComponent implements OnInit {
   }
   viewChange($event) {
     this.form.get('zoom').patchValue($event.object.fov);
-    this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getAzimuthalAngle() - Math.PI / (+this.virtualTour.virtualTourService.mesh.rotation.y - 1.3);
+    this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getAzimuthalAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
+  }
+
+  openFloorplanEditor(data) {
+    const modalRef = this.modalService.open(FloorplanEditorComponent, {
+      size: 'xl'
+    });
+    modalRef.componentInstance.data = data;
+    modalRef.result.then(v => {
+      console.log(v);
+    })
   }
 }
