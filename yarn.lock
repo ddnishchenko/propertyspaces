@@ -2922,6 +2922,13 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
+angular-resizable-element@^3.3.5:
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/angular-resizable-element/-/angular-resizable-element-3.3.5.tgz#e0c86655e53280306c5a6e0ed1d1f60b323b0497"
+  integrity sha512-PT7p3CGva1BmcTt8LA80yOblHqynZHPQYQ1KMMLgllCn3UZx/+0eCRtSXKwnWT5IYHBg9qI3tmd92SFExa1UMg==
+  dependencies:
+    tslib "^1.9.0"
+
 ansi-colors@4.1.1, ansi-colors@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-4.1.1.tgz#cbb9ae256bf750af1eab344f229aa27fe94ba348"

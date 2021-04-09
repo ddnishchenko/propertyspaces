@@ -50,6 +50,20 @@ export class PanoramaPlayerComponent implements OnInit {
           xArray = model.data.map(p => Math.abs(xMin) + +p.panoramas.x);
           xMin = Math.min(...xArray);
           xMax = Math.max(...xArray);
+        } else if (xMin > 0) {
+          xArray = model.data.map(p => +p.panoramas.x - Math.abs(xMin));
+          xMin = Math.min(...xArray);
+          xMax = Math.max(...xArray);
+        }
+
+        if (zMin < 0) {
+          zArray = model.data.map(p => Math.abs(zMin) + +p.panoramas.z);
+          zMin = Math.min(...zArray);
+          zMax = Math.max(...zArray);
+        } else if (zMin > 0) {
+          zArray = model.data.map(p => +p.panoramas.z - Math.abs(zMin));
+          zMin = Math.min(...zArray);
+          zMax = Math.max(...zArray);
         }
 
         const xSide = xMax - (xMin);

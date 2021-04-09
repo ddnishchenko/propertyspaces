@@ -8,16 +8,16 @@
   <form [formGroup]="form">
     <div class="form-row">
       <div class="col">
-        <input formControlName="scale" type="number" class="form-control" placeholder="Scale">
+        <input formControlName="scale" min="0" type="number" class="form-control" placeholder="Scale">
       </div>
       <div class="col">
-        <input formControlName="offsetTop" type="number" class="form-control" placeholder="Offset top">
+        <input formControlName="offsetTop" min="0" type="number" class="form-control" placeholder="Offset top">
       </div>
       <div class="col">
-        <input formControlName="offsetLeft" type="number" class="form-control" placeholder="Offest left">
+        <input formControlName="offsetLeft" min="0" type="number" class="form-control" placeholder="Offest left">
       </div>
       <div class="col">
-        <input formControlName="rotation" type="number" class="form-control" placeholder="Rotation">
+        <input formControlName="rotation" min="0" type="number" class="form-control" placeholder="Rotation">
       </div>
     </div>
   </form>
@@ -29,9 +29,9 @@
         [style.height]="floorPlan.offsetHeight + 'px'"
         [style.transform]="'rotate('+ form.value.rotation +'deg)'">
         <div class="floorplan__point"
-          *ngFor="let p of data.data; index as i"
-          [style.top]="(p.panoramas.x * (floorPlan.offsetHeight / 100) * form.value.scale) + (+form.value.offsetTop) + 'px'"
-          [style.left]="(p.panoramas.z * (floorPlan.offsetWidth / 100) * form.value.scale) + (+form.value.offsetLeft) + 'px'">
+          *ngFor="let p of data.floorplanMap; index as i"
+          [style.top]="p.x  + '%'"
+          [style.left]="p.z + '%'">
           {{i + 1}}
         </div>
       </div>
