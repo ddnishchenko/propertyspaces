@@ -1,13 +1,13 @@
 .floorplan {
-  height: 400px;
-  width: 400px;
   min-width: 400px;
   min-height: 400px;
   &__navigation {
     position: relative;
   }
   &__point-wrapper {
-    transform-origin: 0 0;
+    position: absolute;
+    top: 0;
+    resize: both;
   }
   &__point {
     position: absolute;

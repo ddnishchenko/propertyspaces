@@ -7,6 +7,7 @@ import { PanoramaPlayerComponent } from './panorama-player.component';
 import { VirtualTourModule } from '@propertyspaces/virtual-tour';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
+import { DndModule } from 'ngx-drag-drop';
 
 @NgModule({
   declarations: [PanoramaPlayerComponent, FloorplanEditorComponent],
@@ -14,7 +15,8 @@ import { FloorplanEditorComponent } from './components/floorplan-editor/floorpla
     CommonModule,
     ReactiveFormsModule,
     PanoramaPlayerRoutingModule,
-    VirtualTourModule
+    VirtualTourModule,
+    DndModule
   ]
 })
 export class PanoramaPlayerModule { }

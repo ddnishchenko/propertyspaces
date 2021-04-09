@@ -21,14 +21,17 @@
       </div>
     </div>
   </form>
-  <div class="floorplan d-flex justify-content-center align-items-center">
+  <div class="floorplan">
     <div class="floorplan__navigation" *ngIf="data">
-      <img [src]="data.floorplanPath" alt="">
-      <div class="floorplan__point-wrapper" [style.transform]="'rotate('+ form.value.rotation +'deg)'">
+      <img #floorPlan [src]="data.floorplanPath" class="img-fluid" alt="Floorplan">
+      <div class="floorplan__point-wrapper"
+        [style.width]="floorPlan.offsetWidth + 'px'"
+        [style.height]="floorPlan.offsetHeight + 'px'"
+        [style.transform]="'rotate('+ form.value.rotation +'deg)'">
         <div class="floorplan__point"
           *ngFor="let p of data.data; index as i"
-          [style.top]="(p.panoramas.x * form.value.scale) + (+form.value.offsetTop) + 'px'"
-          [style.left]="(p.panoramas.z * form.value.scale) + (+form.value.offsetLeft) + 'px'">
+          [style.top]="(p.panoramas.x * (floorPlan.offsetHeight / 100) * form.value.scale) + (+form.value.offsetTop) + 'px'"
+          [style.left]="(p.panoramas.z * (floorPlan.offsetWidth / 100) * form.value.scale) + (+form.value.offsetLeft) + 'px'">
           {{i + 1}}
         </div>
       </div>
