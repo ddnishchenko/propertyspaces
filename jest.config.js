@@ -4,5 +4,6 @@ module.exports = {
     '<rootDir>/apps/api',
     '<rootDir>/libs/api-interfaces',
     '<rootDir>/libs/virtual-tour',
+    '<rootDir>/libs/drag-resize',
   ],
 };

@@ -56,3 +56,13 @@ mwlResizable {
 .resize-handle-right {
   right: 0;
 }
+
+.ng-draggable {
+  cursor: grab;
+}
+
+.ng-dragging {
+  cursor: grabbing;
+}
+
+// @import 'assets/scss/resizable.scss';

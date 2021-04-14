@@ -7,8 +7,8 @@
   &__point-wrapper {
     position: absolute;
     top: 0;
-    resize: both;
-    overflow: auto;
+    // resize: both;
+    // overflow: auto;
   }
   &__point {
     position: absolute;
@@ -19,4 +19,10 @@
     background-color: #fff;
     text-align: center;
   }
+}
+
+.drag-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

@@ -26,6 +26,7 @@
               "apps/walkthrough-panorama/src/assets"
             ],
             "styles": [
+              "node_modules/angular2-draggable/css/resizable.min.css",
               "apps/walkthrough-panorama/src/styles.scss"
             ],
             "scripts": []
@@ -60,9 +61,7 @@
               ]
             }
           },
-          "outputs": [
-            "{options.outputPath}"
-          ]
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -90,10 +89,7 @@
               "apps/walkthrough-panorama/tsconfig.spec.json",
               "apps/walkthrough-panorama/tsconfig.editor.json"
             ],
-            "exclude": [
-              "**/node_modules/**",
-              "!apps/walkthrough-panorama/**/*"
-            ]
+            "exclude": ["**/node_modules/**", "!apps/walkthrough-panorama/**/*"]
           }
         },
         "test": {
@@ -102,9 +98,7 @@
             "jestConfig": "apps/walkthrough-panorama/jest.config.js",
             "passWithNoTests": true
           },
-          "outputs": [
-            "coverage/apps/walkthrough-panorama"
-          ]
+          "outputs": ["coverage/apps/walkthrough-panorama"]
         }
       }
     },
@@ -129,9 +123,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "apps/walkthrough-panorama-e2e/tsconfig.e2e.json"
-            ],
+            "tsConfig": ["apps/walkthrough-panorama-e2e/tsconfig.e2e.json"],
             "exclude": [
               "**/node_modules/**",
               "!apps/walkthrough-panorama-e2e/**/*"
@@ -153,9 +145,7 @@
             "outputPath": "dist/apps/api",
             "main": "apps/api/src/main.ts",
             "tsConfig": "apps/api/tsconfig.app.json",
-            "assets": [
-              "apps/api/src/assets"
-            ]
+            "assets": ["apps/api/src/assets"]
           },
           "configurations": {
             "production": {
@@ -170,9 +160,7 @@
               ]
             }
           },
-          "outputs": [
-            "{options.outputPath}"
-          ]
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -187,10 +175,7 @@
               "apps/api/tsconfig.app.json",
               "apps/api/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**",
-              "!apps/api/**/*"
-            ]
+            "exclude": ["**/node_modules/**", "!apps/api/**/*"]
           }
         },
         "test": {
@@ -199,9 +184,7 @@
             "jestConfig": "apps/api/jest.config.js",
             "passWithNoTests": true
           },
-          "outputs": [
-            "coverage/apps/api"
-          ]
+          "outputs": ["coverage/apps/api"]
         }
       }
     },
@@ -218,10 +201,7 @@
               "libs/api-interfaces/tsconfig.lib.json",
               "libs/api-interfaces/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**",
-              "!libs/api-interfaces/**/*"
-            ]
+            "exclude": ["**/node_modules/**", "!libs/api-interfaces/**/*"]
           }
         },
         "test": {
@@ -230,9 +210,7 @@
             "jestConfig": "libs/api-interfaces/jest.config.js",
             "passWithNoTests": true
           },
-          "outputs": [
-            "coverage/libs/api-interfaces"
-          ]
+          "outputs": ["coverage/libs/api-interfaces"]
         }
       }
     },
@@ -261,19 +239,52 @@
               "libs/virtual-tour/tsconfig.lib.json",
               "libs/virtual-tour/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**",
-              "!libs/virtual-tour/**/*"
-            ]
+            "exclude": ["**/node_modules/**", "!libs/virtual-tour/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/virtual-tour"
-          ],
+          "outputs": ["coverage/libs/virtual-tour"],
           "options": {
             "jestConfig": "libs/virtual-tour/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "drag-resize": {
+      "projectType": "library",
+      "root": "libs/drag-resize",
+      "sourceRoot": "libs/drag-resize/src",
+      "prefix": "propertyspaces",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:ng-packagr-lite",
+          "options": {
+            "tsConfig": "libs/drag-resize/tsconfig.lib.json",
+            "project": "libs/drag-resize/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/drag-resize/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/drag-resize/tsconfig.lib.json",
+              "libs/drag-resize/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/drag-resize/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/drag-resize"],
+          "options": {
+            "jestConfig": "libs/drag-resize/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -320,11 +331,18 @@
       }
     },
     "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "tslint",
       "unitTestRunner": "jest",
       "e2eTestRunner": "cypress"
     },
     "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "tslint",
       "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
     }
   },
   "defaultProject": "walkthrough-panorama"

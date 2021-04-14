@@ -8,32 +8,41 @@
   <form [formGroup]="form">
     <div class="form-row">
       <div class="col">
-        <input formControlName="scale" min="0" type="number" class="form-control" placeholder="Scale">
-      </div>
-      <div class="col">
-        <input formControlName="offsetTop" min="0" type="number" class="form-control" placeholder="Offset top">
-      </div>
-      <div class="col">
-        <input formControlName="offsetLeft" min="0" type="number" class="form-control" placeholder="Offest left">
-      </div>
-      <div class="col">
-        <input formControlName="rotation" min="0" type="number" class="form-control" placeholder="Rotation">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button (click)="rotate('r')" type="button" class="btn btn-secondary"><i class="fa fa-rotate-right"></i></button>
+          <button type="button" class="btn btn-secondary">Middle</button>
+          <button (click)="rotate('l')" type="button" class="btn btn-secondary"><i class="fa fa-rotate-left"></i></button>
+        </div>
+
+
+
       </div>
     </div>
   </form>
-  <div class="floorplan">
-    <div class="floorplan__navigation" *ngIf="data">
-      <img #floorPlan [src]="data.floorplanPath" class="img-fluid" alt="Floorplan">
-      <div class="floorplan__point-wrapper"
-        [style.width]="floorPlan.offsetWidth + 'px'"
-        [style.height]="floorPlan.offsetHeight + 'px'"
-        [style.transform]="'rotate('+ form.value.rotation +'deg)'">
+  {{ {x: this.form.value.nav_dots_left, y: this.form.value.nav_dots_top} | json }}
+  <div class="floorplan d-flex align-items-center justify-content-center">
+    <div #bound class="floorplan__navigation" *ngIf="data">
+      <img #floorPlan [src]="data.floorplanPath" class="img-fluid" style="max-height: 300px;" alt="Floorplan">
+      <div class="floorplan__point-wrapper" #flw
+        ngResizable
+        ngDraggable
+        [style.width]="form.value.nav_dots_width + 'px'"
+        [style.height]="form.value.nav_dots_height + 'px'"
+        [customTransformations]="'rotate('+ this.form.value.nav_dots_rotation +'deg)'"
+        [position]="{x: this.form.value.nav_dots_left, y: this.form.value.nav_dots_top}"
+        (stopped)="dragEnd($event)"
+        (rzStop)="resizeEnd($event)"
+        [bounds]="bound"
+        [inBounds]="true"
+        >
+
         <div class="floorplan__point"
           *ngFor="let p of data.floorplanMap; index as i"
           [style.top]="p.x  + '%'"
           [style.left]="p.z + '%'">
           {{i + 1}}
         </div>
+        <!-- <i #dragHandle class="fa fa-arrows drag-handle"></i> -->
       </div>
 
     </div>

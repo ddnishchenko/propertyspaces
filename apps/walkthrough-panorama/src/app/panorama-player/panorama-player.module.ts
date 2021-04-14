@@ -5,9 +5,9 @@ import { PanoramaPlayerRoutingModule } from './panorama-player-routing.module';
 import { PanoramaPlayerComponent } from './panorama-player.component';
 
 import { VirtualTourModule } from '@propertyspaces/virtual-tour';
+import { DragResizeModule } from '@propertyspaces/drag-resize';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
-import { DndModule } from 'ngx-drag-drop';
 
 @NgModule({
   declarations: [PanoramaPlayerComponent, FloorplanEditorComponent],
@@ -16,7 +16,7 @@ import { DndModule } from 'ngx-drag-drop';
     ReactiveFormsModule,
     PanoramaPlayerRoutingModule,
     VirtualTourModule,
-    DndModule
+    DragResizeModule
   ]
 })
 export class PanoramaPlayerModule { }

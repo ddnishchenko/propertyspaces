@@ -2929,6 +2929,13 @@ angular-resizable-element@^3.3.5:
   dependencies:
     tslib "^1.9.0"
 
+angular2-draggable@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/angular2-draggable/-/angular2-draggable-2.3.2.tgz#54ca569a6b3aa9ca1a8a4d663d3eee3024c48af3"
+  integrity sha512-rw2O/icgVang8uSVIU7nmm59f1DceSAUQkOuSGYnKbv/h8EbhJ9099sCjh/I5LymZBza1XPKeFZofIvhekdE+A==
+  dependencies:
+    tslib "^1.9.0"
+
 ansi-colors@4.1.1, ansi-colors@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-4.1.1.tgz#cbb9ae256bf750af1eab344f229aa27fe94ba348"
