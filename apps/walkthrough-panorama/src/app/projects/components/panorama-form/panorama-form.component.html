@@ -64,6 +64,15 @@
           </div>
         </form>
       </div>
+      <ng-container *ngIf="panoData.additional_data">
+        <div class="col" *ngIf="panoData.additional_data['dark_pano.jpg']">
+          <img class="img-fluid" [src]="mediaPath + panoData.additional_data['dark_pano.jpg']" [alt]="panoData.additional_data['dark_pano.jpg']">
+        </div>
+        <div class="col" *ngIf="panoData.additional_data['light_pano.jpg']">
+          <img class="img-fluid" [src]="mediaPath + panoData.additional_data['light_pano.jpg']" [alt]="panoData.additional_data['light_pano.jpg']">
+        </div>
+      </ng-container>
+
   </div>
 
   </div>
