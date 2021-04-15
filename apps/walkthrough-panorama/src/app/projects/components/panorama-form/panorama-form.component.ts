@@ -26,9 +26,6 @@ export class PanoramaFormComponent implements OnInit {
       this.mediaPath = environment.apiHost + this.panoData.path;
     }
     this.createForm();
-    if (this.panoData.additional_data) {
-
-    }
   }
 
   createPanoFormGroup(data) {
