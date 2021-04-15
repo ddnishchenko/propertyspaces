@@ -151,6 +151,11 @@ input::-moz-focus-outer {
   &-wrapper {
     position: relative;
   }
+  &-ponits-wrapper {
+    position: absolute;
+    top: 0;
+    border: 1px solid dimgray;
+  }
   &-point {
     position: absolute;
     background-color: #fff;

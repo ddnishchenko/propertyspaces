@@ -152,4 +152,18 @@ export class PanoramaPlayerComponent implements OnInit {
       console.log(v);
     })
   }
+  scaleDots(data) {
+    return {
+      width: `calc(${data.nav_dots_width_}%)`,
+      height: `calc(${data.nav_dots_height_}%)`,
+      transform: `translate(${data.nav_dots_top_}%, ${data.nav_dots_left_}%) rotate(${data.nav_dots_rotation}deg)`
+    }
+  }
+  getStyleForDot(data, p) {
+    return {
+      [data.nav_dots_mirror_v ? 'bottom' : 'top']: `calc(${p.x}%)`,
+      [data.nav_dots_mirror_h ? 'right' : 'left']: `calc(${p.z}%)`,
+      transform: `rotate(${-data.nav_dots_rotation}deg)`
+    }
+  }
 }

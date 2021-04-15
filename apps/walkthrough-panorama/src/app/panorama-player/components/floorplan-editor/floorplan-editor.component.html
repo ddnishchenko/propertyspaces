@@ -10,16 +10,39 @@
       <div class="col">
         <div class="btn-group" role="group" aria-label="Basic example">
           <button (click)="rotate('r')" type="button" class="btn btn-secondary"><i class="fa fa-rotate-right"></i></button>
-          <button type="button" class="btn btn-secondary">Middle</button>
           <button (click)="rotate('l')" type="button" class="btn btn-secondary"><i class="fa fa-rotate-left"></i></button>
+          <button (click)="mirror('h')" type="button" class="btn btn-secondary"><i class="fa fa-arrows-h" aria-hidden="true"></i></button>
+          <button (click)="mirror('v')" type="button" class="btn btn-secondary"><i class="fa fa-arrows-v" aria-hidden="true"></i></button>
         </div>
+        <div class="col">
+          <div class="mb-3 mb-lg-0 me-lg-3">
+            <input
+              (change)="rotationChange()"
+              type="number"
+              class="form-control form-control-dark"
+              formControlName="nav_dots_rotation"
+              [value]="form.value.nav_dots_rotation"
+              step="1"
+              min="-180"
+              max="180"
+              placeholder="number" style="min-width: 100px;">
+          </div>
 
-
-
+          <div class="range-slider">
+            <input class="range-slider__range"
+              (input)="rotationChange()"
+              (change)="rotationChange()"
+              type="range"
+              formControlName="nav_dots_rotation"
+              step="1"
+              min="-180"
+              max="180">
+            <span class="range-slider__value">{{ form.value.nav_dots_rotation }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </form>
-  {{ {x: this.form.value.nav_dots_left, y: this.form.value.nav_dots_top} | json }}
   <div class="floorplan d-flex align-items-center justify-content-center">
     <div #bound class="floorplan__navigation" *ngIf="data">
       <img #floorPlan [src]="data.floorplanPath" class="img-fluid" style="max-height: 300px;" alt="Floorplan">
@@ -28,18 +51,20 @@
         ngDraggable
         [style.width]="form.value.nav_dots_width + 'px'"
         [style.height]="form.value.nav_dots_height + 'px'"
-        [customTransformations]="'rotate('+ this.form.value.nav_dots_rotation +'deg)'"
-        [position]="{x: this.form.value.nav_dots_left, y: this.form.value.nav_dots_top}"
-        (stopped)="dragEnd($event)"
-        (rzStop)="resizeEnd($event)"
+        [customTransformations]="'rotate('+ form.value.nav_dots_rotation +'deg)'"
+        [position]="{x: form.value.nav_dots_left, y: form.value.nav_dots_top}"
+        (stopped)="dragEnd($event, floorPlan)"
+        (rzStop)="resizeEnd($event, floorPlan)"
         [bounds]="bound"
         [inBounds]="true"
+        [checkBoundsAfterInit]="false"
         >
-
+<!-- [style.top]="p.x  + '%'" [style.left]="p.z + '%'" -->
         <div class="floorplan__point"
           *ngFor="let p of data.floorplanMap; index as i"
-          [style.top]="p.x  + '%'"
-          [style.left]="p.z + '%'">
+          [ngStyle]="getStyleForDot(p)"
+
+          >
           {{i + 1}}
         </div>
         <!-- <i #dragHandle class="fa fa-arrows drag-handle"></i> -->

@@ -110,6 +110,8 @@ export class DraggableDirective implements OnInit, OnDestroy, OnChanges, AfterVi
      }
    }
 
+   @Input() checkBoundsAfterInit = true;
+
    constructor(private el: ElementRef, private renderer: Renderer2) {
      this._helperBlock = new HelperBlock(el.nativeElement, renderer);
    }
@@ -156,10 +158,12 @@ export class DraggableDirective implements OnInit, OnDestroy, OnChanges, AfterVi
    }
 
    ngAfterViewInit() {
-     if (this.inBounds) {
-       this.boundsCheck();
-       this.oldTrans.add(this.tempTrans);
-       this.tempTrans.reset();
+     if (this.checkBoundsAfterInit) {
+      if (this.inBounds) {
+        this.boundsCheck();
+        this.oldTrans.add(this.tempTrans);
+        this.tempTrans.reset();
+      }
      }
    }
 
