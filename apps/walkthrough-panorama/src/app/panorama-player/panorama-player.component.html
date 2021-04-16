@@ -79,10 +79,13 @@
   </header>
   <!-- [ngStyle]="{width: data.floorplan.xSide + 'px', height: data.floorplan.zSide * 30 + 'px'}" -->
   <div class="vt-map" *ngIf="data.additional_data && data.additional_data['floorplan.svg']">
-    <div class="vt-map-wrapper">
-      <img #floorplanImage [src]="data.floorplanPath" style="max-height: 300px;">
+    <div #bound class="vt-map-wrapper">
+      <img #floorplanImage [src]="data.floorplanPath" style="max-height: 400px;">
       <div class="vt-map-ponits-wrapper"
-      [ngStyle]="scaleDots(data.additional_data)">
+
+
+        [ngStyle]="scaleDots(data.additional_data)"
+      >
         <ng-container *ngFor="let p of data.floorplanMap; index as i">
           <div class="vt-map-point"
             (click)="navTo(i)"
