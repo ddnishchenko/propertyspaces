@@ -9,6 +9,61 @@ import { forkJoin } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 
+function parseModel(model) {{
+  let xArray = model.data.map(p => +p.panoramas.x);
+  let zArray = model.data.map(p => +p.panoramas.z);
+
+  let xMin = Math.min(...xArray);
+  let xMax = Math.max(...xArray);
+
+  let zMin = Math.min(...zArray);
+  let zMax = Math.max(...zArray);
+
+  if (xMin < 0) {
+    xArray = model.data.map(p => Math.abs(xMin) + +p.panoramas.x);
+    xMin = Math.min(...xArray);
+    xMax = Math.max(...xArray);
+  } else if (xMin > 0) {
+    xArray = model.data.map(p => +p.panoramas.x - Math.abs(xMin));
+    xMin = Math.min(...xArray);
+    xMax = Math.max(...xArray);
+  }
+
+  if (zMin < 0) {
+    zArray = model.data.map(p => Math.abs(zMin) + +p.panoramas.z);
+    zMin = Math.min(...zArray);
+    zMax = Math.max(...zArray);
+  } else if (zMin > 0) {
+    zArray = model.data.map(p => +p.panoramas.z - Math.abs(zMin));
+    zMin = Math.min(...zArray);
+    zMax = Math.max(...zArray);
+  }
+
+  const xSide = xMax - (xMin);
+  const zSide = zMax - (zMin);
+
+  const floorplanMap = model.data.map((p,i) => ({
+    z: (zArray[i] / zSide) * 100,
+    x: (xArray[i] / xSide) * 100
+  }));
+
+  const size = 50;
+
+  const floorplanArea = (xSide * zSide) * size;
+  const width = (zSide  + (zMin*2)) * size;
+  const height = (xSide  + (zMin*2)) * size;
+  console.log(floorplanMap);
+  return {
+    ...model,
+    floorplanMap,
+    floorplanArea,
+    width,
+    height,
+    hostname: environment.apiHost,
+    floorplanPath: environment.apiHost + model.path + model.additional_data['floorplan.svg']
+  }
+}}
+
 @Component({
   selector: 'propertyspaces-panorama-player',
   templateUrl: './panorama-player.component.html',
@@ -35,61 +90,8 @@ export class PanoramaPlayerComponent implements OnInit {
     this.isEdit = this.router.url.includes('model');
     this.createForm();
     this.data$ = this.route.data.pipe(
-      map(data => {
-        const model = data.model;
-        let xArray = model.data.map(p => +p.panoramas.x);
-        let zArray = model.data.map(p => +p.panoramas.z);
-
-        let xMin = Math.min(...xArray);
-        let xMax = Math.max(...xArray);
-
-        let zMin = Math.min(...zArray);
-        let zMax = Math.max(...zArray);
-
-        if (xMin < 0) {
-          xArray = model.data.map(p => Math.abs(xMin) + +p.panoramas.x);
-          xMin = Math.min(...xArray);
-          xMax = Math.max(...xArray);
-        } else if (xMin > 0) {
-          xArray = model.data.map(p => +p.panoramas.x - Math.abs(xMin));
-          xMin = Math.min(...xArray);
-          xMax = Math.max(...xArray);
-        }
-
-        if (zMin < 0) {
-          zArray = model.data.map(p => Math.abs(zMin) + +p.panoramas.z);
-          zMin = Math.min(...zArray);
-          zMax = Math.max(...zArray);
-        } else if (zMin > 0) {
-          zArray = model.data.map(p => +p.panoramas.z - Math.abs(zMin));
-          zMin = Math.min(...zArray);
-          zMax = Math.max(...zArray);
-        }
-
-        const xSide = xMax - (xMin);
-        const zSide = zMax - (zMin);
-
-        const floorplanMap = model.data.map((p,i) => ({
-          z: (zArray[i] / zSide) * 100,
-          x: (xArray[i] / xSide) * 100
-        }));
-
-        const size = 50;
-
-        const floorplanArea = (xSide * zSide) * size;
-        const width = (zSide  + (zMin*2)) * size;
-        const height = (xSide  + (zMin*2)) * size;
-        console.log(floorplanMap);
-        return {
-          ...data.model,
-          floorplanMap,
-          floorplanArea,
-          width,
-          height,
-          hostname: environment.apiHost,
-          floorplanPath: environment.apiHost + data.model.path + data.model.additional_data['floorplan.svg']
-        }
-      })
+      map(data => data.model),
+      map(model => parseModel(model))
     );
   }
 
@@ -149,7 +151,12 @@ export class PanoramaPlayerComponent implements OnInit {
     });
     modalRef.componentInstance.data = data;
     modalRef.result.then(v => {
-      console.log(v);
+      if (v) {
+        this.data$ = this.projcetService.getPanoramas(data.project_id)
+        .pipe(
+          map(model => parseModel(model))
+        );
+      }
     })
   }
   scaleDots(data) {
