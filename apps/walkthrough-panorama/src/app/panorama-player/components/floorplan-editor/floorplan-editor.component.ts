@@ -79,7 +79,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     this.form.patchValue({
       nav_dots_width: $event.size.width,
       nav_dots_height: $event.size.height,
-      nav_dots_width_: ($event.size.width / img.offsetHeight) * 100,
+      nav_dots_width_: ($event.size.width / img.offsetWidth) * 100,
       nav_dots_height_: ($event.size.height / img.offsetHeight) * 100,
     })
   }

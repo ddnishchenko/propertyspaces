@@ -146,6 +146,7 @@ input::-moz-focus-outer {
   background-color: #fff;
   border: 2px solid #000;
   border-radius: 10px;
+  // height: 300px;
   // padding-right: 26px;
   // padding-bottom: 26px;
   &-wrapper {
@@ -154,7 +155,7 @@ input::-moz-focus-outer {
   &-ponits-wrapper {
     position: absolute;
     top: 0;
-    border: 1px solid dimgray;
+    border: 1px dotted dimgray;
   }
   &-point {
     position: absolute;
