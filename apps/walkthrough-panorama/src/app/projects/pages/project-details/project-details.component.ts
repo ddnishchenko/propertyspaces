@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
 import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { FloorplanFormComponent } from '../../components/floorplan-form/floorplan-form.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
@@ -31,7 +32,20 @@ export class ProjectDetailsComponent implements OnInit {
 
   initData() {
     const id = this.route.snapshot.params.id;
-    this.panoramas$ = this.projectsService.getPanoramas(id);
+    this.panoramas$ = this.projectsService.getPanoramas(id).pipe(
+      map(data => {
+        const allPanos = data.data;
+        var panos = allPanos.filter(t => !t.name.includes('_'));
+        var panosHDR = panos.map(p => {
+          return {
+              ...p,
+              dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
+              light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
+          };
+        });
+        return {...data, panos: panosHDR};
+      })
+    );
     this.project$ = this.projectsService.getProject(id);
   }
 

@@ -48,6 +48,7 @@
     "angular-resizable-element": "^3.3.5",
     "angular2-draggable": "^2.3.2",
     "bootstrap": "^4.6.0",
+    "caniuse-lite": "^1.0.30001214",
     "font-awesome": "^4.7.0",
     "ng2-file-upload": "^1.4.0",
     "ngx-drag-drop": "^2.0.0",

@@ -45,7 +45,7 @@
   </form>
   <div class="floorplan d-flex align-items-center justify-content-center">
     <div #bound class="floorplan__navigation" *ngIf="data">
-      <img #floorPlan [src]="data.floorplanPath" class="img-fluid" style="max-height: 300px;" alt="Floorplan">
+      <img #floorPlan [src]="data.floorplanPath+ '?_t='+data._t" class="img-fluid" style="max-height: 300px;" alt="Floorplan">
       <div class="floorplan__point-wrapper" #flw
         ngResizable
         ngDraggable

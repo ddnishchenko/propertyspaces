@@ -286,7 +286,7 @@ export class VirtualTourService {
   }
 
   addNavPoints(model: any) {
-    this.panos = model.data.filter(p => p.name).map(p => ({...p, position: p.panoramas}));
+    this.panos = model.panos.filter(p => p.name).map(p => ({...p, position: p.panoramas}));
     this.loadTextures(model);
     this.addPanosMarks();
   }
@@ -438,7 +438,6 @@ export class VirtualTourService {
     this.scene.add(this.transitionMesh);
     this.addNavPoints(config);
     this.setSettingsControls();
-    console.log(this.OrbitControls);
 
     this.OrbitControls.addEventListener('end', (e) => {
       this.events.emit({type: VirtualTourService.EVENTS.CHANGE, data: e.target});

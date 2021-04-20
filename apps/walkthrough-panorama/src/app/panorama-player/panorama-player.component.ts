@@ -53,8 +53,21 @@ function parseModel(model) {{
   const width = (zSide  + (zMin*2)) * size;
   const height = (xSide  + (zMin*2)) * size;
   console.log(floorplanMap);
+
+  const allPanos = model.data;
+  var panos = allPanos.filter(t => !t.name.includes('_'));
+  var panosHDR = panos.map(p => {
+    return {
+        ...p,
+        dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
+        light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
+    };
+  });
+
   return {
     ...model,
+    _t: Date.now(),
+    panos: panosHDR,
     floorplanMap,
     floorplanArea,
     width,
@@ -134,7 +147,6 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   changeActive($event) {
-    console.log($event);
     this.activePoint = $event;
   }
   zoomChange() {

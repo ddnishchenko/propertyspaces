@@ -39,7 +39,7 @@ export class ProjectsService {
     return this.http.post(host + 'get-panoramas-project', {client_id: 1295, project_id});
   }
 
-  getPanoramas(project_id) {
+  getPanoramas(project_id): Observable<any> {
     const params = new HttpParams({fromObject: {project_id}});
     return this.http.get(host + 'get-panoramas',{params});
   }
