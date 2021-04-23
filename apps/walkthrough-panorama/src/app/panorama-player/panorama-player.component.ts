@@ -10,8 +10,19 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 
 function parseModel(model) {{
-  let xArray = model.data.map(p => +p.panoramas.x);
-  let zArray = model.data.map(p => +p.panoramas.z);
+
+  const allPanos = model.data;
+  var panos = allPanos.filter(t => !t.name.includes('_'));
+  var panosHDR = panos.map(p => {
+    return {
+        ...p,
+        dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
+        light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
+    };
+  });
+
+  let xArray = panosHDR.map(p => +p.panoramas.x);
+  let zArray = panosHDR.map(p => +p.panoramas.z);
 
   let xMin = Math.min(...xArray);
   let xMax = Math.max(...xArray);
@@ -20,21 +31,21 @@ function parseModel(model) {{
   let zMax = Math.max(...zArray);
 
   if (xMin < 0) {
-    xArray = model.data.map(p => Math.abs(xMin) + +p.panoramas.x);
+    xArray = panosHDR.map(p => Math.abs(xMin) + +p.panoramas.x);
     xMin = Math.min(...xArray);
     xMax = Math.max(...xArray);
   } else if (xMin > 0) {
-    xArray = model.data.map(p => +p.panoramas.x - Math.abs(xMin));
+    xArray = panosHDR.map(p => +p.panoramas.x - Math.abs(xMin));
     xMin = Math.min(...xArray);
     xMax = Math.max(...xArray);
   }
 
   if (zMin < 0) {
-    zArray = model.data.map(p => Math.abs(zMin) + +p.panoramas.z);
+    zArray = panosHDR.map(p => Math.abs(zMin) + +p.panoramas.z);
     zMin = Math.min(...zArray);
     zMax = Math.max(...zArray);
   } else if (zMin > 0) {
-    zArray = model.data.map(p => +p.panoramas.z - Math.abs(zMin));
+    zArray = panosHDR.map(p => +p.panoramas.z - Math.abs(zMin));
     zMin = Math.min(...zArray);
     zMax = Math.max(...zArray);
   }
@@ -42,7 +53,7 @@ function parseModel(model) {{
   const xSide = xMax - (xMin);
   const zSide = zMax - (zMin);
 
-  const floorplanMap = model.data.map((p,i) => ({
+  const floorplanMap = panosHDR.map((p,i) => ({
     z: (zArray[i] / zSide) * 100,
     x: (xArray[i] / xSide) * 100
   }));
@@ -54,15 +65,7 @@ function parseModel(model) {{
   const height = (xSide  + (zMin*2)) * size;
   console.log(floorplanMap);
 
-  const allPanos = model.data;
-  var panos = allPanos.filter(t => !t.name.includes('_'));
-  var panosHDR = panos.map(p => {
-    return {
-        ...p,
-        dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
-        light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
-    };
-  });
+
 
   return {
     ...model,

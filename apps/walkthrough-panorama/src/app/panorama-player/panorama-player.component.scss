@@ -155,7 +155,10 @@ input::-moz-focus-outer {
   &-ponits-wrapper {
     position: absolute;
     top: 0;
-    border: 1px dotted dimgray;
+    border: 1px dotted transparent;
+    &:hover {
+      border: 1px dotted dimgray;
+    }
   }
   &-point {
     position: absolute;
