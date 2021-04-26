@@ -65,13 +65,16 @@
           </div>
         </form>
       </div>
-
+      <div *ngIf="panorama.hdr_pano" class="col-12">
+        <h3>HDR <button (click)="remove(panorama.hdr_pano.name)" class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button></h3>
+        <img class="img-fluid" [src]="mediaPath + panorama.hdr_pano.name" [alt]="panorama.hdr_pano.name">
+      </div>
       <ng-container *ngIf="panorama.dark_pano || panorama.light_pano">
-        <div class="col" *ngIf="panorama.dark_pano?.name">
+        <div class="col-12" *ngIf="panorama.dark_pano?.name">
           <h3>Dark</h3>
           <img class="img-fluid" [src]="mediaPath + panorama.dark_pano.name" [alt]="panorama.dark_pano.name">
         </div>
-        <div class="col" *ngIf="panorama.light_pano?.name">
+        <div class="col-12" *ngIf="panorama.light_pano?.name">
           <h3>Light</h3>
           <img class="img-fluid" [src]="mediaPath + panorama.light_pano?.name" [alt]="panorama.light_pano?.name">
         </div>

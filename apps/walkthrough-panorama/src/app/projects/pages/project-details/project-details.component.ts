@@ -41,6 +41,7 @@ export class ProjectDetailsComponent implements OnInit {
               ...p,
               dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
               light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
+              hdr_pano: allPanos.find(t => t.name.includes(`${p.name}_hdr`)),
           };
         });
         return {...data, panos: panosHDR};

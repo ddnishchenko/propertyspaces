@@ -111,4 +111,9 @@ export class PanoramaFormComponent implements OnInit {
       console.log(res)
     });
   }
+  remove(name) {
+    this.projectService.deletePanoramaProject(this.panoData.project_id, name).subscribe(res => {
+      console.log(res);
+    })
+  }
 }
