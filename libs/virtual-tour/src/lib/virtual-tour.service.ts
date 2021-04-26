@@ -260,11 +260,13 @@ export class VirtualTourService {
         (resolve, reject) => loader.load(path, resolve, progressHandler, reject)
       )
     );
-    this.loadedTextures = this.panos.map((pano, i) => loader.load(`${this.config.hostname}${project.path}${pano.name}`, (t) => {
-      if (!i) {
-        this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
-        this.events.emit({type: VirtualTourService.EVENTS.INIT, data: t})
-      }
+    this.loadedTextures = this.panos.map(
+      (pano, i) => loader.load(`${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`,
+      (t) => {
+        if (!i) {
+          this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
+          this.events.emit({type: VirtualTourService.EVENTS.INIT, data: t})
+        }
     }));
 
     // asyncLoader()
