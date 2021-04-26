@@ -38,6 +38,7 @@
       <div class="col-12 text-center my-4">
         <button class="btn btn-primary" (click)="fileInput1.click()" type="button"><i class="fa fa-exchange"></i> Replace</button>
         <input type="file" accept="images/*" #fileInput1 hidden (change)="uploadImage($event)">
+        <button (click)="makeHdr()" class="btn btn-success" type="button">Make HDR photo</button>
       </div>
       <div class="col-12">
         <h5 class="text-center">Edit Panorama Coordinates</h5>

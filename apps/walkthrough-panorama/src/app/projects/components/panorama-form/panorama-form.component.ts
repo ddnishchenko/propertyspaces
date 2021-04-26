@@ -3,6 +3,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../../environments/environment';
 import { fileToBase64 } from '../../../utils';
+import { ProjectsService } from '../../service/projects.service';
 
 @Component({
   selector: 'propertyspaces-panorama-form',
@@ -18,7 +19,8 @@ export class PanoramaFormComponent implements OnInit {
   form;
   loading = false;
   constructor(
-    public activeModal: NgbActiveModal
+    public activeModal: NgbActiveModal,
+    private projectService: ProjectsService
   ) { }
 
   ngOnInit(): void {
@@ -102,5 +104,11 @@ export class PanoramaFormComponent implements OnInit {
       this.activeModal.close(formatData);
     }
 
+  }
+
+  makeHdr() {
+    this.projectService.makeHdr(this.panoData.project_id, this.panorama.name).subscribe(res => {
+      console.log(res)
+    });
   }
 }

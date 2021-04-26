@@ -62,4 +62,8 @@ export class ProjectsService {
   updateDataProject(project_id, additional_data) {
     return this.http.post(host + 'update-data-project', {client_id: 1295, project_id, additional_data})
   }
+
+  makeHdr(project_id, name) {
+    return this.http.post(host + 'create-hdr-panorama', {client_id: 1295, project_id, name})
+  }
 }
