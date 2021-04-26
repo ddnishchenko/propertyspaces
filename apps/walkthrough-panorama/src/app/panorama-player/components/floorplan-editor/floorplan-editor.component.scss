@@ -1,6 +1,8 @@
+.modal-body {
+  height: calc(100vh - 137px);
+}
 .floorplan {
-  min-width: 400px;
-  min-height: 400px;
+  flex: 1;
   &__navigation {
     position: relative;
   }

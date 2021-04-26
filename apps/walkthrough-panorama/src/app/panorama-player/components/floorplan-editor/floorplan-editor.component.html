@@ -4,48 +4,83 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="modal-body">
+<div class="modal-body d-flex flex-column">
   <form [formGroup]="form">
     <div class="form-row">
-      <div class="col">
+      <div class="col-auto">
         <div class="btn-group" role="group" aria-label="Basic example">
           <button (click)="rotate('r')" type="button" class="btn btn-secondary"><i class="fa fa-rotate-right"></i></button>
           <button (click)="rotate('l')" type="button" class="btn btn-secondary"><i class="fa fa-rotate-left"></i></button>
           <button (click)="mirror('h')" type="button" class="btn btn-secondary"><i class="fa fa-arrows-h" aria-hidden="true"></i></button>
           <button (click)="mirror('v')" type="button" class="btn btn-secondary"><i class="fa fa-arrows-v" aria-hidden="true"></i></button>
         </div>
-        <div class="col">
-          <div class="mb-3 mb-lg-0 me-lg-3">
+      </div>
+      <div class="col-auto">
+        <div class="mb-3 mb-lg-0 me-lg-3">
+          <div class="form-group">
+            <label for="floorplan_size">Floorplan size</label>
             <input
-              (change)="rotationChange()"
+              (change)="floorplanHeightChange()"
               type="number"
               class="form-control form-control-dark"
-              formControlName="nav_dots_rotation"
-              [value]="form.value.nav_dots_rotation"
-              step="1"
-              min="-180"
-              max="180"
-              placeholder="number" style="min-width: 100px;">
+              formControlName="floorplan_max_height"
+              [value]="form.value.floorplan_max_height"
+              step="10"
+              min="300"
+              max="650"
+              placeholder="number">
+
           </div>
 
-          <div class="range-slider">
-            <input class="range-slider__range"
-              (input)="rotationChange()"
-              (change)="rotationChange()"
-              type="range"
-              formControlName="nav_dots_rotation"
-              step="1"
-              min="-180"
-              max="180">
-            <span class="range-slider__value">{{ form.value.nav_dots_rotation }}</span>
+        </div>
+
+        <div class="range-slider">
+          <input class="range-slider__range"
+            (input)="floorplanHeightChange()"
+            (change)="floorplanHeightChange()"
+            type="range"
+            formControlName="floorplan_max_height"
+            step="10"
+            min="300"
+            max="650">
+          <span class="range-slider__value">{{ form.value.floorplan_max_height }}</span>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="mb-3 mb-lg-0 me-lg-3">
+          <div class="form-group">
+            <label for="rotation">Rotation</label>
+            <input
+            (change)="rotationChange()"
+            type="number"
+            class="form-control form-control-dark"
+            formControlName="nav_dots_rotation"
+            [value]="form.value.nav_dots_rotation"
+            step="1"
+            min="-180"
+            max="180"
+            placeholder="number">
           </div>
+
+        </div>
+
+        <div class="range-slider">
+          <input class="range-slider__range"
+            (input)="rotationChange()"
+            (change)="rotationChange()"
+            type="range"
+            formControlName="nav_dots_rotation"
+            step="1"
+            min="-180"
+            max="180">
+          <span class="range-slider__value">{{ form.value.nav_dots_rotation }}</span>
         </div>
       </div>
     </div>
   </form>
   <div class="floorplan d-flex align-items-center justify-content-center">
     <div #bound class="floorplan__navigation" *ngIf="data">
-      <img #floorPlan [src]="data.floorplanPath+ '?_t='+data._t" class="img-fluid" style="max-height: 300px;" alt="Floorplan">
+      <img #floorPlan [src]="data.floorplanPath+ '?_t='+data._t" [style.max-height]="form.value.floorplan_max_height + 'px'" class="img-fluid" alt="Floorplan">
       <div class="floorplan__point-wrapper" #flw
         ngResizable
         ngDraggable
@@ -56,7 +91,7 @@
         (stopped)="dragEnd($event, floorPlan)"
         (rzStop)="resizeEnd($event, floorPlan)"
         [bounds]="bound"
-        [inBounds]="true"
+        [inBounds]="false"
         [checkBoundsAfterInit]="false"
         >
 <!-- [style.top]="p.x  + '%'" [style.left]="p.z + '%'" -->

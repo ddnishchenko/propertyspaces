@@ -162,7 +162,7 @@ export class PanoramaPlayerComponent implements OnInit {
 
   openFloorplanEditor(data) {
     const modalRef = this.modalService.open(FloorplanEditorComponent, {
-      size: 'xl'
+      windowClass: 'floorplan-modal',
     });
     modalRef.componentInstance.data = data;
     modalRef.result.then(v => {

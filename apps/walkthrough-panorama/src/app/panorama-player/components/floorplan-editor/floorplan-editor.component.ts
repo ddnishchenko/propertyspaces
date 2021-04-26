@@ -30,7 +30,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   createForm() {
     const additional_data = this.data.additional_data || {};
     this.form = new FormGroup({
-
+      floorplan_max_height: new FormControl(additional_data.floorplan_max_height || 300),
       nav_dots_width: new FormControl(additional_data.nav_dots_width || 0),
       nav_dots_height: new FormControl(additional_data.nav_dots_height || 0),
       nav_dots_width_: new FormControl(additional_data.nav_dots_width_ || 0),
@@ -95,4 +95,5 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     }
   }
   rotationChange() {}
+  floorplanHeightChange() {}
 }
