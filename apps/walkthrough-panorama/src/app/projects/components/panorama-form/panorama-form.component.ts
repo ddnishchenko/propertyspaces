@@ -107,13 +107,16 @@ export class PanoramaFormComponent implements OnInit {
   }
 
   makeHdr() {
-    this.projectService.makeHdr(this.panoData.project_id, this.panorama.name).subscribe(res => {
+    this.projectService.makeHdr(this.panoData.project_id, this.panorama.name).subscribe((res: any) => {
       console.log(res)
+      const hdr_pano = res.data.find(p => p.name.includes(this.panorama.name + '_hdr'));
+      this.panorama.hdr_pano = hdr_pano;
     });
   }
   remove(name) {
     this.projectService.deletePanoramaProject(this.panoData.project_id, name).subscribe(res => {
       console.log(res);
+      this.panorama.hdr_pano = null;
     })
   }
 }
