@@ -79,6 +79,33 @@ export class PanoramaFormComponent implements OnInit {
     }
   }
 
+  async uploadPano($event, type) {
+    if ($event.target.files.length) {
+      this.loading = true;
+      const files: File[] = Array.from($event.target.files);
+      for (let file of files) {
+        const fileName = file.name;
+        const url = await fileToBase64(file);
+        this.panorama[type].base64 = url;
+      }
+      this.loading = false;
+    }
+  }
+
+  uploadNewPano(type) {
+    this.panorama[type].isLoading = true;
+    this.projectService.updatePanorama(this.panoData.project_id, {
+      name: this.panorama[type].name,
+      panoramas: {
+        panorama: this.panorama[type].base64
+      }
+    }).subscribe((res: any) => {
+      console.log(res);
+      const pano = res.data.find(p => p.name.includes(this.panorama[type].name));
+      this.panorama[type] = pano;
+    })
+  }
+
   submit() {
     if (this.isEdit) {
       this.activeModal.close({
