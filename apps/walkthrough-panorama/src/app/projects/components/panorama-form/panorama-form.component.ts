@@ -102,7 +102,7 @@ export class PanoramaFormComponent implements OnInit {
     }).subscribe((res: any) => {
       console.log(res);
       const pano = res.data.find(p => p.name.includes(this.panorama[type].name));
-      pano.name += '_t=' + Date.now();
+      pano.name += '?_t=' + Date.now();
       this.panorama[type] = pano;
     })
   }
