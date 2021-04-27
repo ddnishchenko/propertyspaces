@@ -138,6 +138,7 @@ export class PanoramaFormComponent implements OnInit {
     this.projectService.makeHdr(this.panoData.project_id, this.panorama.name).subscribe((res: any) => {
       console.log(res)
       const hdr_pano = res.data.find(p => p.name.includes(this.panorama.name + '_hdr'));
+      hdr_pano.name += '?_t=' + Date.now();
       this.panorama.hdr_pano = hdr_pano;
     });
   }
