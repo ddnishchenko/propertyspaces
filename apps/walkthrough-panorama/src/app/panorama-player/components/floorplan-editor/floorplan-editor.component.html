@@ -90,6 +90,7 @@
         [position]="{x: form.value.nav_dots_left, y: form.value.nav_dots_top}"
         (stopped)="dragEnd($event, floorPlan)"
         (rzStop)="resizeEnd($event, floorPlan)"
+        [rzHandels]="'all'"
         [bounds]="bound"
         [inBounds]="false"
         [checkBoundsAfterInit]="false"

@@ -88,7 +88,7 @@
             type="button"
             (click)="uploadNewPano('light_pano')"><i class="fa fa-upload"></i> {{panorama.light_pano.isLoading ? 'Loading...' : 'Upload'}}</button>
           <input hidden type="file" accept="images/*" multiple #fileInputLightPano (change)="uploadPano($event, 'light_pano')">
-          <img class="img-fluid" [src]="panorama.light_pano.base64 ? panorama.light_pano.base64 : mediaPath + panorama.light_pano?.name" [alt]="panorama.light_pano?.name">
+          <img class="img-fluid" [src]="panorama.light_pano.base64 ? panorama.light_pano.base64 : mediaPath + panorama.light_pano?.name" [alt]="panorama.light_pano?.name + '?_t='">
         </div>
       </ng-container>
 
