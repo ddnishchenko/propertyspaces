@@ -31,17 +31,8 @@
   <div *ngIf="isEdit">
 
     <div class="row">
-      <div class="col-12 text-center">
-        <img *ngIf="this.form.value.url" [src]="this.form.value.url" class="img-fluid" [alt]="this.form.value.name">
-        <img *ngIf="!this.form.value.url" [src]="mediaPath + this.form.value.name" class="img-fluid" [alt]="this.form.value.name">
-      </div>
-      <div class="col-12 text-center my-4">
-        <button class="btn btn-primary" (click)="fileInput1.click()" type="button"><i class="fa fa-exchange"></i> Replace</button>
-        <input type="file" accept="images/*" #fileInput1 hidden (change)="uploadImage($event)">
-        <button (click)="makeHdr()" class="btn btn-success" type="button">Make HDR photo</button>
-      </div>
       <div class="col-12">
-        <h5 class="text-center">Edit Panorama Coordinates</h5>
+        <h5 class="text-center">Panorama Coordinates</h5>
       </div>
       <div class="col-12 text-center">
         <form class="row g-3" [formGroup]="form">
@@ -65,10 +56,22 @@
           </div>
         </form>
       </div>
+      <div class="col-12">
+        <button (click)="makeHdr()" class="btn btn-success" type="button">Make HDR photo <i *ngIf="loading" class="fa fa-spin fa-spinner"></i></button>
+      </div>
       <div *ngIf="panorama.hdr_pano" class="col-12">
-        <h3>HDR <button (click)="remove(panorama.hdr_pano.name)" class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button></h3>
+        <h3>HDR <button (click)="remove(panorama.hdr_pano.name)" class="btn btn-danger" type="button"><i class="fa fa-trash"></i> Delete HDR</button></h3>
         <img class="img-fluid" [src]="mediaPath + panorama.hdr_pano.name" [alt]="panorama.hdr_pano.name">
       </div>
+
+      <div class="col-12">
+        <h3>Normal</h3>
+        <button class="btn btn-primary" (click)="fileInput1.click()" type="button"><i class="fa fa-exchange"></i> Replace</button>
+        <input type="file" accept="images/*" #fileInput1 hidden (change)="uploadImage($event)">
+        <img *ngIf="this.form.value.url" [src]="this.form.value.url" class="img-fluid" [alt]="this.form.value.name">
+        <img *ngIf="!this.form.value.url" [src]="mediaPath + this.form.value.name" class="img-fluid" [alt]="this.form.value.name">
+      </div>
+
       <ng-container *ngIf="panorama.dark_pano || panorama.light_pano">
         <div class="col-12" *ngIf="panorama.dark_pano?.name">
           <h3>Dark</h3>
