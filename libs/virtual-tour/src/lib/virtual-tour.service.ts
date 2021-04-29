@@ -344,9 +344,9 @@ export class VirtualTourService {
   takeScreenshot() {
     this.OrbitControls.update();
     this.renderer.render(this.scene, this.camera);
-    const dataURL = this.renderer.domElement.toDataURL('image/jpeg', 100);
+    const dataURL = this.renderer.domElement.toDataURL();
     const d = new Date();
-    this.a.download = `screenshot_n${this.currentPanoId}_${d.toJSON()}.jpeg`;
+    this.a.download = `screenshot_n${this.currentPanoId}_${d.toJSON()}.png`;
     this.a.href = dataURL;
     this.a.click();
 
