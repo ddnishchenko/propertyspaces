@@ -424,7 +424,7 @@ export class ResizableDirective implements OnInit, OnChanges, OnDestroy, AfterVi
 
     const tmpX = Math.round(p.x / this._gridSize.x) * this._gridSize.x;
     const tmpY = Math.round(p.y / this._gridSize.y) * this._gridSize.y;
-    const rotationDeg = this.el.nativeElement.style.transform.match(/\ddeg/);
+    const rotationDeg = this.el.nativeElement.style.transform.match(/[\d]{1,3}deg/);
     const rotation = parseInt(rotationDeg[0]);
 
     if (this._direction.n) {
@@ -444,7 +444,7 @@ export class ResizableDirective implements OnInit, OnChanges, OnDestroy, AfterVi
       this._currSize.width = this._origSize.width - tmpX;
       this._currPos.x = this._origPos.x + tmpX;
     }
-
+    // console.log(rotation, this._direction);
     this.checkBounds();
     this.checkSize();
     this.adjustByRatio();

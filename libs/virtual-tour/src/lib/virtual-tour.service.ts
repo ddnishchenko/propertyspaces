@@ -92,6 +92,7 @@ export class VirtualTourService {
 
   events = new EventEmitter();
 
+  a = document.createElement('a');
   constructor(private ngZone: NgZone) { }
 
   toggleNavMode(mode) {
@@ -339,12 +340,37 @@ export class VirtualTourService {
     this.OrbitControls.object.updateProjectionMatrix();
   }
 
+
+  takeScreenshot() {
+    this.OrbitControls.update();
+    this.renderer.render(this.scene, this.camera);
+    const dataURL = this.renderer.domElement.toDataURL('image/jpeg', 100);
+    const d = new Date();
+    this.a.download = `screenshot_n${this.currentPanoId}_${d.toJSON()}.jpeg`;
+    this.a.href = dataURL;
+    this.a.click();
+
+    /* const iframe = `
+      <iframe
+        src="${dataURL}"
+        frameborder="0"
+        style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;"
+        allowfullscreen>
+      </iframe>`
+
+    const win = window.open();
+    win.document.open();
+    win.document.write( iframe );
+    win.document.close(); */
+
+  }
+
   /**
    * Repainting on window resizing
    */
   resize(): void {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = this.renderer.domElement.parentElement.offsetWidth;
+    const height = this.renderer.domElement.parentElement.offsetHeight;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -384,7 +410,9 @@ export class VirtualTourService {
       antialias: true // smooth edges
     });
     this.element = this.renderer.domElement;
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    const width = this.renderer.domElement.parentElement.offsetWidth;
+    const height = this.renderer.domElement.parentElement.offsetHeight;
+    this.renderer.setSize(width, height);
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize( this.element.clientWidth, this.element.clientHeight );
     this.renderer.setClearColor( 0x000000, 1 );

@@ -9,7 +9,7 @@ import { forkJoin } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 
-function parseModel(model) {{
+function parseModel(model) {
 
   const allPanos = model.data;
   var panos = allPanos.filter(t => !t.name.includes('_'));
@@ -79,7 +79,46 @@ function parseModel(model) {{
     hostname: environment.apiHost,
     floorplanPath: environment.apiHost + model.path + model.additional_data['floorplan.svg']
   }
-}}
+}
+
+const aspectRations = [
+  {
+    name: 'Choose Aspect Ration',
+    value: ''
+  },
+  {
+    name: 'SVGA / XGA (4:3)',
+    value: 0.75,
+  },
+  {
+    name: 'WSVGA (~17:3)',
+    value: 0.5860010851871947,
+  },
+  {
+    name: '4K / HD / FHD (16:9)',
+    value: 0.5625,
+  },
+  {
+    name: 'WXGA (5:3)',
+    value: 0.6,
+  },
+  {
+    name: 'SXGA (5:4)',
+    value: 0.8,
+  },
+  {
+    name: 'WXGA+ / WSXGA+ (16:10)',
+    value: 0.625,
+  },
+  {
+    name: 'Square (1:1)',
+    value: 1
+  },
+  {
+    name: 'iPhone X',
+    value: 2.1653333333333333
+  }
+]
 
 @Component({
   selector: 'propertyspaces-panorama-player',
@@ -91,7 +130,8 @@ export class PanoramaPlayerComponent implements OnInit {
   @ViewChild(VirtualTourDirective) virtualTour;
 
   activePoint = 0;
-
+  aspectRatio = null;
+  aspects = aspectRations;
   data$;
   form;
   isEdit = false;
@@ -116,7 +156,8 @@ export class PanoramaPlayerComponent implements OnInit {
     this.form = new FormGroup({
       rotationY: new FormControl(''),
       editMode: new FormControl(false),
-      zoom: new FormControl(0)
+      zoom: new FormControl(0),
+      aspectRatio: new FormControl('')
     });
   }
 
@@ -190,5 +231,12 @@ export class PanoramaPlayerComponent implements OnInit {
       [data.nav_dots_mirror_h ? 'right' : 'left']: `calc(${p.z}%)`,
       transform: `rotate(${-data.nav_dots_rotation}deg)`
     }
+  }
+  takeScreenshot() {
+    this.virtualTour.virtualTourService.takeScreenshot()
+  }
+
+  updateCanvasSize() {
+    setTimeout(() => this.virtualTour.virtualTourService.resize())
   }
 }
