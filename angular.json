@@ -289,6 +289,32 @@
           }
         }
       }
+    },
+    "subjx": {
+      "projectType": "library",
+      "root": "libs/subjx",
+      "sourceRoot": "libs/subjx/src",
+      "prefix": "propertyspaces",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/subjx/tsconfig.lib.json",
+              "libs/subjx/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/subjx/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/subjx"],
+          "options": {
+            "jestConfig": "libs/subjx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

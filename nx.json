@@ -24,6 +24,7 @@
     "api": { "tags": [] },
     "api-interfaces": { "tags": [] },
     "virtual-tour": { "tags": [] },
-    "drag-resize": { "tags": [] }
+    "drag-resize": { "tags": [] },
+    "subjx": { "tags": [] }
   }
 }

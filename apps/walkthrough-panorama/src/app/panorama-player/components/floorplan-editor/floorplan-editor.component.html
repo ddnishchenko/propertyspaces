@@ -18,6 +18,37 @@
       <div class="col-auto">
         <div class="mb-3 mb-lg-0 me-lg-3">
           <div class="form-group">
+            <label for="dots_size">Dots size</label>
+            <input
+              (change)="floorplanHeightChange()"
+              type="number"
+              class="form-control form-control-dark"
+              formControlName="dots_size"
+              [value]="form.value.dots_size"
+              step="0.1"
+              min="0.1"
+              max="1"
+              placeholder="number">
+
+          </div>
+
+        </div>
+
+        <div class="range-slider">
+          <input class="range-slider__range"
+            (input)="floorplanHeightChange()"
+            (change)="floorplanHeightChange()"
+            type="range"
+            formControlName="dots_size"
+            step="0.1"
+            min="0.1"
+            max="1">
+          <span class="range-slider__value">{{ form.value.dots_size }}</span>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="mb-3 mb-lg-0 me-lg-3">
+          <div class="form-group">
             <label for="floorplan_size">Floorplan size</label>
             <input
               (change)="floorplanHeightChange()"
@@ -27,7 +58,7 @@
               [value]="form.value.floorplan_max_height"
               step="10"
               min="300"
-              max="650"
+              max="950"
               placeholder="number">
 
           </div>
@@ -42,7 +73,7 @@
             formControlName="floorplan_max_height"
             step="10"
             min="300"
-            max="650">
+            max="950">
           <span class="range-slider__value">{{ form.value.floorplan_max_height }}</span>
         </div>
       </div>
@@ -108,7 +139,27 @@
 
     </div>
   </div>
+  <hr>
+
+  <!-- <div class="floorplan d-flex align-items-center justify-content-center">
+    <div class="floorplan__navigation floorplan__navigation_new" *ngIf="data">
+      <img #floorPlan [src]="data.floorplanPath+ '?_t='+data._t" [style.max-height]="form.value.floorplan_max_height + 'px'" class="img-fluid" alt="Floorplan">
+      <div class="floorplan__point-wrapper">
+        <div class="floorplan__points" propertyspacesSubjx>
+          <div class="floorplan__point"
+            *ngFor="let p of data.floorplanMap; index as i"
+            [ngStyle]="getStyleForDot(p)"
+            >
+            {{i + 1}}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div> -->
+
 </div>
+
 <div class="modal-footer">
   <button type="button" class="btn btn-secondary" (click)="activeModal.close(false)">Close</button>
   <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>

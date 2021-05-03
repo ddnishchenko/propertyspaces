@@ -1,5 +1,5 @@
 .modal-body {
-  height: calc(100vh - 137px);
+  min-height: calc(100vh - 137px);
 }
 .floorplan {
   flex: 1;
@@ -21,6 +21,13 @@
     border: 2px solid rgb(126, 34, 34);
     background-color: #fff;
     text-align: center;
+  }
+  &__point-rotation {
+    height: 100%;
+  }
+  &__points {
+    width: 16px;
+    height: 16px;
   }
 }
 

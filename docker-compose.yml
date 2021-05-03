@@ -1,14 +1,15 @@
-version: "3.8"
+version: '3.8'
 services:
   client:
     image: node:lts
     ports:
-      - "4200:4200"
+      - '4200:4200'
     tty: true
     stdin_open: true
     working_dir: /home/node/app
+    user: 1001:1001
     volumes:
       - ./:/home/node/app
     networks:
       - default
-    command: "bash"
+    command: 'bash'

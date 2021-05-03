@@ -30,6 +30,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   createForm() {
     const additional_data = this.data.additional_data || {};
     this.form = new FormGroup({
+      dots_size: new FormControl(additional_data.dots_size || 1),
       floorplan_max_height: new FormControl(additional_data.floorplan_max_height || 300),
       nav_dots_width: new FormControl(additional_data.nav_dots_width || 0),
       nav_dots_height: new FormControl(additional_data.nav_dots_height || 0),
@@ -91,7 +92,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     return {
       [this.form.value['nav_dots_mirror_v'] ? 'bottom' : 'top']: `calc(${p.x}%)`,
       [this.form.value['nav_dots_mirror_h'] ? 'right' : 'left']: `calc(${p.z}%)`,
-      transform: `rotate(${-this.form.value.nav_dots_rotation}deg)`
+      transform: `rotate(${-this.form.value.nav_dots_rotation}deg) scale(${this.form.value.dots_size})`
     }
   }
   rotationChange() {}

@@ -6,6 +6,7 @@ import { PanoramaPlayerComponent } from './panorama-player.component';
 
 import { VirtualTourModule } from '@propertyspaces/virtual-tour';
 import { DragResizeModule } from '@propertyspaces/drag-resize';
+import { SubjxModule } from '@propertyspaces/subjx';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 
@@ -16,7 +17,8 @@ import { FloorplanEditorComponent } from './components/floorplan-editor/floorpla
     ReactiveFormsModule,
     PanoramaPlayerRoutingModule,
     VirtualTourModule,
-    DragResizeModule
+    DragResizeModule,
+    SubjxModule
   ]
 })
 export class PanoramaPlayerModule { }
