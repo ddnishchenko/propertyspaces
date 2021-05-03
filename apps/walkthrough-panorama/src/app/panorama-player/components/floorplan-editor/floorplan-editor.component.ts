@@ -55,18 +55,14 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     })
   }
   onResizeEnd($event) {
-    console.log($event);
   }
   rotate(d) {
-    console.log(this.floorplanWrapper);
     // const transformState = this.floorplanWrapper.nativeElement.style.transform.split(' (');
     this.form.patchValue({nav_dots_rotation: d === 'r' ? this.form.value.nav_dots_rotation + 90 : this.form.value.nav_dots_rotation - 90});
     // this.floorplanWrapper.nativeElement.style.transform = transformState[0] + ` rotate(${this.form.value.rotation})`;
     // console.log(this.floorplanWrapper.nativeElement.style.transform)
   }
   dragEnd($event, img) {
-    console.log($event);
-    console.log(this.floorPlan);
     const pos = this.floorplanWrapper.getCurrentOffset();
     this.form.patchValue({
       nav_dots_top: pos.y,
@@ -76,7 +72,6 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     })
   }
   resizeEnd($event, img) {
-    console.log($event);
     this.form.patchValue({
       nav_dots_width: $event.size.width,
       nav_dots_height: $event.size.height,
