@@ -47,9 +47,17 @@ export class SubjxDirective implements OnInit {
       console.log('dragEnd', this.storage.bBox);
       ref.resize.emit(this.storage.bBox);
     });
+
+    let lastDelta;
+    this.dragEl.on('rotate', function(event) {
+      console.log('rotate', this.storage.pressang, event.delta);
+      lastDelta = event.delta;
+      ref.rotate.emit({delta: event.delta, deg: Math.floor(event.delta * 180 / Math.PI)});
+    });
+
     this.dragEl.on('rotateEnd', function(event) {
-      console.log('rotate', this);
-      ref.rotate.emit({delta: this.storage.pressang});
+      console.log('rotateEnd', this.storage.pressang, event.delta);
+      ref.rotate.emit({delta: lastDelta, deg: Math.floor(lastDelta * 180 / Math.PI)});
     });
 
   }
@@ -64,7 +72,7 @@ export class SubjxDirective implements OnInit {
     }
 
     if (this.initRotate) {
-      this.dragEl.exeRotate(this.initRotate);
+      this.dragEl.exeRotate({delta: this.initRotate.delta * Math.PI/180});
     }
   }
 

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DraggableDirective } from '@propertyspaces/drag-resize';
+import { SubjxDirective } from 'libs/subjx/src/lib/subjx.directive';
 import { ProjectsService } from '../../../projects/service/projects.service';
 
 @Component({
@@ -11,11 +12,13 @@ import { ProjectsService } from '../../../projects/service/projects.service';
 })
 export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   @ViewChild(DraggableDirective) floorplanWrapper!: DraggableDirective;
+  @ViewChild(SubjxDirective) subjxWrapper!: SubjxDirective;
   @ViewChild('floorPlan') floorPlan: ElementRef<HTMLImageElement>;
   @ViewChild('bound') bound: ElementRef<HTMLImageElement>;
   data;
   form;
   dotSize = 24;
+  prevRotate = 0;
   constructor(
     public activeModal: NgbActiveModal,
     private projectsService: ProjectsService
@@ -56,6 +59,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
       nd_clienty: new FormControl(additional_data.nd_clienty || 0),
 
       nd_delta: new FormControl(additional_data.nd_delta || 0),
+      nd_deg: new FormControl(additional_data.nd_deg || 0),
     })
   }
   submit() {
@@ -122,10 +126,24 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     })
   }
   fpRotate($event) {
+    if (this.prevRotate != $event.delta) {
+
+    }
+    this.prevRotate = $event.delta;
     this.form.patchValue({
-      nd_delta: $event.delta
+      nd_delta: this.form.value.nd_delta + $event.delta,
+      nd_deg: this.form.value.nd_deg + $event.deg
     })
   }
-  rotationChange() {}
+  rotationChange() {
+    const delta = this.form.value.nav_dots_rotation * Math.PI/180;
+    this.subjxWrapper.dragEl.exeRotate({delta});
+  }
   floorplanHeightChange() {}
+
+  rotateCub(deg) {
+    const delta = deg * Math.PI/180;
+    this.subjxWrapper.dragEl.exeRotate({delta});
+    this.form.patchValue({nav_dots_rotation: this.form.value.nav_dots_rotation + deg })
+  }
 }
