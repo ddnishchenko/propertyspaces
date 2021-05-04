@@ -43,6 +43,19 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
       nav_dots_rotation: new FormControl(additional_data.nav_dots_rotation || 0),
       nav_dots_mirror_h: new FormControl(additional_data.nav_dots_mirror_h || false),
       nav_dots_mirror_v: new FormControl(additional_data.nav_dots_mirror_v || false),
+
+      nd_width: new FormControl(additional_data.nd_width || 30),
+      nd_height: new FormControl(additional_data.nd_height || 30),
+      nd_resize_dx: new FormControl(additional_data.nd_resize_dx || 0),
+      nd_resize_dy: new FormControl(additional_data.nd_resize_dy || 0),
+
+      nd_move_dx: new FormControl(additional_data.nd_move_dx || 0),
+      nd_move_dy: new FormControl(additional_data.nd_move_dy || 0),
+
+      nd_clientx: new FormControl(additional_data.nd_clientx || 0),
+      nd_clienty: new FormControl(additional_data.nd_clienty || 0),
+
+      nd_delta: new FormControl(additional_data.nd_delta || 0),
     })
   }
   submit() {
@@ -89,6 +102,29 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
       [this.form.value['nav_dots_mirror_h'] ? 'right' : 'left']: `calc(${p.z}%)`,
       transform: `rotate(${-this.form.value.nav_dots_rotation}deg) scale(${this.form.value.dots_size})`
     }
+  }
+  fpMove($event) {
+    this.form.patchValue({
+      nd_move_dx: $event.elX,
+      nd_move_dy: $event.elY,
+    })
+  }
+  fpDrop($event) {
+    this.form.patchValue({
+      nd_move_dx: $event.elX,
+      nd_move_dy: $event.elY,
+    })
+  }
+  fpResize($event) {
+    this.form.patchValue({
+      nd_width: $event.width,
+      nd_height: $event.height
+    })
+  }
+  fpRotate($event) {
+    this.form.patchValue({
+      nd_delta: $event.delta
+    })
   }
   rotationChange() {}
   floorplanHeightChange() {}

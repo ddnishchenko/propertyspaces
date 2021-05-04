@@ -12,6 +12,10 @@
     border: 1px dotted dimgray;
     // resize: both;
     // overflow: auto;
+    &_new {
+      height: 100%;
+      width: 100%;
+    }
   }
   &__point {
     position: absolute;
