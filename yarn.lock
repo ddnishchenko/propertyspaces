@@ -8747,6 +8747,13 @@ ngx-drag-drop@^2.0.0:
   dependencies:
     tslib "^1.9.0"
 
+ngx-progressbar@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/ngx-progressbar/-/ngx-progressbar-6.1.0.tgz#21f60aaf314b6ace42623850b6b8ea257f4997a4"
+  integrity sha512-++Mnch3k+eJyDatlNs3Lhd5hj6KGItlat1LaNksWj/7otP/VVrS6I0V7HYvCAQhMsJYrLBAiemqBqT3x11DSpA==
+  dependencies:
+    tslib "^2.0.0"
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"

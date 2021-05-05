@@ -7,7 +7,6 @@ services:
     tty: true
     stdin_open: true
     working_dir: /home/node/app
-    user: 1001:1001
     volumes:
       - ./:/home/node/app
     networks:
