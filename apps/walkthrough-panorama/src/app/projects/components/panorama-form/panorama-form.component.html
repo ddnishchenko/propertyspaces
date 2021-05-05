@@ -61,7 +61,7 @@
       </div>
       <div *ngIf="panorama.hdr_pano" class="col-12">
         <h3>HDR <button (click)="remove(panorama.hdr_pano.name)" class="btn btn-danger" type="button"><i class="fa fa-trash"></i> Delete HDR</button></h3>
-        <img class="img-fluid" [src]="mediaPath + panorama.hdr_pano.name" [alt]="panorama.hdr_pano.name">
+        <img class="img-fluid" [src]="mediaPath + panorama.hdr_pano.name + (panorama.hdr_pano?._t || '')" [alt]="panorama.hdr_pano.name">
       </div>
 
       <div class="col-12">
@@ -76,22 +76,14 @@
         <div class="col-12" *ngIf="panorama.dark_pano?.name">
           <h3>Dark</h3>
           <button class="btn btn-primary" type="button" (click)="fileInputDarkPano.click()"><i class="fa fa-exchange"></i> Replace</button>
-          <button *ngIf="panorama.dark_pano.base64"
-            class="btn btn-success"
-            type="button"
-            (click)="uploadNewPano('dark_pano')"><i class="fa fa-upload"></i> {{panorama.dark_pano.isLoading ? 'Loading...' : 'Upload'}}</button>
           <input hidden type="file" accept="images/*" multiple #fileInputDarkPano (change)="uploadPano($event, 'dark_pano')">
-          <img class="img-fluid" [src]="panorama.dark_pano.base64 ? panorama.dark_pano.base64 : mediaPath + panorama.dark_pano.name" [alt]="panorama.dark_pano.name">
+          <img class="img-fluid" [src]="mediaPath + panorama.dark_pano.name + (panorama.dark_pano?._t || '')" [alt]="panorama.dark_pano.name">
         </div>
         <div class="col-12" *ngIf="panorama.light_pano?.name">
           <h3>Light</h3>
           <button class="btn btn-primary" type="button" (click)="fileInputLightPano.click()"><i class="fa fa-exchange"></i> Replace</button>
-          <button *ngIf="panorama.light_pano.base64"
-            class="btn btn-success"
-            type="button"
-            (click)="uploadNewPano('light_pano')"><i class="fa fa-upload"></i> {{panorama.light_pano.isLoading ? 'Loading...' : 'Upload'}}</button>
           <input hidden type="file" accept="images/*" multiple #fileInputLightPano (change)="uploadPano($event, 'light_pano')">
-          <img class="img-fluid" [src]="panorama.light_pano.base64 ? panorama.light_pano.base64 : mediaPath + panorama.light_pano?.name" [alt]="panorama.light_pano?.name + '?_t='">
+          <img class="img-fluid" [src]="mediaPath + panorama.light_pano?.name + (panorama.light_pano?._t || '')" [alt]="panorama.light_pano?.name">
         </div>
       </ng-container>
 

@@ -81,30 +81,24 @@ export class PanoramaFormComponent implements OnInit {
 
   async uploadPano($event, type) {
     if ($event.target.files.length) {
-      this.loading = true;
       const files: File[] = Array.from($event.target.files);
       for (let file of files) {
-        const fileName = file.name;
         const url = await fileToBase64(file);
-        this.panorama[type].base64 = url;
-      }
-      this.loading = false;
-    }
-  }
+        const res: any = await this.projectService.updatePanorama(this.panoData.project_id, {
+          name: this.panorama[type].name,
+          panoramas: {
+            panorama: url
+          }
+        }).toPromise();
+        const pano = res.data.find(p => p.name.includes(this.panorama[type].name));
+        console.log(res,pano);
+        if (pano) {
+          pano._t = '?_t=' + Date.now();
+          this.panorama[type] = pano;
+        }
 
-  uploadNewPano(type) {
-    this.panorama[type].isLoading = true;
-    this.projectService.updatePanorama(this.panoData.project_id, {
-      name: this.panorama[type].name,
-      panoramas: {
-        panorama: this.panorama[type].base64
       }
-    }).subscribe((res: any) => {
-      console.log(res);
-      const pano = res.data.find(p => p.name.includes(this.panorama[type].name));
-      pano.name += '?_t=' + Date.now();
-      this.panorama[type] = pano;
-    })
+    }
   }
 
   submit() {
@@ -134,18 +128,13 @@ export class PanoramaFormComponent implements OnInit {
 
   }
 
-  makeHdr() {
-    this.loading = true;
-    this.projectService.makeHdr(this.panoData.project_id, this.panorama.name).subscribe((res: any) => {
-      console.log(res)
-      const hdr_pano = res.data.find(p => p.name.includes(this.panorama.name + '_hdr'));
-      hdr_pano.name += '?_t=' + Date.now();
-      this.panorama.hdr_pano = hdr_pano;
-      this.loading = false;
-    }, err => {
-      this.loading = false;
-      throw err;
-    });
+  async makeHdr() {
+    const res: any = await this.projectService.makeHdr(this.panoData.project_id, this.panorama.name).toPromise();
+    const pano = res.data.find(p => p.name.includes(this.panorama.name + '_hdr'));
+    if (pano) {
+      pano._t = '?_t=' + Date.now();
+      this.panorama.hdr_pano = pano;
+    }
   }
   remove(name) {
     this.projectService.deletePanoramaProject(this.panoData.project_id, name).subscribe(res => {
