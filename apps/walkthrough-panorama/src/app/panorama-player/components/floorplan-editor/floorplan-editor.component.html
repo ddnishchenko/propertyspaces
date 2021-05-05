@@ -82,7 +82,7 @@
           <div class="form-group">
             <label for="rotation">Rotation</label>
             <input
-            (change)="rotationChange()"
+            (change)="rotationChange($event)"
             type="number"
             class="form-control form-control-dark"
             formControlName="nav_dots_rotation"
@@ -97,8 +97,8 @@
 
         <div class="range-slider">
           <input class="range-slider__range"
-            (input)="rotationChange()"
-            (change)="rotationChange()"
+            (input)="rotationChange($event)"
+            (change)="rotationChange($event)"
             type="range"
             formControlName="nav_dots_rotation"
             step="1"
@@ -109,7 +109,7 @@
       </div>
     </div>
   </form>
-  <div class="floorplan d-flex align-items-center justify-content-center">
+  <div class="floorplan align-items-center justify-content-center d-none">
     <div #bound class="floorplan__navigation" *ngIf="data">
       <img #floorPlan [src]="data.floorplanPath+ '?_t='+data._t" [style.max-height]="form.value.floorplan_max_height + 'px'" class="img-fluid" alt="Floorplan">
       <!-- [customTransformations]="'rotate('+ form.value.nav_dots_rotation +'deg)'" -->
@@ -148,14 +148,19 @@
 
   <hr>
 
-  <div>
-    {{ form.value.nd_deg }} | {{ form.value.nd_delta }}
-    <button class="btn btn-primary" type="button" (click)="rotateCub(-1)"><i class="fa fa-arrow-left"></i></button>
-    <button class="btn btn-primary" type="button" (click)="rotateCub(1)"><i class="fa fa-arrow-right"></i></button>
+  <div class="text-center">
+    <h3>
+      <!-- {{ form.value.nd_deg }}deg | {{ form.value.nd_delta }}rad -->
+    </h3>
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <button class="btn btn-primary" type="button" (click)="rotateCub(-1)"><i class="fa fa-arrow-left"></i></button>
+      <button class="btn btn-primary" type="button" (click)="rotateCub(1)"><i class="fa fa-arrow-right"></i></button>
+    </div>
+
   </div>
   <div class="floorplan d-flex align-items-center justify-content-center">
     <div class="floorplan__navigation floorplan__navigation_new" *ngIf="data">
-      <img #floorPlan [src]="data.floorplanPath+ '?_t='+data._t" [style.max-height]="form.value.floorplan_max_height + 'px'" class="img-fluid" alt="Floorplan">
+      <img #floorPlan1 [src]="data.floorplanPath+ '?_t='+data._t" [style.max-height]="form.value.floorplan_max_height + 'px'" class="img-fluid" alt="Floorplan">
       <div class="floorplan__point-wrapper floorplan__point-wrapper_new">
         <div class="floorplan__points"
         [style.width]="form.value.nd_width + 'px'"
@@ -164,8 +169,8 @@
         [initMove]="{dx: form.value.nd_move_dx, dy: form.value.nd_move_dy}"
         [initRotate]="{delta: form.value.nav_dots_rotation}"
         (move)="fpMove($event)"
-        (dropEvent)="fpDrop($event)"
-        (resize)="fpResize($event)"
+        (dropEvent)="fpDrop($event, floorPlan1)"
+        (resizeEvent)="fpResize($event, floorPlan1)"
         (rotate)="fpRotate($event)">
           <div class="floorplan__point"
             *ngFor="let p of data.floorplanMap; index as i"

@@ -12,7 +12,7 @@ export class SubjxDirective implements OnInit {
   @Output() init = new EventEmitter();
   @Output() destroy = new EventEmitter();
   @Output() move = new EventEmitter();
-  @Output() resize = new EventEmitter();
+  @Output() resizeEvent = new EventEmitter();
   @Output() rotate = new EventEmitter();
   @Output() dropEvent = new EventEmitter();
   subjxEl;
@@ -24,6 +24,7 @@ export class SubjxDirective implements OnInit {
     this.subjxEl = subjx(this.el.nativeElement);
     const dragEls = this.subjxEl.drag({
       rotatable: true,
+      rotatorOffset: 0,
       snap: {x: 1, y: 1, angle: 1},
       onInit(el) {
         ref.init.emit(this);
@@ -45,7 +46,7 @@ export class SubjxDirective implements OnInit {
     });
     this.dragEl.on('resizeEnd', function(event) {
       console.log('dragEnd', this.storage.bBox);
-      ref.resize.emit(this.storage.bBox);
+      ref.resizeEvent.emit(this.storage.bBox);
     });
 
     let lastDelta;
@@ -59,7 +60,7 @@ export class SubjxDirective implements OnInit {
       console.log('rotateEnd', this.storage.pressang, event.delta);
       ref.rotate.emit({delta: lastDelta, deg: Math.floor(lastDelta * 180 / Math.PI)});
     });
-
+    console.log(this.dragEl);
   }
 
   initDefault() {

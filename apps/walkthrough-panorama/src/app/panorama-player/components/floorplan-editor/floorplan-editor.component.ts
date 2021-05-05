@@ -113,16 +113,22 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
       nd_move_dy: $event.elY,
     })
   }
-  fpDrop($event) {
+  fpDrop($event, img) {
     this.form.patchValue({
       nd_move_dx: $event.elX,
       nd_move_dy: $event.elY,
+      nav_dots_top_: ($event.y / img.offsetHeight) * 100,
+      nav_dots_left_: ($event.x / img.offsetWidth) * 100
     })
   }
-  fpResize($event) {
+  fpResize($event, img) {
     this.form.patchValue({
       nd_width: $event.width,
-      nd_height: $event.height
+      nd_height: $event.height,
+      nav_dots_width: $event.width,
+      nav_dots_height: $event.height,
+      nav_dots_width_: ($event.width / img.offsetWidth) * 100,
+      nav_dots_height_: ($event.height / img.offsetHeight) * 100,
     })
   }
   fpRotate($event) {
@@ -132,12 +138,23 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     this.prevRotate = $event.delta;
     this.form.patchValue({
       nd_delta: this.form.value.nd_delta + $event.delta,
-      nd_deg: this.form.value.nd_deg + $event.deg
+      nd_deg: this.form.value.nd_deg + $event.deg,
+      // nav_dots_rotation: this.form.value.nd_deg
     })
   }
-  rotationChange() {
-    const delta = this.form.value.nav_dots_rotation * Math.PI/180;
-    this.subjxWrapper.dragEl.exeRotate({delta});
+  rotationChange($event) {
+    console.log($event.type);
+    if ($event.type === 'input') {
+      this.subjxWrapper.dragEl.exeRotate({delta: -this.form.value.nd_delta});
+      const delta = this.form.value.nav_dots_rotation * Math.PI/180;
+      this.subjxWrapper.dragEl.exeRotate({delta});
+    }
+    /*
+    if ($event.type === 'input') {
+      const delta = 1 * Math.PI/180;
+      this.subjxWrapper.dragEl.exeRotate({delta});
+    }*/
+
   }
   floorplanHeightChange() {}
 
