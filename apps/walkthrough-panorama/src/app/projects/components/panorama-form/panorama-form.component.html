@@ -6,29 +6,7 @@
 </div>
 <div class="modal-body">
 
-  <div *ngIf="!isEdit">
-
-    <div class="row">
-      <div class="col text-center">
-        <button class="btn btn-primary" type="button" (click)="fileInput.click()"><i class="fa fa-upload"></i> Upload Panorama</button>
-        <input hidden type="file" accept="images/*" multiple #fileInput (change)="uploadImage($event)">
-        <i *ngIf="loading" class="fa fa-spin fa-spinner d-xl-flex justify-content-xl-center"></i>
-      </div>
-    </div>
-
-    <div class="row mt-4">
-      <div class="col">
-          <ul class="list-group">
-              <li *ngFor="let c of form.controls.panoramas?.controls" class="list-group-item d-sm-flex d-xl-flex justify-content-sm-center justify-content-xl-center">
-                <img class="img-fluid" *ngIf="c.value.url" [src]="c.value.url" [alt]="c.value.name">
-              </li>
-          </ul>
-      </div>
-    </div>
-
-  </div>
-
-  <div *ngIf="isEdit">
+  <div>
 
     <div class="row">
       <div class="col-12">
@@ -36,58 +14,68 @@
       </div>
       <div class="col-12 text-center">
         <form class="row g-3" [formGroup]="form">
+          <div class="col-12">
+            <div class="card text-white bg-danger mb-3">
+              <div class="card-body">
+                Coordinates is required to fill in! Or an image must have name like: <br>
+                panoname_1.3_2.2_-2.1
+              </div>
+            </div>
+          </div>
           <div class="col-4">
             <div class="input-group mb-3">
               <span class="input-group-text" id="coord_x">x</span>
-              <input type="number" class="form-control" formControlName="x" placeholder="x">
+              <input (change)="updateName()" type="number" class="form-control" formControlName="x" placeholder="x">
+              <div class="invalid-feedback d-block" *ngIf="form.get('x').invalid">It should be number!</div>
             </div>
           </div>
           <div class="col-4">
             <div class="input-group mb-3">
               <span class="input-group-text" id="coord_y">y</span>
-              <input type="number" class="form-control" formControlName="y" placeholder="y">
+              <input (change)="updateName()" type="number" class="form-control" formControlName="y" placeholder="y">
+              <div class="invalid-feedback d-block" *ngIf="form.get('y').invalid">It should be number!</div>
             </div>
           </div>
           <div class="col-4">
             <div class="input-group mb-3">
               <span class="input-group-text" id="coord_y">z</span>
-              <input type="number" class="form-control" formControlName="z" placeholder="z">
+              <input (change)="updateName()" type="number" class="form-control" formControlName="z" placeholder="z">
+              <div class="invalid-feedback d-block" *ngIf="form.get('z').invalid">It should be number!</div>
             </div>
           </div>
         </form>
       </div>
-      <div class="col-12">
+      <div class="col-12" *ngIf="panorama.dark_pano || panorama.light_pano">
         <button (click)="makeHdr()" class="btn btn-success" type="button">Make HDR photo <i *ngIf="loading" class="fa fa-spin fa-spinner"></i></button>
       </div>
       <div *ngIf="panorama.hdr_pano" class="col-12">
         <h3>HDR <button (click)="remove(panorama.hdr_pano.name)" class="btn btn-danger" type="button"><i class="fa fa-trash"></i> Delete HDR</button></h3>
-        <img class="img-fluid" [src]="mediaPath + panorama.hdr_pano.name + (panorama.hdr_pano?._t || '')" [alt]="panorama.hdr_pano.name">
+        <img *ngIf="panorama.hdr_pano" class="img-fluid" [src]="mediaPath + panorama.hdr_pano.name + (panorama.hdr_pano?._t || '')" [alt]="panorama.hdr_pano.name">
       </div>
 
       <div class="col-12">
         <h3>Normal</h3>
-        <button class="btn btn-primary" (click)="fileInput1.click()" type="button"><i class="fa fa-exchange"></i> Replace</button>
+        <button class="btn btn-primary" (click)="fileInput1.click()" type="button"><i class="fa fa-upload"></i> Upload</button>
         <input type="file" accept="images/*" #fileInput1 hidden (change)="uploadImage($event)">
-        <img *ngIf="this.form.value.url" [src]="this.form.value.url" class="img-fluid" [alt]="this.form.value.name">
-        <img *ngIf="!this.form.value.url" [src]="mediaPath + this.form.value.name" class="img-fluid" [alt]="this.form.value.name">
+        <img *ngIf="panorama?.name" [src]="mediaPath + panorama.name + (panorama?._t || '')" class="img-fluid" [alt]="this.panorama.name + (panorama?._t || '')">
       </div>
 
-      <ng-container *ngIf="panorama.dark_pano || panorama.light_pano">
-        <div class="col-12" *ngIf="panorama.dark_pano?.name">
-          <h3>Dark</h3>
-          <button class="btn btn-primary" type="button" (click)="fileInputDarkPano.click()"><i class="fa fa-exchange"></i> Replace</button>
-          <input hidden type="file" accept="images/*" multiple #fileInputDarkPano (change)="uploadPano($event, 'dark_pano')">
-          <img class="img-fluid" [src]="mediaPath + panorama.dark_pano.name + (panorama.dark_pano?._t || '')" [alt]="panorama.dark_pano.name">
-        </div>
-        <div class="col-12" *ngIf="panorama.light_pano?.name">
-          <h3>Light</h3>
-          <button class="btn btn-primary" type="button" (click)="fileInputLightPano.click()"><i class="fa fa-exchange"></i> Replace</button>
-          <input hidden type="file" accept="images/*" multiple #fileInputLightPano (change)="uploadPano($event, 'light_pano')">
-          <img class="img-fluid" [src]="mediaPath + panorama.light_pano?.name + (panorama.light_pano?._t || '')" [alt]="panorama.light_pano?.name">
-        </div>
-      </ng-container>
 
-  </div>
+      <div class="col-12" *ngIf="panorama?.name">
+        <h3>Dark</h3>
+        <button class="btn btn-primary" type="button" (click)="fileInputDarkPano.click()"><i class="fa fa-upload"></i> Upload</button>
+        <input hidden type="file" accept="images/*" multiple #fileInputDarkPano (change)="uploadPano($event, 'dark_pano', 'dark')">
+        <img *ngIf="panorama.dark_pano?.name"
+          class="img-fluid" [src]="mediaPath + panorama.dark_pano.name + (panorama.dark_pano?._t || '')" [alt]="panorama.dark_pano.name">
+      </div>
+      <div class="col-12" *ngIf="panorama?.name">
+        <h3>Light</h3>
+        <button class="btn btn-primary" type="button" (click)="fileInputLightPano.click()"><i class="fa fa-upload"></i> Upload</button>
+        <input hidden type="file" accept="images/*" multiple #fileInputLightPano (change)="uploadPano($event, 'light_pano', 'light')">
+        <img *ngIf="panorama.light_pano?.name" class="img-fluid" [src]="mediaPath + panorama.light_pano?.name + (panorama.light_pano?._t || '')" [alt]="panorama.light_pano?.name">
+      </div>
+
+    </div>
 
   </div>
 

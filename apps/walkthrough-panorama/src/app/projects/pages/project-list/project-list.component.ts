@@ -41,13 +41,13 @@ export class ProjectListComponent implements OnInit {
     })
   }
 
-  deleteProjects() {
+  deleteProjects(projectId?) {
     const modalRef = this.modalService.open(ConfirmationModalComponent);
     modalRef.componentInstance.msg = 'Are you sure you want to delete these projects?';
     modalRef.result.then(value => {
       if (value) {
         // Delete projects
-        const deleteRequests = this.projectIds.map(id => this.projectsService.deleteProject(id));
+        const deleteRequests = projectId ? this.projectsService.deleteProject(projectId) : this.projectIds.map(id => this.projectsService.deleteProject(id));
         forkJoin(deleteRequests).subscribe(res => {
           this.init();
         })

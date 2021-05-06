@@ -34,7 +34,7 @@ export class ProjectDetailsComponent implements OnInit {
     const id = this.route.snapshot.params.id;
     this.panoramas$ = this.projectsService.getPanoramas(id).pipe(
       map(data => {
-        const allPanos = data.data;
+        const allPanos = data.data || [];
         var panos = allPanos.filter(t => !t.name.includes('_'));
         var panosHDR = panos.map(p => {
           return {
@@ -50,33 +50,19 @@ export class ProjectDetailsComponent implements OnInit {
     this.project$ = this.projectsService.getProject(id);
   }
 
-  openCreateForm(project) {
+  openCreateForm(project, panoramas) {
     const modalRef = this.modalService.open(PanoramaFormComponent, {
       size: 'lg'
     });
     modalRef.componentInstance.title = 'Create Panorama';
+    modalRef.componentInstance.panorama = {};
+    modalRef.componentInstance.panoData = panoramas;
     modalRef.result.then(value => {
       if (value) {
-        const reqs = value.map(v => this.projectsService.createPanorama(project.id, v))
-        forkJoin(reqs).subscribe(res => {
-          this.initData();
-        });
-      }
-    });
-  }
-
-  openFloorplanForm(project, panoramas) {
-    const modalRef = this.modalService.open(FloorplanFormComponent, {
-      size: 'lg'
-    });
-    if (panoramas.additional_data && panoramas.additional_data['floorplan.svg']) {
-      modalRef.componentInstance.floorplan = panoramas.additional_data['floorplan.svg'];
-    }
-    modalRef.componentInstance.mediaPath = environment.apiHost + panoramas.path
-
-    modalRef.result.then(value => {
-      if (value) {
-        this.projectsService.updateDataProject(project.id, {['floorplan.svg']: value}).subscribe(res => {
+        // Edit Pano
+        const id = this.route.snapshot.params.id;
+        this.projectsService.updatePanorama(id, value).subscribe(res => {
+          console.log(res);
           this.initData();
         });
       }
@@ -103,13 +89,36 @@ export class ProjectDetailsComponent implements OnInit {
     });
   }
 
-  deletePanoramas() {
+  openFloorplanForm(project, panoramas) {
+    const modalRef = this.modalService.open(FloorplanFormComponent, {
+      size: 'lg'
+    });
+    if (panoramas.additional_data && panoramas.additional_data['floorplan.svg']) {
+      modalRef.componentInstance.floorplan = panoramas.additional_data['floorplan.svg'];
+    }
+    modalRef.componentInstance.mediaPath = environment.apiHost + panoramas.path
+
+    modalRef.result.then(value => {
+      if (value) {
+        this.projectsService.updateDataProject(project.id, {['floorplan.svg']: value}).subscribe(res => {
+          this.initData();
+        });
+      }
+    });
+  }
+
+
+
+  deletePanoramas(name?) {
     const modalRef = this.modalService.open(ConfirmationModalComponent);
     modalRef.componentInstance.msg = 'Are you sure you want to delete these projects?';
     modalRef.result.then(value => {
       if (value) {
         // Delete projects
-        const deleteRequests = this.panoNames.map(n => this.projectsService.deletePanoramaProject(this.route.snapshot.params.id, n));
+        const deleteRequests = name ?
+        [this.projectsService.deletePanoramaProject(this.route.snapshot.params.id, name)]
+        :
+        this.panoNames.map(n => this.projectsService.deletePanoramaProject(this.route.snapshot.params.id, n));
         forkJoin(deleteRequests).subscribe(res => {
           alert(`Projects with ids (${this.panoNames.join(', ')}) has been deleted.`);
           this.panoNames = [];

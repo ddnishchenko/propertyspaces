@@ -8,6 +8,13 @@ body {
 @import '~bootstrap/scss/bootstrap';
 @import '~subjx/dist/style/subjx.css';
 
+.table {
+  th,
+  td {
+    vertical-align: middle;
+  }
+}
+
 .rectangle {
   position: relative;
   top: 200px;

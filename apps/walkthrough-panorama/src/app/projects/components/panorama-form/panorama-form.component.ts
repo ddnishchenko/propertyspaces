@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../../environments/environment';
 import { fileToBase64 } from '../../../utils';
@@ -24,66 +24,99 @@ export class PanoramaFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.isEdit) {
-      this.mediaPath = environment.apiHost + this.panoData.path;
-    }
+    this.mediaPath = environment.apiHost + this.panoData.path;
     this.createForm();
   }
 
   createPanoFormGroup(data) {
+    const validators = [
+      Validators.required
+    ];
     return new FormGroup({
-      name: new FormControl(data?.name),
-      x: new FormControl(data?.panoramas.x),
-      y: new FormControl(data?.panoramas.y),
-      z: new FormControl(data?.panoramas.z),
-      url: new FormControl(data.url)
+      name: new FormControl(data?.name || '', [Validators.required]),
+      x: new FormControl(data?.panoramas?.x, validators),
+      y: new FormControl(data?.panoramas?.y, validators),
+      z: new FormControl(data?.panoramas?.z, validators),
+      url: new FormControl(data?.url)
     });
   }
 
-  createForm() {
-    if (this.isEdit) {
-      this.form = this.createPanoFormGroup(this.panorama);
-    } else {
-      this.form = new FormGroup({
-        panoramas: new FormArray([])
-      });
+  updateName() {
+    if (!this.isEdit) {
+      this.form.patchValue({name: `x=${this.form.value.x}y=${this.form.value.y}z=${this.form.value.z}`})
     }
+  }
 
+  createForm() {
+    this.form = this.createPanoFormGroup(this.panorama);
   }
   async uploadImage($event) {
     if ($event.target.files.length) {
-      this.loading = true;
-      const files: File[] = Array.from($event.target.files);
-      for (let file of files) {
-        const fileName = file.name.split('.').slice(0, -1).join('.');
-        const fileNameParts = fileName.split('_');
-        const [ name, x, y, z ] = fileNameParts;
-        const url = await fileToBase64(file);
-        const fg = this.createPanoFormGroup({
-          name, url, panoramas: {x, y, z}
-        });
+      const file: File[] = Array.from($event.target.files);
+      const fileName = file[0].name.split('.').slice(0, -1).join('.');
+      const fileNameParts = fileName.split('_');
+      const [ name, x, y, z ] = fileNameParts;
+      const url = await fileToBase64(file[0]);
 
-
-        if (this.isEdit) {
-          if (x && y && z) {
-            this.form.patchValue({x, y, z});
+      if (this.isEdit || this.panorama.name) {
+        const res: any = await this.projectService.updatePanorama(this.panoData.project_id, {
+          name: this.panorama.name,
+          panoramas: {
+            panorama: url
           }
-          this.form.patchValue({url});
-        } else {
-          this.form.get('panoramas').push(fg);
+        }).toPromise();
+        const pano = res.data.find(p => p.name.includes(this.panorama.name));
+        this.panorama._t = '?_t=' + Date.now();
+      } else {
+        const isCoordValid = !isNaN(+x) && !isNaN(+y) && !isNaN(+z);
+        if (isCoordValid) {
+          this.form.patchValue({x, y, z, name:`x=${x}y=${y}z=${z}`})
         }
+        const f = this.form.value;
+        const coords = isCoordValid ? {x,y,z} : {
+          x: f.x, y: f.y, z: f.z
+        };
+        const theName = isCoordValid ? f.name : `x=${coords.x}y=${coords.y}z=${coords.z}`;
+        if (coords.x && coords.y && coords.z) {
+
+          const res: any = await this.projectService.createPanorama(this.panoData.project_id, {
+            name: theName,
+            panoramas: {
+              panorama: url,
+              ...coords
+            }
+          }).toPromise();
+          const pano = res.data.find(p => p.name.includes(theName));
+          const dark = res.data.find(p => p.name.includes(`${theName}_dark`));
+          const light = res.data.find(p => p.name.includes(`${theName}_light`));
+          if (dark) {
+            dark._t = '?_t=' + Date.now();
+            pano.dark_pano = dark;
+          }
+          if (light) {
+            light._t = '?_t=' + Date.now();
+            pano.light_pano = light;
+          }
+          pano._t = '?_t=' + Date.now();
+          this.form.patchValue({...coords});
+          this.panorama = pano;
+
+        } else {
+          alert('Achtung! Coordinates are invalid! Please enter valid coordinates.')
+        }
+
       }
 
 
-      this.loading = false;
+
     }
   }
 
-  async uploadPano($event, type) {
+  async uploadPano($event, type, posfix) {
     if ($event.target.files.length) {
       const files: File[] = Array.from($event.target.files);
-      for (let file of files) {
-        const url = await fileToBase64(file);
+      const url = await fileToBase64(files[0]);
+      if (this.panorama[type]) {
         const res: any = await this.projectService.updatePanorama(this.panoData.project_id, {
           name: this.panorama[type].name,
           panoramas: {
@@ -91,41 +124,42 @@ export class PanoramaFormComponent implements OnInit {
           }
         }).toPromise();
         const pano = res.data.find(p => p.name.includes(this.panorama[type].name));
-        console.log(res,pano);
+        console.log(res, pano);
         if (pano) {
           pano._t = '?_t=' + Date.now();
           this.panorama[type] = pano;
         }
-
+      } else {
+        const {x, y, z, name} = this.form.value;
+        const n = `${name}_${posfix}`;
+        const res: any = await this.projectService.createPanorama(this.panoData.project_id, {
+          name: n,
+          panoramas: {
+            panorama: url,
+            x, y, z
+          }
+        }).toPromise();
+        const pano = res.data.find(p => p.name.includes(n));
+        console.log(res, pano);
+        if (pano) {
+          pano._t = '?_t=' + Date.now();
+          this.panorama[type] = pano;
+        }
       }
+
     }
   }
 
   submit() {
-    if (this.isEdit) {
-      this.activeModal.close({
-        name: this.form.value.name,
-        panoramas: {
-          panorama: this.form.value.url,
-          // neighbors: this.form.value.neighbors,
-          x: this.form.value.x,
-          y: this.form.value.y,
-          z: this.form.value.z
-        }
-      });
-    } else {
-      const formatData = this.form.value.panoramas.map(p => ({
-        name: p.name,
-        panoramas: {
-          panorama: p.url,
-          x: p.x,
-          y: p.y,
-          z: p.z
-        }
-      }));
-      this.activeModal.close(formatData);
-    }
-
+    this.activeModal.close({
+      name: this.form.value.name,
+      panoramas: {
+        // neighbors: this.form.value.neighbors,
+        x: this.form.value.x,
+        y: this.form.value.y,
+        z: this.form.value.z
+      }
+    });
   }
 
   async makeHdr() {

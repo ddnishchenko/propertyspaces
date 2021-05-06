@@ -109,7 +109,7 @@
       </div>
     </div>
   </form>
-  <div class="floorplan align-items-center justify-content-center d-none">
+  <div class="floorplan align-items-center justify-content-center d-flex">
     <div #bound class="floorplan__navigation" *ngIf="data">
       <img #floorPlan [src]="data.floorplanPath+ '?_t='+data._t" [style.max-height]="form.value.floorplan_max_height + 'px'" class="img-fluid" alt="Floorplan">
       <!-- [customTransformations]="'rotate('+ form.value.nav_dots_rotation +'deg)'" -->
