@@ -148,7 +148,14 @@ export class PanoramaPlayerComponent implements OnInit {
     this.createForm();
     this.data$ = this.route.data.pipe(
       map(data => data.model),
-      map(model => parseModel(model))
+      map(model => {
+        const parsedData = parseModel(model);
+        console.log(this.route,this.router);
+        if (this.route.snapshot.params.floorplan) {
+          this.openFloorplanEditor(parsedData);
+        }
+        return parsedData;
+      })
     );
   }
 

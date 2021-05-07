@@ -16,10 +16,10 @@
       </div>
       <div class="text-right">
         <div class="btn-group">
-          <button class="btn btn-primary" type="button" (click)="openFloorplanForm(project, panoramas)">
+          <a class="btn btn-primary" [routerLink]="['/model', project.id, {floorplan: true}]">
             <i class="fa fa-pencil mr-1"></i>
             <span>Edit Floorplans</span>
-          </button>
+          </a>
           <a class="btn btn-primary" [routerLink]="['/model', project.id]">
             <i class="fa fa-pencil mr-1"></i>
             <span>Edit Walkthrough</span>

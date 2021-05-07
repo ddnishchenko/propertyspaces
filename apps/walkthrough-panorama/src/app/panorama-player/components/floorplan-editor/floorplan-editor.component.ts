@@ -2,8 +2,9 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DraggableDirective } from '@propertyspaces/drag-resize';
-import { SubjxDirective } from 'libs/subjx/src/lib/subjx.directive';
+import { SubjxDirective } from '@propertyspaces/subjx';
 import { ProjectsService } from '../../../projects/service/projects.service';
+import { fileToBase64 } from '../../../utils';
 
 @Component({
   selector: 'propertyspaces-floorplan-editor',
@@ -162,5 +163,12 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     const delta = deg * Math.PI/180;
     this.subjxWrapper.dragEl.exeRotate({delta});
     this.form.patchValue({nav_dots_rotation: this.form.value.nav_dots_rotation + deg })
+  }
+  async uploadFloorplan($event) {
+    if ($event.target.files.length) {
+      const base64 = await fileToBase64($event.target.files[0]);
+      const res: any = await this.projectsService.updateDataProject(this.data.project_id, {['floorplan.svg']: base64}).toPromise();
+      this.data._t = Date.now()
+    }
   }
 }

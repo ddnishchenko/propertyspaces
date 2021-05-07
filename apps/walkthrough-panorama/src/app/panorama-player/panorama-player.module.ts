@@ -9,6 +9,7 @@ import { DragResizeModule } from '@propertyspaces/drag-resize';
 import { SubjxModule } from '@propertyspaces/subjx';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [PanoramaPlayerComponent, FloorplanEditorComponent],
@@ -18,7 +19,8 @@ import { FloorplanEditorComponent } from './components/floorplan-editor/floorpla
     PanoramaPlayerRoutingModule,
     VirtualTourModule,
     DragResizeModule,
-    SubjxModule
+    SubjxModule,
+    NgbNavModule
   ]
 })
 export class PanoramaPlayerModule { }
