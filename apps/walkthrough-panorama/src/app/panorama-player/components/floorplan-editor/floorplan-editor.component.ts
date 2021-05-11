@@ -108,6 +108,16 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
       transform: `rotate(${-this.form.value.nav_dots_rotation}deg) scale(${this.form.value.dots_size})`
     }
   }
+
+  getStyleForDotsWrapper(el) {
+    const rad = this.form.value.nav_dots_rotation * Math.PI/180;
+    return {
+      transform: `rotate(${rad}rad)`,
+      width: el.offsetWidth * Math.cos(rad) + 'px',
+      height: el.offsetHeight * Math.cos(rad) + 'px'
+    };
+  }
+
   fpMove($event) {
     this.form.patchValue({
       nd_move_dx: $event.elX,

@@ -1,38 +1,53 @@
 <ng-container *ngIf="project$ | async as project">
   <h1 class="text-center my-5">
-    {{project.name}} <i class="fa fa-edit" *ngIf="!isEditName" (click)="editName(project.name)"></i>
+    {{ project.name }}
+    <i
+      class="fa fa-edit"
+      *ngIf="!isEditName"
+      (click)="editName(project.name)"
+    ></i>
   </h1>
   <div class="input-group mb-3" *ngIf="isEditName">
     <span class="input-group-text" (click)="saveName(project.id)">x</span>
-    <input class="form-control" [(ngModel)]="projectName">
+    <input class="form-control" [(ngModel)]="projectName" />
   </div>
   <div class="card shadow mb-4" *ngIf="panoramas$ | async as panoramas">
-
-    <div class="card-header d-md-flex justify-content-md-center align-items-md-center py-3">
+    <div
+      class="card-header d-md-flex justify-content-md-center align-items-md-center py-3"
+    >
       <div class="mr-auto">
         <a class="btn btn-light" [routerLink]="'..'">
           <i class="fa fa-2x fa-chevron-left"></i>
         </a>
       </div>
       <div class="text-right">
-        <div class="btn-group">
-          <a class="btn btn-primary" [routerLink]="['/model', project.id, {floorplan: true}]">
-            <i class="fa fa-pencil mr-1"></i>
-            <span>Edit Floorplans</span>
-          </a>
-          <a class="btn btn-primary" [routerLink]="['/model', project.id]">
-            <i class="fa fa-pencil mr-1"></i>
-            <span>Edit Walkthrough</span>
-          </a>
-          <button class="btn btn-primary" type="button" (click)="openCreateForm(project, panoramas)">
-            <i class="fa fa-plus mr-1"></i>
-            <span>Add Nav Point</span>
-          </button>
-          <button class="btn btn-danger" type="button" (click)="deletePanoramas()">
-            <i class="fa fa-trash mr-1"></i>
-            <span>Delete</span>
-          </button>
-        </div>
+        <a
+          class="btn btn-primary ml-2"
+          [routerLink]="['/model', project.id, { floorplan: true }]"
+        >
+          <i class="fa fa-pencil mr-1"></i>
+          <span>Edit Floorplans</span>
+        </a>
+        <a class="btn btn-primary ml-2" [routerLink]="['/model', project.id]">
+          <i class="fa fa-pencil mr-1"></i>
+          <span>Edit Walkthrough</span>
+        </a>
+        <button
+          class="btn btn-primary ml-2"
+          type="button"
+          (click)="openCreateForm(project, panoramas)"
+        >
+          <i class="fa fa-plus mr-1"></i>
+          <span>Add Nav Point</span>
+        </button>
+        <button
+          class="btn btn-danger ml-2"
+          type="button"
+          (click)="deletePanoramas()"
+        >
+          <i class="fa fa-trash mr-1"></i>
+          <span>Delete</span>
+        </button>
       </div>
     </div>
 
@@ -40,7 +55,9 @@
       <h4 class="text-center">Walkthrough URL</h4>
 
       <p class="text-center text-primary h5">
-        <a [routerLink]="['/embed', project.id]" class="text-underline">www.slideshowcloud.com/{{project.id}}</a>
+        <a [routerLink]="['/embed', project.id]" class="text-underline"
+          >www.slideshowcloud.com/{{ project.id }}</a
+        >
       </p>
 
       <table class="table">
@@ -55,21 +72,34 @@
           <tr *ngFor="let panorama of panoramas.panos">
             <th scope="row">
               <div class="form-check">
-                <input type="checkbox"
+                <input
+                  type="checkbox"
                   class="form-check-input"
                   [value]="panorama.name"
                   [id]="'flexCheckChecked_' + panorama.name"
-                  (change)="onCheckChange($event)">
-                <label class="form-check-label" [for]="'flexCheckChecked_' + panorama.name"></label>
+                  (change)="onCheckChange($event)"
+                />
+                <label
+                  class="form-check-label"
+                  [for]="'flexCheckChecked_' + panorama.name"
+                ></label>
               </div>
             </th>
             <td>{{ panorama.name }}</td>
             <td class="text-right">
               <div class="btn-group">
-                <button (click)="openEditPanorama(panorama, panoramas)" type="button" class="btn btn-primary">
+                <button
+                  (click)="openEditPanorama(panorama, panoramas)"
+                  type="button"
+                  class="btn btn-primary"
+                >
                   <i class="fa fa-2x fa-pencil"></i>
                 </button>
-                <button (click)="deletePanoramas(panorama.name)" type="button" class="btn btn-danger">
+                <button
+                  (click)="deletePanoramas(panorama.name)"
+                  type="button"
+                  class="btn btn-danger"
+                >
                   <i class="fa fa-2x fa-trash"></i>
                 </button>
               </div>
@@ -77,9 +107,6 @@
           </tr>
         </tbody>
       </table>
-
     </div>
-
   </div>
-
 </ng-container>

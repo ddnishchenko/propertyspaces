@@ -83,6 +83,7 @@ export class PanoramaFormComponent implements OnInit {
             name: theName,
             panoramas: {
               panorama: url,
+              floor: 1,
               ...coords
             }
           }).toPromise();

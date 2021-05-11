@@ -24,7 +24,7 @@
                 [inBounds]="false"
                 [checkBoundsAfterInit]="false"
                 >
-                <div class="floorplan__point-holder" [style.transform]="'rotate('+ form.value.nav_dots_rotation +'deg)'">
+                <div class="floorplan__point-holder" #dotsWrapper [ngStyle]="getStyleForDotsWrapper(flw)">
                   <div class="floorplan__point"
                     *ngFor="let p of data.floorplanMap; index as i"
                     [ngStyle]="getStyleForDot(p)"
