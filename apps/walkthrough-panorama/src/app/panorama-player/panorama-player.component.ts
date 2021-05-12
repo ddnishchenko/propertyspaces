@@ -12,15 +12,22 @@ import { FloorplanEditorComponent } from './components/floorplan-editor/floorpla
 function parseModel(model) {
 
   const allPanos = model.data;
-  var panos = allPanos.filter(t => !t.name.includes('_'));
-  var panosHDR = panos.map(p => {
+  let panos = allPanos.filter(t => !t.name.includes('_'));
+  let panosHDR = panos.map((p, i) => {
     return {
         ...p,
+        panoramas: {
+          floor: (i % 2) + 1,
+          ...p.panoramas
+        },
         dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
         light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
         hdr_pano: allPanos.find(t => t.name.includes(`${p.name}_hdr`)),
     };
   });
+  let floors = panosHDR.map(p => p.panoramas.floor);
+  floors = Array.from(new Set(floors));
+
 
   let xArray = panosHDR.map(p => +p.panoramas.x);
   let zArray = panosHDR.map(p => +p.panoramas.z);
@@ -74,10 +81,11 @@ function parseModel(model) {
     panos: panosHDR,
     floorplanMap,
     floorplanArea,
+    floors,
     width,
     height,
     hostname: environment.apiHost,
-    floorplanPath: environment.apiHost + model.path + model.additional_data['floorplan.svg']
+    projectFolder: environment.apiHost + model.path
   }
 }
 

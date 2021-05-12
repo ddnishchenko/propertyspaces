@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DraggableDirective } from '@propertyspaces/drag-resize';
 import { SubjxDirective } from '@propertyspaces/subjx';
@@ -18,6 +18,9 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   @ViewChild('bound') bound: ElementRef<HTMLImageElement>;
   data;
   form;
+  get formArray() {
+    return this.form?.get('floors') as FormArray;
+  };
   dotSize = 24;
   prevRotate = 0;
   constructor(
@@ -33,34 +36,46 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
 
   createForm() {
     const additional_data = this.data.additional_data || {};
+    const floorObject = (floor, index) => {
+      const floors = additional_data?.floors || [];
+      const floorData = floors[index] || {};
+      return new FormGroup({
+        floor: new FormControl(floor),
+        [`floorplan_f${floor}.svg`]: new FormControl(floorData[`floorplan_f${floor}.svg`] || ''),
+        dots_size: new FormControl(floorData.dots_size || 1),
+        floorplan_max_height: new FormControl(floorData.floorplan_max_height || 300),
+        nav_dots_width: new FormControl(floorData.nav_dots_width || 0),
+        nav_dots_height: new FormControl(floorData.nav_dots_height || 0),
+        nav_dots_width_: new FormControl(floorData.nav_dots_width_ || 0),
+        nav_dots_height_: new FormControl(floorData.nav_dots_height_ || 0),
+        nav_dots_top: new FormControl(floorData.nav_dots_top || 0),
+        nav_dots_left: new FormControl(floorData.nav_dots_left || 0),
+        nav_dots_top_: new FormControl(floorData.nav_dots_top_ || 0),
+        nav_dots_left_: new FormControl(floorData.nav_dots_left_ || 0),
+        nav_dots_rotation: new FormControl(floorData.nav_dots_rotation || 0),
+        nav_dots_mirror_h: new FormControl(floorData.nav_dots_mirror_h || false),
+        nav_dots_mirror_v: new FormControl(floorData.nav_dots_mirror_v || false),
+
+        nd_width: new FormControl(floorData.nd_width || 30),
+        nd_height: new FormControl(floorData.nd_height || 30),
+        nd_resize_dx: new FormControl(floorData.nd_resize_dx || 0),
+        nd_resize_dy: new FormControl(floorData.nd_resize_dy || 0),
+
+        nd_move_dx: new FormControl(floorData.nd_move_dx || 0),
+        nd_move_dy: new FormControl(floorData.nd_move_dy || 0),
+
+        nd_clientx: new FormControl(floorData.nd_clientx || 0),
+        nd_clienty: new FormControl(floorData.nd_clienty || 0),
+
+        nd_delta: new FormControl(floorData.nd_delta || 0),
+        nd_deg: new FormControl(floorData.nd_deg || 0),
+      });
+    }
+    const fgs = this.data.floors.map((floor, index) => floorObject(floor, index));
+    const formArray = new FormArray(fgs);
+
     this.form = new FormGroup({
-      dots_size: new FormControl(additional_data.dots_size || 1),
-      floorplan_max_height: new FormControl(additional_data.floorplan_max_height || 300),
-      nav_dots_width: new FormControl(additional_data.nav_dots_width || 0),
-      nav_dots_height: new FormControl(additional_data.nav_dots_height || 0),
-      nav_dots_width_: new FormControl(additional_data.nav_dots_width_ || 0),
-      nav_dots_height_: new FormControl(additional_data.nav_dots_height_ || 0),
-      nav_dots_top: new FormControl(additional_data.nav_dots_top || 0),
-      nav_dots_left: new FormControl(additional_data.nav_dots_left || 0),
-      nav_dots_top_: new FormControl(additional_data.nav_dots_top_ || 0),
-      nav_dots_left_: new FormControl(additional_data.nav_dots_left_ || 0),
-      nav_dots_rotation: new FormControl(additional_data.nav_dots_rotation || 0),
-      nav_dots_mirror_h: new FormControl(additional_data.nav_dots_mirror_h || false),
-      nav_dots_mirror_v: new FormControl(additional_data.nav_dots_mirror_v || false),
-
-      nd_width: new FormControl(additional_data.nd_width || 30),
-      nd_height: new FormControl(additional_data.nd_height || 30),
-      nd_resize_dx: new FormControl(additional_data.nd_resize_dx || 0),
-      nd_resize_dy: new FormControl(additional_data.nd_resize_dy || 0),
-
-      nd_move_dx: new FormControl(additional_data.nd_move_dx || 0),
-      nd_move_dy: new FormControl(additional_data.nd_move_dy || 0),
-
-      nd_clientx: new FormControl(additional_data.nd_clientx || 0),
-      nd_clienty: new FormControl(additional_data.nd_clienty || 0),
-
-      nd_delta: new FormControl(additional_data.nd_delta || 0),
-      nd_deg: new FormControl(additional_data.nd_deg || 0),
+      floors: formArray
     })
   }
   submit() {
@@ -109,12 +124,38 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     }
   }
 
+  balance(width, height, rad) {
+    const W = 'W';
+    const H = 'H';
+    let big, small;
+    const isEqual = width === height;
+    // Define big and small. What is bigger height or width
+    // 20 > 30
+    if (width > height) {
+      big = W;
+      small = H;
+    } else {
+      big = H;
+      small = W;
+    }
+    return {}
+    // big = H; small = W;
+    // For how much reduce and decrease depend on angle
+  }
+
   getStyleForDotsWrapper(el) {
     const rad = this.form.value.nav_dots_rotation * Math.PI/180;
+    const percent = Math.abs(this.form.value.nav_dots_rotation) / 90 * 100;
+
+    const diff = Math.abs(el.clientWidth - el.clientHeight);
+    const diffOne = diff / 100;
+    const newWidth = el.clientWidth + (diffOne * percent);
+    const newHeight = el.clientHeight - (diffOne * percent);
+
     return {
       transform: `rotate(${rad}rad)`,
-      width: el.offsetWidth * Math.cos(rad) + 'px',
-      height: el.offsetHeight * Math.cos(rad) + 'px'
+      width: newWidth + 'px',
+      height: newHeight + 'px'
     };
   }
 
@@ -174,10 +215,20 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     this.subjxWrapper.dragEl.exeRotate({delta});
     this.form.patchValue({nav_dots_rotation: this.form.value.nav_dots_rotation + deg })
   }
-  async uploadFloorplan($event) {
+  async uploadFloorplan($event, floor, index) {
     if ($event.target.files.length) {
       const base64 = await fileToBase64($event.target.files[0]);
-      const res: any = await this.projectsService.updateDataProject(this.data.project_id, {['floorplan.svg']: base64}).toPromise();
+      const additionalData = this.form.value.floors.map((v) => {
+        if (v.floor === floor) {
+          return {
+            ...v,
+            [`floorplan_f${floor}.svg`]: base64
+          };
+        }
+        return v;
+      })
+      const res: any = await this.projectsService.updateDataProject(this.data.project_id, {floors: additionalData}).toPromise();
+      this.formArray.at(index).patchValue({[`floorplan_f${floor}.svg`]: `floorplan_f${floor}.svg`});
       this.data._t = Date.now()
     }
   }
