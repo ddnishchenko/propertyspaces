@@ -32,28 +32,28 @@
                     aria-label="Basic example"
                   >
                     <button
-                      (click)="rotate('r')"
+                      (click)="rotate('r', i)"
                       type="button"
                       class="btn btn-secondary"
                     >
                       <i class="fa fa-rotate-right"></i>
                     </button>
                     <button
-                      (click)="rotate('l')"
+                      (click)="rotate('l', i)"
                       type="button"
                       class="btn btn-secondary"
                     >
                       <i class="fa fa-rotate-left"></i>
                     </button>
                     <button
-                      (click)="mirror('h')"
+                      (click)="mirror('h', i)"
                       type="button"
                       class="btn btn-secondary"
                     >
                       <i class="fa fa-arrows-h" aria-hidden="true"></i>
                     </button>
                     <button
-                      (click)="mirror('v')"
+                      (click)="mirror('v', i)"
                       type="button"
                       class="btn btn-secondary"
                     >
@@ -134,7 +134,7 @@
                     <div class="form-group">
                       <label for="rotation">Rotation</label>
                       <input
-                        (change)="rotationChange($event)"
+                        (change)="rotationChange($event, i)"
                         type="number"
                         class="form-control form-control-dark"
                         formControlName="nav_dots_rotation"
@@ -150,8 +150,8 @@
                   <div class="range-slider">
                     <input
                       class="range-slider__range"
-                      (input)="rotationChange($event)"
-                      (change)="rotationChange($event)"
+                      (input)="rotationChange($event, i)"
+                      (change)="rotationChange($event, i)"
                       type="range"
                       formControlName="nav_dots_rotation"
                       step="1"
@@ -207,14 +207,14 @@
                   #flw
                   ngResizable
                   ngDraggable
-                  [style.width]="form.value.nav_dots_width + 'px'"
-                  [style.height]="form.value.nav_dots_height + 'px'"
+                  [style.width]="c.value.nav_dots_width + 'px'"
+                  [style.height]="c.value.nav_dots_height + 'px'"
                   [position]="{
-                    x: form.value.nav_dots_left,
-                    y: form.value.nav_dots_top
+                    x: c.value.nav_dots_left,
+                    y: c.value.nav_dots_top
                   }"
-                  (stopped)="dragEnd($event, floorPlan)"
-                  (rzStop)="resizeEnd($event, floorPlan)"
+                  (stopped)="dragEnd($event, floorPlan, i)"
+                  (rzStop)="resizeEnd($event, floorPlan, i)"
                   [rzHandels]="'all'"
                   [bounds]="bound"
                   [inBounds]="false"
@@ -223,12 +223,12 @@
                   <div
                     class="floorplan__point-holder"
                     #dotsWrapper
-                    [ngStyle]="getStyleForDotsWrapper(flw)"
+                    [ngStyle]="getStyleForDotsWrapper(flw, i)"
                   >
                     <div
                       class="floorplan__point"
                       *ngFor="let p of data.floorplanMap; index as i"
-                      [ngStyle]="getStyleForDot(p)"
+                      [ngStyle]="getStyleForDot(p, i)"
                     >
                       {{ i + 1 }}
                     </div>
@@ -239,12 +239,6 @@
                 </div>
               </div>
             </div>
-          </ng-template>
-        </li>
-
-        <li ngbNavItem>
-          <a ngbNavLink>Second</a>
-          <ng-template ngbNavContent>
             <div class="text-center">
               <h3>
                 <!-- {{ form.value.nd_deg }}deg | {{ form.value.nd_delta }}rad -->
@@ -253,14 +247,14 @@
                 <button
                   class="btn btn-primary"
                   type="button"
-                  (click)="rotateCub(-1)"
+                  (click)="rotateCub(-1, i)"
                 >
                   <i class="fa fa-arrow-left"></i>
                 </button>
                 <button
                   class="btn btn-primary"
                   type="button"
-                  (click)="rotateCub(1)"
+                  (click)="rotateCub(1, i)"
                 >
                   <i class="fa fa-arrow-right"></i>
                 </button>
@@ -275,8 +269,13 @@
               >
                 <img
                   #floorPlan1
-                  [src]="data.floorplanPath + '?_t=' + data._t"
-                  [style.max-height]="form.value.floorplan_max_height + 'px'"
+                  [src]="
+                    data.projectFolder +
+                    c.value['floorplan_f' + c.value.floor + '.svg'] +
+                    '?_t=' +
+                    data._t
+                  "
+                  [style.max-height]="c.value.floorplan_max_height + 'px'"
                   class="img-fluid"
                   alt="Floorplan"
                 />
@@ -285,23 +284,23 @@
                 >
                   <div
                     class="floorplan__points"
-                    [style.width]="form.value.nd_width + 'px'"
-                    [style.height]="form.value.nd_height + 'px'"
+                    [style.width]="c.value.nd_width + 'px'"
+                    [style.height]="c.value.nd_height + 'px'"
                     propertyspacesSubjx
                     [initMove]="{
-                      dx: form.value.nd_move_dx,
-                      dy: form.value.nd_move_dy
+                      dx: c.value.nd_move_dx,
+                      dy: c.value.nd_move_dy
                     }"
-                    [initRotate]="{ delta: form.value.nav_dots_rotation }"
-                    (move)="fpMove($event)"
-                    (dropEvent)="fpDrop($event, floorPlan1)"
-                    (resizeEvent)="fpResize($event, floorPlan1)"
-                    (rotate)="fpRotate($event)"
+                    [initRotate]="{ delta: c.value.nav_dots_rotation }"
+                    (move)="fpMove($event, i)"
+                    (dropEvent)="fpDrop($event, floorPlan1, i)"
+                    (resizeEvent)="fpResize($event, floorPlan1, i)"
+                    (rotate)="fpRotate($event, i)"
                   >
                     <div
                       class="floorplan__point"
                       *ngFor="let p of data.floorplanMap; index as i"
-                      [ngStyle]="getStyleForDot(p)"
+                      [ngStyle]="getStyleForDot(p, i)"
                     >
                       {{ i + 1 }}
                     </div>

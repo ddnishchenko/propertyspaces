@@ -242,9 +242,9 @@ export class PanoramaPlayerComponent implements OnInit {
   }
   getStyleForDot(data, p) {
     return {
-      [data.nav_dots_mirror_v ? 'bottom' : 'top']: `calc(${p.x}%)`,
-      [data.nav_dots_mirror_h ? 'right' : 'left']: `calc(${p.z}%)`,
-      transform: `rotate(${-data.nav_dots_rotation}deg)`
+      [data?.nav_dots_mirror_v ? 'bottom' : 'top']: `calc(${p.x}%)`,
+      [data?.nav_dots_mirror_h ? 'right' : 'left']: `calc(${p.z}%)`,
+      transform: `rotate(${-data?.nav_dots_rotation}deg)`
     }
   }
   takeScreenshot() {

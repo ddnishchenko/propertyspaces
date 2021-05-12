@@ -89,39 +89,42 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   }
   onResizeEnd($event) {
   }
-  rotate(d) {
+  rotate(d, i) {
+    const form = this.formArray.at(i)?.value;
     // const transformState = this.floorplanWrapper.nativeElement.style.transform.split(' (');
-    this.form.patchValue({nav_dots_rotation: d === 'r' ? this.form.value.nav_dots_rotation + 90 : this.form.value.nav_dots_rotation - 90});
+    this.formArray.at(i).patchValue({nav_dots_rotation: d === 'r' ? form.nav_dots_rotation + 90 : form.nav_dots_rotation - 90});
     // this.floorplanWrapper.nativeElement.style.transform = transformState[0] + ` rotate(${this.form.value.rotation})`;
     // console.log(this.floorplanWrapper.nativeElement.style.transform)
   }
-  dragEnd($event, img) {
+  dragEnd($event, img, i) {
     const pos = this.floorplanWrapper.getCurrentOffset();
-    this.form.patchValue({
+    this.formArray.at(i).patchValue({
       nav_dots_top: pos.y,
       nav_dots_left: pos.x,
       nav_dots_top_: (pos.y / img.offsetHeight) * 100,
       nav_dots_left_: (pos.x / img.offsetWidth) * 100
     })
   }
-  resizeEnd($event, img) {
-    this.form.patchValue({
+  resizeEnd($event, img, i) {
+    this.formArray.at(i).patchValue({
       nav_dots_width: $event.size.width,
       nav_dots_height: $event.size.height,
       nav_dots_width_: ($event.size.width / img.offsetWidth) * 100,
       nav_dots_height_: ($event.size.height / img.offsetHeight) * 100,
     })
   }
-  mirror(p) {
-    this.form.patchValue({[`nav_dots_mirror_${p}`]: !this.form.value[`nav_dots_mirror_${p}`] })
+  mirror(p, i) {
+    const form = this.formArray.at(i).value;
+    this.formArray.at(i).patchValue({[`nav_dots_mirror_${p}`]: !form[`nav_dots_mirror_${p}`] })
   }
 
-  getStyleForDot(p) {
-    return {
-      [this.form.value['nav_dots_mirror_v'] ? 'bottom' : 'top']: `calc(${p.x}%)`,
-      [this.form.value['nav_dots_mirror_h'] ? 'right' : 'left']: `calc(${p.z}%)`,
-      transform: `rotate(${-this.form.value.nav_dots_rotation}deg) scale(${this.form.value.dots_size})`
-    }
+  getStyleForDot(p, i) {
+    const form = this.formArray.at(i)?.value;
+    return form ? {
+      [form['nav_dots_mirror_v'] ? 'bottom' : 'top']: `calc(${p.x}%)`,
+      [form['nav_dots_mirror_h'] ? 'right' : 'left']: `calc(${p.z}%)`,
+      transform: `rotate(${-form.nav_dots_rotation}deg) scale(${form.dots_size})`
+    } : {};
   }
 
   balance(width, height, rad) {
@@ -143,9 +146,10 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     // For how much reduce and decrease depend on angle
   }
 
-  getStyleForDotsWrapper(el) {
-    const rad = this.form.value.nav_dots_rotation * Math.PI/180;
-    const percent = Math.abs(this.form.value.nav_dots_rotation) / 90 * 100;
+  getStyleForDotsWrapper(el, i) {
+    const form = this.formArray.at(i).value;
+    const rad = form.nav_dots_rotation * Math.PI/180;
+    const percent = Math.abs(form.nav_dots_rotation) / 90 * 100;
 
     const diff = Math.abs(el.clientWidth - el.clientHeight);
     const diffOne = diff / 100;
@@ -159,22 +163,22 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     };
   }
 
-  fpMove($event) {
-    this.form.patchValue({
+  fpMove($event, i) {
+    this.formArray.at(i).patchValue({
       nd_move_dx: $event.elX,
       nd_move_dy: $event.elY,
     })
   }
-  fpDrop($event, img) {
-    this.form.patchValue({
+  fpDrop($event, img, i) {
+    this.formArray.at(i).patchValue({
       nd_move_dx: $event.elX,
       nd_move_dy: $event.elY,
       nav_dots_top_: ($event.y / img.offsetHeight) * 100,
       nav_dots_left_: ($event.x / img.offsetWidth) * 100
     })
   }
-  fpResize($event, img) {
-    this.form.patchValue({
+  fpResize($event, img, i) {
+    this.formArray.at(i).patchValue({
       nd_width: $event.width,
       nd_height: $event.height,
       nav_dots_width: $event.width,
@@ -183,22 +187,23 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
       nav_dots_height_: ($event.height / img.offsetHeight) * 100,
     })
   }
-  fpRotate($event) {
+  fpRotate($event, i) {
     if (this.prevRotate != $event.delta) {
 
     }
     this.prevRotate = $event.delta;
-    this.form.patchValue({
-      nd_delta: this.form.value.nd_delta + $event.delta,
-      nd_deg: this.form.value.nd_deg + $event.deg,
+    this.formArray.at(i).patchValue({
+      nd_delta: this.formArray.at(i).value.nd_delta + $event.delta,
+      nd_deg: this.formArray.at(i).value.nd_deg + $event.deg,
       // nav_dots_rotation: this.form.value.nd_deg
     })
   }
-  rotationChange($event) {
+  rotationChange($event, i) {
     console.log($event.type);
     if ($event.type === 'input') {
-      this.subjxWrapper.dragEl.exeRotate({delta: -this.form.value.nd_delta});
-      const delta = this.form.value.nav_dots_rotation * Math.PI/180;
+      const form = this.formArray.at(i).value;
+      this.subjxWrapper.dragEl.exeRotate({delta: -form.nd_delta});
+      const delta = form.nav_dots_rotation * Math.PI/180;
       this.subjxWrapper.dragEl.exeRotate({delta});
     }
     /*
@@ -210,10 +215,10 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   }
   floorplanHeightChange() {}
 
-  rotateCub(deg) {
+  rotateCub(deg, i) {
     const delta = deg * Math.PI/180;
     this.subjxWrapper.dragEl.exeRotate({delta});
-    this.form.patchValue({nav_dots_rotation: this.form.value.nav_dots_rotation + deg })
+    this.formArray.at(i).patchValue({nav_dots_rotation: this.formArray.at(i).value.nav_dots_rotation + deg })
   }
   async uploadFloorplan($event, floor, index) {
     if ($event.target.files.length) {

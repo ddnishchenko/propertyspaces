@@ -143,9 +143,10 @@ input::-moz-focus-outer {
 
 .vt-map {
   position: fixed;
+  height: calc(100vh - 72px);
+  min-width: 300px;
   background-color: #fff;
-  border: 2px solid #000;
-  border-radius: 10px;
+  border-right: 2px solid #000;
   // height: 300px;
   // padding-right: 26px;
   // padding-bottom: 26px;
