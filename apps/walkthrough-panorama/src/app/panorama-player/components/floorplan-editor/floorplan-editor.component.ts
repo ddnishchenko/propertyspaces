@@ -120,11 +120,12 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
 
   getStyleForDot(p, i) {
     const form = this.formArray.at(i)?.value;
-    return form ? {
-      [form['nav_dots_mirror_v'] ? 'bottom' : 'top']: `calc(${p.x}%)`,
-      [form['nav_dots_mirror_h'] ? 'right' : 'left']: `calc(${p.z}%)`,
-      transform: `rotate(${-form.nav_dots_rotation}deg) scale(${form.dots_size})`
+    const style = form ? {
+      [form.nav_dots_mirror_v ? 'bottom' : 'top']: `calc(${p.x}%)`,
+      [form.nav_dots_mirror_h ? 'right' : 'left']: `calc(${p.z}%)`,
+      // transform: `rotate(${-form.nav_dots_rotation}deg) scale(${form.dots_size})`
     } : {};
+    return style;
   }
 
   balance(width, height, rad) {
@@ -158,8 +159,8 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
 
     return {
       transform: `rotate(${rad}rad)`,
-      width: newWidth + 'px',
-      height: newHeight + 'px'
+      // width: newWidth + 'px',
+      // height: newHeight + 'px'
     };
   }
 
@@ -200,12 +201,20 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   }
   rotationChange($event, i) {
     console.log($event.type);
-    if ($event.type === 'input') {
-      const form = this.formArray.at(i).value;
-      this.subjxWrapper.dragEl.exeRotate({delta: -form.nd_delta});
-      const delta = form.nav_dots_rotation * Math.PI/180;
-      this.subjxWrapper.dragEl.exeRotate({delta});
-    }
+    const form = this.formArray.at(i).value;
+    const delta = form.nav_dots_rotation * Math.PI/180;
+    this.subjxWrapper.dragEl.exeRotate({delta: -form.nd_delta});
+    this.subjxWrapper.dragEl.exeRotate({delta});
+
+    /* this.data.floorplanMap = this.data.floorplanMap.map(coord => {
+      const percentX = form.nav_dots_width / 100;
+      const percentH = form.nav_dots_height / 100;
+      const newCoord = {
+        x: (coord.x * percentX) + Math.cos(delta) * form.nav_dots_height,
+        z: (coord.z * percentH)+ Math.sin(delta) * form.nav_dots_height
+      };
+      return newCoord;
+    }); */
     /*
     if ($event.type === 'input') {
       const delta = 1 * Math.PI/180;

@@ -180,7 +180,6 @@
                 >
               </div>
             </ng-template>
-            {{ c.value | json }}
             <div
               *ngIf="
                 c.value['floorplan_f' + c.value.floor + '.svg'];
@@ -198,6 +197,9 @@
                     data._t
                   "
                   [style.max-height]="c.value.floorplan_max_height + 'px'"
+                  [style.transform]="
+                    'rotate(' + c.value.nav_dots_rotation + 'deg)'
+                  "
                   class="img-fluid"
                   alt="Floorplan"
                 />
@@ -220,17 +222,14 @@
                   [inBounds]="false"
                   [checkBoundsAfterInit]="false"
                 >
-                  <div
-                    class="floorplan__point-holder"
-                    #dotsWrapper
-                    [ngStyle]="getStyleForDotsWrapper(flw, i)"
-                  >
+                  <!-- [ngStyle]="getStyleForDotsWrapper(flw, i)" -->
+                  <div class="floorplan__point-holder" #dotsWrapper>
                     <div
                       class="floorplan__point"
-                      *ngFor="let p of data.floorplanMap; index as i"
+                      *ngFor="let p of data.floorplanMap; index as index"
                       [ngStyle]="getStyleForDot(p, i)"
                     >
-                      {{ i + 1 }}
+                      {{ index + 1 }}
                     </div>
                   </div>
                   <!-- [style.top]="p.x  + '%'" [style.left]="p.z + '%'" -->
@@ -239,7 +238,8 @@
                 </div>
               </div>
             </div>
-            <div class="text-center">
+            <hr />
+            <div class="text-center d-none">
               <h3>
                 <!-- {{ form.value.nd_deg }}deg | {{ form.value.nd_delta }}rad -->
               </h3>
@@ -261,7 +261,7 @@
               </div>
             </div>
             <div
-              class="floorplan d-flex align-items-center justify-content-center"
+              class="floorplan d-none align-items-center justify-content-center"
             >
               <div
                 class="floorplan__navigation floorplan__navigation_new"
