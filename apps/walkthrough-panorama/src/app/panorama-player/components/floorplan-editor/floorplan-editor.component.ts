@@ -120,10 +120,11 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
 
   getStyleForDot(p, i) {
     const form = this.formArray.at(i)?.value;
+    // rotate(${-form.nav_dots_rotation}deg)
     const style = form ? {
       [form.nav_dots_mirror_v ? 'bottom' : 'top']: `calc(${p.x}%)`,
       [form.nav_dots_mirror_h ? 'right' : 'left']: `calc(${p.z}%)`,
-      // transform: `rotate(${-form.nav_dots_rotation}deg) scale(${form.dots_size})`
+      transform: `scale(${form.dots_size})`
     } : {};
     return style;
   }
@@ -200,11 +201,14 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     })
   }
   rotationChange($event, i) {
-    console.log($event.type);
-    const form = this.formArray.at(i).value;
-    const delta = form.nav_dots_rotation * Math.PI/180;
-    this.subjxWrapper.dragEl.exeRotate({delta: -form.nd_delta});
-    this.subjxWrapper.dragEl.exeRotate({delta});
+    if (false) {
+      console.log($event.type);
+      const form = this.formArray.at(i).value;
+      const delta = form.nav_dots_rotation * Math.PI/180;
+      this.subjxWrapper.dragEl.exeRotate({delta: -form.nd_delta});
+      this.subjxWrapper.dragEl.exeRotate({delta});
+    }
+
 
     /* this.data.floorplanMap = this.data.floorplanMap.map(coord => {
       const percentX = form.nav_dots_width / 100;
