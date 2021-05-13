@@ -226,7 +226,7 @@
                   <div class="floorplan__point-holder" #dotsWrapper>
                     <div
                       class="floorplan__point"
-                      *ngFor="let p of data.floorplanMap; index as index"
+                      *ngFor="let p of data.panoFloorsCoord[i]; index as index"
                       [ngStyle]="getStyleForDot(p, i)"
                     >
                       {{ index + 1 }}

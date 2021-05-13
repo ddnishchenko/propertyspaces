@@ -17,8 +17,8 @@ function parseModel(model) {
     return {
         ...p,
         panoramas: {
-          floor: !isNaN(+p.panoramas.floor) ? p.panoramas.floor : (i % 2) + 1,
-          ...p.panoramas
+          ...p.panoramas,
+          floor: !isNaN(+p.panoramas.floor) ? +p.panoramas.floor : (i % 2) + 1,
         },
         dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
         light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
@@ -27,63 +27,62 @@ function parseModel(model) {
   });
   let floors = panosHDR.map(p => p.panoramas.floor);
   floors = Array.from(new Set(floors));
+  let panoFloors = floors.map(f => panosHDR.filter(p => p.panoramas.floor === f));
+  let panoFloorsCoord = panoFloors.map(f => {
+    let xArray = f.map(p => +p.panoramas.x);
+    let zArray = f.map(p => +p.panoramas.z);
 
+    let xMin = Math.min(...xArray);
+    let xMax = Math.max(...xArray);
 
-  let xArray = panosHDR.map(p => +p.panoramas.x);
-  let zArray = panosHDR.map(p => +p.panoramas.z);
+    let zMin = Math.min(...zArray);
+    let zMax = Math.max(...zArray);
 
-  let xMin = Math.min(...xArray);
-  let xMax = Math.max(...xArray);
+    if (xMin < 0) {
+      xArray = f.map(p => Math.abs(xMin) + +p.panoramas.x);
+      xMin = Math.min(...xArray);
+      xMax = Math.max(...xArray);
+    } else if (xMin > 0) {
+      xArray = f.map(p => +p.panoramas.x - Math.abs(xMin));
+      xMin = Math.min(...xArray);
+      xMax = Math.max(...xArray);
+    }
 
-  let zMin = Math.min(...zArray);
-  let zMax = Math.max(...zArray);
+    if (zMin < 0) {
+      zArray = f.map(p => Math.abs(zMin) + +p.panoramas.z);
+      zMin = Math.min(...zArray);
+      zMax = Math.max(...zArray);
+    } else if (zMin > 0) {
+      zArray = f.map(p => +p.panoramas.z - Math.abs(zMin));
+      zMin = Math.min(...zArray);
+      zMax = Math.max(...zArray);
+    }
 
-  if (xMin < 0) {
-    xArray = panosHDR.map(p => Math.abs(xMin) + +p.panoramas.x);
-    xMin = Math.min(...xArray);
-    xMax = Math.max(...xArray);
-  } else if (xMin > 0) {
-    xArray = panosHDR.map(p => +p.panoramas.x - Math.abs(xMin));
-    xMin = Math.min(...xArray);
-    xMax = Math.max(...xArray);
-  }
+    const xSide = xMax - (xMin);
+    const zSide = zMax - (zMin);
 
-  if (zMin < 0) {
-    zArray = panosHDR.map(p => Math.abs(zMin) + +p.panoramas.z);
-    zMin = Math.min(...zArray);
-    zMax = Math.max(...zArray);
-  } else if (zMin > 0) {
-    zArray = panosHDR.map(p => +p.panoramas.z - Math.abs(zMin));
-    zMin = Math.min(...zArray);
-    zMax = Math.max(...zArray);
-  }
+    const floorplanMap = f.map((p,i) => ({
+      name: p.name,
+      z: (zArray[i] / zSide) * 100,
+      x: (xArray[i] / xSide) * 100
+    }));
+    return floorplanMap;
+    // const size = 50;
 
-  const xSide = xMax - (xMin);
-  const zSide = zMax - (zMin);
-
-  const floorplanMap = panosHDR.map((p,i) => ({
-    z: (zArray[i] / zSide) * 100,
-    x: (xArray[i] / xSide) * 100
-  }));
-
-  const size = 50;
-
-  const floorplanArea = (xSide * zSide) * size;
-  const width = (zSide  + (zMin*2)) * size;
-  const height = (xSide  + (zMin*2)) * size;
-  console.log(floorplanMap);
-
+    // const floorplanArea = (xSide * zSide) * size;
+    // const width = (zSide  + (zMin*2)) * size;
+    // const height = (xSide  + (zMin*2)) * size;
+    // console.log(floorplanMap);
+  });
 
 
   return {
     ...model,
     _t: Date.now(),
     panos: panosHDR,
-    floorplanMap,
-    floorplanArea,
+    panoFloorsCoord,
+    panoFloors,
     floors,
-    width,
-    height,
     hostname: environment.apiHost,
     projectFolder: environment.apiHost + model.path
   }
@@ -201,9 +200,10 @@ export class PanoramaPlayerComponent implements OnInit {
     });
   }
 
-  navTo(i) {
-    this.activePoint = i;
-    this.virtualTour.virtualTourService.moveMark(i);
+  navTo(name, panos) {
+    const index = panos.findIndex(pano => pano.name === name);
+    this.activePoint = index;
+    this.virtualTour.virtualTourService.moveMark(this.activePoint);
   }
 
   changeActive($event) {

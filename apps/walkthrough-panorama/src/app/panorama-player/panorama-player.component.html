@@ -159,11 +159,13 @@
                 class="vt-map-ponits-wrapper"
                 [ngStyle]="scaleDots(data.additional_data.floors[i])"
               >
-                <ng-container *ngFor="let p of data.floorplanMap; index as n">
+                <ng-container
+                  *ngFor="let p of data.panoFloorsCoord[i]; index as n"
+                >
                   <div
                     class="vt-map-point"
-                    (click)="navTo(i)"
-                    [class.active]="activePoint === n"
+                    (click)="navTo(p.name, data.panos)"
+                    [class.active]="activePoint === p.name"
                     [ngStyle]="
                       getStyleForDot(data.additional_data.floors[i], p)
                     "
