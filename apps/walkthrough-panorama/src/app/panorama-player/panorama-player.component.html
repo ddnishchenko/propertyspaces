@@ -140,8 +140,13 @@
       class="vt-map"
       *ngIf="data.additional_data && data.additional_data.floors"
     >
-      <ul ngbNav #nav="ngbNav" class="nav-tabs mb-5">
-        <li *ngFor="let f of data.floors; index as i" ngbNavItem>
+      <ul
+        ngbNav
+        (navChange)="navFloor($event, data.panoFloors, data.panos)"
+        #nav="ngbNav"
+        class="nav-tabs mb-5"
+      >
+        <li *ngFor="let f of data.floors; index as i" [ngbNavItem]="i">
           <a ngbNavLink>{{ f }}</a>
           <ng-template ngbNavContent>
             <div #bound class="vt-map-wrapper">
@@ -164,8 +169,8 @@
                 >
                   <div
                     class="vt-map-point"
-                    (click)="navTo(p.name, data.panos)"
-                    [class.active]="activePoint === p.name"
+                    (click)="navTo(p.name, data.panos, n)"
+                    [class.active]="floorActiveIndex === n"
                     [ngStyle]="
                       getStyleForDot(data.additional_data.floors[i], p)
                     "
@@ -173,7 +178,7 @@
                     {{ n + 1 }}
                   </div>
 
-                  <ng-container *ngIf="activePoint === n">
+                  <ng-container *ngIf="floorActiveIndex === n">
                     <div
                       [className]="'vt-map-point active'"
                       [ngStyle]="

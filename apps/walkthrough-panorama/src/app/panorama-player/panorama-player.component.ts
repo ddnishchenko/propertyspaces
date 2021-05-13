@@ -143,6 +143,7 @@ export class PanoramaPlayerComponent implements OnInit {
   form;
   isEdit = false;
   rotationAngle = 0;
+  floorActiveIndex = 0;
   constructor(
     private projcetService: ProjectsService,
     private router: Router,
@@ -200,9 +201,10 @@ export class PanoramaPlayerComponent implements OnInit {
     });
   }
 
-  navTo(name, panos) {
+  navTo(name, panos, i) {
     const index = panos.findIndex(pano => pano.name === name);
     this.activePoint = index;
+    this.floorActiveIndex = i;
     this.virtualTour.virtualTourService.moveMark(this.activePoint);
   }
 
@@ -253,5 +255,10 @@ export class PanoramaPlayerComponent implements OnInit {
 
   updateCanvasSize() {
     setTimeout(() => this.virtualTour.virtualTourService.resize())
+  }
+  navFloor($event, floors, panos) {
+    console.log(floors[$event.nextId]);
+    const pano = floors[$event.nextId][0]
+    this.navTo(pano.name, panos, 0);
   }
 }
