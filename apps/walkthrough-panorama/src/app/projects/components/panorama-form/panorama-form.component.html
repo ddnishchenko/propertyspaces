@@ -1,13 +1,17 @@
 <div class="modal-header">
   <h5 class="modal-title">{{ title }}</h5>
-  <button type="button" (click)="activeModal.close()" class="close" data-bs-dismiss="modal" aria-label="Close">
+  <button
+    type="button"
+    (click)="activeModal.close()"
+    class="close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
-
   <div>
-
     <div class="row">
       <div class="col-12">
         <h5 class="text-center">Panorama Coordinates</h5>
@@ -17,70 +21,203 @@
           <div class="col-12">
             <div class="card text-white bg-danger mb-3">
               <div class="card-body">
-                Coordinates is required to fill in! Or an image must have name like: <br>
-                panoname_1.3_2.2_-2.1
+                Coordinates is required to fill in! Or an image must have name
+                like: <br />
+                panoname_1.3_2.2_-2.1_1 Where panoname - it is a name. 1.3 - x
+                coord. 2.2 - y coord. -2.1 - z coord. 1 - floor
               </div>
             </div>
           </div>
           <div class="col-4">
             <div class="input-group mb-3">
               <span class="input-group-text" id="coord_x">x</span>
-              <input (change)="updateName()" type="number" class="form-control" formControlName="x" placeholder="x">
-              <div class="invalid-feedback d-block" *ngIf="form.get('x').invalid">It should be number!</div>
+              <input
+                (change)="updateName()"
+                type="number"
+                class="form-control"
+                formControlName="x"
+                placeholder="x"
+              />
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.get('x').invalid"
+              >
+                It should be number!
+              </div>
             </div>
           </div>
           <div class="col-4">
             <div class="input-group mb-3">
               <span class="input-group-text" id="coord_y">y</span>
-              <input (change)="updateName()" type="number" class="form-control" formControlName="y" placeholder="y">
-              <div class="invalid-feedback d-block" *ngIf="form.get('y').invalid">It should be number!</div>
+              <input
+                (change)="updateName()"
+                type="number"
+                class="form-control"
+                formControlName="y"
+                placeholder="y"
+              />
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.get('y').invalid"
+              >
+                It should be number!
+              </div>
             </div>
           </div>
           <div class="col-4">
             <div class="input-group mb-3">
               <span class="input-group-text" id="coord_y">z</span>
-              <input (change)="updateName()" type="number" class="form-control" formControlName="z" placeholder="z">
-              <div class="invalid-feedback d-block" *ngIf="form.get('z').invalid">It should be number!</div>
+              <input
+                (change)="updateName()"
+                type="number"
+                class="form-control"
+                formControlName="z"
+                placeholder="z"
+              />
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.get('z').invalid"
+              >
+                It should be number!
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="floor">floor</span>
+              <input
+                (change)="updateName()"
+                type="number"
+                class="form-control"
+                formControlName="floor"
+                placeholder="floor"
+              />
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.get('floor').invalid"
+              >
+                It should be number!
+              </div>
             </div>
           </div>
         </form>
       </div>
       <div class="col-12" *ngIf="panorama.dark_pano || panorama.light_pano">
-        <button (click)="makeHdr()" class="btn btn-success" type="button">Make HDR photo <i *ngIf="loading" class="fa fa-spin fa-spinner"></i></button>
+        <button (click)="makeHdr()" class="btn btn-success" type="button">
+          Make HDR photo <i *ngIf="loading" class="fa fa-spin fa-spinner"></i>
+        </button>
       </div>
       <div *ngIf="panorama.hdr_pano" class="col-12">
-        <h3>HDR <button (click)="remove(panorama.hdr_pano.name)" class="btn btn-danger" type="button"><i class="fa fa-trash"></i> Delete HDR</button></h3>
-        <img *ngIf="panorama.hdr_pano" class="img-fluid" [src]="mediaPath + panorama.hdr_pano.name + (panorama.hdr_pano?._t || '')" [alt]="panorama.hdr_pano.name">
+        <h3>
+          HDR
+          <button
+            (click)="remove(panorama.hdr_pano.name)"
+            class="btn btn-danger"
+            type="button"
+          >
+            <i class="fa fa-trash"></i> Delete HDR
+          </button>
+        </h3>
+        <img
+          *ngIf="panorama.hdr_pano"
+          class="img-fluid"
+          [src]="
+            mediaPath + panorama.hdr_pano.name + (panorama.hdr_pano?._t || '')
+          "
+          [alt]="panorama.hdr_pano.name"
+        />
       </div>
 
       <div class="col-12">
         <h3>Normal</h3>
-        <button class="btn btn-primary" (click)="fileInput1.click()" type="button"><i class="fa fa-upload"></i> Upload</button>
-        <input type="file" accept="images/*" #fileInput1 hidden (change)="uploadImage($event)">
-        <img *ngIf="panorama?.name" [src]="mediaPath + panorama.name + (panorama?._t || '')" class="img-fluid" [alt]="this.panorama.name + (panorama?._t || '')">
+        <button
+          class="btn btn-primary"
+          (click)="fileInput1.click()"
+          type="button"
+        >
+          <i class="fa fa-upload"></i> Upload
+        </button>
+        <input
+          type="file"
+          accept="images/*"
+          #fileInput1
+          hidden
+          (change)="uploadImage($event)"
+        />
+        <img
+          *ngIf="panorama?.name"
+          [src]="mediaPath + panorama.name + (panorama?._t || '')"
+          class="img-fluid"
+          [alt]="this.panorama.name + (panorama?._t || '')"
+        />
       </div>
-
 
       <div class="col-12" *ngIf="panorama?.name">
         <h3>Dark</h3>
-        <button class="btn btn-primary" type="button" (click)="fileInputDarkPano.click()"><i class="fa fa-upload"></i> Upload</button>
-        <input hidden type="file" accept="images/*" multiple #fileInputDarkPano (change)="uploadPano($event, 'dark_pano', 'dark')">
-        <img *ngIf="panorama.dark_pano?.name"
-          class="img-fluid" [src]="mediaPath + panorama.dark_pano.name + (panorama.dark_pano?._t || '')" [alt]="panorama.dark_pano.name">
+        <button
+          class="btn btn-primary"
+          type="button"
+          (click)="fileInputDarkPano.click()"
+        >
+          <i class="fa fa-upload"></i> Upload
+        </button>
+        <input
+          hidden
+          type="file"
+          accept="images/*"
+          multiple
+          #fileInputDarkPano
+          (change)="uploadPano($event, 'dark_pano', 'dark')"
+        />
+        <img
+          *ngIf="panorama.dark_pano?.name"
+          class="img-fluid"
+          [src]="
+            mediaPath + panorama.dark_pano.name + (panorama.dark_pano?._t || '')
+          "
+          [alt]="panorama.dark_pano.name"
+        />
       </div>
       <div class="col-12" *ngIf="panorama?.name">
         <h3>Light</h3>
-        <button class="btn btn-primary" type="button" (click)="fileInputLightPano.click()"><i class="fa fa-upload"></i> Upload</button>
-        <input hidden type="file" accept="images/*" multiple #fileInputLightPano (change)="uploadPano($event, 'light_pano', 'light')">
-        <img *ngIf="panorama.light_pano?.name" class="img-fluid" [src]="mediaPath + panorama.light_pano?.name + (panorama.light_pano?._t || '')" [alt]="panorama.light_pano?.name">
+        <button
+          class="btn btn-primary"
+          type="button"
+          (click)="fileInputLightPano.click()"
+        >
+          <i class="fa fa-upload"></i> Upload
+        </button>
+        <input
+          hidden
+          type="file"
+          accept="images/*"
+          multiple
+          #fileInputLightPano
+          (change)="uploadPano($event, 'light_pano', 'light')"
+        />
+        <img
+          *ngIf="panorama.light_pano?.name"
+          class="img-fluid"
+          [src]="
+            mediaPath +
+            panorama.light_pano?.name +
+            (panorama.light_pano?._t || '')
+          "
+          [alt]="panorama.light_pano?.name"
+        />
       </div>
-
     </div>
-
   </div>
-
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="activeModal.close(false)">Close</button>
-  <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.close(false)"
+  >
+    Close
+  </button>
+  <button type="button" class="btn btn-primary" (click)="submit()">
+    Save changes
+  </button>
 </div>

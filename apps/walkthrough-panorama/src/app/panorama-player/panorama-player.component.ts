@@ -17,7 +17,7 @@ function parseModel(model) {
     return {
         ...p,
         panoramas: {
-          floor: (i % 2) + 1,
+          floor: !isNaN(+p.panoramas.floor) ? p.panoramas.floor : (i % 2) + 1,
           ...p.panoramas
         },
         dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),

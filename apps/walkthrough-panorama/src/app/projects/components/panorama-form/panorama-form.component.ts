@@ -37,13 +37,14 @@ export class PanoramaFormComponent implements OnInit {
       x: new FormControl(data?.panoramas?.x, validators),
       y: new FormControl(data?.panoramas?.y, validators),
       z: new FormControl(data?.panoramas?.z, validators),
+      floor: new FormControl(data?.panoramas?.floor, validators),
       url: new FormControl(data?.url)
     });
   }
 
   updateName() {
     if (!this.isEdit) {
-      this.form.patchValue({name: `x=${this.form.value.x}y=${this.form.value.y}z=${this.form.value.z}`})
+      this.form.patchValue({name: `x=${this.form.value.x}y=${this.form.value.y}z=${this.form.value.z}f=${this.form.value.floor}`})
     }
   }
 
@@ -55,7 +56,7 @@ export class PanoramaFormComponent implements OnInit {
       const file: File[] = Array.from($event.target.files);
       const fileName = file[0].name.split('.').slice(0, -1).join('.');
       const fileNameParts = fileName.split('_');
-      const [ name, x, y, z ] = fileNameParts;
+      const [ name, x, y, z, floor ] = fileNameParts;
       const url = await fileToBase64(file[0]);
 
       if (this.isEdit || this.panorama.name) {
@@ -70,14 +71,14 @@ export class PanoramaFormComponent implements OnInit {
       } else {
         const isCoordValid = !isNaN(+x) && !isNaN(+y) && !isNaN(+z);
         if (isCoordValid) {
-          this.form.patchValue({x, y, z, name:`x=${x}y=${y}z=${z}`})
+          this.form.patchValue({x, y, z, name:`x=${x}y=${y}z=${z}=f${floor}`})
         }
         const f = this.form.value;
-        const coords = isCoordValid ? {x,y,z} : {
-          x: f.x, y: f.y, z: f.z
+        const coords = isCoordValid ? {x,y,z, floor} : {
+          x: f.x, y: f.y, z: f.z, floor
         };
-        const theName = isCoordValid ? f.name : `x=${coords.x}y=${coords.y}z=${coords.z}`;
-        if (coords.x && coords.y && coords.z) {
+        const theName = isCoordValid ? f.name : `x=${coords.x}y=${coords.y}z=${coords.z}f=${coords.floor}`;
+        if (coords.x && coords.y && coords.z && coords.floor) {
 
           const res: any = await this.projectService.createPanorama(this.panoData.project_id, {
             name: theName,
@@ -131,13 +132,13 @@ export class PanoramaFormComponent implements OnInit {
           this.panorama[type] = pano;
         }
       } else {
-        const {x, y, z, name} = this.form.value;
+        const {x, y, z, name, floor} = this.form.value;
         const n = `${name}_${posfix}`;
         const res: any = await this.projectService.createPanorama(this.panoData.project_id, {
           name: n,
           panoramas: {
             panorama: url,
-            x, y, z
+            x, y, z, floor
           }
         }).toPromise();
         const pano = res.data.find(p => p.name.includes(n));
@@ -158,7 +159,8 @@ export class PanoramaFormComponent implements OnInit {
         // neighbors: this.form.value.neighbors,
         x: this.form.value.x,
         y: this.form.value.y,
-        z: this.form.value.z
+        z: this.form.value.z,
+        floor: this.form.value.floor
       }
     });
   }
