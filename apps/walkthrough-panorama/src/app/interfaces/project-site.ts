@@ -1,0 +1,37 @@
+export interface ProjectSite {
+  access_vs?: string;
+  address?: string;
+  bill_to?: string;
+  brochure_id?: string;
+  brokers?: string;
+  calendar_event?: string;
+  cancel_text?: string;
+  change_log?: string;
+  client_comments?: string;
+  client_id?: string;
+  client_name?: string;
+  confirmed?: string;
+  date_reschedule?: string;
+  draftperson_comments?: string;
+  id?: string;
+  invoice_template?: string;
+  is_archive?: string;
+  is_block?: string;
+  is_cancel?: string;
+  is_test?: string;
+  latitude?: string;
+  links?: string;
+  longitude?: string;
+  name?: string;
+  not_change_calendar?: string;
+  notes?: string;
+  order_date?: string;
+  package?: string;
+  paid?: string;
+  photographer?: string;
+  photographer_examples?: string;
+  reminder_count?: string;
+  share_brokerage?: string;
+  slideshow_id?: string;
+  unlock_log?: string;
+}

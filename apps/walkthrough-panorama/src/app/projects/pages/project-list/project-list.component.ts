@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { select, Store } from '@ngrx/store';
 import { forkJoin } from 'rxjs';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
 import { ProjectsService } from '../../service/projects.service';
+import { copyProject, createProject, deleteProjects, loadProjects } from '../../state/projects.actions';
+import { selectProjects } from '../../state/projects.selectors';
 
 @Component({
   selector: 'propertyspaces-project-list',
@@ -11,19 +14,19 @@ import { ProjectsService } from '../../service/projects.service';
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent implements OnInit {
-  projects$;
+
   projectIds = [];
+  projects$ = this.store.pipe(
+    select(selectProjects)
+  );
   constructor(
     private modalService: NgbModal,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private store: Store
   ) { }
 
   ngOnInit(): void {
-    this.init();
-  }
-
-  init() {
-    this.projects$ = this.projectsService.getProjects();
+    this.store.dispatch(loadProjects());
   }
 
   openCreateForm() {
@@ -32,11 +35,7 @@ export class ProjectListComponent implements OnInit {
     });
     modalRef.result.then(value => {
       if (value) {
-        // Create project
-        this.projectsService.createProject(value).subscribe(res => {
-          console.log(res);
-          this.init();
-        })
+        this.store.dispatch(createProject(value))
       }
     })
   }
@@ -46,11 +45,8 @@ export class ProjectListComponent implements OnInit {
     modalRef.componentInstance.msg = 'Are you sure you want to delete these projects?';
     modalRef.result.then(value => {
       if (value) {
-        // Delete projects
-        const deleteRequests = projectId ? this.projectsService.deleteProject(projectId) : this.projectIds.map(id => this.projectsService.deleteProject(id));
-        forkJoin(deleteRequests).subscribe(res => {
-          this.init();
-        })
+        const projectIds = projectId ? [projectId] : this.projectIds;
+        this.store.dispatch(deleteProjects({projectIds}));
       }
     });
   }
@@ -68,9 +64,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   copyProject(id) {
-    this.projectsService.copyProject(id).subscribe(r => {
-      this.init();
-    })
+    this.store.dispatch(copyProject({projectId: id}));
   }
 
 }

@@ -1,13 +1,23 @@
 <h1 class="text-center my-5">Create panoramic walkthough</h1>
 <div class="card shadow mb-4">
-
-  <div class="card-header text-right d-md-flex justify-content-md-center align-items-md-center py-3">
+  <div
+    class="card-header text-right d-md-flex justify-content-md-center align-items-md-center py-3"
+  >
     <div class="row">
-        <div class="col d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center align-items-md-center align-items-lg-center justify-content-xl-end align-items-xl-center">
-          <button class="btn btn-primary mx-3" type="button" (click)="openCreateForm()">
-            <i class="fa fa-plus"></i>Create New Project</button>
-          <button class="btn btn-danger" type="button" (click)="deleteProjects()">Delete</button>
-        </div>
+      <div
+        class="col d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center align-items-md-center align-items-lg-center justify-content-xl-end align-items-xl-center"
+      >
+        <button
+          class="btn btn-primary mx-3"
+          type="button"
+          (click)="openCreateForm()"
+        >
+          <i class="fa fa-plus"></i>Create New Project
+        </button>
+        <button class="btn btn-danger" type="button" (click)="deleteProjects()">
+          Delete
+        </button>
+      </div>
     </div>
   </div>
 
@@ -26,11 +36,17 @@
         <tr *ngFor="let project of projects$ | async">
           <td>
             <div class="form-check">
-              <input type="checkbox"
+              <input
+                type="checkbox"
                 class="form-check-input"
                 [value]="project.id"
-                [id]="'flexCheckChecked_' + project.id" (change)="onCheckChange($event)">
-              <label class="form-check-label" [for]="'flexCheckChecked_' + project.id"></label>
+                [id]="'flexCheckChecked_' + project.id"
+                (change)="onCheckChange($event)"
+              />
+              <label
+                class="form-check-label"
+                [for]="'flexCheckChecked_' + project.id"
+              ></label>
             </div>
           </td>
           <th scope="row">
@@ -38,10 +54,18 @@
           </th>
           <td class="text-right">
             <div class="btn-group">
-              <button (click)="copyProject(project.id)" type="button" class="btn btn-warning">
+              <button
+                (click)="copyProject(project.id)"
+                type="button"
+                class="btn btn-warning"
+              >
                 <i class="fa fa-2x fa-clone"></i>
               </button>
-              <button (click)="deleteProjects(project.id)" type="button" class="btn btn-danger">
+              <button
+                (click)="deleteProjects(project.id)"
+                type="button"
+                class="btn btn-danger"
+              >
                 <i class="fa fa-2x fa-trash"></i>
               </button>
               <a [routerLink]="[project.id]" class="btn btn-primary">
@@ -53,5 +77,4 @@
       </tbody>
     </table>
   </div>
-
 </div>

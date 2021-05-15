@@ -12,6 +12,10 @@ import { PanoramaFormComponent } from './components/panorama-form/panorama-form.
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FloorplanFormComponent } from './components/floorplan-form/floorplan-form.component';
 import { SafePipe } from '../pipes/safe.pipe';
+import { StoreModule } from '@ngrx/store';
+import * as fromProjects from './state/projects.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { ProjectsEffects } from './state/projects.effects';
 
 
 @NgModule({
@@ -30,7 +34,9 @@ import { SafePipe } from '../pipes/safe.pipe';
     ProjectsRoutingModule,
     NgbModalModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
+    EffectsModule.forFeature([ProjectsEffects])
   ],
   entryComponents: [
     ProjectFormComponent,

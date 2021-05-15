@@ -18,7 +18,7 @@ function parseModel(model) {
         ...p,
         panoramas: {
           ...p.panoramas,
-          floor: !isNaN(+p.panoramas.floor) ? +p.panoramas.floor : (i % 2) + 1,
+          floor: +p.panoramas.floor || 1,
         },
         dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
         light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
@@ -158,7 +158,6 @@ export class PanoramaPlayerComponent implements OnInit {
       map(data => data.model),
       map(model => {
         const parsedData = parseModel(model);
-        console.log(this.route,this.router);
         if (this.route.snapshot.params.floorplan) {
           this.openFloorplanEditor(parsedData);
         }
@@ -231,6 +230,8 @@ export class PanoramaPlayerComponent implements OnInit {
           map(model => parseModel(model))
         );
       }
+    }).catch(e => {
+      console.log('Dismissed');
     })
   }
   scaleDots(data) {

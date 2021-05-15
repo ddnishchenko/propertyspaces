@@ -3,8 +3,9 @@ export interface Panorama {
   panoramas: {
     panorama?: string;
     url?: string;
-    x?: string | number;
-    y?: string | number;
-    z?: string | number;
+    x?: number;
+    y?: number;
+    z?: number
+    floor?: number;
   }
 }

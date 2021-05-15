@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { Project } from '../../interfaces/project';
+import { ProjectSite } from '../../interfaces/project-site';
 
 const host = environment.apiHost;
 
@@ -23,16 +25,16 @@ export class ProjectsService {
     return this.http.post(host + 'delete-panoramas-project', {client_id: 1295, project_id})
   }
 
-  copyProject(project_id) {
-    return this.http.post(host + 'copy-panoramas-project', {client_id: 1295, project_id});
+  copyProject(project_id): Observable<Project> {
+    return this.http.post<Project>(host + 'copy-panoramas-project', {client_id: 1295, project_id});
   }
 
   editProjectName(project_id, name) {
     return this.http.post(host + 'update-name-project', {client_id: 1295, project_id, name});
   }
 
-  getProjects() {
-    return this.http.post(host + 'get-panoramas-projects', {client_id: 1295});
+  getProjects(): Observable<ProjectSite[]> {
+    return this.http.post<ProjectSite[]>(host + 'get-panoramas-projects', {client_id: 1295});
   }
 
   getProject(project_id): Observable<any> {

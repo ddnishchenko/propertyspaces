@@ -149,50 +149,52 @@
         <li *ngFor="let f of data.floors; index as i" [ngbNavItem]="i">
           <a ngbNavLink>{{ f }}</a>
           <ng-template ngbNavContent>
-            <div #bound class="vt-map-wrapper">
-              <img
-                #floorplanImage
-                [src]="
-                  data.projectFolder +
-                  data.additional_data.floors[i]['floorplan_f' + f + '.svg'] +
-                  '?_t=' +
-                  data._t
-                "
-                style="max-height: 300px"
-              />
-              <div
-                class="vt-map-ponits-wrapper"
-                [ngStyle]="scaleDots(data.additional_data.floors[i])"
-              >
-                <ng-container
-                  *ngFor="let p of data.panoFloorsCoord[i]; index as n"
+            <div class="d-flex justify-content-center">
+              <div #bound class="vt-map-wrapper">
+                <img
+                  #floorplanImage
+                  [src]="
+                    data.projectFolder +
+                    data.additional_data.floors[i]['floorplan_f' + f + '.svg'] +
+                    '?_t=' +
+                    data._t
+                  "
+                  style="max-height: 300px"
+                />
+                <div
+                  class="vt-map-ponits-wrapper"
+                  [ngStyle]="scaleDots(data.additional_data.floors[i])"
                 >
-                  <div
-                    class="vt-map-point"
-                    (click)="navTo(p.name, data.panos, n)"
-                    [class.active]="floorActiveIndex === n"
-                    [ngStyle]="
-                      getStyleForDot(data.additional_data.floors[i], p)
-                    "
+                  <ng-container
+                    *ngFor="let p of data.panoFloorsCoord[i]; index as n"
                   >
-                    {{ n + 1 }}
-                  </div>
-
-                  <ng-container *ngIf="floorActiveIndex === n">
                     <div
-                      [className]="'vt-map-point active'"
+                      class="vt-map-point"
+                      (click)="navTo(p.name, data.panos, n)"
+                      [class.active]="floorActiveIndex === n"
                       [ngStyle]="
                         getStyleForDot(data.additional_data.floors[i], p)
                       "
                     >
-                      <div
-                        class="pointer"
-                        [style.transform]="'rotate(' + rotationAngle + 'rad)'"
-                      ></div>
-                      <!-- (lon + currentDot.rotation_angle) -->
+                      {{ n + 1 }}
                     </div>
+
+                    <ng-container *ngIf="floorActiveIndex === n">
+                      <div
+                        [className]="'vt-map-point active'"
+                        [ngStyle]="
+                          getStyleForDot(data.additional_data.floors[i], p)
+                        "
+                      >
+                        <div
+                          class="pointer"
+                          [style.transform]="'rotate(' + rotationAngle + 'rad)'"
+                        ></div>
+                        <!-- (lon + currentDot.rotation_angle) -->
+                      </div>
+                    </ng-container>
                   </ng-container>
-                </ng-container>
+                </div>
               </div>
             </div>
           </ng-template>

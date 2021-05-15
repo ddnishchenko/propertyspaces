@@ -1,8 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { Event, Router, RouterEvent } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DraggableDirective } from '@propertyspaces/drag-resize';
 import { SubjxDirective } from '@propertyspaces/subjx';
+import { Subscription } from 'rxjs';
 import { ProjectsService } from '../../../projects/service/projects.service';
 import { fileToBase64 } from '../../../utils';
 
@@ -16,6 +18,10 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   @ViewChild(SubjxDirective) subjxWrapper!: SubjxDirective;
   @ViewChild('floorPlan') floorPlan: ElementRef<HTMLImageElement>;
   @ViewChild('bound') bound: ElementRef<HTMLImageElement>;
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event) {
+    this.activeModal.dismiss();
+  }
   data;
   form;
   get formArray() {
