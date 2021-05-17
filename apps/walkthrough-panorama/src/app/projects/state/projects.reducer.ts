@@ -1,15 +1,20 @@
 import { Action, createReducer, on } from '@ngrx/store';
+import { Project } from '../../interfaces/project';
 import { ProjectSite } from '../../interfaces/project-site';
 import * as ProjectsActions from './projects.actions';
 
 export const projectsFeatureKey = 'projects';
 
-export interface State {
-  projects: ProjectSite[]
+export interface ProjectsState {
+  projects: ProjectSite[];
+  activeProjectId: string;
+  virtualTourParameters: Project;
 }
 
-export const initialState: State = {
-  projects: []
+export const initialState: ProjectsState = {
+  projects: [],
+  activeProjectId: null,
+  virtualTourParameters: null
 };
 
 
@@ -47,6 +52,24 @@ export const reducer = createReducer(
         address: oldProject.address
       })
     };
+  }),
+  on(ProjectsActions.editProjectSuccess, (state, {projectId, name}) => {
+    return {
+      ...state,
+      projects: state.projects.map(p => {
+        if (p.id === projectId) {
+          return {...p, name};
+        }
+        return p;
+      })
+    };
+  }),
+  on(ProjectsActions.setActiveProject, (state, {projectId}) => ({...state, activeProjectId: projectId})),
+  on(ProjectsActions.loadPanoramasSuccess, (state, { panoramas }) => {
+    return {
+      ...state,
+      virtualTourParameters: panoramas
+    }
   })
 );
 

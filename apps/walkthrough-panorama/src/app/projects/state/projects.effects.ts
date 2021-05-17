@@ -34,7 +34,7 @@ export class ProjectsEffects {
     )
   );
 
-  deleteProject$ = createEffect(() => this.actions$.pipe(
+  deleteProjects$ = createEffect(() => this.actions$.pipe(
       ofType(ProjectsActions.deleteProjects),
       mergeMap(
         payload => forkJoin(payload.projectIds.map(id => this.projectsService.deleteProject(id))).pipe(
@@ -44,11 +44,31 @@ export class ProjectsEffects {
     )
   );
 
-  copyProjects$ = createEffect(() => this.actions$.pipe(
+  copyProject$ = createEffect(() => this.actions$.pipe(
       ofType(ProjectsActions.copyProject),
       mergeMap(
         payload => this.projectsService.copyProject(payload.projectId).pipe(
           map((project)=> ProjectsActions.copyProjectSuccess({oldProjectId: payload.projectId, newProjectId: project.project_id }))
+        )
+      )
+    )
+  );
+
+  editProject$ = createEffect(() => this.actions$.pipe(
+      ofType(ProjectsActions.editProject),
+      mergeMap(
+        payload => this.projectsService.editProjectName(payload.projectId, payload.name).pipe(
+          map(project => ProjectsActions.editProjectSuccess(payload))
+        )
+      )
+    )
+  );
+
+  loadPanoramas$ = createEffect(() => this.actions$.pipe(
+      ofType(ProjectsActions.loadPanoramas),
+      mergeMap(
+        payload => this.projectsService.getPanoramas(payload.projectId).pipe(
+          map(panoramas => ProjectsActions.loadPanoramasSuccess({panoramas}))
         )
       )
     )

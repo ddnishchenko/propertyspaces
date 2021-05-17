@@ -58,4 +58,38 @@ export const copyProjectFailed = createAction(
   `${prefix} Copu Project Failed`
 );
 
+export const editProject = createAction(
+  `${prefix} Edit Project`,
+  props<{projectId: string; name: string}>()
+);
+
+export const editProjectSuccess = createAction(
+  `${prefix} Edit Project Success`,
+  props<{projectId: string; name: string}>()
+);
+
+export const editProjectFailed = createAction(
+  `${prefix} Edit Project Failed`
+);
+
+export const setActiveProject = createAction(
+  `${prefix} Set active Project`,
+  props<{projectId: string;}>()
+);
+
+
+export const loadPanoramas = createAction(
+  `${prefix} Load Panoramas`,
+  props<{projectId: string}>()
+);
+
+export const loadPanoramasSuccess = createAction(
+  `${prefix} Load Panoramas success`,
+  props<{panoramas: Project}>()
+);
+
+export const loadPanoramasFailed = createAction(
+  `${prefix} Load Panoramas failed`
+);
+
 

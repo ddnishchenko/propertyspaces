@@ -1,21 +1,27 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Project } from './interfaces/project';
-import { ProjectsService } from './projects/service/projects.service';
+import { loadProjects } from './projects/state/projects.actions';
+import { ProjectsState } from './projects/state/projects.reducer';
+import { selectProjectsState } from './projects/state/projects.selectors';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ModelDataResolver implements Resolve<Project> {
+export class ModelDataResolver implements Resolve<ProjectsState> {
 
-  constructor(private projectService: ProjectsService) { }
+  constructor(private store: Store<ProjectsState>) { }
 
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
-  ): Observable<Project> {
+  ): Observable<ProjectsState> {
     const projectId = route.paramMap.get('id');
-    return this.projectService.getPanoramas(projectId);
+    this.store.dispatch(loadProjects())
+    return this.store.pipe(
+      select(selectProjectsState)
+    );
   }
 }

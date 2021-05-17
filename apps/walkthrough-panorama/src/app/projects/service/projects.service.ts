@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { Project } from '../../interfaces/project';
@@ -43,7 +44,13 @@ export class ProjectsService {
 
   getPanoramas(project_id): Observable<any> {
     const params = new HttpParams({fromObject: {project_id}});
-    return this.http.get(host + 'get-panoramas',{params});
+    return this.http.get(host + 'get-panoramas',{params}).pipe(
+      mergeMap(
+        panoData => this.getProject(project_id).pipe(
+          map(project => ({...panoData, name: project.name, address: project.address}))
+        )
+      )
+    );
   }
 
   createPanorama(project_id, panorama_data) {

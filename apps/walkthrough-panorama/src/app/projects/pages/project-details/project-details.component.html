@@ -8,10 +8,13 @@
     ></i>
   </h1>
   <div class="input-group mb-3" *ngIf="isEditName">
-    <span class="input-group-text" (click)="saveName(project.id)">x</span>
+    <span class="input-group-text" (click)="saveName(project.project_id)"
+      >x</span
+    >
     <input class="form-control" [(ngModel)]="projectName" />
   </div>
-  <div class="card shadow mb-4" *ngIf="panoramas$ | async as panoramas">
+
+  <div class="card shadow mb-4">
     <div
       class="card-header d-md-flex justify-content-md-center align-items-md-center py-3"
     >
@@ -23,19 +26,22 @@
       <div class="text-right">
         <a
           class="btn btn-primary ml-2"
-          [routerLink]="['/model', project.id, { floorplan: true }]"
+          [routerLink]="['/model', project.project_id, { floorplan: true }]"
         >
           <i class="fa fa-pencil mr-1"></i>
           <span>Edit Floorplans</span>
         </a>
-        <a class="btn btn-primary ml-2" [routerLink]="['/model', project.id]">
+        <a
+          class="btn btn-primary ml-2"
+          [routerLink]="['/model', project.project_id]"
+        >
           <i class="fa fa-pencil mr-1"></i>
           <span>Edit Walkthrough</span>
         </a>
         <button
           class="btn btn-primary ml-2"
           type="button"
-          (click)="openCreateForm(project, panoramas)"
+          (click)="openCreateForm(project)"
         >
           <i class="fa fa-plus mr-1"></i>
           <span>Add Nav Point</span>
@@ -55,8 +61,8 @@
       <h4 class="text-center">Walkthrough URL</h4>
 
       <p class="text-center text-primary h5">
-        <a [routerLink]="['/embed', project.id]" class="text-underline"
-          >www.slideshowcloud.com/{{ project.id }}</a
+        <a [routerLink]="['/embed', project.project_id]" class="text-underline"
+          >www.slideshowcloud.com/{{ project.project_id }}</a
         >
       </p>
 
@@ -69,7 +75,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let panorama of panoramas.panos">
+          <tr *ngFor="let panorama of panoramas$ | async">
             <th scope="row">
               <div class="form-check">
                 <input
@@ -89,7 +95,7 @@
             <td class="text-right">
               <div class="btn-group">
                 <button
-                  (click)="openEditPanorama(panorama, panoramas)"
+                  (click)="openEditPanorama(panorama, project)"
                   type="button"
                   class="btn btn-primary"
                 >
