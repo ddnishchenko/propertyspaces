@@ -150,8 +150,17 @@
           <a ngbNavLink>{{ f }}</a>
           <ng-template ngbNavContent>
             <div class="d-flex justify-content-center">
-              <div #bound class="vt-map-wrapper">
+              <div
+                #bound
+                class="vt-map-wrapper"
+                [style.transform]="
+                  'rotate(' +
+                  -data.additional_data.floors[i].nav_dots_rotation +
+                  'deg)'
+                "
+              >
                 <img
+                  class="vt-map-wrapper-floorplan"
                   #floorplanImage
                   [src]="
                     data.projectFolder +
@@ -159,7 +168,11 @@
                     '?_t=' +
                     data._t
                   "
-                  style="max-height: 300px"
+                  [style.transform]="
+                    'rotate(' +
+                    data.additional_data.floors[i].nav_dots_rotation +
+                    'deg)'
+                  "
                 />
                 <div
                   class="vt-map-ponits-wrapper"

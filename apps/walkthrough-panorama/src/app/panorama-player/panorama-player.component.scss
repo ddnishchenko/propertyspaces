@@ -150,8 +150,12 @@ input::-moz-focus-outer {
   // height: 300px;
   // padding-right: 26px;
   // padding-bottom: 26px;
+
   &-wrapper {
     position: relative;
+    &-floorplan {
+      max-width: 300px;
+    }
   }
   &-ponits-wrapper {
     position: absolute;

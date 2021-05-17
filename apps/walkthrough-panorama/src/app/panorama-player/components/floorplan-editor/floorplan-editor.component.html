@@ -10,7 +10,14 @@
         >
           <a ngbNavLink>{{ c.value.floor }} floor</a>
           <ng-template ngbNavContent>
-            <div>
+            <div
+              class="z-10"
+              [style.margin-bottom]="
+                c.value.nav_dots_rotation > 0
+                  ? c.value.nav_dots_rotation + 'px'
+                  : -c.value.nav_dots_rotation + 'px'
+              "
+            >
               <div class="form-row">
                 <div class="col-auto">
                   <div class="custom-file">

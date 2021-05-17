@@ -238,7 +238,7 @@ export class PanoramaPlayerComponent implements OnInit {
     return {
       width: `calc(${data.nav_dots_width_}%)`,
       height: `calc(${data.nav_dots_height_}%)`,
-      transform: `rotate(${-data.nav_dots_rotation}deg)`,
+      // transform: `rotate(${-data.nav_dots_rotation}deg)`,
       top: `${data.nav_dots_top_}%`,
       left: `${data.nav_dots_left_}%`
     }
