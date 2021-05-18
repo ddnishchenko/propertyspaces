@@ -1,7 +1,7 @@
 export interface Panorama {
   name: string;
   panoramas: {
-    panorama?: string;
+    panorama?: string | ArrayBuffer | null;
     url?: string;
     x?: number;
     y?: number;

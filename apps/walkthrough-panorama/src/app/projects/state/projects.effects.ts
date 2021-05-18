@@ -68,7 +68,47 @@ export class ProjectsEffects {
       ofType(ProjectsActions.loadPanoramas),
       mergeMap(
         payload => this.projectsService.getPanoramas(payload.projectId).pipe(
-          map(panoramas => ProjectsActions.loadPanoramasSuccess({panoramas}))
+          map(project => ProjectsActions.loadPanoramasSuccess({project}))
+        )
+      )
+    )
+  );
+
+  createPanorama$ = createEffect(() => this.actions$.pipe(
+      ofType(ProjectsActions.createPanorama),
+      mergeMap(
+        payload => this.projectsService.createPanorama(payload.projectId, payload.panorama).pipe(
+          map(project => ProjectsActions.createPanoramaSuccess({project}))
+        )
+      )
+    )
+  );
+
+  updatePanorama$ = createEffect(() => this.actions$.pipe(
+      ofType(ProjectsActions.updatePanorama),
+      mergeMap(
+        payload => this.projectsService.updatePanorama(payload.projectId, payload.panorama).pipe(
+          map(project => ProjectsActions.updatePanoramaSuccess({project}))
+        )
+      )
+    )
+  );
+
+  deletePanorama$ = createEffect(() => this.actions$.pipe(
+      ofType(ProjectsActions.deletePanorama),
+      mergeMap(
+        payload => forkJoin(payload.names.map(name => this.projectsService.deletePanoramaProject(payload.projectId, name))).pipe(
+          map(res => ProjectsActions.deletePanoramaSuccess(payload))
+        )
+      )
+    )
+  );
+
+  createHdrPanorama$ = createEffect(() => this.actions$.pipe(
+      ofType(ProjectsActions.createHdrPanorama),
+      mergeMap(
+        payload => this.projectsService.makeHdr(payload.projectId, payload.name).pipe(
+          map(project => ProjectsActions.createHdrPanoramaSuccess({project}))
         )
       )
     )

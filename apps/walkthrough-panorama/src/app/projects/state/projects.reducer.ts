@@ -65,10 +65,25 @@ export const reducer = createReducer(
     };
   }),
   on(ProjectsActions.setActiveProject, (state, {projectId}) => ({...state, activeProjectId: projectId})),
-  on(ProjectsActions.loadPanoramasSuccess, (state, { panoramas }) => {
+  on(
+    ProjectsActions.loadPanoramasSuccess,
+    ProjectsActions.createPanoramaSuccess,
+    ProjectsActions.updatePanoramaSuccess,
+    ProjectsActions.createHdrPanoramaSuccess,
+    (state, { project }) => {
+      return {
+        ...state,
+        virtualTourParameters: project
+      }
+    }
+  ),
+  on(ProjectsActions.deletePanoramaSuccess, (state, {projectId, names}) => {
     return {
       ...state,
-      virtualTourParameters: panoramas
+      virtualTourParameters: {
+        ...state.virtualTourParameters,
+        data: state.virtualTourParameters.data.filter(p => names.includes(p.name))
+      }
     }
   })
 );

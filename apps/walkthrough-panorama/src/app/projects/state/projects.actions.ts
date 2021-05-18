@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { Panorama } from '../../interfaces/panorama';
 import { Project } from '../../interfaces/project';
 import { ProjectSite } from '../../interfaces/project-site';
 
@@ -85,11 +86,65 @@ export const loadPanoramas = createAction(
 
 export const loadPanoramasSuccess = createAction(
   `${prefix} Load Panoramas success`,
-  props<{panoramas: Project}>()
+  props<{project: Project}>()
 );
 
 export const loadPanoramasFailed = createAction(
   `${prefix} Load Panoramas failed`
 );
 
+export const createPanorama = createAction(
+  `${prefix} Create Panorama`,
+  props<{panorama: Panorama; projectId: string;}>()
+);
 
+export const createPanoramaSuccess = createAction(
+  `${prefix} Create Panorama success`,
+  props<{project: Project;}>()
+);
+
+export const createPanoramaFailed = createAction(
+  `${prefix} Create Panorama failed`
+);
+
+export const updatePanorama = createAction(
+  `${prefix} Update Panorama`,
+  props<{panorama: Panorama; projectId: string;}>()
+);
+
+export const updatePanoramaSuccess = createAction(
+  `${prefix} Update Panorama success`,
+  props<{project: Project;}>()
+);
+
+export const updatePanoramaFailed = createAction(
+  `${prefix} Update Panorama failed`
+);
+
+export const deletePanorama = createAction(
+  `${prefix} Delete Panorama`,
+  props<{names: string[]; projectId: string;}>()
+);
+
+export const deletePanoramaSuccess = createAction(
+  `${prefix} Delete Panorama success`,
+  props<{names: string[]; projectId: string;}>()
+);
+
+export const deletePanoramaFailed = createAction(
+  `${prefix} Delete Panorama failed`
+);
+
+export const createHdrPanorama = createAction(
+  `${prefix} Create HDR Panorama`,
+  props<{name: string; projectId: string;}>()
+);
+
+export const createHdrPanoramaSuccess = createAction(
+  `${prefix} Create HDR Panorama success`,
+  props<{project: Project;}>()
+);
+
+export const createHdrPanoramaFailed = createAction(
+  `${prefix} Create HDR Panorama failed`
+);

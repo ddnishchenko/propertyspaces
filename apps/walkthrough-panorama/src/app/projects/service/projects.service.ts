@@ -53,11 +53,11 @@ export class ProjectsService {
     );
   }
 
-  createPanorama(project_id, panorama_data) {
+  createPanorama(project_id, panorama_data): Observable<Project> {
     return this.http.post(host + 'create-panorama', {project_id, panorama_data});
   }
 
-  updatePanorama(project_id, panorama_data) {
+  updatePanorama(project_id, panorama_data): Observable<Project> {
     return this.http.post(host  + 'update-panorama', {client_id: 1295, project_id, panorama_data});
   }
 
