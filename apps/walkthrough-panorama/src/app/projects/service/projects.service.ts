@@ -54,11 +54,23 @@ export class ProjectsService {
   }
 
   createPanorama(project_id, panorama_data): Observable<Project> {
-    return this.http.post(host + 'create-panorama', {project_id, panorama_data});
+    return this.http.post(host + 'create-panorama', {project_id, panorama_data}).pipe(
+      mergeMap(
+        panoData => this.getProject(project_id).pipe(
+          map(project => ({...panoData, name: project.name, address: project.address}))
+        )
+      )
+    );
   }
 
   updatePanorama(project_id, panorama_data): Observable<Project> {
-    return this.http.post(host  + 'update-panorama', {client_id: 1295, project_id, panorama_data});
+    return this.http.post(host  + 'update-panorama', {client_id: 1295, project_id, panorama_data}).pipe(
+      mergeMap(
+        panoData => this.getProject(project_id).pipe(
+          map(project => ({...panoData, name: project.name, address: project.address}))
+        )
+      )
+    );
   }
 
   deletePanoramaProject(project_id, name) {
@@ -72,7 +84,13 @@ export class ProjectsService {
     return this.http.post(host + 'update-data-project', {client_id: 1295, project_id, additional_data})
   }
 
-  makeHdr(project_id, name) {
-    return this.http.post(host + 'create-hdr-panorama', {client_id: 1295, project_id, name})
+  makeHdr(project_id, name): Observable<Project> {
+    return this.http.post(host + 'create-hdr-panorama', {client_id: 1295, project_id, name}).pipe(
+      mergeMap(
+        panoData => this.getProject(project_id).pipe(
+          map(project => ({...panoData, name: project.name, address: project.address}))
+        )
+      )
+    );
   }
 }

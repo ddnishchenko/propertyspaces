@@ -14,4 +14,5 @@ export interface Project {
     canRemove?: boolean;
   }
   data?: Panorama[];
+  error?: string;
 }

@@ -14,9 +14,9 @@ export const selectHdrVirtualTourPanoramas = createSelector(selectVirtualTourPan
   return panos.map(p => {
     return {
         ...p,
-        dark_pano: panos.find(t => t.name.includes(`${p.name}_dark`)),
-        light_pano: panos.find(t => t.name.includes(`${p.name}_light`)),
-        hdr_pano: panos.find(t => t.name.includes(`${p.name}_hdr`)),
+        dark_pano: state.find(t => t.name.includes(`${p.name}_dark`)),
+        light_pano: state.find(t => t.name.includes(`${p.name}_light`)),
+        hdr_pano: state.find(t => t.name.includes(`${p.name}_hdr`)),
     };
   });
 });
@@ -78,4 +78,8 @@ export const selectHdrVirtualTourPanoramasDividerOnFloors = createSelector(selec
     floors,
   }
 })
-export const selectVirtualTourPanoramaByName = (name: string) => createSelector(selectVirtualTourPanoramas, state => state.find(p => p.name === name));
+export const selectVirtualTourPanoramaByName = (name: string) =>
+  createSelector(selectHdrVirtualTourPanoramas, state => (state.find(p => p.name === name) || {}));
+
+export const selectPanoForm = createSelector(selectProjectsState, state => state.panoEditForm);
+export const selectPanoFormMode = createSelector(selectProjectsState, state => state.panoEditForm);

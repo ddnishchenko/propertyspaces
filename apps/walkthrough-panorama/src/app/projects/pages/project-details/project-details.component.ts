@@ -35,7 +35,7 @@ export class ProjectDetailsComponent implements OnInit {
       size: 'lg'
     });
     modalRef.componentInstance.title = 'Create Panorama';
-    modalRef.componentInstance.panorama = {};
+    modalRef.componentInstance.pano = {};
     modalRef.componentInstance.panoData = panoramas;
     modalRef.result.then(value => {
       if (value) {
@@ -50,7 +50,7 @@ export class ProjectDetailsComponent implements OnInit {
       size: 'lg'
     });
     modalRef.componentInstance.title = 'Edit Panorama';
-    modalRef.componentInstance.panorama = panorama;
+    modalRef.componentInstance.pano = panorama;
     modalRef.componentInstance.panoData = panoData;
     modalRef.componentInstance.isEdit = true;
     modalRef.result.then(value => {

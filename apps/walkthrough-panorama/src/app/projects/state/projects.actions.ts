@@ -146,5 +146,16 @@ export const createHdrPanoramaSuccess = createAction(
 );
 
 export const createHdrPanoramaFailed = createAction(
-  `${prefix} Create HDR Panorama failed`
+  `${prefix} Create HDR Panorama failed`,
+  props<{error: string}>()
+);
+
+export const patchPanoForm = createAction(
+  `${prefix} Patch Pano form`,
+  props<Panorama>()
+);
+
+export const panoFormMode = createAction(
+  `${prefix} Pano form mode`,
+  props<{isEdit: boolean}>()
 );

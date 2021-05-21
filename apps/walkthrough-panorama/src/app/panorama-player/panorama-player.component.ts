@@ -8,6 +8,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
+import { Store } from '@ngrx/store';
 
 function parseModel(model) {
 
@@ -148,7 +149,8 @@ export class PanoramaPlayerComponent implements OnInit {
     private projcetService: ProjectsService,
     private router: Router,
     private route: ActivatedRoute,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private store: Store
   ) { }
 
   ngOnInit(): void {

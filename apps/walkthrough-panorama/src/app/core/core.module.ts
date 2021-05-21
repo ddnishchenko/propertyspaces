@@ -8,6 +8,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { ApiInterceptor } from './api.interceptor';
 
 
 @NgModule({
@@ -17,6 +20,8 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
     NgProgressModule,
     NgProgressHttpModule,
     NgbModule,
+    HttpClientModule,
+    SnotifyModule,
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     EffectsModule.forRoot([]),
@@ -24,7 +29,17 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
   ],
   exports: [
     NgProgressModule,
-    NgbModule
+    NgbModule,
+    SnotifyModule
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ApiInterceptor,
+      multi: true
+    },
+    SnotifyService,
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
   ]
 })
 export class CoreModule { }

@@ -11,11 +11,11 @@ import { ConfirmationModalComponent } from './components/confirmation-modal/conf
 import { PanoramaFormComponent } from './components/panorama-form/panorama-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FloorplanFormComponent } from './components/floorplan-form/floorplan-form.component';
-import { SafePipe } from '../pipes/safe.pipe';
 import { StoreModule } from '@ngrx/store';
 import * as fromProjects from './state/projects.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { ProjectsEffects } from './state/projects.effects';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -26,11 +26,11 @@ import { ProjectsEffects } from './state/projects.effects';
     ProjectFormComponent,
     ConfirmationModalComponent,
     PanoramaFormComponent,
-    FloorplanFormComponent,
-    SafePipe
+    FloorplanFormComponent
   ],
   imports: [
     CommonModule,
+    SharedModule,
     ProjectsRoutingModule,
     NgbModalModule,
     FormsModule,

@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { Panorama } from '../../../interfaces/panorama';
 import { fileToBase64 } from '../../../utils';
-import { ProjectsService } from '../../service/projects.service';
 import { createHdrPanorama, createPanorama, deletePanorama, updatePanorama } from '../../state/projects.actions';
+import { selectPanoForm, selectVirtualTourPanoramaByName } from '../../state/projects.selectors';
 
 @Component({
   selector: 'propertyspaces-panorama-form',
@@ -16,19 +18,22 @@ import { createHdrPanorama, createPanorama, deletePanorama, updatePanorama } fro
 export class PanoramaFormComponent implements OnInit {
   title = '+ Add Panoramas';
   isEdit = false;
-  panorama;
+  pano;
+  panorama$;
   panoData;
   mediaPath;
   form;
   loading = false;
+  panoForm$;
   constructor(
     public activeModal: NgbActiveModal,
-    private projectService: ProjectsService,
     private store: Store
   ) { }
 
   ngOnInit(): void {
     this.mediaPath = environment.apiHost + this.panoData.path;
+    this.panorama$ = this.store.pipe(select(selectVirtualTourPanoramaByName(this.pano.name)));
+    this.panoForm$ = this.store.pipe(select(selectPanoForm));
     this.createForm();
   }
 
@@ -46,6 +51,17 @@ export class PanoramaFormComponent implements OnInit {
     });
   }
 
+  panoForm(data) {
+    return {
+      name: data?.name,
+      x: data?.panoramas?.x,
+      y: data?.panoramas?.y,
+      z: data?.panoramas?.z,
+      floor: data?.panoramas?.floor,
+      url: data?.url
+    }
+  }
+
   updateName() {
     if (!this.isEdit) {
       this.form.patchValue({name: `x=${this.form.value.x}y=${this.form.value.y}z=${this.form.value.z}f=${this.form.value.floor}`})
@@ -53,9 +69,9 @@ export class PanoramaFormComponent implements OnInit {
   }
 
   createForm() {
-    this.form = this.createPanoFormGroup(this.panorama);
+    this.form = this.createPanoFormGroup(this.pano);
   }
-  async uploadImage($event) {
+  async uploadImage($event, panoName) {
     if ($event.target.files.length) {
       const file: File[] = Array.from($event.target.files);
       const fileName = file[0].name.split('.').slice(0, -1).join('.');
@@ -64,9 +80,9 @@ export class PanoramaFormComponent implements OnInit {
       const url = await fileToBase64(file[0]);
 
       let rawPano: Panorama;
-      if (this.isEdit || this.panorama.name) {
+      if (this.isEdit || panoName) {
         rawPano = {
-          name: this.panorama.name,
+          name: panoName,
           panoramas: {
             panorama: url
           }
@@ -91,6 +107,7 @@ export class PanoramaFormComponent implements OnInit {
             }
           };
           this.store.dispatch(createPanorama({ projectId: this.panoData.project_id, panorama: rawPano }));
+          this.panorama$ = this.store.pipe(select(selectVirtualTourPanoramaByName(theName)));
         } else {
           alert('Achtung! Coordinates are invalid! Please enter valid coordinates.')
         }
@@ -99,14 +116,14 @@ export class PanoramaFormComponent implements OnInit {
     }
   }
 
-  async uploadPano($event, type, posfix) {
+  async uploadPano($event, panorama, type, posfix) {
     if ($event.target.files.length) {
       const files: File[] = Array.from($event.target.files);
       const url = await fileToBase64(files[0]);
       let rawPano: Panorama;
-      if (this.panorama[type]) {
+      if (panorama[type]) {
         rawPano = {
-          name: this.panorama[type].name,
+          name: panorama[type].name,
           panoramas: {
             panorama: url
           }
@@ -141,8 +158,8 @@ export class PanoramaFormComponent implements OnInit {
     });
   }
 
-  async makeHdr() {
-    this.store.dispatch(createHdrPanorama({projectId: this.panoData.project_id, name: this.panorama.name}));
+  async makeHdr(name) {
+    this.store.dispatch(createHdrPanorama({projectId: this.panoData.project_id, name: name}));
   }
   remove(name) {
     this.store.dispatch(deletePanorama({projectId: this.panoData.project_id, names: [name]}));

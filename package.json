@@ -54,6 +54,7 @@
     "bootstrap": "^4.6.0",
     "caniuse-lite": "^1.0.30001214",
     "font-awesome": "^4.7.0",
+    "ng-snotify": "^9.0.1",
     "ng2-file-upload": "^1.4.0",
     "ngx-drag-drop": "^2.0.0",
     "ngx-progressbar": "^6.1.0",

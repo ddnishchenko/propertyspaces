@@ -108,7 +108,12 @@ export class ProjectsEffects {
       ofType(ProjectsActions.createHdrPanorama),
       mergeMap(
         payload => this.projectsService.makeHdr(payload.projectId, payload.name).pipe(
-          map(project => ProjectsActions.createHdrPanoramaSuccess({project}))
+          map(project => {
+            if (project.hasOwnProperty('error')) {
+              return ProjectsActions.createHdrPanoramaFailed({error: project.error});
+            }
+            return ProjectsActions.createHdrPanoramaSuccess({project});
+          })
         )
       )
     )

@@ -9214,6 +9214,11 @@ ng-packagr@12.0.0:
     sass "^1.32.8"
     stylus "^0.54.8"
 
+ng-snotify@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/ng-snotify/-/ng-snotify-9.0.1.tgz#b8b430a3c5d481bd7e30e23f692b078109f904ae"
+  integrity sha512-NYNtXHGiuBOYz+3/1k/l32IXmlrRNFbK9Z+nQM0dg6HWS+HZpPW84mvOBFLdxYTgzq8+SA6NXaEG4wAgMtFTeg==
+
 ng2-file-upload@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/ng2-file-upload/-/ng2-file-upload-1.4.0.tgz#8dea28d573234c52af474ad2a4001b335271e5c4"

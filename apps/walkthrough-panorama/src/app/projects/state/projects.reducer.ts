@@ -9,12 +9,16 @@ export interface ProjectsState {
   projects: ProjectSite[];
   activeProjectId: string;
   virtualTourParameters: Project;
+  panoEditForm: any;
+  isEditMode: boolean;
 }
 
 export const initialState: ProjectsState = {
   projects: [],
   activeProjectId: null,
-  virtualTourParameters: null
+  virtualTourParameters: null,
+  panoEditForm: {},
+  isEditMode: false
 };
 
 
@@ -56,12 +60,7 @@ export const reducer = createReducer(
   on(ProjectsActions.editProjectSuccess, (state, {projectId, name}) => {
     return {
       ...state,
-      projects: state.projects.map(p => {
-        if (p.id === projectId) {
-          return {...p, name};
-        }
-        return p;
-      })
+      virtualTourParameters: {...state.virtualTourParameters, name}
     };
   }),
   on(ProjectsActions.setActiveProject, (state, {projectId}) => ({...state, activeProjectId: projectId})),
@@ -82,8 +81,20 @@ export const reducer = createReducer(
       ...state,
       virtualTourParameters: {
         ...state.virtualTourParameters,
-        data: state.virtualTourParameters.data.filter(p => names.includes(p.name))
+        data: state.virtualTourParameters.data.filter(p => !names.includes(p.name))
       }
+    }
+  }),
+  on(ProjectsActions.patchPanoForm, (state, panorama) => {
+    return {
+      ...state,
+      panoEditForm: panorama
+    }
+  }),
+  on(ProjectsActions.panoFormMode, (state, {isEdit}) => {
+    return {
+      ...state,
+      isEditMode: isEdit
     }
   })
 );
