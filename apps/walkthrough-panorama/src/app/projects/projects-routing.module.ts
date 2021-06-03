@@ -16,9 +16,17 @@ const routes: Routes = [
       },
       {
         path: ':id',
-        component: ProjectDetailsComponent
-      }
+        component: ProjectDetailsComponent,
+      },
     ]
+  },
+  {
+    path: 'vr-tour-model/:id',
+    loadChildren: () => import('../panorama-player/panorama-player.module').then(m => m.PanoramaPlayerModule),
+  },
+  {
+    path: 'vr-tour-embed/:id',
+    loadChildren: () => import('../panorama-player/panorama-player.module').then(m => m.PanoramaPlayerModule),
   }
 ];
 

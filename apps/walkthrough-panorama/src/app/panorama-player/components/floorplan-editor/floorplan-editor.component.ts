@@ -89,9 +89,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
       ...this.data.additional_data,
       ...this.form.value
     }
-    this.projectsService.updateDataProject(this.data.project_id, additional_data).subscribe(res => {
-      this.activeModal.close(res);
-    })
+    this.activeModal.close(additional_data);
   }
   onResizeEnd($event) {
   }

@@ -64,6 +64,16 @@ export class ProjectsEffects {
     )
   );
 
+  updateProject$ = createEffect(() => this.actions$.pipe(
+      ofType(ProjectsActions.updateProject),
+      mergeMap(
+        payload => this.projectsService.updateDataProject(payload.projectId, payload.data).pipe(
+          map(project => ProjectsActions.updateProjectSuccess({project}))
+        )
+      )
+    )
+  )
+
   loadPanoramas$ = createEffect(() => this.actions$.pipe(
       ofType(ProjectsActions.loadPanoramas),
       mergeMap(

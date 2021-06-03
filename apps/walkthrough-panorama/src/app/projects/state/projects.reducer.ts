@@ -69,6 +69,7 @@ export const reducer = createReducer(
     ProjectsActions.createPanoramaSuccess,
     ProjectsActions.updatePanoramaSuccess,
     ProjectsActions.createHdrPanoramaSuccess,
+    ProjectsActions.updateProjectSuccess,
     (state, { project }) => {
       return {
         ...state,

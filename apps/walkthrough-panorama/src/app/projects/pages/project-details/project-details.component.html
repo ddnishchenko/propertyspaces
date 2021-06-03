@@ -26,14 +26,18 @@
       <div class="text-right">
         <a
           class="btn btn-primary ml-2"
-          [routerLink]="['/model', project.project_id, { floorplan: true }]"
+          [routerLink]="[
+            '/projects/vr-tour-model',
+            project.project_id,
+            { floorplan: true }
+          ]"
         >
           <i class="fa fa-pencil mr-1"></i>
           <span>Edit Floorplans</span>
         </a>
         <a
           class="btn btn-primary ml-2"
-          [routerLink]="['/model', project.project_id]"
+          [routerLink]="['/projects/vr-tour-model', project.project_id]"
         >
           <i class="fa fa-pencil mr-1"></i>
           <span>Edit Walkthrough</span>
@@ -61,7 +65,9 @@
       <h4 class="text-center">Walkthrough URL</h4>
 
       <p class="text-center text-primary h5">
-        <a [routerLink]="['/embed', project.project_id]" class="text-underline"
+        <a
+          [routerLink]="['/projects/vr-tour-embed', project.project_id]"
+          class="text-underline"
           >www.slideshowcloud.com/{{ project.project_id }}</a
         >
       </p>

@@ -5,13 +5,16 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup } from '@angular/forms';
-import { forkJoin } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { selectVirtualTourParams } from '../projects/state/projects.selectors';
+import { loadPanoramas, updateProject } from '../projects/state/projects.actions';
 
 function parseModel(model) {
-
+  if (!model) {
+    return false;
+  }
   const allPanos = model.data;
   let panos = allPanos.filter(t => !t.name.includes('_'));
   let panosHDR = panos.map((p, i) => {
@@ -26,8 +29,8 @@ function parseModel(model) {
         hdr_pano: allPanos.find(t => t.name.includes(`${p.name}_hdr`)),
     };
   });
-  let floors = panosHDR.map(p => p.panoramas.floor);
-  floors = Array.from(new Set(floors));
+  let floors: number[] = panosHDR.map(p => p.panoramas.floor);
+  floors = Array.from(new Set(floors)).sort((a, b) => a - b);
   let panoFloors = floors.map(f => panosHDR.filter(p => p.panoramas.floor === f));
   let panoFloorsCoord = panoFloors.map(f => {
     let xArray = f.map(p => +p.panoramas.x);
@@ -141,12 +144,13 @@ export class PanoramaPlayerComponent implements OnInit {
   aspectRatio = null;
   aspects = aspectRations;
   data$;
+  data1$;
   form;
   isEdit = false;
   rotationAngle = 0;
   floorActiveIndex = 0;
+  floors$;
   constructor(
-    private projcetService: ProjectsService,
     private router: Router,
     private route: ActivatedRoute,
     private modalService: NgbModal,
@@ -156,11 +160,13 @@ export class PanoramaPlayerComponent implements OnInit {
   ngOnInit(): void {
     this.isEdit = this.router.url.includes('model');
     this.createForm();
-    this.data$ = this.route.data.pipe(
-      map(data => data.model),
-      map(model => {
-        const parsedData = parseModel(model);
-        if (this.route.snapshot.params.floorplan) {
+    this.store.dispatch(loadPanoramas({projectId: this.route.snapshot.params.id}));
+    this.data1$ = this.store.pipe(
+      select(selectVirtualTourParams),
+      // tap(data => console.log(data))
+      map(data => {
+        const parsedData = parseModel(data);
+        if (this.route.snapshot.params.floorplan && this.isEdit && parsedData) {
           this.openFloorplanEditor(parsedData);
         }
         return parsedData;
@@ -193,13 +199,9 @@ export class PanoramaPlayerComponent implements OnInit {
     this.virtualTour.virtualTourService.changeMeshRotation(this.form.value.rotationY);
   }
 
-  saveY(id) {
-    const updateY = this.projcetService.updateRotationProject(id, this.form.value.rotationY);
-    const updateData = this.projcetService.updateDataProject(id, {zoom: this.form.value.zoom, rotation_y: this.form.value.rotationY});
-
-    forkJoin([updateY, updateData]).subscribe(res => {
-      alert('saved');
-    });
+  saveY(projectId) {
+    const data = {zoom: this.form.value.zoom, rotation_y: this.form.value.rotationY};
+    this.store.dispatch(updateProject({projectId, data}))
   }
 
   navTo(name, panos, i) {
@@ -225,12 +227,9 @@ export class PanoramaPlayerComponent implements OnInit {
       windowClass: 'floorplan-modal',
     });
     modalRef.componentInstance.data = data;
-    modalRef.result.then(v => {
-      if (v) {
-        this.data$ = this.projcetService.getPanoramas(data.project_id)
-        .pipe(
-          map(model => parseModel(model))
-        );
+    modalRef.result.then(data => {
+      if (data) {
+        this.store.dispatch(updateProject({projectId: data.project_id, data}))
       }
     }).catch(e => {
       console.log('Dismissed');

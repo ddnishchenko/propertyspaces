@@ -11,6 +11,8 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { ApiInterceptor } from './api.interceptor';
+import { reducers, metaReducers } from './state/core.reducer';
+import { ProjectsEffects } from '../projects/state/projects.effects';
 
 
 @NgModule({
@@ -22,9 +24,9 @@ import { ApiInterceptor } from './api.interceptor';
     NgbModule,
     HttpClientModule,
     SnotifyModule,
-    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([ProjectsEffects]),
     StoreRouterConnectingModule.forRoot()
   ],
   exports: [

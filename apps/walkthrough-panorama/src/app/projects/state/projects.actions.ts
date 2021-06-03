@@ -46,17 +46,17 @@ export const deleteProjectsFailed = createAction(
 );
 
 export const copyProject = createAction(
-  `${prefix} Copu Project`,
+  `${prefix} Copy Project`,
   props<{projectId: string}>()
 );
 
 export const copyProjectSuccess = createAction(
-  `${prefix} Copu Project Success`,
+  `${prefix} Copy Project Success`,
   props<{oldProjectId: string, newProjectId: string}>()
 );
 
 export const copyProjectFailed = createAction(
-  `${prefix} Copu Project Failed`
+  `${prefix} Copy Project Failed`
 );
 
 export const editProject = createAction(
@@ -71,6 +71,20 @@ export const editProjectSuccess = createAction(
 
 export const editProjectFailed = createAction(
   `${prefix} Edit Project Failed`
+);
+
+export const updateProject = createAction(
+  `${prefix} Update Project`,
+  props<{projectId: string, data: any}>()
+);
+
+export const updateProjectSuccess = createAction(
+  `${prefix} Update Project Success`,
+  props<{project: Project}>()
+);
+
+export const updateProjectFailed = createAction(
+  `${prefix} Update Project Failed`
 );
 
 export const setActiveProject = createAction(

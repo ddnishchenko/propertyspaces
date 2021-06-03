@@ -73,9 +73,11 @@ export const selectHdrVirtualTourPanoramasDividerOnFloors = createSelector(selec
 
 
   return {
+    _t: Date.now(),
     panoFloorsCoord,
     panoFloors,
     floors,
+    panos: state
   }
 })
 export const selectVirtualTourPanoramaByName = (name: string) =>
