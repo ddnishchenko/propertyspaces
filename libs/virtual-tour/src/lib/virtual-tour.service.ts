@@ -474,9 +474,9 @@ export class VirtualTourService {
     this.DeviceOrientationControls.name = 'device-orientation';
     this.DeviceOrientationControls.enabled = false;
     // this.camera.position.z = 1;
-
-    this.defaultY = +config.rotation_y || this.defaultY
-
+    if (config.additional_data) {
+      this.defaultY = +config.additional_data.rotation_y || this.defaultY;
+    }
 
     // 1
     this.loaderModel = new THREE.TextureLoader();
