@@ -7,5 +7,6 @@ export interface Panorama {
     y?: number;
     z?: number
     floor?: number;
+    panoCameraStartAngle?: number;
   }
 }

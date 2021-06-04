@@ -1,7 +1,9 @@
 <div class="panorama-player d-flex flex-column" *ngIf="data1$ | async as data">
   <header class="p-3 bg-dark text-white">
     <div [formGroup]="form" class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-between">
+      <div
+        class="row d-flex flex-wrap align-items-center justify-content-between"
+      >
         <ul
           class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
         >
@@ -35,47 +37,28 @@
 
         <form class="col-12 col-lg-auto d-flex" *ngIf="isEdit">
           <ng-container *ngIf="form.value.editMode">
-            <div class="mb-3 mb-lg-0 me-lg-3">
-              <input
-                (change)="zoomChange()"
-                type="number"
-                class="form-control form-control-dark"
-                formControlName="zoom"
-                [value]="form.value.zoom"
-                step="1"
-                min="30"
-                max="120"
-                placeholder="number"
-                style="min-width: 100px"
-              />
-            </div>
-
             <div class="range-slider">
               <input
                 class="range-slider__range"
                 (input)="zoomChange()"
-                (change)="zoomChange()"
                 type="range"
                 formControlName="zoom"
                 step="0"
                 min="30"
                 max="120"
               />
-              <span class="range-slider__value">{{ form.value.zoom }}</span>
-            </div>
-
-            <div class="mb-3 mb-lg-0 me-lg-3">
-              <input
-                (change)="rotationYChange()"
-                type="number"
-                class="form-control form-control-dark"
-                formControlName="rotationY"
-                step="0.1"
-                min="0"
-                max="6.3"
-                placeholder="number"
-                style="min-width: 100px"
-              />
+              <span class="range-slider__value">
+                <input
+                  (change)="zoomChange()"
+                  [value]="form.value.zoom"
+                  type="number"
+                  formControlName="zoom"
+                  step="1"
+                  min="30"
+                  max="120"
+                  placeholder="number"
+                />
+              </span>
             </div>
 
             <div class="range-slider">
@@ -88,9 +71,17 @@
                 min="0"
                 max="6.3"
               />
-              <span class="range-slider__value">{{
-                form.value.rotationY
-              }}</span>
+              <span class="range-slider__value">
+                <input
+                  type="number"
+                  formControlName="rotationY"
+                  (change)="rotationYChange()"
+                  [value]="form.value.rotationY"
+                  step="0.1"
+                  min="0"
+                  max="6.3"
+                />
+              </span>
             </div>
 
             <div class="d-flex" *ngIf="form.value.editMode">
@@ -107,6 +98,36 @@
                 (click)="saveY(data.project_id)"
               >
                 Save
+              </button>
+            </div>
+
+            <div class="range-slider">
+              <input
+                class="range-slider__range"
+                (input)="panoCameraStartAngleChange()"
+                type="range"
+                formControlName="panoCameraStartAngle"
+                step="0.1"
+                min="0"
+                max="6.3"
+              />
+              <span class="range-slider__value">
+                <input
+                  type="number"
+                  formControlName="panoCameraStartAngle"
+                  (change)="panoCameraStartAngleChange()"
+                  [value]="form.value.panoCameraStartAngle"
+                  step="0.1"
+                  min="0"
+                  max="6.3"
+                />
+              </span>
+              <button
+                type="button"
+                class="btn btn-success"
+                (click)="updatePanoCameraAngle()"
+              >
+                Save pano
               </button>
             </div>
           </ng-container>

@@ -29,6 +29,7 @@ function ringsShape() {
 
 @Injectable()
 export class VirtualTourService {
+  private defaultY = 3.5;
   static EVENTS = {
     INIT: 'INIT',
     ROTATION_CHANGE: 'ROTATION_CHANGE',
@@ -89,6 +90,10 @@ export class VirtualTourService {
   // Observable string streams
   dotInfo$ = this.dotSource.asObservable();
   config;
+
+  get currentPanorama() {
+    return this.panos.find(p => p.name === this.currentPano.name);
+  }
 
   events = new EventEmitter();
 
@@ -243,6 +248,12 @@ export class VirtualTourService {
     this.transitionMesh.material.map = this.transition.texture
     this.transitionMesh.material.needsUpdate = true
     this.transitionMesh.visible = true;
+
+    if (!isNaN(pano.panoramas.panoCameraStartAngle)) {
+      this.meshModel.rotation.y = +pano.panoramas.panoCameraStartAngle;
+    } else {
+      this.meshModel.rotation.y = this.defaultY;
+    }
     this.events.emit({type: VirtualTourService.EVENTS.NAV_TO, data: this.activeIndex})
   }
 
@@ -301,6 +312,22 @@ export class VirtualTourService {
       type: VirtualTourService.EVENTS.ROTATION_CHANGE,
       data: this.meshModel.rotation.y
     });
+  }
+
+  changeMeshRotationForCurrentPano(y) {
+    this.meshModel.rotation.y = y;
+    this.panos = this.panos.map(p => {
+      if (p.name === this.currentPano.name) {
+        return {
+          ...p,
+          panoramas: {
+            ...p.panoramas,
+            panoCameraStartAngle: y
+          }
+        }
+      }
+      return p;
+    })
   }
 
   onDocumentMouseDown(event) {
@@ -448,15 +475,15 @@ export class VirtualTourService {
     this.DeviceOrientationControls.enabled = false;
     // this.camera.position.z = 1;
 
-    const defaultY = 3.5;
-    const y = +config.rotation_y || defaultY;
+    this.defaultY = +config.rotation_y || this.defaultY
+
 
     // 1
     this.loaderModel = new THREE.TextureLoader();
     this.sphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
     this.sphereGeometryModel.scale(-1, 1, 1);
     this.meshModel = new THREE.Mesh(this.sphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 1}));
-    this.meshModel.rotation.y = y;
+    this.meshModel.rotation.y = this.defaultY;
     this.scene.add(this.meshModel);
     this.meshModel.position.set(0, 0, 0);
 
@@ -464,7 +491,7 @@ export class VirtualTourService {
     let tSphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
     tSphereGeometryModel.scale(-1, 1, 1);
     this.transitionMesh = new THREE.Mesh(tSphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 0}));
-    this.transitionMesh.rotation.y = y;
+    this.transitionMesh.rotation.y = this.defaultY;
     this.scene.add(this.transitionMesh);
     this.addNavPoints(config);
     this.setSettingsControls();

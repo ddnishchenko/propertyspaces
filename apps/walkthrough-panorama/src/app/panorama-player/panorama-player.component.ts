@@ -9,7 +9,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
 import { selectVirtualTourParams } from '../projects/state/projects.selectors';
-import { loadPanoramas, updateProject } from '../projects/state/projects.actions';
+import { loadPanoramas, updatePanorama, updateProject } from '../projects/state/projects.actions';
+import { Panorama } from '../interfaces/panorama';
 
 function parseModel(model) {
   if (!model) {
@@ -28,7 +29,7 @@ function parseModel(model) {
         light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
         hdr_pano: allPanos.find(t => t.name.includes(`${p.name}_hdr`)),
     };
-  });
+  }).sort((a, b) => a.floor - b.floor);
   let floors: number[] = panosHDR.map(p => p.panoramas.floor);
   floors = Array.from(new Set(floors)).sort((a, b) => a - b);
   let panoFloors = floors.map(f => panosHDR.filter(p => p.panoramas.floor === f));
@@ -177,6 +178,7 @@ export class PanoramaPlayerComponent implements OnInit {
   createForm() {
     this.form = new FormGroup({
       rotationY: new FormControl(''),
+      panoCameraStartAngle: new FormControl(''),
       editMode: new FormControl(false),
       zoom: new FormControl(0),
       aspectRatio: new FormControl('')
@@ -199,9 +201,24 @@ export class PanoramaPlayerComponent implements OnInit {
     this.virtualTour.virtualTourService.changeMeshRotation(this.form.value.rotationY);
   }
 
+  panoCameraStartAngleChange() {
+    this.virtualTour.virtualTourService.changeMeshRotationForCurrentPano(this.form.value.panoCameraStartAngle);
+  }
+
   saveY(projectId) {
     const data = {zoom: this.form.value.zoom, rotation_y: this.form.value.rotationY};
     this.store.dispatch(updateProject({projectId, data}))
+  }
+
+  updatePanoCameraAngle() {
+    const { name, panoramas } = this.virtualTour.virtualTourService.currentPanorama;
+    const panorama: Panorama = {
+      name, panoramas
+    };
+    this.store.dispatch(updatePanorama({
+      projectId: this.route.snapshot.params.id,
+      panorama
+    }))
   }
 
   navTo(name, panos, i) {
@@ -213,6 +230,9 @@ export class PanoramaPlayerComponent implements OnInit {
 
   changeActive($event) {
     this.activePoint = $event;
+    this.form.patchValue({
+      panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoramas.panoCameraStartAngle || 0
+    })
   }
   zoomChange() {
     this.virtualTour.virtualTourService.changeZoom(+this.form.value.zoom)
