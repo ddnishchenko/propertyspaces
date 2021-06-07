@@ -9,7 +9,7 @@ import { DragResizeModule } from '@propertyspaces/drag-resize';
 import { SubjxModule } from '@propertyspaces/subjx';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
-import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAccordionModule, NgbButtonsModule, NgbCollapseModule, NgbDropdownModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [PanoramaPlayerComponent, FloorplanEditorComponent],
@@ -20,7 +20,11 @@ import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
     VirtualTourModule,
     DragResizeModule,
     SubjxModule,
-    NgbNavModule
+    NgbNavModule,
+    NgbCollapseModule,
+    NgbDropdownModule,
+    NgbButtonsModule,
+    NgbAccordionModule
   ]
 })
 export class PanoramaPlayerModule { }

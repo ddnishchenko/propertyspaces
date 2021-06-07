@@ -23,7 +23,11 @@ const routes: Routes = [
     },
     data: {}
   },
-  { path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule) }
+  { path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule) },
+  {
+    path: 'virtual-tour',
+    loadChildren: () => import('./virtual-tour/virtual-tour.module').then(m => m.VirtualTourModule)
+  }
 ];
 
 @NgModule({

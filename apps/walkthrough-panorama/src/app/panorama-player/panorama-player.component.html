@@ -1,252 +1,366 @@
-<div class="panorama-player d-flex flex-column" *ngIf="data1$ | async as data">
-  <header class="p-3 bg-dark text-white">
-    <div [formGroup]="form" class="container">
-      <div
-        class="row d-flex flex-wrap align-items-center justify-content-between"
-      >
-        <ul
-          class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
+<ng-container *ngIf="data1$ | async as data">
+  <nav
+    [formGroup]="form"
+    class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
+  >
+    <a class="navbar-brand" href="javascript: alert('Logo')">Logo</a>
+    <button
+      (click)="isCollapsed = !isCollapsed"
+      class="navbar-toggler"
+      type="button"
+      aria-controls="navbarSupportedContent"
+      [attr.aria-expanded]="isCollapsed"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a [routerLink]="['/projects']" class="nav-link">Projects</a>
+        </li>
+        <li class="nav-item">
+          <button
+            class="btn btn-success mr-2"
+            type="button"
+            (click)="takeScreenshot()"
+          >
+            Take screenshot
+          </button>
+        </li>
+        <li class="nav-item">
+          <select
+            class="custom-select"
+            formControlName="aspectRatio"
+            name="aspectRatio"
+            (change)="updateCanvasSize()"
+          >
+            <option *ngFor="let aspect of aspects" [value]="aspect.value">
+              {{ aspect.name }}
+            </option>
+          </select>
+        </li>
+      </ul>
+      <div class="my-2 my-lg-0">
+        <div
+          ngbDropdown
+          [autoClose]="false"
+          placement="left"
+          class="d-inline-block"
         >
-          <li *ngIf="isEdit">
-            <a [routerLink]="['/projects']" class="nav-link px-2 text-secondary"
-              >Projects</a
-            >
-          </li>
-          <li>
-            <button
-              class="btn btn-success"
-              type="button"
-              (click)="takeScreenshot()"
-            >
-              Take screenshot
-            </button>
-          </li>
-          <li>
-            <select
-              class="custom-select"
-              formControlName="aspectRatio"
-              name="aspectRatio"
-              (change)="updateCanvasSize()"
-            >
-              <option *ngFor="let aspect of aspects" [value]="aspect.value">
-                {{ aspect.name }}
-              </option>
-            </select>
-          </li>
-        </ul>
+          <button class="btn btn-primary" id="dropdownForm1" ngbDropdownToggle>
+            Settings
+          </button>
 
-        <form class="col-12 col-lg-auto d-flex" *ngIf="isEdit">
-          <ng-container *ngIf="form.value.editMode">
-            <div class="range-slider">
-              <input
-                class="range-slider__range"
-                (input)="zoomChange()"
-                type="range"
-                formControlName="zoom"
-                step="0"
-                min="30"
-                max="120"
-              />
-              <span class="range-slider__value">
-                <input
-                  (change)="zoomChange()"
-                  [value]="form.value.zoom"
-                  type="number"
-                  formControlName="zoom"
-                  step="1"
-                  min="30"
-                  max="120"
-                  placeholder="number"
-                />
-              </span>
-            </div>
-
-            <div class="range-slider">
-              <input
-                class="range-slider__range"
-                (input)="rotationYChange()"
-                type="range"
-                formControlName="rotationY"
-                step="0.1"
-                min="0"
-                max="6.3"
-              />
-              <span class="range-slider__value">
-                <input
-                  type="number"
-                  formControlName="rotationY"
-                  (change)="rotationYChange()"
-                  [value]="form.value.rotationY"
-                  step="0.1"
-                  min="0"
-                  max="6.3"
-                />
-              </span>
-            </div>
-
-            <div class="d-flex" *ngIf="form.value.editMode">
+          <div
+            ngbDropdownMenu
+            style="min-width: 280px"
+            aria-labelledby="dropdownForm1"
+          >
+            <form class="px-4 py-3">
+              <div class="form-group">
+                <label>Zoom</label>
+                <div class="range-slider">
+                  <input
+                    class="range-slider__range"
+                    (input)="zoomChange()"
+                    type="range"
+                    formControlName="zoom"
+                    step="0"
+                    min="30"
+                    max="120"
+                  />
+                  <span class="range-slider__value">
+                    <input
+                      (change)="zoomChange()"
+                      [value]="form.value.zoom"
+                      type="number"
+                      formControlName="zoom"
+                      step="1"
+                      min="30"
+                      max="120"
+                      placeholder="number"
+                    />
+                  </span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Default rotation</label>
+                <div class="range-slider">
+                  <input
+                    class="range-slider__range"
+                    (input)="rotationYChange()"
+                    type="range"
+                    formControlName="rotationY"
+                    step="0.1"
+                    min="0"
+                    max="6.3"
+                  />
+                  <span class="range-slider__value">
+                    <input
+                      type="number"
+                      formControlName="rotationY"
+                      (change)="rotationYChange()"
+                      [value]="form.value.rotationY"
+                      step="0.1"
+                      min="0"
+                      max="6.3"
+                    />
+                  </span>
+                </div>
+              </div>
               <button
                 type="button"
-                class="btn btn-outline-light me-2"
-                (click)="rotationYChange()"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-light me-2"
-                (click)="saveY(data.project_id)"
+                (click)="saveSettings(data.project_id)"
+                class="btn btn-success"
               >
                 Save
               </button>
-            </div>
 
-            <div class="range-slider">
-              <input
-                class="range-slider__range"
-                (input)="panoCameraStartAngleChange()"
-                type="range"
-                formControlName="panoCameraStartAngle"
-                step="0.1"
-                min="0"
-                max="6.3"
-              />
-              <span class="range-slider__value">
-                <input
-                  type="number"
-                  formControlName="panoCameraStartAngle"
-                  (change)="panoCameraStartAngleChange()"
-                  [value]="form.value.panoCameraStartAngle"
-                  step="0.1"
-                  min="0"
-                  max="6.3"
-                />
-              </span>
-              <button
-                type="button"
-                class="btn btn-success"
-                (click)="updatePanoCameraAngle()"
-              >
-                Save pano
-              </button>
-            </div>
-          </ng-container>
+              <div class="dropdown-divider"></div>
 
-          <div class="custom-control custom-switch" style="min-width: 115px">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="editMode"
-              formControlName="editMode"
-              (change)="editModeSwitch()"
-            />
-            <label class="custom-control-label" for="editMode">Edit mode</label>
-          </div>
-          <div>
-            <button
-              type="button"
-              class="btn btn-warning"
-              (click)="openFloorplanEditor(data)"
-            >
-              Add floorplan
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </header>
-  <main class="vr-tour-wrapper">
-    <!-- [ngStyle]="{width: data.floorplan.xSide + 'px', height: data.floorplan.zSide * 30 + 'px'}" -->
-    <div
-      class="vt-map"
-      *ngIf="data.additional_data && data.additional_data.floors"
-    >
-      <ul
-        ngbNav
-        (navChange)="navFloor($event, data.panoFloors, data.panos)"
-        #nav="ngbNav"
-        class="nav-tabs mb-5"
-      >
-        <li
-          *ngFor="let f of data.additional_data.floors; index as i"
-          [ngbNavItem]="i"
-        >
-          <a ngbNavLink>{{ f.floor }}</a>
-          <ng-template ngbNavContent>
-            <div class="d-flex justify-content-center">
-              <div
-                #bound
-                class="vt-map-wrapper"
-                [style.transform]="'rotate(' + -f.nav_dots_rotation + 'deg)'"
-              >
-                <img
-                  class="vt-map-wrapper-floorplan"
-                  #floorplanImage
-                  [src]="
-                    data.projectFolder +
-                    f['floorplan_f' + f.floor + '.svg'] +
-                    '?_t=' +
-                    data._t
-                  "
-                  [style.transform]="'rotate(' + f.nav_dots_rotation + 'deg)'"
-                />
-                <div class="vt-map-ponits-wrapper" [ngStyle]="scaleDots(f)">
-                  <ng-container
-                    *ngFor="let p of data.panoFloorsCoord[i]; index as n"
+              <div class="form-group">
+                <label>Panorama rotation</label>
+                <div class="range-slider">
+                  <input
+                    class="range-slider__range"
+                    (input)="panoCameraStartAngleChange()"
+                    type="range"
+                    formControlName="panoCameraStartAngle"
+                    step="0.1"
+                    min="0"
+                    max="6.3"
+                  />
+                  <span class="range-slider__value">
+                    <input
+                      type="number"
+                      formControlName="panoCameraStartAngle"
+                      (change)="panoCameraStartAngleChange()"
+                      [value]="form.value.panoCameraStartAngle"
+                      step="0.1"
+                      min="0"
+                      max="6.3"
+                    />
+                  </span>
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    (click)="updatePanoCameraAngle()"
                   >
-                    <div
-                      class="vt-map-point"
-                      (click)="navTo(p.name, data.panos, n)"
-                      [class.active]="floorActiveIndex === n"
-                      [ngStyle]="getStyleForDot(f, p)"
-                    >
-                      {{ n + 1 }}
-                    </div>
-
-                    <ng-container *ngIf="floorActiveIndex === n">
-                      <div
-                        [className]="'vt-map-point active'"
-                        [ngStyle]="getStyleForDot(f, p)"
-                      >
-                        <div
-                          class="pointer"
-                          [style.transform]="'rotate(' + rotationAngle + 'rad)'"
-                        ></div>
-                        <!-- (lon + currentDot.rotation_angle) -->
-                      </div>
-                    </ng-container>
-                  </ng-container>
+                    Save pano
+                  </button>
                 </div>
               </div>
-            </div>
-          </ng-template>
-        </li>
-      </ul>
-      <div class="mb-5" [ngbNavOutlet]="nav"></div>
+            </form>
+          </div>
+        </div>
 
-      <!-- <div class="vt-map-point" *ngFor="let p of data.data; index as i"
-      (click)="navTo(i)"
-      [class.active]="activePoint === i"
-      [style.top]="(floorplanImage.offsetHeight / 2) + (289 / 100)*p.panoramas.z + 'px'"
-      [style.left]="(floorplanImage.offsetWidth / 2) + (289 / 100)*p.panoramas.x + 'px'">{{ p.panoramas.x }} {{ floorplanImage.offsetWidth }}</div> -->
+        <div
+          class="btn-group"
+          ngbDropdown
+          role="group"
+          aria-label="Button group with nested dropdown"
+        >
+          <button type="button" class="btn btn-primary ml-3" ngbDropdownToggle>
+            Change view
+          </button>
+          <div class="dropdown-menu text-center" ngbDropdownMenu>
+            <div
+              class="btn-group btn-group-toggle"
+              ngbRadioGroup
+              name="radioBasic"
+              formControlName="sidebarSide"
+            >
+              <label
+                ngbButtonLabel
+                class="btn-primary"
+                (click)="moveSidebar('l')"
+              >
+                <input ngbButton type="radio" value="l" /> Left
+              </label>
+              <label
+                ngbButtonLabel
+                class="btn-primary"
+                (click)="moveSidebar('r')"
+              >
+                <input ngbButton type="radio" value="r" /> Right
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-warning ml-3"
+          (click)="openFloorplanEditor(data)"
+        >
+          Add floorplan
+        </button>
+      </div>
     </div>
-    <div
-      class="main-scene-wrapper"
-      #sceneWrapper
-      [style.width]="
-        form.value.aspectRatio
-          ? sceneWrapper.offsetHeight / form.value.aspectRatio + 'px'
-          : '100%'
-      "
-    >
-      <canvas
-        #virtualTour
-        id="virtualTour"
-        [propertyspacesVirtualTour]="data"
-        (init)="vrInit()"
-        (navigationChange)="changeActive($event)"
-        (change)="viewChange($event)"
-      ></canvas>
+  </nav>
+
+  <main class="panorama-player d-flex">
+    <div class="boxes d-flex">
+      <div
+        class="sidebar"
+        [class.stick-right]="form.value.sidebarSide === 'r'"
+        ngResizable
+        [rzHandles]="form.value.sidebarSide === 'r' ? 'w' : 'e'"
+        (rzResizing)="resizeCanvas()"
+      >
+        <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+          <ngb-panel title="Floor Plan">
+            <ng-template ngbPanelContent>
+              <div
+                class="vt-map"
+                *ngIf="data.additional_data && data.additional_data.floors"
+              >
+                <ul
+                  ngbNav
+                  (navChange)="navFloor($event, data.panoFloors, data.panos)"
+                  #nav="ngbNav"
+                  class="nav-tabs mb-5"
+                >
+                  <li
+                    *ngFor="let f of data.additional_data.floors; index as i"
+                    [ngbNavItem]="i"
+                  >
+                    <a ngbNavLink>{{ f.floor }}</a>
+                    <ng-template ngbNavContent>
+                      <div class="d-flex justify-content-center">
+                        <div
+                          #bound
+                          class="vt-map-wrapper"
+                          [style.transform]="
+                            'rotate(' + -f.nav_dots_rotation + 'deg)'
+                          "
+                        >
+                          <img
+                            class="vt-map-wrapper-floorplan"
+                            #floorplanImage
+                            [src]="
+                              data.projectFolder +
+                              f['floorplan_f' + f.floor + '.svg'] +
+                              '?_t=' +
+                              data._t
+                            "
+                            [style.transform]="
+                              'rotate(' + f.nav_dots_rotation + 'deg)'
+                            "
+                          />
+                          <div
+                            class="vt-map-ponits-wrapper"
+                            [ngStyle]="scaleDots(f)"
+                          >
+                            <ng-container
+                              *ngFor="
+                                let p of data.panoFloorsCoord[i];
+                                index as n
+                              "
+                            >
+                              <div
+                                class="vt-map-point"
+                                (click)="navTo(p.name, data.panos, n)"
+                                [class.active]="floorActiveIndex === n"
+                                [ngStyle]="getStyleForDot(f, p)"
+                              >
+                                {{ n + 1 }}
+                              </div>
+
+                              <ng-container *ngIf="floorActiveIndex === n">
+                                <div
+                                  [className]="'vt-map-point active'"
+                                  [ngStyle]="getStyleForDot(f, p)"
+                                >
+                                  <div
+                                    class="pointer"
+                                    [style.transform]="
+                                      'rotate(' + rotationAngle + 'rad)'
+                                    "
+                                  ></div>
+                                  <!-- (lon + currentDot.rotation_angle) -->
+                                </div>
+                              </ng-container>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </li>
+                </ul>
+                <div class="mb-5" [ngbNavOutlet]="nav"></div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+
+          <ngb-panel title="Map">
+            <ng-template ngbPanelContent>
+              Anim pariatur cliche reprehenderit, enim eiusmod high life
+              accusamus terry richardson ad squid. 3 wolf moon officia aute, non
+              cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
+              laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird
+              on it squid single-origin coffee nulla assumenda shoreditch et.
+              Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
+              nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
+              lomo. Leggings occaecat craft beer farm-to-table, raw denim
+              aesthetic synth nesciunt you probably haven't heard of them
+              accusamus labore sustainable VHS.
+            </ng-template>
+          </ngb-panel>
+
+          <ngb-panel title="Photo Gallery">
+            <ng-template ngbPanelContent>
+              Anim pariatur cliche reprehenderit, enim eiusmod high life
+              accusamus terry richardson ad squid. 3 wolf moon officia aute, non
+              cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
+              laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird
+              on it squid single-origin coffee nulla assumenda shoreditch et.
+              Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
+              nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
+              lomo. Leggings occaecat craft beer farm-to-table, raw denim
+              aesthetic synth nesciunt you probably haven't heard of them
+              accusamus labore sustainable VHS.
+            </ng-template>
+          </ngb-panel>
+
+          <ngb-panel title="Contact">
+            <ng-template ngbPanelContent>
+              Anim pariatur cliche reprehenderit, enim eiusmod high life
+              accusamus terry richardson ad squid. 3 wolf moon officia aute, non
+              cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
+              laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird
+              on it squid single-origin coffee nulla assumenda shoreditch et.
+              Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
+              nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
+              lomo. Leggings occaecat craft beer farm-to-table, raw denim
+              aesthetic synth nesciunt you probably haven't heard of them
+              accusamus labore sustainable VHS.
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+      <div class="content">
+        <div
+          class="main-scene-wrapper"
+          #sceneWrapper
+          [style.width]="
+            form.value.aspectRatio
+              ? sceneWrapper.offsetHeight / form.value.aspectRatio + 'px'
+              : '100%'
+          "
+        >
+          <canvas
+            #virtualTour
+            id="virtualTour"
+            [propertyspacesVirtualTour]="data"
+            (init)="vrInit()"
+            (navigationChange)="changeActive($event)"
+            (change)="viewChange($event)"
+          ></canvas>
+        </div>
+      </div>
     </div>
   </main>
-</div>
+</ng-container>

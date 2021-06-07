@@ -138,7 +138,7 @@ const aspectRations = [
   styleUrls: ['./panorama-player.component.scss']
 })
 export class PanoramaPlayerComponent implements OnInit {
-
+  isCollapsed = true;
   @ViewChild(VirtualTourDirective) virtualTour;
 
   activePoint = 0;
@@ -181,7 +181,8 @@ export class PanoramaPlayerComponent implements OnInit {
       panoCameraStartAngle: new FormControl(''),
       editMode: new FormControl(false),
       zoom: new FormControl(0),
-      aspectRatio: new FormControl('')
+      aspectRatio: new FormControl(''),
+      sidebarSide: new FormControl('l')
     });
   }
 
@@ -283,4 +284,9 @@ export class PanoramaPlayerComponent implements OnInit {
     const pano = floors[$event.nextId][0]
     this.navTo(pano.name, panos, 0);
   }
+  resizeCanvas() {
+    this.virtualTour.virtualTourService.resize()
+  }
+
+  moveSidebar() {}
 }

@@ -9,29 +9,6 @@ $shade-1: #d7dcdf !default;
 $shade-0: #fff !default;
 $teal: #1abc9c !default;
 
-// Reset
-* {
-  &,
-  &:before,
-  &:after {
-    box-sizing: border-box;
-  }
-}
-
-body {
-  font-family: sans-serif;
-  padding: 60px 20px;
-
-  @media (min-width: 600px) {
-    padding: 60px;
-  }
-}
-
-// You may be interested in editing these values to shrink the slider element
-.range-slider {
-  // margin: 60px 0 0 0%;
-}
-
 // Range Slider
 $range-width: 100% !default;
 
@@ -144,11 +121,9 @@ input::-moz-focus-outer {
 }
 
 .vt-map {
-  position: fixed;
-  height: calc(100vh - 72px);
   min-width: 300px;
   background-color: #fff;
-  border-right: 2px solid #000;
+  overflow: hidden;
   // height: 300px;
   // padding-right: 26px;
   // padding-bottom: 26px;
@@ -198,14 +173,39 @@ input::-moz-focus-outer {
 }
 
 .panorama-player {
-  height: 100vh;
-  max-height: 100vh;
+  height: calc(100vh - 56px);
+  position: relative;
+}
+.boxes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 .main-scene-wrapper {
   height: 100%;
   font-size: 0;
   margin: 0 auto;
 }
+
+.sidebar {
+  width: 400px;
+  position: relative;
+  height: 100%;
+  border-right: 2px solid #000;
+  left: 0 !important;
+}
+.stick-right {
+  order: 1;
+  border-right: none;
+  border-left: 2px solid #000;
+}
+
+.content {
+  height: 100%;
+  position: relative;
+  flex-grow: 1;
+}
+
 .vr-tour-wrapper {
   flex: 1;
 }
