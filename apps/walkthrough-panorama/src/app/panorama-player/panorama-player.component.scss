@@ -193,6 +193,13 @@ input::-moz-focus-outer {
   height: 100%;
   border-right: 2px solid #000;
   left: 0 !important;
+  overflow: auto;
+}
+.ng-resizable-handle.ng-resizable-e {
+  right: 0;
+}
+.ng-resizable-handle:hover {
+  background-color: rgba(24, 90, 189, 0.38);
 }
 .stick-right {
   order: 1;
