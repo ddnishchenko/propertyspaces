@@ -208,13 +208,18 @@
     <div class="boxes d-flex">
       <div
         class="sidebar"
+        #sidebar
         [class.stick-right]="form.value.sidebarSide === 'r'"
         ngResizable
         [rzHandles]="form.value.sidebarSide === 'r' ? 'w' : 'e'"
         (rzResizing)="resizeCanvas()"
       >
-        <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
-          <ngb-panel title="Floor Plan">
+        <ngb-accordion
+          class="sidebar-accordion"
+          #acc="ngbAccordion"
+          activeIds="ngb-panel-0"
+        >
+          <ngb-panel cardClass="sidebar-card" title="Floor Plan">
             <ng-template ngbPanelContent>
               <div
                 class="vt-map"
@@ -298,7 +303,7 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel title="Map">
+          <ngb-panel cardClass="sidebar-card" title="Map">
             <ng-template ngbPanelContent>
               Anim pariatur cliche reprehenderit, enim eiusmod high life
               accusamus terry richardson ad squid. 3 wolf moon officia aute, non
@@ -313,7 +318,7 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel title="Photo Gallery">
+          <ngb-panel cardClass="sidebar-card" title="Photo Gallery">
             <ng-template ngbPanelContent>
               Anim pariatur cliche reprehenderit, enim eiusmod high life
               accusamus terry richardson ad squid. 3 wolf moon officia aute, non
@@ -328,7 +333,7 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel title="Contact">
+          <ngb-panel cardClass="sidebar-card" title="Contact">
             <ng-template ngbPanelContent>
               Anim pariatur cliche reprehenderit, enim eiusmod high life
               accusamus terry richardson ad squid. 3 wolf moon officia aute, non

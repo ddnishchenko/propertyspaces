@@ -84,3 +84,11 @@ mwlResizable {
     height: 100vh;
   }
 }
+
+.sidebar-card {
+  min-height: 63px;
+}
+
+.sidebar-card > .collapse {
+  overflow: auto;
+}
