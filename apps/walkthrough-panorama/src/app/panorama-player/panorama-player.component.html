@@ -42,8 +42,10 @@
           </select>
         </li>
       </ul>
+
       <div class="my-2 my-lg-0">
         <div
+          *ngIf="isEdit"
           ngbDropdown
           [autoClose]="false"
           placement="left"
@@ -191,6 +193,7 @@
         </div>
 
         <button
+          *ngIf="isEdit"
           type="button"
           class="btn btn-warning ml-3"
           (click)="openFloorplanEditor(data)"
