@@ -1,124 +1,169 @@
 <ng-container *ngIf="project$ | async as project">
-  <h1 class="text-center my-5">
-    {{ project.name }}
-    <i
-      class="fa fa-edit"
-      *ngIf="!isEditName"
-      (click)="editName(project.name)"
-    ></i>
-  </h1>
-  <div class="input-group mb-3" *ngIf="isEditName">
-    <span class="input-group-text" (click)="saveName(project.project_id)"
-      >x</span
-    >
-    <input class="form-control" [(ngModel)]="projectName" />
-  </div>
+  <ng-container *ngIf="panoramas$ | async as panoramas">
+    <!-- NAV MENU BEGIN -->
+    <nav class="navbar navbar-dark bg-dark sticky-top navbar-expand-lg">
+      <div class="container">
+        <a
+          class="navbar-brand"
+          href="javascript: void 0;"
+          title="Propertyspaces"
+          ><img src="assets/img/logo-white.svg" class="img-fluid"
+        /></a>
 
-  <div class="card shadow mb-4">
-    <div
-      class="card-header d-md-flex justify-content-md-center align-items-md-center py-3"
-    >
-      <div class="mr-auto">
-        <a class="btn btn-light" [routerLink]="'..'">
-          <i class="fa fa-2x fa-chevron-left"></i>
-        </a>
+        <button
+          (click)="isMenuCollapsed = !isMenuCollapsed"
+          class="navbar-toggler"
+        >
+          <span class="sr-only">Toggle navigation</span
+          ><span class="navbar-toggler-icon"></span>
+        </button>
+        <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+          <ul class="navbar-nav ml-auto text-uppercase">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/projects">My Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="javascript:;">Log out</a>
+            </li>
+            <li class="nav-item"></li>
+          </ul>
+        </div>
       </div>
-      <div class="text-right">
-        <a
-          class="btn btn-primary ml-2"
-          [routerLink]="[
-            '/projects/vr-tour-model',
-            project.project_id,
-            { floorplan: true }
-          ]"
-        >
-          <i class="fa fa-pencil mr-1"></i>
-          <span>Edit Floorplans</span>
-        </a>
-        <a
-          class="btn btn-primary ml-2"
-          [routerLink]="['/projects/vr-tour-model', project.project_id]"
-        >
-          <i class="fa fa-pencil mr-1"></i>
-          <span>Edit Walkthrough</span>
-        </a>
-        <button
-          class="btn btn-primary ml-2"
-          type="button"
-          (click)="openCreateForm(project)"
-        >
-          <i class="fa fa-plus mr-1"></i>
-          <span>Add Nav Point</span>
-        </button>
-        <button
-          class="btn btn-danger ml-2"
-          type="button"
-          (click)="deletePanoramas()"
-        >
-          <i class="fa fa-trash mr-1"></i>
-          <span>Delete</span>
-        </button>
+    </nav>
+    <!-- NAV MENU END -->
+
+    <!-- PAGE TITLE BEGIN -->
+    <section
+      class="page-cover d-flex justify-content-center align-items-center"
+      [style.min-height]="'400px'"
+      [style.background]="
+        'url(' + host + project.path + panoramas[0].name + ') center / cover'
+      "
+    >
+      <div class="page-cover-title">
+        <h2 class="text-center">
+          <span>{{ project.name }}</span
+          ><i
+            class="fa fa-edit"
+            *ngIf="!isEditName"
+            (click)="editName(project.name)"
+          ></i>
+        </h2>
+        <div class="input-group mb-3" *ngIf="isEditName">
+          <span class="input-group-text" (click)="saveName(project.project_id)"
+            >x</span
+          >
+          <input class="form-control" [(ngModel)]="projectName" />
+        </div>
+      </div>
+    </section>
+    <!-- PAGE TITLE END -->
+
+    <!-- VISIT VR TOUR BEGIN -->
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="text-center">Visit Your Walkthrough</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="list-group">
+            <a
+              [routerLink]="['/projects/vr-tour-embed', project.project_id]"
+              class="list-group-item list-group-item-action"
+            >
+              Unbranded
+            </a>
+            <a href="#" class="list-group-item list-group-item-action"
+              >Branded</a
+            >
+          </div>
+        </div>
       </div>
     </div>
+    <!-- VISIT VR TOUR END -->
 
-    <div class="card-body">
-      <h4 class="text-center">Walkthrough URL</h4>
+    <!-- EDIT VR TOUR BEGIN -->
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="text-center">Edit Your Walkthrough</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="list-group">
+            <a
+              class="list-group-item list-group-item-action"
+              [routerLink]="['/projects/vr-tour-model', project.project_id]"
+              >Edit virtual tour</a
+            >
+            <a
+              class="list-group-item list-group-item-action"
+              [routerLink]="[
+                '/projects/vr-tour-model',
+                project.project_id,
+                { floorplan: true }
+              ]"
+              >Edit floor plan</a
+            >
+            <a
+              href="javascript:;"
+              class="list-group-item list-group-item-action"
+              (click)="openCreateForm(project)"
+            >
+              Add Navigation Points
+            </a>
+            <a class="list-group-item list-group-item-action"
+              >Add Map & Streetview</a
+            >
+            <a class="list-group-item list-group-item-action"
+              >Add Image Gallery</a
+            >
+            <a class="list-group-item list-group-item-action"
+              >Change Template</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- EDIT VR TOUR END -->
 
-      <p class="text-center text-primary h5">
-        <a
-          [routerLink]="['/projects/vr-tour-embed', project.project_id]"
-          class="text-underline"
-          >www.slideshowcloud.com/{{ project.project_id }}</a
-        >
-      </p>
-
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th class="text-right" scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let panorama of panoramas$ | async">
-            <th scope="row">
-              <div class="form-check">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  [value]="panorama.name"
-                  [id]="'flexCheckChecked_' + panorama.name"
-                  (change)="onCheckChange($event)"
-                />
-                <label
-                  class="form-check-label"
-                  [for]="'flexCheckChecked_' + panorama.name"
-                ></label>
-              </div>
-            </th>
-            <td>{{ panorama.name }}</td>
-            <td class="text-right">
-              <div class="btn-group">
-                <button
+    <!-- EDIT PANORAMAS BEGIN -->
+    <div class="container my-5">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="text-center">Edit Panoramas</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="list-group">
+            <li
+              *ngFor="let panorama of panoramas"
+              class="list-group-item list-group-item-action d-flex align-items-center"
+            >
+              <a
+                href="javascript:;"
+                (click)="openEditPanorama(panorama, project)"
+                >{{ panorama.name }}</a
+              >
+              <div class="actions ml-auto">
+                <i
                   (click)="openEditPanorama(panorama, project)"
-                  type="button"
-                  class="btn btn-primary"
-                >
-                  <i class="fa fa-2x fa-pencil"></i>
-                </button>
-                <button
+                  class="fa fa-gear fa-2x mx-2"
+                ></i>
+                <i
                   (click)="deletePanoramas(panorama.name)"
-                  type="button"
-                  class="btn btn-danger"
-                >
-                  <i class="fa fa-2x fa-trash"></i>
-                </button>
+                  class="fa fa-trash-o fa-2x"
+                ></i>
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </li>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+    <!-- EDIT PANORAMAS END -->
+  </ng-container>
 </ng-container>

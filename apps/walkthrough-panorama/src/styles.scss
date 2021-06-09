@@ -5,6 +5,10 @@
 @import '~subjx/dist/style/subjx.css';
 @import '~ng-snotify/styles/material';
 
+body {
+  background-color: rgb(230, 231, 233);
+}
+
 .table {
   th,
   td {

@@ -13,12 +13,12 @@ const routes: Routes = [
       {
         path: '',
         component: ProjectListComponent
-      },
-      {
-        path: ':id',
-        component: ProjectDetailsComponent,
-      },
+      }
     ]
+  },
+  {
+    path: ':id',
+    component: ProjectDetailsComponent,
   },
   {
     path: 'vr-tour-model/:id',

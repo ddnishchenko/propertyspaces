@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { ProjectsComponent } from './projects.component';
 import { ProjectListComponent } from './pages/project-list/project-list.component';
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 import { ProjectFormComponent } from './components/project-form/project-form.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
@@ -36,7 +36,8 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
-    EffectsModule.forFeature([ProjectsEffects])
+    EffectsModule.forFeature([ProjectsEffects]),
+    NgbCollapseModule
   ],
   entryComponents: [
     ProjectFormComponent,

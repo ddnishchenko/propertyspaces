@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
+import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
 import { deletePanorama, editProject, loadPanoramas, updatePanorama } from '../../state/projects.actions';
@@ -13,6 +14,8 @@ import { selectHdrVirtualTourPanoramas, selectVirtualTourParams } from '../../st
   styleUrls: ['./project-details.component.scss']
 })
 export class ProjectDetailsComponent implements OnInit {
+  host = environment.apiHost;
+  isMenuCollapsed = true;
   project$;
   panoramas$;
   panoNames = [];
