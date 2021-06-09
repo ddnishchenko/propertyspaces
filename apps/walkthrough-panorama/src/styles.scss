@@ -1,8 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-body {
-  margin: 0;
-  background-color: rgb(241, 247, 252);
-}
 @import '~font-awesome/scss/font-awesome';
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
@@ -76,12 +72,15 @@ mwlResizable {
 
 // @import 'assets/scss/resizable.scss';
 
-.floorplan-modal {
+.fullscreen-modal {
   .modal-dialog {
     max-width: none;
     margin: 0;
     width: 100%;
     height: 100vh;
+  }
+  .modal-content {
+    min-height: 100%;
   }
 }
 

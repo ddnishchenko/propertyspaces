@@ -204,6 +204,138 @@
     </div>
   </nav>
 
+  <ng-template #modalWrapper let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" *ngIf="modalContent">
+      <ng-container *ngTemplateOutlet="modalContent"></ng-container>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="modal.close('Save click')"
+      >
+        Close
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #floorplanTpl>
+    <div
+      class="vt-map"
+      *ngIf="data.additional_data && data.additional_data.floors"
+    >
+      <ul
+        ngbNav
+        (navChange)="navFloor($event, data.panoFloors, data.panos)"
+        #nav="ngbNav"
+        class="nav-tabs mb-5"
+      >
+        <li
+          *ngFor="let f of data.additional_data.floors; index as i"
+          [ngbNavItem]="i"
+        >
+          <a ngbNavLink>{{ f.floor }}</a>
+          <ng-template ngbNavContent>
+            <div class="d-flex justify-content-center">
+              <div
+                #bound
+                class="vt-map-wrapper"
+                [style.transform]="'rotate(' + -f.nav_dots_rotation + 'deg)'"
+              >
+                <img
+                  class="vt-map-wrapper-floorplan"
+                  #floorplanImage
+                  [src]="
+                    data.projectFolder +
+                    f['floorplan_f' + f.floor + '.svg'] +
+                    '?_t=' +
+                    data._t
+                  "
+                  [style.transform]="'rotate(' + f.nav_dots_rotation + 'deg)'"
+                />
+                <div class="vt-map-ponits-wrapper" [ngStyle]="scaleDots(f)">
+                  <ng-container
+                    *ngFor="let p of data.panoFloorsCoord[i]; index as n"
+                  >
+                    <div
+                      class="vt-map-point"
+                      (click)="navTo(p.name, data.panos, n)"
+                      [class.active]="floorActiveIndex === n"
+                      [ngStyle]="getStyleForDot(f, p)"
+                    >
+                      {{ n + 1 }}
+                    </div>
+
+                    <ng-container *ngIf="floorActiveIndex === n">
+                      <div
+                        [className]="'vt-map-point active'"
+                        [ngStyle]="getStyleForDot(f, p)"
+                      >
+                        <div
+                          class="pointer"
+                          [style.transform]="'rotate(' + rotationAngle + 'rad)'"
+                        ></div>
+                        <!-- (lon + currentDot.rotation_angle) -->
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+      <div class="mb-5" [ngbNavOutlet]="nav"></div>
+    </div>
+  </ng-template>
+
+  <ng-template #mapTpl>
+    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+    richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
+    dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
+    tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
+    assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
+    wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
+    vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic
+    synth nesciunt you probably haven't heard of them accusamus labore
+    sustainable VHS.
+  </ng-template>
+
+  <ng-template #galleryTpl>
+    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+    richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
+    dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
+    tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
+    assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
+    wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
+    vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic
+    synth nesciunt you probably haven't heard of them accusamus labore
+    sustainable VHS.
+  </ng-template>
+
+  <ng-template #contactTpl>
+    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+    richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
+    dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
+    tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
+    assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
+    wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
+    vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic
+    synth nesciunt you probably haven't heard of them accusamus labore
+    sustainable VHS.
+  </ng-template>
+
   <main class="panorama-player d-flex">
     <div class="boxes d-flex">
       <div
@@ -219,132 +351,89 @@
           #acc="ngbAccordion"
           activeIds="ngb-panel-0"
         >
-          <ngb-panel cardClass="sidebar-card" title="Floor Plan">
-            <ng-template ngbPanelContent>
+          <ngb-panel cardClass="sidebar-card">
+            <ng-template ngbPanelHeader>
               <div
-                class="vt-map"
-                *ngIf="data.additional_data && data.additional_data.floors"
+                class="d-flex justify-content-between align-items-center w-100"
               >
-                <ul
-                  ngbNav
-                  (navChange)="navFloor($event, data.panoFloors, data.panos)"
-                  #nav="ngbNav"
-                  class="nav-tabs mb-5"
+                <button ngbPanelToggle class="btn btn-link p-0">
+                  Floor Plan
+                </button>
+                <button
+                  class="btn btn-primary"
+                  (click)="
+                    openSectionModal(modalWrapper, floorplanTpl, 'Floor Plan')
+                  "
                 >
-                  <li
-                    *ngFor="let f of data.additional_data.floors; index as i"
-                    [ngbNavItem]="i"
-                  >
-                    <a ngbNavLink>{{ f.floor }}</a>
-                    <ng-template ngbNavContent>
-                      <div class="d-flex justify-content-center">
-                        <div
-                          #bound
-                          class="vt-map-wrapper"
-                          [style.transform]="
-                            'rotate(' + -f.nav_dots_rotation + 'deg)'
-                          "
-                        >
-                          <img
-                            class="vt-map-wrapper-floorplan"
-                            #floorplanImage
-                            [src]="
-                              data.projectFolder +
-                              f['floorplan_f' + f.floor + '.svg'] +
-                              '?_t=' +
-                              data._t
-                            "
-                            [style.transform]="
-                              'rotate(' + f.nav_dots_rotation + 'deg)'
-                            "
-                          />
-                          <div
-                            class="vt-map-ponits-wrapper"
-                            [ngStyle]="scaleDots(f)"
-                          >
-                            <ng-container
-                              *ngFor="
-                                let p of data.panoFloorsCoord[i];
-                                index as n
-                              "
-                            >
-                              <div
-                                class="vt-map-point"
-                                (click)="navTo(p.name, data.panos, n)"
-                                [class.active]="floorActiveIndex === n"
-                                [ngStyle]="getStyleForDot(f, p)"
-                              >
-                                {{ n + 1 }}
-                              </div>
-
-                              <ng-container *ngIf="floorActiveIndex === n">
-                                <div
-                                  [className]="'vt-map-point active'"
-                                  [ngStyle]="getStyleForDot(f, p)"
-                                >
-                                  <div
-                                    class="pointer"
-                                    [style.transform]="
-                                      'rotate(' + rotationAngle + 'rad)'
-                                    "
-                                  ></div>
-                                  <!-- (lon + currentDot.rotation_angle) -->
-                                </div>
-                              </ng-container>
-                            </ng-container>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-template>
-                  </li>
-                </ul>
-                <div class="mb-5" [ngbNavOutlet]="nav"></div>
+                  <i class="fa fa-expand"></i>
+                </button>
               </div>
             </ng-template>
-          </ngb-panel>
-
-          <ngb-panel cardClass="sidebar-card" title="Map">
             <ng-template ngbPanelContent>
-              Anim pariatur cliche reprehenderit, enim eiusmod high life
-              accusamus terry richardson ad squid. 3 wolf moon officia aute, non
-              cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
-              laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird
-              on it squid single-origin coffee nulla assumenda shoreditch et.
-              Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-              nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-              lomo. Leggings occaecat craft beer farm-to-table, raw denim
-              aesthetic synth nesciunt you probably haven't heard of them
-              accusamus labore sustainable VHS.
+              <ng-container *ngTemplateOutlet="floorplanTpl"></ng-container>
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel cardClass="sidebar-card" title="Photo Gallery">
+          <ngb-panel cardClass="sidebar-card">
+            <ng-template ngbPanelHeader>
+              <div
+                class="d-flex justify-content-between align-items-center w-100"
+              >
+                <button ngbPanelToggle class="btn btn-link p-0">Map</button>
+                <button
+                  class="btn btn-primary"
+                  (click)="openSectionModal(modalWrapper, mapTpl, 'Map')"
+                >
+                  <i class="fa fa-expand"></i>
+                </button>
+              </div>
+            </ng-template>
             <ng-template ngbPanelContent>
-              Anim pariatur cliche reprehenderit, enim eiusmod high life
-              accusamus terry richardson ad squid. 3 wolf moon officia aute, non
-              cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
-              laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird
-              on it squid single-origin coffee nulla assumenda shoreditch et.
-              Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-              nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-              lomo. Leggings occaecat craft beer farm-to-table, raw denim
-              aesthetic synth nesciunt you probably haven't heard of them
-              accusamus labore sustainable VHS.
+              <ng-container *ngTemplateOutlet="mapTpl"></ng-container>
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel cardClass="sidebar-card" title="Contact">
+          <ngb-panel cardClass="sidebar-card">
+            <ng-template ngbPanelHeader>
+              <div
+                class="d-flex justify-content-between align-items-center w-100"
+              >
+                <button ngbPanelToggle class="btn btn-link p-0">
+                  Photo Gallery
+                </button>
+                <button
+                  class="btn btn-primary"
+                  (click)="
+                    openSectionModal(modalWrapper, galleryTpl, 'Photo Gallery')
+                  "
+                >
+                  <i class="fa fa-expand"></i>
+                </button>
+              </div>
+            </ng-template>
             <ng-template ngbPanelContent>
-              Anim pariatur cliche reprehenderit, enim eiusmod high life
-              accusamus terry richardson ad squid. 3 wolf moon officia aute, non
-              cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
-              laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird
-              on it squid single-origin coffee nulla assumenda shoreditch et.
-              Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-              nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-              lomo. Leggings occaecat craft beer farm-to-table, raw denim
-              aesthetic synth nesciunt you probably haven't heard of them
-              accusamus labore sustainable VHS.
+              <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
+            </ng-template>
+          </ngb-panel>
+
+          <ngb-panel cardClass="sidebar-card">
+            <ng-template ngbPanelHeader>
+              <div
+                class="d-flex justify-content-between align-items-center w-100"
+              >
+                <button ngbPanelToggle class="btn btn-link p-0">Contact</button>
+                <button
+                  class="btn btn-primary"
+                  (click)="
+                    openSectionModal(modalWrapper, contactTpl, 'Contact')
+                  "
+                >
+                  <i class="fa fa-expand"></i>
+                </button>
+              </div>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <ng-container *ngTemplateOutlet="contactTpl"></ng-container>
             </ng-template>
           </ngb-panel>
         </ngb-accordion>

@@ -151,6 +151,8 @@ export class PanoramaPlayerComponent implements OnInit {
   rotationAngle = 0;
   floorActiveIndex = 0;
   floors$;
+  modalContent = null;
+  modalTitle = null;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -245,7 +247,7 @@ export class PanoramaPlayerComponent implements OnInit {
 
   openFloorplanEditor(data) {
     const modalRef = this.modalService.open(FloorplanEditorComponent, {
-      windowClass: 'floorplan-modal',
+      windowClass: 'fullscreen-modal',
     });
     modalRef.componentInstance.data = data;
     modalRef.result.then(data => {
@@ -289,4 +291,23 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   moveSidebar() {}
+
+  openSectionModal(modalWrapper, content, modalTitle) {
+    this.modalContent = content;
+    this.modalTitle = modalTitle;
+    const m = this.modalService.open(modalWrapper, {
+      windowClass: 'fullscreen-modal',
+    });
+
+    m.result.then(
+      r => {
+        this.modalContent = null;
+      },
+      reason => {
+        this.modalContent = null;
+      }
+    );
+
+
+  }
 }
