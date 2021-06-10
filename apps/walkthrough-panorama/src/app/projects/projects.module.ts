@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { ProjectsComponent } from './projects.component';
 import { ProjectListComponent } from './pages/project-list/project-list.component';
-import { NgbCollapseModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbModalModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 import { ProjectFormComponent } from './components/project-form/project-form.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
@@ -16,7 +16,15 @@ import * as fromProjects from './state/projects.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { ProjectsEffects } from './state/projects.effects';
 import { SharedModule } from '../shared/shared.module';
+import { AgmCoreModule } from '@agm/core';
+import { MapModalComponent } from './components/map-modal/map-modal.component';
 
+
+const ngbs = [
+  NgbModalModule,
+  NgbCollapseModule,
+  NgbTypeaheadModule,
+];
 
 @NgModule({
   declarations: [
@@ -26,18 +34,19 @@ import { SharedModule } from '../shared/shared.module';
     ProjectFormComponent,
     ConfirmationModalComponent,
     PanoramaFormComponent,
-    FloorplanFormComponent
+    FloorplanFormComponent,
+    MapModalComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     ProjectsRoutingModule,
-    NgbModalModule,
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
     EffectsModule.forFeature([ProjectsEffects]),
-    NgbCollapseModule
+    AgmCoreModule,
+    ...ngbs
   ],
   entryComponents: [
     ProjectFormComponent,

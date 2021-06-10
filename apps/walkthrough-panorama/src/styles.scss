@@ -1,13 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~font-awesome/scss/font-awesome';
 /* Importing Bootstrap SCSS file. */
-@import '~bootstrap/scss/bootstrap';
+@import 'assets/scss/custom-bootstrap';
+@import '~font-awesome/scss/font-awesome';
+
 @import '~subjx/dist/style/subjx.css';
 @import '~ng-snotify/styles/material';
-
-body {
-  background-color: rgb(230, 231, 233);
-}
 
 .table {
   th,
@@ -94,4 +91,8 @@ mwlResizable {
 
 .sidebar-card > .collapse {
   overflow: auto;
+}
+
+.pac-container {
+  z-index: 9999;
 }

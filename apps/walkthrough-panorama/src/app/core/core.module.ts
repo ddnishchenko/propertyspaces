@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgProgressModule } from 'ngx-progressbar';
 import { NgProgressHttpModule } from 'ngx-progressbar/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AgmCoreModule, LazyMapsAPILoaderConfigLiteral } from '@agm/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../../environments/environment';
@@ -14,6 +15,11 @@ import { ApiInterceptor } from './api.interceptor';
 import { reducers, metaReducers } from './state/core.reducer';
 import { ProjectsEffects } from '../projects/state/projects.effects';
 
+
+const agmConfig: LazyMapsAPILoaderConfigLiteral = {
+  apiKey: 'AIzaSyAWkCS6AN5OnyB9BqcrfpOMlO25Fxvmrwc&amp',
+  libraries: ['places']
+}
 
 @NgModule({
   declarations: [],
@@ -27,7 +33,8 @@ import { ProjectsEffects } from '../projects/state/projects.effects';
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     EffectsModule.forRoot([ProjectsEffects]),
-    StoreRouterConnectingModule.forRoot()
+    StoreRouterConnectingModule.forRoot(),
+    AgmCoreModule.forRoot(agmConfig)
   ],
   exports: [
     NgProgressModule,

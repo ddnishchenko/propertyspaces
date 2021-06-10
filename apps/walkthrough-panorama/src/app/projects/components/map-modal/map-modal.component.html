@@ -1,0 +1,106 @@
+<div class="modal-header bg-danger">
+  <h5 class="modal-title text-white">
+    Add Google Map & Street View to Your Virtual Tour
+  </h5>
+  <button
+    type="button"
+    (click)="activeModal.close()"
+    class="close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div class="text-center">
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="enable-google-map"
+      /><label class="form-check-label" for="enable-google-map"
+        >Enable Google Map</label
+      >
+    </div>
+
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="enable-street-view"
+      /><label class="form-check-label" for="enable-street-view"
+        >Enable Street View</label
+      >
+    </div>
+    <h2>Property Address</h2>
+    <p>
+      Please type in the address and verify that it is correct on the map and
+      the street view
+    </p>
+    <div class="form-group">
+      <label class="sr-only" for="address">Adderss</label>
+      <input
+        #search
+        type="search"
+        class="form-control"
+        id="address"
+        placeholder="Type property address"
+      />
+    </div>
+
+    <agm-map [latitude]="latitude" [longitude]="longitude">
+      <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
+    </agm-map>
+
+    <div class="my-5"></div>
+
+    <div #streetView id="street-view"></div>
+
+    <h3 class="mt-5">Insert Your Own Custom Map or Street View</h3>
+    <p>
+      Use the embed code fields below to insert your own map or street view.
+    </p>
+
+    <div class="form-group">
+      <label class="sr-only" for="exampleFormControlTextarea1"
+        >Google Maps Embeded Code</label
+      >
+      <textarea
+        class="form-control"
+        id="exampleFormControlTextarea1"
+        rows="3"
+        placeholder="Google Maps Embeded Code"
+      ></textarea>
+    </div>
+
+    <button type="button" class="btn btn-primary">Submit</button>
+
+    <div class="form-group mt-5">
+      <label class="sr-only" for="exampleFormControlTextarea1"
+        >Google Street View Embeded Code</label
+      >
+      <textarea
+        class="form-control"
+        id="exampleFormControlTextarea1"
+        rows="3"
+        placeholder="Google Street View Embeded Code"
+      ></textarea>
+    </div>
+    <button type="button" class="btn btn-primary">Submit</button>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.close(false)"
+  >
+    Close
+  </button>
+  <button type="button" class="btn btn-primary" (click)="submit()">
+    Save changes
+  </button>
+</div>

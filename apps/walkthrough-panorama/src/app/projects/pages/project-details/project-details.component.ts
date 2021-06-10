@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
+import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
 import { deletePanorama, editProject, loadPanoramas, updatePanorama } from '../../state/projects.actions';
 import { selectHdrVirtualTourPanoramas, selectVirtualTourParams } from '../../state/projects.selectors';
@@ -95,6 +96,15 @@ export class ProjectDetailsComponent implements OnInit {
 
   saveName(projectId) {
     this.store.dispatch(editProject({projectId, name: this.projectName}))
+  }
+
+  openMapModal() {
+    const modal = this.modalService.open(MapModalComponent, { size: 'lg' });
+
+    modal.result.then(
+      reslove => {},
+      reject => {}
+    );
   }
 
 }
