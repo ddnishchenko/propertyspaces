@@ -1,0 +1,118 @@
+<div class="modal-header bg-danger">
+  <h5 class="modal-title text-white">
+    Add Contact Information to Your Virtual Tour
+  </h5>
+  <button
+    type="button"
+    (click)="activeModal.close()"
+    class="close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form class="text-center">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="formCheck-1" /><label
+        class="form-check-label"
+        for="formCheck-2"
+        >Display contact information in this virtual tour</label
+      >
+    </div>
+
+    <h2>Your Contact Details</h2>
+    <p>Fill in your contact information that you would like to display</p>
+
+    <div class="form-group">
+      <label class="sr-only" for="firstName">First Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="firstName"
+        placeholder="First Name"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="sr-only" for="lastName">Last Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="lastName"
+        placeholder="Last Name"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="sr-only" for="firstName">Email</label>
+      <input type="email" class="form-control" id="email" placeholder="Email" />
+    </div>
+
+    <div class="form-group">
+      <label class="sr-only" for="phone">Phone</label>
+      <input type="tel" class="form-control" id="phone" placeholder="Phone" />
+    </div>
+
+    <button type="button" class="btn btn-primary">+ Add Custom Field</button>
+
+    <h2>Your Organization Contact Details</h2>
+
+    <div class="form-group">
+      <label class="sr-only" for="CompanyName">Company Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="CompanyName"
+        placeholder="Company Name"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="sr-only" for="CompanyAddress">Company Address</label>
+      <input
+        type="text"
+        class="form-control"
+        id="CompanyAddress"
+        placeholder="Company Address"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="sr-only" for="CompanyPhone">Company Phone</label>
+      <input
+        type="tel"
+        class="form-control"
+        id="CompanyPhone"
+        placeholder="Company Phone"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="sr-only" for="CompanyEmail">Company Email</label>
+      <input
+        type="email"
+        class="form-control"
+        id="CompanyEmail"
+        placeholder="Company Email"
+      />
+    </div>
+
+    <button type="button" class="btn btn-primary">+ Add Custom Field</button>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.close(false)"
+  >
+    Close
+  </button>
+  <button type="button" class="btn btn-primary" (click)="submit()">
+    Save changes
+  </button>
+</div>

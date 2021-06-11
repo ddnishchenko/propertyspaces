@@ -93,4 +93,13 @@ export class ProjectsService {
       )
     );
   }
+
+  uploadGalleryPhoto(form: HTMLFormElement): Observable<any> {
+    const formData = new FormData(form);
+    return this.http.post(host + 'file-image-upload', formData);
+  }
+
+  loadGallery(project_id) {
+    return this.http.post(host + 'project-files-list', {client_id: 1295, project_id })
+  }
 }

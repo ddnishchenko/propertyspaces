@@ -175,6 +175,15 @@
   dependencies:
     tslib "^2.1.0"
 
+"@angular/cdk@^12.0.4":
+  version "12.0.4"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-12.0.4.tgz#074f17dc3f3f2ed054dace5ea2d6c89126e000df"
+  integrity sha512-NX/1kEc6ndyEHjGcMtMJYEjwmoURuwRSqKJLbGcHTUwXuuR+hfDP/vU1XDOeXNC80SV+0B4BpJnREkINILfYKw==
+  dependencies:
+    tslib "^2.1.0"
+  optionalDependencies:
+    parse5 "^5.0.0"
+
 "@angular/cli@12.0.0":
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-12.0.0.tgz#59ccb66f0ceb5230ee120dafb5fda70602bd0ff1"
@@ -2516,13 +2525,6 @@
   integrity sha512-uo3w6/FQesqn8YZrO9QvcXR33f/eJqA5AEZrZqMBXRrCrxyVug1gNvFlx9ZFfKKsmokUfxyWPruei7mQ32DEKQ==
   dependencies:
     enhanced-resolve "5.7.0"
-
-"@ngx-gallery/lightbox@^5.0.0-beta.0":
-  version "5.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@ngx-gallery/lightbox/-/lightbox-5.0.0-beta.0.tgz#18303e25fdb9e4b3d2bacee3861aeb9f799a227d"
-  integrity sha512-KTGOWE3FnQqGNyeZwD+HedSIEWz9DJHLMKjHxpxhnMK4WcPLJaziyWSZGyiPb2q4DAvzoageWm7TbdXnqcboTg==
-  dependencies:
-    tslib "^1.9.0"
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
@@ -6887,6 +6889,11 @@ growly@^1.3.0:
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
+  integrity sha1-BO93hiz/K7edMPdpIJWTAiK/YPE=
+
 handle-thing@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"
@@ -9207,6 +9214,13 @@ neo-async@^2.5.0, neo-async@^2.6.1, neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+ng-gallery@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/ng-gallery/-/ng-gallery-5.0.0.tgz#7daccec2e6223e5baee1eaa183c49ce172e51700"
+  integrity sha512-RFnMLJss8XbR7mmaKW39adPe78uzPp+ttv0l1hraq6IRcebTK7Ltzp8dVVg+fzdbx+cTmadespR6nD/icgrckg==
+  dependencies:
+    tslib "^2.0.0"
+
 ng-packagr@12.0.0:
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/ng-packagr/-/ng-packagr-12.0.0.tgz#f7fbe5d2d7cb891252e2d5ea9da7e6db4be4e448"
@@ -9953,7 +9967,7 @@ parse5-sax-parser@^6.0.1:
   dependencies:
     parse5 "^6.0.1"
 
-parse5@5.1.1:
+parse5@5.1.1, parse5@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-5.1.1.tgz#f68e4e5ba1852ac2cadc00f4555fff6c2abb6178"
   integrity sha512-ugq4DFI0Ptb+WWjAdOK16+u/nHfiIrcE+sh8kZMaM0WllQKLI9rOUq6c2b7cwPkXdzfQESqvoqK6ug7U/Yyzug==

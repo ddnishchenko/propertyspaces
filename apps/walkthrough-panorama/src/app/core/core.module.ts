@@ -15,6 +15,8 @@ import { ApiInterceptor } from './api.interceptor';
 import { reducers, metaReducers } from './state/core.reducer';
 import { ProjectsEffects } from '../projects/state/projects.effects';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 const agmConfig: LazyMapsAPILoaderConfigLiteral = {
   apiKey: 'AIzaSyAWkCS6AN5OnyB9BqcrfpOMlO25Fxvmrwc&amp',
@@ -34,7 +36,8 @@ const agmConfig: LazyMapsAPILoaderConfigLiteral = {
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     EffectsModule.forRoot([ProjectsEffects]),
     StoreRouterConnectingModule.forRoot(),
-    AgmCoreModule.forRoot(agmConfig)
+    AgmCoreModule.forRoot(agmConfig),
+    BrowserAnimationsModule
   ],
   exports: [
     NgProgressModule,

@@ -1,0 +1,35 @@
+<div class="modal-header bg-danger">
+  <h5 class="modal-title text-white">
+    Add Contact Information to Your Virtual Tour
+  </h5>
+  <button
+    type="button"
+    (click)="activeModal.close()"
+    class="close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<form #form class="modal-body">
+  <input type="hidden" name="project_id" [value]="project_id" />
+  <input type="file" name="files" id="photo" hidden />
+  <label class="btn btn-primary" for="photo">Upload Image</label>
+
+  <pre>{{ gallery$ | async }}</pre>
+</form>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.close(false)"
+  >
+    Close
+  </button>
+  <button type="button" class="btn btn-primary" (click)="submit(form)">
+    Save changes
+  </button>
+</div>

@@ -4,6 +4,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
+import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
+import { GalleryModalComponent } from '../../components/gallery-modal/gallery-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
 import { deletePanorama, editProject, loadPanoramas, updatePanorama } from '../../state/projects.actions';
@@ -107,4 +109,12 @@ export class ProjectDetailsComponent implements OnInit {
     );
   }
 
+  openContactModal() {
+    const modal = this.modalService.open(ContactInfoModalComponent, {size: 'lg'});
+  }
+
+  openGalleryModal(project_id) {
+    const modal = this.modalService.open(GalleryModalComponent, {size: 'lg'});
+    modal.componentInstance.project_id = project_id;
+  }
 }
