@@ -34,6 +34,6 @@ export class GalleryModalComponent implements OnInit {
     // this.store.dispatch(uploadProjectGalleryPhoto({form}));
   }
   removeImage(name) {
-    this.store.dispatch(removeProjectGalleryPhoto({projectId: this.project_id, name}));
+    this.store.dispatch(removeProjectGalleryPhoto({projectId: this.project_id, image_id: [name]}));
   }
 }

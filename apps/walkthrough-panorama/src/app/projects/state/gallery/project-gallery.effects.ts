@@ -37,7 +37,7 @@ export class ProjectGalleryEffects {
   removeProjectGalleryPhoto$ = createEffect(() => this.actions$.pipe(
       ofType(ProjectGalleryActions.removeProjectGalleryPhoto),
       mergeMap(
-        payload => this.projectService.removeGalleryImage(payload.projectId, payload.name).pipe(
+        payload => this.projectService.removeGalleryImage(payload.projectId, payload.image_id).pipe(
           map(() => ProjectGalleryActions.removeProjectGalleryPhotoSuccess(payload))
         )
       )

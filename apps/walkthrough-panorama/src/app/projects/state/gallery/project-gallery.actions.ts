@@ -33,16 +33,15 @@ export const uploadProjectGalleryPhotoFail = createAction(
 
 export const removeProjectGalleryPhoto = createAction(
   `${p} Remove ProjectGallery Photo`,
-  props<{projectId: string; name: string;}>()
+  props<{projectId: string; image_id: string[];}>()
 );
 
 export const removeProjectGalleryPhotoSuccess = createAction(
   `${p} Remove ProjectGallery Photo Success`,
-  props<{projectId: string; name: string;}>()
+  props<{projectId: string; image_id: string[];}>()
 );
 
 
 export const removeProjectGalleryPhotoFail = createAction(
-  `${p} Remove ProjectGallery Photo Fail`,
-  props<{projectId: string; name: string;}>()
+  `${p} Remove ProjectGallery Photo Fail`
 );

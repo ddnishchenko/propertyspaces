@@ -24,9 +24,9 @@ export const reducer = createReducer(
     ...state,
     gallery: state.gallery.concat(photo)
   })),
-  on(ProjectGalleryActions.removeProjectGalleryPhotoSuccess, (state, {name}) => ({
+  on(ProjectGalleryActions.removeProjectGalleryPhotoSuccess, (state, {image_id}) => ({
     ...state,
-    gallery: state.gallery.filter(p => p.name !== name)
+    gallery: state.gallery.filter(p => !image_id.includes(p.name))
   }))
 );
 
