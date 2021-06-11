@@ -1,0 +1,13 @@
+.gallery-img-wrapper {
+  position: relative;
+  .fa {
+    position: absolute;
+    opacity: 0;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+}
+
+.gallery-img-wrapper:hover .fa {
+  opacity: 1;
+}

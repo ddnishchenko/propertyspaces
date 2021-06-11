@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
+import { ImageGallery } from '../../interfaces/image-gallery';
 import { Project } from '../../interfaces/project';
 import { ProjectSite } from '../../interfaces/project-site';
 
@@ -94,12 +95,18 @@ export class ProjectsService {
     );
   }
 
-  uploadGalleryPhoto(form: HTMLFormElement): Observable<any> {
+  uploadGalleryPhoto(form: HTMLFormElement): Observable<ImageGallery> {
     const formData = new FormData(form);
     return this.http.post(host + 'file-image-upload', formData);
   }
 
-  loadGallery(project_id) {
-    return this.http.post(host + 'project-files-list', {client_id: 1295, project_id })
+  loadGallery(project_id): Observable<any> {
+    return this.http.post(host + 'project-files-list', {client_id: 1295, project_id});
+  }
+  removeGalleryImage(project_id, name) {
+    return this.http.post(host + 'remove-project-file', {client_id: 1295, project_id, name});
+  }
+  changeGalleryImageName(project_id, old_name, name) {
+    return this.http.post(host + 'change-name-project-file', {client_id: 1295, project_id, old_name, name});
   }
 }

@@ -36,6 +36,8 @@ import { GalleryModalComponent } from './components/gallery-modal/gallery-modal.
 // ngrx
 import * as fromProjects from './state/projects.reducer';
 import { ProjectsEffects } from './state/projects.effects';
+import * as fromProjectGallery from './state/gallery/project-gallery.reducer';
+import { ProjectGalleryEffects } from './state/gallery/project-gallery.effects';
 
 @NgModule({
   declarations: [
@@ -57,11 +59,12 @@ import { ProjectsEffects } from './state/projects.effects';
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
-    EffectsModule.forFeature([ProjectsEffects]),
+    EffectsModule.forFeature([ProjectsEffects, ProjectGalleryEffects]),
     AgmCoreModule,
     GalleryModule,
     LightboxModule,
-    ...ngbs
+    ...ngbs,
+    StoreModule.forFeature(fromProjectGallery.projectGalleryFeatureKey, fromProjectGallery.reducer)
   ],
   entryComponents: [
     ProjectFormComponent,

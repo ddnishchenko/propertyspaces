@@ -1,7 +1,5 @@
 <div class="modal-header bg-danger">
-  <h5 class="modal-title text-white">
-    Add Contact Information to Your Virtual Tour
-  </h5>
+  <h5 class="modal-title text-white">Gallery</h5>
   <button
     type="button"
     (click)="activeModal.close()"
@@ -14,11 +12,36 @@
 </div>
 
 <form #form class="modal-body">
-  <input type="hidden" name="project_id" [value]="project_id" />
-  <input type="file" name="files" id="photo" hidden />
-  <label class="btn btn-primary" for="photo">Upload Image</label>
-
-  <pre>{{ gallery$ | async }}</pre>
+  <div class="container-fluid">
+    <input type="hidden" name="project_id" [value]="project_id" />
+    <input
+      type="file"
+      name="files"
+      id="photo"
+      hidden
+      (change)="uploadImage(form)"
+    />
+    <label class="btn btn-primary" for="photo">Upload Image</label>
+    <div
+      class="row"
+      *ngIf="gallery$ | async as images"
+      gallerize
+      selector=".gallery-img"
+    >
+      <div *ngFor="let img of images" class="col-3">
+        <div class="gallery-img-wrapper border border-info rounded-lg">
+          <i class="fa fa-trash-o" (click)="removeImage(img.name)"></i>
+          <img
+            class="img-fluid gallery-img"
+            [src]="img.url"
+            [attr.imageSrc]="img.url"
+            [attr.thumbSrc]="img.thumb"
+            [alt]="img.name"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </form>
 
 <div class="modal-footer">
