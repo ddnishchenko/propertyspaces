@@ -13,7 +13,7 @@
   </button>
 </div>
 
-<div class="modal-body">
+<form class="modal-body" [formGroup]="form">
   <div class="text-center">
     <div class="form-check">
       <input
@@ -68,6 +68,7 @@
         >Google Maps Embeded Code</label
       >
       <textarea
+        formControlName="map"
         class="form-control"
         id="exampleFormControlTextarea1"
         rows="3"
@@ -75,22 +76,25 @@
       ></textarea>
     </div>
 
-    <button type="button" class="btn btn-primary">Submit</button>
+    <hr />
+
+    <!-- <button type="button" class="btn btn-primary">Submit</button> -->
 
     <div class="form-group mt-5">
       <label class="sr-only" for="exampleFormControlTextarea1"
         >Google Street View Embeded Code</label
       >
       <textarea
+        formControlName="tours"
         class="form-control"
         id="exampleFormControlTextarea1"
         rows="3"
         placeholder="Google Street View Embeded Code"
       ></textarea>
     </div>
-    <button type="button" class="btn btn-primary">Submit</button>
+    <!-- <button type="button" class="btn btn-primary">Submit</button> -->
   </div>
-</div>
+</form>
 
 <div class="modal-footer">
   <button

@@ -100,17 +100,18 @@ export class ProjectDetailsComponent implements OnInit {
     this.store.dispatch(editProject({projectId, name: this.projectName}))
   }
 
-  openMapModal() {
+  openMapModal(project_id) {
     const modal = this.modalService.open(MapModalComponent, { size: 'lg' });
-
+    modal.componentInstance.project_id = project_id;
     modal.result.then(
       reslove => {},
       reject => {}
     );
   }
 
-  openContactModal() {
+  openContactModal(project_id) {
     const modal = this.modalService.open(ContactInfoModalComponent, {size: 'lg'});
+    modal.componentInstance.project_id = project_id;
   }
 
   openGalleryModal(project_id) {

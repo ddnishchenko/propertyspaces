@@ -119,7 +119,7 @@
 
             <div class="list-group-item list-group-item-action d-flex">
               <a
-                (click)="openMapModal()"
+                (click)="openMapModal(project.project_id)"
                 href="javascript:;"
                 class="btn btn-link text-dark flex-fill text-left"
                 ><i class="mr-2 fa fa-map"></i>Add Map & Street View</a
@@ -129,7 +129,7 @@
 
             <div class="list-group-item list-group-item-action d-flex">
               <a
-                (click)="openContactModal()"
+                (click)="openContactModal(project.project_id)"
                 href="javascript:;"
                 class="btn btn-link text-dark flex-fill text-left"
                 ><i class="mr-2 fa fa-phone"></i>Edit Contact Info</a

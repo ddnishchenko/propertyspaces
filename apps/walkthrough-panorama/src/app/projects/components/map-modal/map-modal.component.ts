@@ -1,8 +1,10 @@
 import { MapsAPILoader } from '@agm/core';
 import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, OperatorFunction } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { ProjectsService } from '../../service/projects.service';
 
 @Component({
   selector: 'propertyspaces-map-modal',
@@ -10,21 +12,32 @@ import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operato
   styleUrls: ['./map-modal.component.scss']
 })
 export class MapModalComponent implements OnInit, AfterViewInit {
+  @ViewChild('search') searchElementRef: ElementRef;
+  @ViewChild('streetView') streetViewRef: ElementRef;
+  form;
   latitude = 51.678418;
   longitude = 7.809007;
   searching = false;
-  @ViewChild('search') searchElementRef: ElementRef;
-  @ViewChild('streetView') streetViewRef: ElementRef;
+  project_id;
 
   constructor(
     public activeModal: NgbActiveModal,
     private mapsAPILoader: MapsAPILoader,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private projectService: ProjectsService
   ) { }
 
 
 
   ngOnInit(): void {
+    this.createForm();
+  }
+
+  createForm() {
+    this.form = new FormGroup({
+      map: new FormControl(''),
+      tours: new FormControl('')
+    });
   }
 
   async ngAfterViewInit() {
@@ -69,5 +82,10 @@ export class MapModalComponent implements OnInit, AfterViewInit {
     })
   }
 
-  submit() {}
+  submit() {
+    this.projectService.updateAddress(this.project_id, this.form.value).subscribe(res => {
+      console.log(res);
+      this.activeModal.close(res);
+    });
+  }
 }

@@ -109,4 +109,8 @@ export class ProjectsService {
   changeGalleryImageName(project_id, old_name, name) {
     return this.http.post(host + 'change-name-project-file', {client_id: 1295, project_id, old_name, name});
   }
+
+  updateAddress(project_id, data: any) {
+    return this.http.post(host + 'project-update-addresslink', {client_id: 1295, project_id, ...data})
+  }
 }
