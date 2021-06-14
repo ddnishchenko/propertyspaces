@@ -7,8 +7,7 @@ import { NgbCollapseModule, NgbModalModule, NgbTypeaheadModule } from '@ng-boots
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { AgmCoreModule } from '@agm/core';
-import { GalleryModule } from 'ng-gallery';
-import { LightboxModule } from 'ng-gallery/lightbox';
+
 
 const ngbs = [
   NgbModalModule,
@@ -38,6 +37,8 @@ import * as fromProjects from './state/projects.reducer';
 import { ProjectsEffects } from './state/projects.effects';
 import * as fromProjectGallery from './state/gallery/project-gallery.reducer';
 import { ProjectGalleryEffects } from './state/gallery/project-gallery.effects';
+import * as fromProjectLocation from './state/project-location/project-location.reducer';
+import { ProjectLocationEffects } from './state/project-location/project-location.effects';
 
 @NgModule({
   declarations: [
@@ -59,12 +60,11 @@ import { ProjectGalleryEffects } from './state/gallery/project-gallery.effects';
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
-    EffectsModule.forFeature([ProjectsEffects, ProjectGalleryEffects]),
+    EffectsModule.forFeature([ProjectsEffects, ProjectGalleryEffects, ProjectLocationEffects]),
     AgmCoreModule,
-    GalleryModule,
-    LightboxModule,
     ...ngbs,
-    StoreModule.forFeature(fromProjectGallery.projectGalleryFeatureKey, fromProjectGallery.reducer)
+    StoreModule.forFeature(fromProjectGallery.projectGalleryFeatureKey, fromProjectGallery.reducer),
+    StoreModule.forFeature(fromProjectLocation.projectLocationFeatureKey, fromProjectLocation.reducer)
   ],
   entryComponents: [
     ProjectFormComponent,

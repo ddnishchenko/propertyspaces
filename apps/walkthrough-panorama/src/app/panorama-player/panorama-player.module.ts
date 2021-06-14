@@ -10,6 +10,7 @@ import { SubjxModule } from '@propertyspaces/subjx';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { NgbAccordionModule, NgbButtonsModule, NgbCollapseModule, NgbDropdownModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [PanoramaPlayerComponent, FloorplanEditorComponent],
@@ -24,7 +25,8 @@ import { NgbAccordionModule, NgbButtonsModule, NgbCollapseModule, NgbDropdownMod
     NgbCollapseModule,
     NgbDropdownModule,
     NgbButtonsModule,
-    NgbAccordionModule
+    NgbAccordionModule,
+    SharedModule
   ]
 })
 export class PanoramaPlayerModule { }

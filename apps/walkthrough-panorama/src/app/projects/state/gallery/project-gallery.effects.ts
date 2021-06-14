@@ -17,7 +17,7 @@ export class ProjectGalleryEffects {
 
       ofType(ProjectGalleryActions.loadProjectGallery),
       mergeMap(
-        payload => this.projectService.loadGallery(payload.projetId).pipe(
+        payload => this.projectService.loadGallery(payload.projectId).pipe(
           map(gallery => ProjectGalleryActions.loadProjectGallerySuccess({gallery}))
         )
       )

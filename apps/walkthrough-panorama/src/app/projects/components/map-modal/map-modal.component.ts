@@ -15,13 +15,7 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   searching = false;
   @ViewChild('search') searchElementRef: ElementRef;
   @ViewChild('streetView') streetViewRef: ElementRef;
-  /* search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => text$.pipe(
-    debounceTime(500),
-    distinctUntilChanged(),
-    tap(() => this.searching = true),
-    switchMap(term => ),
-    tap(() => this.searching = false)
-  ); */
+
   constructor(
     public activeModal: NgbActiveModal,
     private mapsAPILoader: MapsAPILoader,

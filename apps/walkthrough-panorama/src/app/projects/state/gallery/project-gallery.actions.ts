@@ -5,7 +5,7 @@ const p = '[ProjectGallery]';
 
 export const loadProjectGallery = createAction(
   `${p} Load ProjectGallery`,
-  props<{projetId: string}>()
+  props<{projectId: string}>()
 );
 
 export const loadProjectGallerySuccess = createAction(

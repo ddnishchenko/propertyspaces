@@ -4,6 +4,9 @@ import { ConnectFormDirective } from './directives/connect-form.directive';
 import { SafePipe } from './pipes/safe.pipe';
 
 
+import { GalleryModule } from 'ng-gallery';
+import { LightboxModule } from 'ng-gallery/lightbox';
+
 
 @NgModule({
   declarations: [
@@ -12,10 +15,14 @@ import { SafePipe } from './pipes/safe.pipe';
   ],
   exports: [
     ConnectFormDirective,
-    SafePipe
+    SafePipe,
+    GalleryModule,
+    LightboxModule
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    GalleryModule,
+    LightboxModule
   ]
 })
 export class SharedModule { }

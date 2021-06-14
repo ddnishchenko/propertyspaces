@@ -11,6 +11,8 @@ import { select, Store } from '@ngrx/store';
 import { selectVirtualTourParams } from '../projects/state/projects.selectors';
 import { loadPanoramas, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
+import { loadProjectGallery } from '../projects/state/gallery/project-gallery.actions';
+import { selectGallery } from '../projects/state/gallery/project-gallery.selectors';
 
 function parseModel(model) {
   if (!model) {
@@ -153,6 +155,7 @@ export class PanoramaPlayerComponent implements OnInit {
   floors$;
   modalContent = null;
   modalTitle = null;
+  gallery$;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -161,9 +164,12 @@ export class PanoramaPlayerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const projectId = this.route.snapshot.params.id;
     this.isEdit = this.router.url.includes('model');
     this.createForm();
-    this.store.dispatch(loadPanoramas({projectId: this.route.snapshot.params.id}));
+    this.store.dispatch(loadProjectGallery({projectId}));
+    this.store.dispatch(loadPanoramas({projectId}));
+    this.gallery$ = this.store.pipe(select(selectGallery));
     this.data1$ = this.store.pipe(
       select(selectVirtualTourParams),
       // tap(data => console.log(data))

@@ -22,7 +22,7 @@ export class GalleryModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(loadProjectGallery({projetId: this.project_id}));
+    this.store.dispatch(loadProjectGallery({projectId: this.project_id}));
     this.gallery$ = this.store.pipe(select(selectGallery));
   }
 
