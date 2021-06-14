@@ -37,7 +37,11 @@
       class="page-cover d-flex justify-content-center align-items-center"
       [style.min-height]="'400px'"
       [style.background]="
-        'url(' + host + project.path + panoramas[0].name + ') center / cover'
+        'url(' +
+        host +
+        project.path +
+        (panoramas.length ? panoramas[0].name : '') +
+        ') center / cover'
       "
     >
       <div class="page-cover-title">
