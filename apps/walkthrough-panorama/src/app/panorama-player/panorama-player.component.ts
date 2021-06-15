@@ -11,8 +11,11 @@ import { select, Store } from '@ngrx/store';
 import { selectVirtualTourParams } from '../projects/state/projects.selectors';
 import { loadPanoramas, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
-import { loadProjectGallery } from '../projects/state/gallery/project-gallery.actions';
+import { loadProjectGallery, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 import { selectGallery } from '../projects/state/gallery/project-gallery.selectors';
+import { dataURLtoFile } from '../utils';
+import { NgxMasonryOptions } from 'ngx-masonry';
+import { GalleryComponent, ImageItem } from 'ng-gallery';
 
 function parseModel(model) {
   if (!model) {
@@ -101,6 +104,22 @@ const aspectRations = [
     value: ''
   },
   {
+    name: 'Landscape',
+    value: 1080/566,
+  },
+  {
+    name: 'Portrait',
+    value: 1080 / 1350
+  },
+  {
+    name: 'Square',
+    value: 1080 / 1080
+  },
+  {
+    name: 'Custom',
+    value: 'custom'
+  }
+  /* {
     name: 'SVGA / XGA (4:3)',
     value: 0.75,
   },
@@ -131,7 +150,7 @@ const aspectRations = [
   {
     name: 'iPhone X',
     value: 2.1653333333333333
-  }
+  } */
 ]
 
 @Component({
@@ -142,12 +161,15 @@ const aspectRations = [
 export class PanoramaPlayerComponent implements OnInit {
   isCollapsed = true;
   @ViewChild(VirtualTourDirective) virtualTour;
-
+  @ViewChild(GalleryComponent) galleryCmp: GalleryComponent;
+  public masonryOptions: NgxMasonryOptions = {
+    gutter: 20,
+  };
+  isGalleryOpened = false;
   activePoint = 0;
   aspectRatio = null;
   aspects = aspectRations;
   data$;
-  data1$;
   form;
   isEdit = false;
   rotationAngle = 0;
@@ -169,8 +191,10 @@ export class PanoramaPlayerComponent implements OnInit {
     this.createForm();
     this.store.dispatch(loadProjectGallery({projectId}));
     this.store.dispatch(loadPanoramas({projectId}));
-    this.gallery$ = this.store.pipe(select(selectGallery));
-    this.data1$ = this.store.pipe(
+    this.gallery$ = this.store.pipe(select(selectGallery)).pipe(
+      map(items => items.map(item => new ImageItem({src: item.url, thumb: item.thumb})))
+    );
+    this.data$ = this.store.pipe(
       select(selectVirtualTourParams),
       // tap(data => console.log(data))
       map(data => {
@@ -190,8 +214,15 @@ export class PanoramaPlayerComponent implements OnInit {
       editMode: new FormControl(false),
       zoom: new FormControl(0),
       aspectRatio: new FormControl(''),
+      customRatio: new FormControl(''),
       sidebarSide: new FormControl('l')
     });
+  }
+
+  calcRatio(ratio) {
+    if (ratio) {
+
+    }
   }
 
   vrInit() {
@@ -281,7 +312,10 @@ export class PanoramaPlayerComponent implements OnInit {
     } : {}
   }
   takeScreenshot() {
-    this.virtualTour.virtualTourService.takeScreenshot()
+    const screenshot = this.virtualTour.virtualTourService.takeScreenshot();
+    ;
+    const file = dataURLtoFile(screenshot.dataUrl, screenshot.name);
+    this.store.dispatch(uploadProjectGalleryPhoto({projectId: this.route.snapshot.params.id, file}));
   }
 
   updateCanvasSize() {
@@ -313,7 +347,24 @@ export class PanoramaPlayerComponent implements OnInit {
         this.modalContent = null;
       }
     );
+  }
 
+  canvasAspect(sceneWrapper) {
+    if (this.form.value.aspectRatio !== 'custom') {
+      return this.form.value.aspectRatio
+      ? sceneWrapper.offsetHeight / this.form.value.aspectRatio + 'px'
+      : '100%'
+    } else {
+      return sceneWrapper.offsetHeight / this.form.value.customRatio + 'px';
+    }
 
+  }
+  openImage(i) {
+    this.isGalleryOpened = true;
+    this.galleryCmp.galleryRef.set(i);
+  }
+  closeGallery() {
+    this.isGalleryOpened = false;
+    this.resizeCanvas();
   }
 }

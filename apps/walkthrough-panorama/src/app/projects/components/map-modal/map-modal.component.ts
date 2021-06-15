@@ -19,7 +19,7 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   longitude = 7.809007;
   searching = false;
   project_id;
-
+  project;
   constructor(
     public activeModal: NgbActiveModal,
     private mapsAPILoader: MapsAPILoader,
@@ -36,7 +36,10 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   createForm() {
     this.form = new FormGroup({
       map: new FormControl(''),
-      tours: new FormControl('')
+      tours: new FormControl(''),
+      address: new FormControl(this.project.address),
+      latitude: new FormControl(+this.project.latitude),
+      longitude: new FormControl(+this.project.longitude)
     });
   }
 
@@ -69,15 +72,19 @@ export class MapModalComponent implements OnInit, AfterViewInit {
         this.zoom = 12; */
         this.latitude = place.geometry.location.lat();
         this.longitude = place.geometry.location.lng();
+        this.form.patchValue({
+          address: place.formatted_address,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng()
+        })
         panorama.setPosition({
-          lat: this.latitude,
-          lng: this.latitude
+          lat: this.form.value.latitude,
+          lng: this.form.value.latitude
         });
         panorama.setPov({
           heading: 34,
           pitch: 10,
         })
-        console.log(panorama, this.latitude, this.latitude)
       });
     })
   }

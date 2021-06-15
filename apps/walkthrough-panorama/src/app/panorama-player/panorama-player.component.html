@@ -1,4 +1,4 @@
-<ng-container *ngIf="data1$ | async as data">
+<ng-container *ngIf="data$ | async as data">
   <nav
     [formGroup]="form"
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
@@ -40,6 +40,18 @@
               {{ aspect.name }}
             </option>
           </select>
+        </li>
+        <li class="nav-item">
+          <input
+            *ngIf="form.value.aspectRatio === 'custom'"
+            type="number"
+            min="0"
+            max="2"
+            step="0.1"
+            class="form-control"
+            placeholder="Ratio"
+            formControlName="customRatio"
+          />
         </li>
       </ul>
 
@@ -313,25 +325,25 @@
   </ng-template>
 
   <ng-template #galleryTpl>
-    <div
+    <ngx-masonry
       style="min-height: 100px"
+      [options]="masonryOptions"
+      [ordered]="true"
       *ngIf="gallery$ | async as images"
-      class="row"
-      gallerize
-      selector=".gallery-img"
     >
-      <div *ngFor="let img of images" class="col-3">
-        <div class="gallery-img-wrapper border border-info rounded-lg">
-          <img
-            class="img-fluid gallery-img"
-            [src]="img.url"
-            [attr.imageSrc]="img.url"
-            [attr.thumbSrc]="img.thumb"
-            [alt]="img.name"
-          />
-        </div>
+      <div
+        ngxMasonryItem
+        *ngFor="let img of images; index as i"
+        (click)="openImage(i)"
+        class="masonry-item"
+      >
+        <img
+          class="img-fluid gallery-img"
+          [src]="img.data.src"
+          [alt]="img.data.thumb"
+        />
       </div>
-    </div>
+    </ngx-masonry>
   </ng-template>
 
   <ng-template #contactTpl>
@@ -356,6 +368,13 @@
         [rzHandles]="form.value.sidebarSide === 'r' ? 'w' : 'e'"
         (rzResizing)="resizeCanvas()"
       >
+        <div
+          class="close-gallery"
+          *ngIf="isGalleryOpened"
+          (click)="closeGallery()"
+        >
+          <i class="fa fa-3x fa-close"></i>
+        </div>
         <ngb-accordion
           class="sidebar-accordion"
           #acc="ngbAccordion"
@@ -449,14 +468,18 @@
         </ngb-accordion>
       </div>
       <div class="content">
+        <ng-container *ngIf="gallery$ | async as galleryItems">
+          <gallery
+            id="project-gallery"
+            [class.d-none]="!isGalleryOpened"
+            [items]="galleryItems"
+          ></gallery>
+        </ng-container>
+
         <div
           class="main-scene-wrapper"
           #sceneWrapper
-          [style.width]="
-            form.value.aspectRatio
-              ? sceneWrapper.offsetHeight / form.value.aspectRatio + 'px'
-              : '100%'
-          "
+          [style.width]="canvasAspect(sceneWrapper)"
         >
           <canvas
             #virtualTour

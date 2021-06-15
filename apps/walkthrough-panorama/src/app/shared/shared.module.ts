@@ -6,6 +6,7 @@ import { SafePipe } from './pipes/safe.pipe';
 
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
+import { NgxMasonryModule } from 'ngx-masonry';
 
 
 @NgModule({
@@ -17,12 +18,14 @@ import { LightboxModule } from 'ng-gallery/lightbox';
     ConnectFormDirective,
     SafePipe,
     GalleryModule,
-    LightboxModule
+    LightboxModule,
+    NgxMasonryModule
   ],
   imports: [
     CommonModule,
     GalleryModule,
-    LightboxModule
+    LightboxModule,
+    NgxMasonryModule
   ]
 })
 export class SharedModule { }

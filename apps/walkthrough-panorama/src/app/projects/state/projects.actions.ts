@@ -19,7 +19,7 @@ export const loadProjectsFailed = createAction(
 
 export const createProject = createAction(
   `${prefix} Create Project`,
-  props<{name: string, address: string}>()
+  props<{name: string; address: string; latitude: number; longitude: number;}>()
 );
 
 export const createProjectSuccess = createAction(

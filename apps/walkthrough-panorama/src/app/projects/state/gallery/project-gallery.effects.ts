@@ -27,7 +27,7 @@ export class ProjectGalleryEffects {
   uploadProjectGalleryPhoto$ = createEffect(() => this.actions$.pipe(
       ofType(ProjectGalleryActions.uploadProjectGalleryPhoto),
       mergeMap(
-        payload => this.projectService.uploadGalleryPhoto(payload.form).pipe(
+        payload => this.projectService.uploadGalleryPhoto(payload.projectId, payload.file).pipe(
           map(photo => ProjectGalleryActions.uploadProjectGalleryPhotoSuccess({photo}))
         )
       )

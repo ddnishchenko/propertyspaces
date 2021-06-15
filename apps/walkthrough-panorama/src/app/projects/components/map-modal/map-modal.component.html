@@ -46,12 +46,19 @@
         type="search"
         class="form-control"
         id="address"
+        formControlName="address"
         placeholder="Type property address"
       />
     </div>
 
-    <agm-map [latitude]="latitude" [longitude]="longitude">
-      <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
+    <agm-map
+      [latitude]="form.value.latitude"
+      [longitude]="form.value.longitude"
+    >
+      <agm-marker
+        [latitude]="form.value.latitude"
+        [longitude]="form.value.longitude"
+      ></agm-marker>
     </agm-map>
 
     <div class="my-5"></div>

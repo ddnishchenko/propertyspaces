@@ -48,7 +48,7 @@ export class ProjectsService {
     return this.http.get(host + 'get-panoramas',{params}).pipe(
       mergeMap(
         panoData => this.getProject(project_id).pipe(
-          map(project => ({...panoData, name: project.name, address: project.address}))
+          map(project => ({...panoData, name: project.name, address: project.address, project}))
         )
       )
     );
@@ -58,7 +58,7 @@ export class ProjectsService {
     return this.http.post(host + 'create-panorama', {project_id, panorama_data}).pipe(
       mergeMap(
         panoData => this.getProject(project_id).pipe(
-          map(project => ({...panoData, name: project.name, address: project.address}))
+          map(project => ({...panoData, name: project.name, address: project.address, project}))
         )
       )
     );
@@ -68,7 +68,7 @@ export class ProjectsService {
     return this.http.post(host  + 'update-panorama', {client_id: 1295, project_id, panorama_data}).pipe(
       mergeMap(
         panoData => this.getProject(project_id).pipe(
-          map(project => ({...panoData, name: project.name, address: project.address}))
+          map(project => ({...panoData, name: project.name, address: project.address, project}))
         )
       )
     );
@@ -95,9 +95,12 @@ export class ProjectsService {
     );
   }
 
-  uploadGalleryPhoto(form: HTMLFormElement): Observable<ImageGallery> {
-    const formData = new FormData(form);
-    return this.http.post(host + 'file-image-upload', formData);
+  uploadGalleryPhoto(project_id, file: File): Observable<ImageGallery> {
+    const formData = new FormData();
+    formData.append('project_id', project_id);
+    formData.append('files', file);
+    return this.http.post(host + 'file-image-upload', formData)
+      .pipe(map((photo: any) => ({url: photo.href, thumb: photo.href, name: photo.name})));
   }
 
   loadGallery(project_id): Observable<any> {

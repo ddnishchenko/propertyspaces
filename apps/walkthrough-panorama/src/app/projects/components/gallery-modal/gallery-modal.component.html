@@ -19,28 +19,37 @@
       name="files"
       id="photo"
       hidden
-      (change)="uploadImage(form)"
+      (change)="uploadImage($event)"
     />
     <label class="btn btn-primary" for="photo">Upload Image</label>
-    <div
+
+    <ngx-masonry
+      [options]="masonryOptions"
+      [ordered]="true"
+      *ngIf="gallery$ | async as images"
+      gallerize
+      selector=".gallery-img"
+    >
+      <div ngxMasonryItem *ngFor="let img of images" class="masonry-item">
+        <i class="fa fa-trash-o" (click)="removeImage(img.name)"></i>
+        <img
+          class="img-fluid gallery-img"
+          [src]="img.url"
+          [attr.imageSrc]="img.url"
+          [attr.thumbSrc]="img.thumb"
+          [alt]="img.name"
+        />
+      </div>
+    </ngx-masonry>
+
+    <!-- <div
       class="row"
       *ngIf="gallery$ | async as images"
       gallerize
       selector=".gallery-img"
     >
-      <div *ngFor="let img of images" class="col-3">
-        <div class="gallery-img-wrapper border border-info rounded-lg">
-          <i class="fa fa-trash-o" (click)="removeImage(img.name)"></i>
-          <img
-            class="img-fluid gallery-img"
-            [src]="img.url"
-            [attr.imageSrc]="img.url"
-            [attr.thumbSrc]="img.thumb"
-            [alt]="img.name"
-          />
-        </div>
-      </div>
-    </div>
+      <div *ngFor="let img of images" class="col-3"></div>
+    </div> -->
   </div>
 </form>
 

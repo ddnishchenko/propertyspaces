@@ -101,3 +101,18 @@ mwlResizable {
 .cdk-overlay-container {
   z-index: 1051;
 }
+
+ngx-masonry {
+  margin: 0 auto;
+  .masonry-item {
+    width: 340px;
+    margin-bottom: 20px;
+  }
+}
+
+lightbox {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+}

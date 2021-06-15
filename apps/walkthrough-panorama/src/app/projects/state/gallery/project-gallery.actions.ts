@@ -19,7 +19,7 @@ export const loadProjectGalleryFail = createAction(
 
 export const uploadProjectGalleryPhoto = createAction(
   `${p} Upload ProjectGallery Photo`,
-  props<{form: HTMLFormElement}>()
+  props<{projectId: string; file: File;}>()
 );
 
 export const uploadProjectGalleryPhotoSuccess = createAction(

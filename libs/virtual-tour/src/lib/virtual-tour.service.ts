@@ -4,6 +4,16 @@ import { Subject } from 'rxjs';
 import { OrbitControls } from './orbit-control';
 import { DeviceOrientationControls } from './device-control';
 
+export interface TakeScreenshotOptions {
+  download: boolean;
+}
+
+export interface VRScreenshot {
+  name: string;
+  dataUrl: string;
+  currentPano: any;
+}
+
 function ringsShape() {
   const outerRingGeometry = new THREE.RingGeometry( 1.90, 2, 30, 1, 0 );
   const outerRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
@@ -368,15 +378,23 @@ export class VirtualTourService {
   }
 
 
-  takeScreenshot() {
+  takeScreenshot(options?: TakeScreenshotOptions): VRScreenshot {
     this.OrbitControls.update();
     this.renderer.render(this.scene, this.camera);
-    const dataURL = this.renderer.domElement.toDataURL();
+    const dataURL = this.renderer.domElement.toDataURL('image/jpeg', 1);
     const d = new Date();
-    this.a.download = `screenshot_n${this.currentPanoId}_${d.toJSON()}.png`;
-    this.a.href = dataURL;
-    this.a.click();
+    const filename = `screenshot_n${this.currentPanoId}_${d.toJSON()}.jpeg`
+    if (options?.download) {
+      this.a.download = filename;
+      this.a.href = dataURL;
+      this.a.click();
+    }
 
+    return {
+      name: filename,
+      dataUrl: dataURL,
+      currentPano: this.currentPanoId
+    };
     /* const iframe = `
       <iframe
         src="${dataURL}"

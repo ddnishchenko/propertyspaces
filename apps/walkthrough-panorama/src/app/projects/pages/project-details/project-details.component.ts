@@ -100,9 +100,10 @@ export class ProjectDetailsComponent implements OnInit {
     this.store.dispatch(editProject({projectId, name: this.projectName}))
   }
 
-  openMapModal(project_id) {
+  openMapModal(project, panoramas) {
     const modal = this.modalService.open(MapModalComponent, { size: 'lg' });
-    modal.componentInstance.project_id = project_id;
+    modal.componentInstance.project_id = project.project_id;
+    modal.componentInstance.project = project.project;
     modal.result.then(
       reslove => {},
       reject => {}
@@ -115,7 +116,7 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   openGalleryModal(project_id) {
-    const modal = this.modalService.open(GalleryModalComponent, {size: 'lg'});
+    const modal = this.modalService.open(GalleryModalComponent, {size: 'xl'});
     modal.componentInstance.project_id = project_id;
   }
 }

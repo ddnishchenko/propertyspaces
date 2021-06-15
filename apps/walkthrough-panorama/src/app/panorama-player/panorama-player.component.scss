@@ -198,6 +198,23 @@ input::-moz-focus-outer {
     flex-direction: column;
     height: 100%;
   }
+  .close-gallery {
+    position: absolute;
+    transition: 0.3s ease-out;
+    right: -48px;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 2;
+    cursor: pointer;
+    width: 38px;
+    &:hover {
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+  &.stick-right {
+    .close-gallery {
+      left: -48px;
+    }
+  }
 }
 .ng-resizable-handle.ng-resizable-e {
   right: 0;
@@ -219,4 +236,13 @@ input::-moz-focus-outer {
 
 .vr-tour-wrapper {
   flex: 1;
+}
+
+gallery {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
 }

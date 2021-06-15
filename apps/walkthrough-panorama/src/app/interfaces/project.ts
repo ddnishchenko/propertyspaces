@@ -1,4 +1,5 @@
 import { Panorama } from "./panorama";
+import { ProjectSite } from "./project-site";
 
 export interface Project {
   name?: string;
@@ -14,5 +15,6 @@ export interface Project {
     canRemove?: boolean;
   }
   data?: Panorama[];
+  project?: ProjectSite;
   error?: string;
 }
