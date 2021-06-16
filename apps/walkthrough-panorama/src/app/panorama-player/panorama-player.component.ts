@@ -199,6 +199,7 @@ export class PanoramaPlayerComponent implements OnInit {
       select(selectVirtualTourParams),
       // tap(data => console.log(data))
       map(data => {
+        console.log(data);
         const parsedData = parseModel(data);
         if (this.route.snapshot.params.floorplan && this.isEdit && parsedData) {
           this.openFloorplanEditor(parsedData);

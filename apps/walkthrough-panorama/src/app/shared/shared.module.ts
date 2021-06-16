@@ -12,6 +12,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 import { GalleryEditorComponent } from './components/gallery-editor/gallery-editor.component';
+import { AgmCoreModule } from '@agm/core';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { GalleryEditorComponent } from './components/gallery-editor/gallery-edit
     SafePipe,
     GalleryModule,
     LightboxModule,
-    NgxMasonryModule
+    NgxMasonryModule,
+    AgmCoreModule
   ],
   imports: [
     CommonModule,
