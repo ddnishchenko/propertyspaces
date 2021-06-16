@@ -114,6 +114,6 @@ export class ProjectsService {
   }
 
   updateAddress(project_id, data: any) {
-    return this.http.post(host + 'project-update-addresslink', {client_id: 1295, project_id, ...data})
+    return this.http.post(host + 'project-update-addresslink', {client_id: 1295, project_id, ...data});
   }
 }

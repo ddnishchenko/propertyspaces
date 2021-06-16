@@ -4,7 +4,7 @@
   </h5>
   <button
     type="button"
-    (click)="activeModal.close()"
+    (click)="activeModal.dismiss()"
     class="close"
     data-bs-dismiss="modal"
     aria-label="Close"
@@ -107,7 +107,7 @@
   <button
     type="button"
     class="btn btn-secondary"
-    (click)="activeModal.close(false)"
+    (click)="activeModal.dismiss(false)"
   >
     Close
   </button>

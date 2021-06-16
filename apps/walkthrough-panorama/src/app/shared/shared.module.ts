@@ -13,6 +13,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { GalleryEditorComponent } from './components/gallery-editor/gallery-editor.component';
 import { AgmCoreModule } from '@agm/core';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { AgmCoreModule } from '@agm/core';
     GalleryModule,
     LightboxModule,
     NgxMasonryModule,
-    AgmCoreModule
+    AgmCoreModule,
+    NgbTooltipModule
   ],
   imports: [
     CommonModule,

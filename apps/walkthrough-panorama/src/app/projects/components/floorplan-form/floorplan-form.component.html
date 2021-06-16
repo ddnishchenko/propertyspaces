@@ -1,6 +1,12 @@
 <div class="modal-header">
   <h5 class="modal-title">{{ title }}</h5>
-  <button type="button" (click)="activeModal.close()" class="close" data-bs-dismiss="modal" aria-label="Close">
+  <button
+    type="button"
+    (click)="activeModal.close()"
+    class="close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -8,24 +14,53 @@
 <div class="modal-body">
   <div class="row">
     <div class="col text-center">
-      <button class="btn btn-primary" type="button" (click)="fileInput.click()"><i class="fa fa-upload"></i> Upload Panorama</button>
-      <input hidden type="file" accept="image/svg+xml" multiple #fileInput (change)="uploadImage($event)">
+      <button class="btn btn-primary" type="button" (click)="fileInput.click()">
+        <i class="fa fa-upload"></i> Upload Panorama
+      </button>
+      <input
+        hidden
+        type="file"
+        accept="image/svg+xml"
+        multiple
+        #fileInput
+        (change)="uploadImage($event)"
+      />
       <!-- <i *ngIf="loading" class="fa fa-spin fa-spinner d-xl-flex justify-content-xl-center"></i> -->
     </div>
   </div>
   <div class="row mt-4">
     <div class="col">
-        <ul class="list-group">
-            <li class="list-group-item d-sm-flex d-xl-flex justify-content-sm-center justify-content-xl-center">
-              <img class="img-fluid" *ngIf="form.value.floorplan === 'floorplan.svg'" [src]="mediaPath + form.value.floorplan | safe">
-              <img class="img-fluid" *ngIf="form.value.floorplan && form.value.floorplan !== 'floorplan.svg'" [src]="form.value.floorplan | safe">
-            </li>
-        </ul>
+      <ul class="list-group">
+        <li
+          class="list-group-item d-sm-flex d-xl-flex justify-content-sm-center justify-content-xl-center"
+        >
+          <img
+            class="img-fluid"
+            *ngIf="form.value.floorplan === 'floorplan.svg'"
+            [src]="mediaPath + form.value.floorplan | safe: 'url'"
+          />
+          <img
+            class="img-fluid"
+            *ngIf="
+              form.value.floorplan && form.value.floorplan !== 'floorplan.svg'
+            "
+            [src]="form.value.floorplan | safe: 'url'"
+          />
+        </li>
+      </ul>
     </div>
   </div>
 </div>
 
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="activeModal.close(false)">Close</button>
-  <button type="button" class="btn btn-primary" (click)="submit()">Save changes</button>
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.close(false)"
+  >
+    Close
+  </button>
+  <button type="button" class="btn btn-primary" (click)="submit()">
+    Save changes
+  </button>
 </div>

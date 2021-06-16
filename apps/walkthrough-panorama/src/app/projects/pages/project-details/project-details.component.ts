@@ -8,7 +8,7 @@ import { ContactInfoModalComponent } from '../../components/contact-info-modal/c
 import { GalleryModalComponent } from '../../components/gallery-modal/gallery-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
-import { deletePanorama, editProject, loadPanoramas, updatePanorama } from '../../state/projects.actions';
+import { deletePanorama, editProject, loadPanoramas, updateAddressData, updatePanorama } from '../../state/projects.actions';
 import { selectHdrVirtualTourPanoramas, selectVirtualTourParams } from '../../state/projects.selectors';
 
 @Component({
@@ -105,7 +105,7 @@ export class ProjectDetailsComponent implements OnInit {
     modal.componentInstance.project_id = project.project_id;
     modal.componentInstance.project = project.project;
     modal.result.then(
-      reslove => {},
+      reslove => this.store.dispatch(updateAddressData({projectId: project.project_id, data: reslove})),
       reject => {}
     );
   }

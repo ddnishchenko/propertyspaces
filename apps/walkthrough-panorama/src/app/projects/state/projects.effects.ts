@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 
-import { concatMap, map, mergeMap } from 'rxjs/operators';
+import { concatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Observable, EMPTY, forkJoin } from 'rxjs';
 
 import * as ProjectsActions from './projects.actions';
 import { ProjectsService } from '../service/projects.service';
+import { Store } from '@ngrx/store';
 
 
 @Injectable()
@@ -129,10 +130,20 @@ export class ProjectsEffects {
     )
   );
 
+  updateAddressData = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.updateAddressData),
+    mergeMap(
+      payload => this.projectsService.updateAddress(payload.projectId, payload.data).pipe(
+        tap(() => this.store.dispatch(ProjectsActions.loadPanoramas({projectId: payload.projectId})))
+      )
+    )
+  ), {dispatch: false})
+
 
   constructor(
     private actions$: Actions,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private store: Store
   ) {}
 
 }

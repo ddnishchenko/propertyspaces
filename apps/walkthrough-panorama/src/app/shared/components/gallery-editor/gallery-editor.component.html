@@ -15,21 +15,21 @@
   <div
     class="gallery-editor drag-drop-list"
     dndDropzone
-    (dndDrop)="onDrop($event, dummyPictures)"
+    (dndDrop)="onDrop($event, items)"
   >
     <div
       class="gallery-editor__item drag-drop-item dndPlaceholder"
       dndPlaceholderRef
     ></div>
     <div
-      *ngFor="let d of dummyPictures; index as i"
+      *ngFor="let d of items; index as i"
       [dndDraggable]="d"
       [dndEffectAllowed]="'move'"
-      (dndMoved)="onDragged(d, dummyPictures, 'move')"
+      (dndMoved)="onDragged(d, items, 'move')"
       class="gallery-editor__item drag-drop-item"
     >
       <div class="gallery-editor__item_edit">
-        <img class="img-fluid" [src]="d.src" />
+        <img class="img-fluid" [src]="d.url" />
         <div class="gallery-editor__item_position-block">
           <i class="fa fa-arrows gallery-editor__item_move" dndHandle></i>
           <button
@@ -60,15 +60,11 @@
       </div>
       <div class="edit-name" rel="67085" id="edit_67085">
         <span style="display: inline">{{ d.name }}</span>
-        <textarea class="textname" rel="67085" style="display: none">
-Living Room</textarea
-        >
+        <textarea class="textname" rel="67085" style="display: none">{{
+          d.name
+        }}</textarea>
       </div>
     </div>
-  </div>
-
-  <div class="drag-drop-list">
-    <div class="drag-drop-item">Content</div>
   </div>
 </div>
 

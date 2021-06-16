@@ -324,6 +324,15 @@
     </agm-map>
   </ng-template>
 
+  <ng-template #streetViewTpl>
+    <div class="embed-responsive embed-responsive-1by1">
+      <iframe
+        class="embed-responsive-item"
+        [src]="data.project.tour.link | safe: 'resourceUrl'"
+      ></iframe>
+    </div>
+  </ng-template>
+
   <ng-template #galleryTpl>
     <ngx-masonry
       style="min-height: 100px"
@@ -419,6 +428,29 @@
             </ng-template>
             <ng-template ngbPanelContent>
               <ng-container *ngTemplateOutlet="mapTpl"></ng-container>
+            </ng-template>
+          </ngb-panel>
+
+          <ngb-panel *ngIf="data.project?.tour" cardClass="sidebar-card">
+            <ng-template ngbPanelHeader>
+              <div
+                class="d-flex justify-content-between align-items-center w-100"
+              >
+                <button ngbPanelToggle class="btn btn-link p-0">
+                  Street View
+                </button>
+                <button
+                  class="btn btn-primary"
+                  (click)="
+                    openSectionModal(modalWrapper, streetViewTpl, 'Street View')
+                  "
+                >
+                  <i class="fa fa-expand"></i>
+                </button>
+              </div>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <ng-container *ngTemplateOutlet="streetViewTpl"></ng-container>
             </ng-template>
           </ngb-panel>
 

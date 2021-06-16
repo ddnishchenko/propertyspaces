@@ -1,7 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Store } from '@ngrx/store';
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 
 @Component({
@@ -10,31 +9,31 @@ import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
   styleUrls: ['./gallery-editor.component.scss']
 })
 export class GalleryEditorComponent implements OnInit {
-  gallery: any[] = [];
-  dummyPictures = [
-    {name: 'Uruguay', src: 'https://source.unsplash.com/433x649/?Uruguay'},
-    {name: 'Jamaica', src: 'https://source.unsplash.com/530x572/?Jamaica'},
-    {name: 'Kuwait', src: 'https://source.unsplash.com/531x430/?Kuwait'},
-    {name: 'Bermuda', src: 'https://source.unsplash.com/586x1073/?Bermuda'},
-    {name: 'Ecuador', src: 'https://source.unsplash.com/500x571/?Ecuador'},
-    {name: 'Virgin Islands', src: 'https://source.unsplash.com/579x518/?Virgin Islands (British)'},
-    {name: 'Angola', src: 'https://source.unsplash.com/503x548/?Angola'},
-    {name: 'Mauritania', src: 'https://source.unsplash.com/511x630/?Mauritania'},
-    {name: 'Sri Lanka', src: 'https://source.unsplash.com/414x767/?Sri Lanka'},
-    {name: 'St. Helena', src: 'https://source.unsplash.com/443x704/?St. Helena'},
-    {name: 'Namibia', src: 'https://source.unsplash.com/441x1145/?Namibia'},
-    {name: 'Samoa', src: 'https://source.unsplash.com/491x1097/?Samoa'},
+  @Input() items = [
+    {name: 'Uruguay', url: 'https://source.unsplash.com/433x649/?Uruguay'},
+    {name: 'Jamaica', url: 'https://source.unsplash.com/530x572/?Jamaica'},
+    {name: 'Kuwait', url: 'https://source.unsplash.com/531x430/?Kuwait'},
+    {name: 'Bermuda', url: 'https://source.unsplash.com/586x1073/?Bermuda'},
+    {name: 'Ecuador', url: 'https://source.unsplash.com/500x571/?Ecuador'},
+    {name: 'Virgin Islands', url: 'https://source.unsplash.com/579x518/?Virgin Islands (British)'},
+    {name: 'Angola', url: 'https://source.unsplash.com/503x548/?Angola'},
+    {name: 'Mauritania', url: 'https://source.unsplash.com/511x630/?Mauritania'},
+    {name: 'Sri Lanka', url: 'https://source.unsplash.com/414x767/?Sri Lanka'},
+    {name: 'St. Helena', url: 'https://source.unsplash.com/443x704/?St. Helena'},
+    {name: 'Namibia', url: 'https://source.unsplash.com/441x1145/?Namibia'},
+    {name: 'Samoa', url: 'https://source.unsplash.com/491x1097/?Samoa'},
   ];
+  @Output() sortChange: EventEmitter<any[]> = new EventEmitter();
   constructor(
     public activeModal: NgbActiveModal,
-    private store: Store
   ) { }
 
   ngOnInit(): void {
   }
 
   drop($event: CdkDragDrop<any[]>) {
-    moveItemInArray(this.dummyPictures, $event.previousIndex, $event.currentIndex);
+    moveItemInArray(this.items, $event.previousIndex, $event.currentIndex);
+    this.sortChange.emit(this.items);
   }
 
   onDrop( event:DndDropEvent, list?:any[] ) {
@@ -52,6 +51,7 @@ export class GalleryEditorComponent implements OnInit {
 
       list.splice( index, 0, event.data );
     }
+    this.sortChange.emit(this.items);
   }
 
   onDragged( item:any, list:any[], effect: DropEffect ) {

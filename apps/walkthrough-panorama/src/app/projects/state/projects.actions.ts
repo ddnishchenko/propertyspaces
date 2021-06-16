@@ -173,3 +173,8 @@ export const panoFormMode = createAction(
   `${prefix} Pano form mode`,
   props<{isEdit: boolean}>()
 );
+
+export const updateAddressData = createAction(
+  `${prefix} Update Address`,
+  props<{projectId: string; data: any}>()
+)

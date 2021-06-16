@@ -35,8 +35,8 @@ export class MapModalComponent implements OnInit, AfterViewInit {
 
   createForm() {
     this.form = new FormGroup({
-      map: new FormControl(''),
-      tours: new FormControl(''),
+      map: new FormControl(this.project.map?.link),
+      tours: new FormControl(this.project.tour?.link),
       address: new FormControl(this.project.address),
       latitude: new FormControl(+this.project.latitude),
       longitude: new FormControl(+this.project.longitude)
@@ -90,9 +90,6 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   }
 
   submit() {
-    this.projectService.updateAddress(this.project_id, this.form.value).subscribe(res => {
-      console.log(res);
-      this.activeModal.close(res);
-    });
+    this.activeModal.close(this.form.value);
   }
 }
