@@ -1,0 +1,84 @@
+<div class="modal-header bg-danger">
+  <h5 class="modal-title text-white">Gallery</h5>
+  <button
+    type="button"
+    (click)="activeModal.close()"
+    class="close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div
+    class="gallery-editor drag-drop-list"
+    dndDropzone
+    (dndDrop)="onDrop($event, dummyPictures)"
+  >
+    <div
+      class="gallery-editor__item drag-drop-item dndPlaceholder"
+      dndPlaceholderRef
+    ></div>
+    <div
+      *ngFor="let d of dummyPictures; index as i"
+      [dndDraggable]="d"
+      [dndEffectAllowed]="'move'"
+      (dndMoved)="onDragged(d, dummyPictures, 'move')"
+      class="gallery-editor__item drag-drop-item"
+    >
+      <div class="gallery-editor__item_edit">
+        <img class="img-fluid" [src]="d.src" />
+        <div class="gallery-editor__item_position-block">
+          <i class="fa fa-arrows gallery-editor__item_move" dndHandle></i>
+          <button
+            class="btn btn-dark px-0 d-flex flex-column align-items-center justify-content-center gallery-editor__item_rename"
+          >
+            <i class="fa fa-lg fa-pencil"></i><span>Rename</span>
+          </button>
+          <button
+            class="btn btn-dark px-0 d-flex flex-column align-items-center justify-content-center gallery-editor__item_delete"
+          >
+            <i class="fa fa-lg fa-trash"></i><span>Trash</span>
+          </button>
+          <label
+            class="btn btn-dark p-0 text-center gallery-editor__item_checkbox"
+          >
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                [id]="'item_checkbox_' + i"
+              />
+              <label class="custom-control-label" [for]="'item_checkbox_' + i"
+                >Select as header image</label
+              >
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="edit-name" rel="67085" id="edit_67085">
+        <span style="display: inline">{{ d.name }}</span>
+        <textarea class="textname" rel="67085" style="display: none">
+Living Room</textarea
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="drag-drop-list">
+    <div class="drag-drop-item">Content</div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.close(false)"
+  >
+    Close
+  </button>
+  <button type="button" class="btn btn-primary">Save changes</button>
+</div>

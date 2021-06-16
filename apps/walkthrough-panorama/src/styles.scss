@@ -7,6 +7,15 @@
 @import '~ng-snotify/styles/material';
 @import '~@angular/cdk/overlay-prebuilt.css';
 
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
 .table {
   th,
   td {
@@ -115,4 +124,54 @@ lightbox {
   height: 100vh !important;
   max-width: 100vw !important;
   max-height: 100vh !important;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  z-index: 9999 !important;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-drop-list.cdk-drop-list-dragging
+  .drag-drop-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.dndPlaceholder {
+  min-height: 72px;
+  border: 1px dashed green;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dndList {
+  transition: all 300ms ease;
+
+  &.dndDragover {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+.dndDragging {
+  border: 1px solid green;
+}
+
+.dndDraggingSource {
+  display: none;
+}
+
+.dndPlaceholder {
+  min-height: 72px;
+  border: 1px dashed green;
+  background-color: rgba(0, 0, 0, 0.1);
 }

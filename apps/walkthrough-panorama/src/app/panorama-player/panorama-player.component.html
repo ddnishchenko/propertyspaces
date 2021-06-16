@@ -427,7 +427,11 @@
               <div
                 class="d-flex justify-content-between align-items-center w-100"
               >
-                <button ngbPanelToggle class="btn btn-link p-0">
+                <button
+                  ngbPanelToggle
+                  (click)="openGalleryEditor()"
+                  class="btn btn-link p-0"
+                >
                   Photo Gallery
                 </button>
                 <button

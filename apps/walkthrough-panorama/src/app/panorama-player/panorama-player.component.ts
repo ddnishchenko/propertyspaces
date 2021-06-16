@@ -16,6 +16,7 @@ import { selectGallery } from '../projects/state/gallery/project-gallery.selecto
 import { dataURLtoFile } from '../utils';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { GalleryComponent, ImageItem } from 'ng-gallery';
+import { GalleryEditorComponent } from '../shared/components/gallery-editor/gallery-editor.component';
 
 function parseModel(model) {
   if (!model) {
@@ -347,6 +348,12 @@ export class PanoramaPlayerComponent implements OnInit {
         this.modalContent = null;
       }
     );
+  }
+
+  openGalleryEditor() {
+    const modal = this.modalService.open(GalleryEditorComponent, {
+      windowClass: 'fullscreen-modal'
+    });
   }
 
   canvasAspect(sceneWrapper) {

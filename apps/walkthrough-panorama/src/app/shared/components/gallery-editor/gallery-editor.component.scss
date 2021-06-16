@@ -1,0 +1,125 @@
+.gallery-editor {
+  display: flex;
+  flex-wrap: wrap;
+  .dndPlaceholder {
+    height: 145px;
+    width: 190px;
+  }
+  &__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: calc(100% / 7);
+    padding: 0 15px;
+    margin-bottom: 15px;
+    &_edit {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      height: 145px;
+      width: 190px;
+      padding: 5px;
+      margin-bottom: 5px;
+    }
+    &_position-block {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 100%;
+      margin: 0 auto;
+      opacity: 0;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease-in;
+    }
+    &_move {
+      position: absolute;
+      z-index: 2;
+      right: 10px;
+      top: 10px;
+      width: 24px;
+      height: 24px;
+      background-color: transparent;
+      cursor: move;
+    }
+    &_rename {
+      left: -100%;
+      border-radius: 4px 0 0 4px;
+    }
+    &_delete {
+      right: -100%;
+      border-radius: 0 4px 4px 0;
+    }
+    &_rename,
+    &_delete {
+      font-size: 11px;
+      font-weight: lighter;
+      top: 0;
+      bottom: 0;
+      width: 55px;
+      height: 50px;
+      margin: auto;
+      background-position: 50% 3px;
+    }
+    &_checkbox {
+      margin: auto;
+      font-size: 11px;
+      left: 0;
+      right: 0;
+      bottom: -100%;
+      width: 145px;
+      height: 24px;
+      padding: 7px 10px 7px 25px;
+      border-radius: 4px;
+      .custom-control-label {
+        line-height: 23px;
+      }
+    }
+    &_rename,
+    &_delete,
+    &_checkbox {
+      position: absolute;
+      transition: 0.3s ease-out;
+    }
+    &_name {
+      text-align: center;
+      word-wrap: break-word;
+      max-width: 180px;
+    }
+
+    &_position-block:hover {
+      opacity: 1;
+    }
+    &_position-block:hover &_rename {
+      left: 39px;
+    }
+    &_position-block:hover &_delete {
+      right: 39px;
+    }
+    &_position-block:hover &_checkbox {
+      bottom: 10px;
+    }
+    &_position-block::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 1;
+      bottom: 0;
+      height: 0;
+      width: 0;
+      border: 0 solid green;
+      margin: auto;
+      transition: all 0.3s ease-in;
+    }
+    &_position-block:hover:after {
+      content: '';
+      height: 100%;
+      width: 100%;
+      border-width: 5px;
+    }
+  }
+}

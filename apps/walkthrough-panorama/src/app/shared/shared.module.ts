@@ -7,12 +7,18 @@ import { SafePipe } from './pipes/safe.pipe';
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
 import { NgxMasonryModule } from 'ngx-masonry';
+import { DndModule } from 'ngx-drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
+
+import { GalleryEditorComponent } from './components/gallery-editor/gallery-editor.component';
 
 
 @NgModule({
   declarations: [
     ConnectFormDirective,
-    SafePipe
+    SafePipe,
+    GalleryEditorComponent
   ],
   exports: [
     ConnectFormDirective,
@@ -25,7 +31,8 @@ import { NgxMasonryModule } from 'ngx-masonry';
     CommonModule,
     GalleryModule,
     LightboxModule,
-    NgxMasonryModule
+    NgxMasonryModule,
+    DndModule
   ]
 })
 export class SharedModule { }
