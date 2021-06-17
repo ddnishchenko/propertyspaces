@@ -296,6 +296,7 @@ export class VirtualTourService {
   }
 
   addPanosMarks() {
+    console.log(this.panos)
     this.panos.forEach((pano) => {
       if (!pano.object) {
         const mesh = ringsShape();
@@ -379,9 +380,17 @@ export class VirtualTourService {
 
 
   takeScreenshot(options?: TakeScreenshotOptions): VRScreenshot {
+
+
+    this.panos.forEach((pano) => {
+      pano.object.visible = false;
+    });
     this.OrbitControls.update();
     this.renderer.render(this.scene, this.camera);
     const dataURL = this.renderer.domElement.toDataURL('image/jpeg', 1);
+    this.panos.forEach((pano) => {
+      pano.object.visible = true;
+    });
     const d = new Date();
     const filename = `screenshot_n${this.currentPanoId}_${d.toJSON()}.jpeg`
     if (options?.download) {
