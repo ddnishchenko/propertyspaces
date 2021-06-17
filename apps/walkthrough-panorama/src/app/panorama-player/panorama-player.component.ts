@@ -14,7 +14,7 @@ import { Panorama } from '../interfaces/panorama';
 import { loadProjectGallery, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 import { selectGallery } from '../projects/state/gallery/project-gallery.selectors';
 import { dataURLtoFile } from '../utils';
-import { NgxMasonryOptions } from 'ngx-masonry';
+import { NgxMasonryComponent, NgxMasonryOptions } from 'ngx-masonry';
 import { GalleryComponent, ImageItem } from 'ng-gallery';
 import { GalleryEditorComponent } from '../shared/components/gallery-editor/gallery-editor.component';
 
@@ -163,6 +163,7 @@ export class PanoramaPlayerComponent implements OnInit {
   isCollapsed = true;
   @ViewChild(VirtualTourDirective) virtualTour;
   @ViewChild(GalleryComponent) galleryCmp: GalleryComponent;
+  @ViewChild(NgxMasonryComponent) masonry: NgxMasonryComponent;
   public masonryOptions: NgxMasonryOptions = {
     gutter: 20,
   };
@@ -329,7 +330,7 @@ export class PanoramaPlayerComponent implements OnInit {
     this.navTo(pano.name, panos, 0);
   }
   resizeCanvas() {
-    this.virtualTour.virtualTourService.resize()
+    this.virtualTour.virtualTourService.resize();
   }
 
   moveSidebar() {}
@@ -374,5 +375,9 @@ export class PanoramaPlayerComponent implements OnInit {
   closeGallery() {
     this.isGalleryOpened = false;
     this.resizeCanvas();
+  }
+  updateMasonty() {
+    this.masonry.reloadItems();
+    this.masonry.layout();
   }
 }

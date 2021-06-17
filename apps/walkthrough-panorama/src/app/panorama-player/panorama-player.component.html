@@ -376,6 +376,7 @@
         ngResizable
         [rzHandles]="form.value.sidebarSide === 'r' ? 'w' : 'e'"
         (rzResizing)="resizeCanvas()"
+        (rzStop)="updateMasonty()"
       >
         <div
           class="close-gallery"
