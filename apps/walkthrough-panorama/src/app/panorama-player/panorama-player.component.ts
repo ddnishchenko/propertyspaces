@@ -17,6 +17,7 @@ import { dataURLtoFile } from '../utils';
 import { NgxMasonryComponent, NgxMasonryOptions } from 'ngx-masonry';
 import { GalleryComponent, ImageItem } from 'ng-gallery';
 import { GalleryEditorComponent } from '../shared/components/gallery-editor/gallery-editor.component';
+import { slideInAnimation } from '../utils/animations';
 
 function parseModel(model) {
   if (!model) {
@@ -157,7 +158,8 @@ const aspectRations = [
 @Component({
   selector: 'propertyspaces-panorama-player',
   templateUrl: './panorama-player.component.html',
-  styleUrls: ['./panorama-player.component.scss']
+  styleUrls: ['./panorama-player.component.scss'],
+  animations: [slideInAnimation]
 })
 export class PanoramaPlayerComponent implements OnInit {
   isCollapsed = true;
@@ -194,7 +196,7 @@ export class PanoramaPlayerComponent implements OnInit {
     this.store.dispatch(loadProjectGallery({projectId}));
     this.store.dispatch(loadPanoramas({projectId}));
     this.gallery$ = this.store.pipe(select(selectGallery)).pipe(
-      map(items => items.map(item => new ImageItem({src: item.url, thumb: item.thumb})))
+      map(items => items.map(item => new ImageItem({...item, src: item.url, thumb: item.thumb})))
     );
     this.data$ = this.store.pipe(
       select(selectVirtualTourParams),
@@ -377,7 +379,12 @@ export class PanoramaPlayerComponent implements OnInit {
     this.resizeCanvas();
   }
   updateMasonty() {
-    this.masonry.reloadItems();
-    this.masonry.layout();
+    if (this.masonry.reloadItems) {
+      this.masonry.reloadItems();
+    }
+    if (this.masonry.layout) {
+      this.masonry.layout();
+    }
+
   }
 }

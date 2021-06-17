@@ -262,3 +262,18 @@ agm-map {
     height: 100%;
   }
 }
+
+.item-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin: 3em auto 0;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 500px;
+  padding: 20px 25px;
+  text-align: center;
+}

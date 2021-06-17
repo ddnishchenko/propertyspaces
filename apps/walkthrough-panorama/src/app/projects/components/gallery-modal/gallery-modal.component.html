@@ -30,8 +30,14 @@
       gallerize
       selector=".gallery-img"
     >
-      <div ngxMasonryItem *ngFor="let img of images" class="masonry-item">
-        <i class="fa fa-trash-o" (click)="removeImage(img.name)"></i>
+      <div
+        ngxMasonryItem
+        *ngFor="let img of images"
+        class="gallery-img-wrapper masonry-item"
+      >
+        <button type="button" class="btn btn-sm btn-outline-dark">
+          <i class="fa fa-trash-o" (click)="removeImage(img.name)"></i>
+        </button>
         <img
           class="img-fluid gallery-img"
           [src]="img.url"

@@ -1,6 +1,6 @@
 .masonry-item {
   // position: relative;
-  .fa {
+  .btn {
     position: absolute;
     opacity: 0;
     transition: 0.3s;
@@ -8,6 +8,6 @@
   }
 }
 
-.gallery-img-wrapper:hover .fa {
+.gallery-img-wrapper:hover .btn {
   opacity: 1;
 }

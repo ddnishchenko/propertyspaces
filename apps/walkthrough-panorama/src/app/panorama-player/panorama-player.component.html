@@ -460,19 +460,10 @@
               <div
                 class="d-flex justify-content-between align-items-center w-100"
               >
-                <button
-                  ngbPanelToggle
-                  (click)="openGalleryEditor()"
-                  class="btn btn-link p-0"
-                >
+                <button ngbPanelToggle class="btn btn-link p-0">
                   Photo Gallery
                 </button>
-                <button
-                  class="btn btn-primary"
-                  (click)="
-                    openSectionModal(modalWrapper, galleryTpl, 'Photo Gallery')
-                  "
-                >
+                <button class="btn btn-primary" (click)="openGalleryEditor()">
                   <i class="fa fa-expand"></i>
                 </button>
               </div>
@@ -510,7 +501,23 @@
             id="project-gallery"
             [class.d-none]="!isGalleryOpened"
             [items]="galleryItems"
+            [itemTemplate]="itemTemplate"
           ></gallery>
+          <ng-template
+            #itemTemplate
+            let-index="index"
+            let-type="type"
+            let-data="data"
+            let-currIndex="currIndex"
+          >
+            <span
+              *ngIf="type === 'image' && index === currIndex"
+              [@slideAnimation]
+              class="item-text"
+            >
+              {{ data?.name }}
+            </span>
+          </ng-template>
         </ng-container>
 
         <div
