@@ -5,6 +5,13 @@
     height: 145px;
     width: 190px;
   }
+  .textname {
+    resize: none;
+    margin-bottom: 5px;
+    text-align: center;
+    // padding: 5px;
+    border: 1px solid grey;
+  }
   &__item {
     position: relative;
     display: flex;
@@ -114,6 +121,7 @@
       border: 0 solid green;
       margin: auto;
       transition: all 0.3s ease-in;
+      pointer-events: none;
     }
     &_position-block:hover:after {
       content: '';

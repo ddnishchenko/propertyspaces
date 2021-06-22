@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectsService } from '../projects/service/projects.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -11,8 +11,8 @@ import { select, Store } from '@ngrx/store';
 import { selectVirtualTourParams } from '../projects/state/projects.selectors';
 import { loadPanoramas, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
-import { loadProjectGallery, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
-import { selectGallery } from '../projects/state/gallery/project-gallery.selectors';
+import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
+import { selectGallery, selectOrderedGallery } from '../projects/state/gallery/project-gallery.selectors';
 import { dataURLtoFile } from '../utils';
 import { NgxMasonryComponent, NgxMasonryOptions } from 'ngx-masonry';
 import { GalleryComponent, ImageItem } from 'ng-gallery';
@@ -107,7 +107,7 @@ const aspectRations = [
   },
   {
     name: 'Landscape',
-    value: 1080/566,
+    value: 566/1080,
   },
   {
     name: 'Portrait',
@@ -195,8 +195,9 @@ export class PanoramaPlayerComponent implements OnInit {
     this.createForm();
     this.store.dispatch(loadProjectGallery({projectId}));
     this.store.dispatch(loadPanoramas({projectId}));
-    this.gallery$ = this.store.pipe(select(selectGallery)).pipe(
-      map(items => items.map(item => new ImageItem({...item, src: item.url, thumb: item.thumb})))
+    this.gallery$ = this.store.pipe(
+      select(selectOrderedGallery),
+      tap(() => this.updateMasonty())
     );
     this.data$ = this.store.pipe(
       select(selectVirtualTourParams),
@@ -354,10 +355,11 @@ export class PanoramaPlayerComponent implements OnInit {
     );
   }
 
-  openGalleryEditor() {
+  openGalleryEditor(photos) {
     const modal = this.modalService.open(GalleryEditorComponent, {
       windowClass: 'fullscreen-modal'
     });
+    modal.componentInstance.items = photos;
   }
 
   canvasAspect(sceneWrapper) {
@@ -379,12 +381,29 @@ export class PanoramaPlayerComponent implements OnInit {
     this.resizeCanvas();
   }
   updateMasonty() {
-    if (this.masonry.reloadItems) {
+    if (this.masonry) {
       this.masonry.reloadItems();
-    }
-    if (this.masonry.layout) {
       this.masonry.layout();
     }
+  }
 
+  imageNameChanged($event, projectId) {
+    console.log({...$event, projectId});
+    this.store.dispatch(renamePhoto({...$event, projectId}));
+  }
+  sortChanged($event, projectId) {
+    console.log({projectId, photos: $event});
+    this.store.dispatch(changeOrderOfPhoto({projectId, photos: $event.map(item => item.name)}))
+  }
+  deleteGalleryImage($event, projectId) {
+    this.store.dispatch(removeProjectGalleryPhoto({projectId, image_id: [$event.item.name]}));
+  }
+
+  saveSettings(projectId) {
+    const data = {
+      zoom: this.form.value.zoom,
+      rotation_y: this.form.value.rotationY
+    };
+    this.store.dispatch(updateProject({projectId, data}))
   }
 }

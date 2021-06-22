@@ -203,13 +203,13 @@
         <div class="col">
           <div class="list-group">
             <li
-              *ngFor="let panorama of panoramas"
+              *ngFor="let panorama of panoramas | orderBy: 'panoramas.order'"
               class="list-group-item list-group-item-action d-flex align-items-center"
             >
               <a
                 href="javascript:;"
                 (click)="openEditPanorama(panorama, project)"
-                >{{ panorama.name }}</a
+                >{{ panorama.panoramas.order }}) {{ panorama.name }}</a
               >
               <div class="actions ml-auto">
                 <i

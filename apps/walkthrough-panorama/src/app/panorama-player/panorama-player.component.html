@@ -1,4 +1,14 @@
 <ng-container *ngIf="data$ | async as data">
+  <ng-template #addFloorplanBtn>
+    <button
+      *ngIf="isEdit"
+      type="button"
+      class="btn btn-warning ml-3"
+      (click)="openFloorplanEditor(data)"
+    >
+      Add floorplan
+    </button>
+  </ng-template>
   <nav
     [formGroup]="form"
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
@@ -204,14 +214,7 @@
           </div>
         </div>
 
-        <button
-          *ngIf="isEdit"
-          type="button"
-          class="btn btn-warning ml-3"
-          (click)="openFloorplanEditor(data)"
-        >
-          Add floorplan
-        </button>
+        <ng-container *ngTemplateOutlet="addFloorplanBtn"></ng-container>
       </div>
     </div>
   </nav>
@@ -245,7 +248,10 @@
   <ng-template #floorplanTpl>
     <div
       class="vt-map"
-      *ngIf="data.additional_data && data.additional_data.floors"
+      *ngIf="
+        data.additional_data && data.additional_data.floors;
+        else addFloorplanBtn
+      "
     >
       <ul
         ngbNav
@@ -342,7 +348,7 @@
     >
       <div
         ngxMasonryItem
-        *ngFor="let img of images; index as i"
+        *ngFor="let img of images | gallery; index as i"
         (click)="openImage(i)"
         class="masonry-item"
       >
@@ -353,6 +359,17 @@
         />
       </div>
     </ngx-masonry>
+  </ng-template>
+
+  <ng-template #galleryEditorTpl>
+    <ng-container *ngIf="gallery$ | async as orderedImages">
+      <propertyspaces-gallery-editor
+        [items]="orderedImages"
+        (nameChange)="imageNameChanged($event, data.project_id)"
+        (sortChange)="sortChanged($event, data.project_id)"
+        (moveToTrash)="deleteGalleryImage($event, data.project_id)"
+      ></propertyspaces-gallery-editor>
+    </ng-container>
   </ng-template>
 
   <ng-template #contactTpl>
@@ -463,7 +480,17 @@
                 <button ngbPanelToggle class="btn btn-link p-0">
                   Photo Gallery
                 </button>
-                <button class="btn btn-primary" (click)="openGalleryEditor()">
+                <button
+                  *ngIf="gallery$ | async as galleryPhotos"
+                  class="btn btn-primary"
+                  (click)="
+                    openSectionModal(
+                      modalWrapper,
+                      galleryEditorTpl,
+                      'Gallery Editor'
+                    )
+                  "
+                >
                   <i class="fa fa-expand"></i>
                 </button>
               </div>
@@ -500,7 +527,7 @@
           <gallery
             id="project-gallery"
             [class.d-none]="!isGalleryOpened"
-            [items]="galleryItems"
+            [items]="galleryItems | gallery"
             [itemTemplate]="itemTemplate"
           ></gallery>
           <ng-template

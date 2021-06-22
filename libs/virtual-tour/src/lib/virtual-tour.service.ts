@@ -14,7 +14,7 @@ export interface VRScreenshot {
   currentPano: any;
 }
 
-function ringsShape() {
+function ringsShape(index = 0, font) {
   const outerRingGeometry = new THREE.RingGeometry( 1.90, 2, 30, 1, 0 );
   const outerRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
   const outerRingMesh = new THREE.Mesh( outerRingGeometry, outerRingMaterial );
@@ -27,10 +27,29 @@ function ringsShape() {
   const circleMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, transparent: true, opacity: 0 } );
   const circleMesh = new THREE.Mesh( circleGeometry, circleMaterial );
 
+  const textGeometry = new THREE.TextGeometry(`${index}`, {
+    font,
+    size: 2,
+    height: 1,
+    bevelEnabled: true,
+    bevelThickness: 0.1,
+    bevelSize: 0,
+    bevelOffset: 0,
+    bevelSegments: 0
+  });
+  const textMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+  const textMesh = new THREE.Mesh( textGeometry, textMaterial );
+
   const group = new THREE.Group();
   group.add(outerRingMesh);
   group.add(innerRingMesh);
   group.add(circleMesh);
+  group.add(textMesh);
+
+  textMesh.rotation.set(2, 4, 0);
+  textMesh.position.set(1, 0, 1);
+
+  console.log(textMesh);
 
   group.rotation.set(11, 0, 0);
 
@@ -40,6 +59,7 @@ function ringsShape() {
 @Injectable()
 export class VirtualTourService {
   private defaultY = 3.5;
+  private defaultZoom = 60;
   static EVENTS = {
     INIT: 'INIT',
     ROTATION_CHANGE: 'ROTATION_CHANGE',
@@ -59,7 +79,7 @@ export class VirtualTourService {
   private cameraViewProjectionMatrix: THREE.Matrix4;
   private scene: THREE.Scene;
   private light: THREE.AmbientLight;
-
+  private font: any;
   private cube: THREE.Mesh;
 
   private frameId: number = null;
@@ -264,6 +284,13 @@ export class VirtualTourService {
     } else {
       this.meshModel.rotation.y = this.defaultY;
     }
+
+    if (!isNaN(pano.panoramas.zoom)) {
+      this.changeZoom(+pano.panoramas.zoom);
+    } else {
+      this.changeZoom(this.defaultZoom);
+    }
+
     this.events.emit({type: VirtualTourService.EVENTS.NAV_TO, data: this.activeIndex})
   }
 
@@ -299,7 +326,7 @@ export class VirtualTourService {
     console.log(this.panos)
     this.panos.forEach((pano) => {
       if (!pano.object) {
-        const mesh = ringsShape();
+        const mesh = ringsShape(pano.panoramas.order, this.font);
         pano.object = mesh;
         this.scene.add(mesh);
 
@@ -311,9 +338,15 @@ export class VirtualTourService {
   }
 
   addNavPoints(model: any) {
-    this.panos = model.panos.filter(p => p.name).map(p => ({...p, position: p.panoramas}));
-    this.loadTextures(model);
-    this.addPanosMarks();
+    const loader = new THREE.FontLoader();
+    loader.load( 'assets/fonts/helvetiker_regular.typeface.json', ( font ) => {
+      this.font = font;
+      this.panos = model.panos.filter(p => p.name).map(p => ({...p, position: p.panoramas}));
+      this.loadTextures(model);
+      this.addPanosMarks();
+      this.setSettingsControls();
+    });
+
   }
 
   changeMeshRotation(y) {
@@ -341,6 +374,22 @@ export class VirtualTourService {
     })
   }
 
+  changeZoomForCurrentPano(zoom) {
+    this.changeZoom(zoom);
+    this.panos = this.panos.map(p => {
+      if (p.name === this.currentPano.name) {
+        return {
+          ...p,
+          panoramas: {
+            ...p.panoramas,
+            zoom
+          }
+        }
+      }
+      return p;
+    })
+  }
+
   onDocumentMouseDown(event) {
     let panoId = this.getPanoId(event)
     if (panoId !== null) {
@@ -352,25 +401,28 @@ export class VirtualTourService {
   }
 
   onDocumentMouseMove(event) {
-    this.panos.forEach(pano => {
-      // pano.object.material.opacity = 0.25
-      pano.object.children.forEach(mesh => {
-        if (mesh.geometry !== 'CircleGeometry') {
-          mesh.material.opacity = 0.25;
-        }
+    if (this.panos) {
+      this.panos.forEach(pano => {
+        // pano.object.material.opacity = 0.25
+        pano.object.children.forEach(mesh => {
+          if (mesh.geometry !== 'CircleGeometry') {
+            mesh.material.opacity = 0.25;
+          }
 
-      });
-    })
-    let panoId = this.getPanoId(event)
-    if (panoId !== null) {
-      // this.panos[panoId].object.material.opacity = 0.5
-      this.panos[panoId].object.children.forEach(mesh => {
-        if (mesh.geometry !== 'CircleGeometry') {
-          mesh.material.opacity = 0.5;
-        }
+        });
+      })
+      let panoId = this.getPanoId(event)
+      if (panoId !== null) {
+        // this.panos[panoId].object.material.opacity = 0.5
+        this.panos[panoId].object.children.forEach(mesh => {
+          if (mesh.geometry !== 'CircleGeometry') {
+            mesh.material.opacity = 0.5;
+          }
 
-      });
+        });
+      }
     }
+
   }
 
   changeZoom(fov) {
@@ -457,6 +509,11 @@ export class VirtualTourService {
     this.config = config;
     this.canvas = canvas.nativeElement;
 
+    if (config.additional_data) {
+      this.defaultY = +config.additional_data.rotation_y || this.defaultY;
+      this.defaultZoom = +config.additional_data.zoom || this.defaultZoom;
+    }
+
     // Create the renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -475,11 +532,8 @@ export class VirtualTourService {
 
     // create the scene
     this.scene = new THREE.Scene();
-    let defaultFov = 60;
-    if (config.additional_data) {
-      defaultFov = config.additional_data.zoom;
-    }
-    this.camera = new THREE.PerspectiveCamera(defaultFov, this.element.clientWidth / this.element.clientHeight, 1, 1000);
+
+    this.camera = new THREE.PerspectiveCamera(this.defaultZoom, this.element.clientWidth / this.element.clientHeight, 1, 1000);
     this.cameraFrustum = new THREE.Frustum();
     this.cameraViewProjectionMatrix = new THREE.Matrix4();
     // @ts-ignore
@@ -501,9 +555,7 @@ export class VirtualTourService {
     this.DeviceOrientationControls.name = 'device-orientation';
     this.DeviceOrientationControls.enabled = false;
     // this.camera.position.z = 1;
-    if (config.additional_data) {
-      this.defaultY = +config.additional_data.rotation_y || this.defaultY;
-    }
+
 
     // 1
     this.loaderModel = new THREE.TextureLoader();
@@ -521,7 +573,7 @@ export class VirtualTourService {
     this.transitionMesh.rotation.y = this.defaultY;
     this.scene.add(this.transitionMesh);
     this.addNavPoints(config);
-    this.setSettingsControls();
+
 
     this.OrbitControls.addEventListener('end', (e) => {
       this.events.emit({type: VirtualTourService.EVENTS.CHANGE, data: e.target});

@@ -4,7 +4,7 @@ import { ProjectSite } from "./project-site";
 export interface Project {
   name?: string;
   address?: string;
-  additional_date?: any;
+  additional_data?: any;
   client_id?: string;
   id?: string;
   path?: string;

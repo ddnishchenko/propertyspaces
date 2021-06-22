@@ -1,9 +1,7 @@
-import { MapsAPILoader } from '@agm/core';
+import { AgmMap, MapsAPILoader } from '@agm/core';
 import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, OperatorFunction } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { ProjectsService } from '../../service/projects.service';
 
 @Component({
@@ -14,6 +12,7 @@ import { ProjectsService } from '../../service/projects.service';
 export class MapModalComponent implements OnInit, AfterViewInit {
   @ViewChild('search') searchElementRef: ElementRef;
   @ViewChild('streetView') streetViewRef: ElementRef;
+  @ViewChild(AgmMap) agmMap: AgmMap;
   form;
   latitude = 51.678418;
   longitude = 7.809007;
@@ -47,7 +46,7 @@ export class MapModalComponent implements OnInit, AfterViewInit {
     await this.mapsAPILoader.load();
     const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
 
-    const fenway = { lat: this.latitude, lng: this.longitude };
+    const fenway = { lat: this.form.value.latitude, lng: this.form.value.longitude };
     const panorama = new google.maps.StreetViewPanorama(
       this.streetViewRef.nativeElement as HTMLElement,
       {
@@ -78,12 +77,12 @@ export class MapModalComponent implements OnInit, AfterViewInit {
           longitude: place.geometry.location.lng()
         })
         panorama.setPosition({
-          lat: this.form.value.latitude,
-          lng: this.form.value.latitude
+          lat: +this.form.value.latitude,
+          lng: +this.form.value.latitude
         });
         panorama.setPov({
-          heading: 34,
-          pitch: 10,
+          heading: 0,
+          pitch: 0,
         })
       });
     })

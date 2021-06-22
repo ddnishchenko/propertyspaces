@@ -6,3 +6,7 @@ export const selectProjectGalleryState = createFeatureSelector<fromProjectGaller
 );
 
 export const selectGallery = createSelector(selectProjectGalleryState, state => state.gallery);
+export const selectOrderedGallery = createSelector(
+  selectProjectGalleryState,
+  state => state.order.split(',').filter(id => id && id !== 'galleryOrder').map(id => state.gallery.find(item => item.name === id))
+);

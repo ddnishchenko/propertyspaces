@@ -10,7 +10,7 @@ export const loadProjectGallery = createAction(
 
 export const loadProjectGallerySuccess = createAction(
   `${p} Load ProjectGallery Success`,
-  props<{gallery: ImageGallery[]}>()
+  props<{gallery: ImageGallery[], order: string}>()
 );
 
 export const loadProjectGalleryFail = createAction(
@@ -24,7 +24,7 @@ export const uploadProjectGalleryPhoto = createAction(
 
 export const uploadProjectGalleryPhotoSuccess = createAction(
   `${p} Upload ProjectGallery Photo Success`,
-  props<{photo: ImageGallery}>()
+  props<{photo: ImageGallery, order: string}>()
 );
 
 export const uploadProjectGalleryPhotoFail = createAction(
@@ -44,4 +44,34 @@ export const removeProjectGalleryPhotoSuccess = createAction(
 
 export const removeProjectGalleryPhotoFail = createAction(
   `${p} Remove ProjectGallery Photo Fail`
+);
+
+export const changeOrderOfPhoto = createAction(
+  `${p} Change Order of Photo`,
+  props<{projectId: string; photos: string[]}>()
+);
+
+export const changeOrderOfPhotoSuccess = createAction(
+  `${p} Change Order of Photo Success`,
+  props<{order: string}>()
+);
+
+export const renamePhoto = createAction(
+  `${p} Rename Photo`,
+  props<{projectId: string; oldName: string; newName: string}>()
+);
+
+export const renamePhotoSuccess = createAction(
+  `${p} Rename Photo Success`,
+  props<{projectId: string; oldName: string; newName: string, order: string}>()
+);
+
+export const setHeaderPicture = createAction(
+  `${p} Set Header picture`,
+  props<{projectId: string; pictureName: string;}>()
+);
+
+export const setHeaderPictureSuccess = createAction(
+  `${p} Set Header picture`,
+  props<{projectId: string; pictureName: string;}>()
 );

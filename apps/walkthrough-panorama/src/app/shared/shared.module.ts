@@ -9,34 +9,41 @@ import { LightboxModule } from 'ng-gallery/lightbox';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { DndModule } from 'ngx-drag-drop';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { OrderModule } from 'ngx-order-pipe';
 
 
 import { GalleryEditorComponent } from './components/gallery-editor/gallery-editor.component';
 import { AgmCoreModule } from '@agm/core';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { GalleryPipe } from './pipes/gallery.pipe';
 
 
 @NgModule({
   declarations: [
     ConnectFormDirective,
     SafePipe,
-    GalleryEditorComponent
+    GalleryEditorComponent,
+    GalleryPipe
   ],
   exports: [
     ConnectFormDirective,
     SafePipe,
+    GalleryPipe,
     GalleryModule,
     LightboxModule,
     NgxMasonryModule,
     AgmCoreModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    GalleryEditorComponent,
+    OrderModule
   ],
   imports: [
     CommonModule,
     GalleryModule,
     LightboxModule,
     NgxMasonryModule,
-    DndModule
+    DndModule,
+    OrderModule
   ]
 })
 export class SharedModule { }

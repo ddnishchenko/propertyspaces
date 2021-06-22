@@ -43,7 +43,7 @@ export class ProjectsService {
     return this.http.post(host + 'get-panoramas-project', {client_id: 1295, project_id});
   }
 
-  getPanoramas(project_id): Observable<any> {
+  getPanoramas(project_id): Observable<Project> {
     const params = new HttpParams({fromObject: {project_id}});
     return this.http.get(host + 'get-panoramas',{params}).pipe(
       mergeMap(
@@ -81,7 +81,7 @@ export class ProjectsService {
   updateRotationProject(project_id, rotation_y) {
     return this.http.post(host + 'update-rotation-project', {client_id: 1295, project_id, rotation_y})
   }
-  updateDataProject(project_id, additional_data) {
+  updateDataProject(project_id, additional_data): Observable<Project> {
     return this.http.post(host + 'update-data-project', {client_id: 1295, project_id, additional_data})
   }
 

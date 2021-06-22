@@ -66,6 +66,7 @@
     "ngrx-store-freeze": "^0.2.4",
     "ngx-drag-drop": "^2.0.0",
     "ngx-masonry": "^11.0.2",
+    "ngx-order-pipe": "^2.1.1",
     "ngx-progressbar": "^6.1.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.5.5",
