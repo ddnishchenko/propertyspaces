@@ -273,6 +273,17 @@ export class PanoramaPlayerComponent implements OnInit {
     }))
   }
 
+  saveSettings(projectId) {
+
+    const data = {
+      zoom: this.form.value.zoom,
+      rotation_y: this.form.value.rotationY
+    };
+    this.virtualTour.virtualTourService.defaultY = data.rotation_y;
+    this.virtualTour.virtualTourService.defaultZoom = data.zoom;
+    this.store.dispatch(updateProject({ projectId, data }))
+  }
+
   navTo(name, panos, i) {
     const index = panos.findIndex(pano => pano.name === name);
     this.activePoint = index;
@@ -407,11 +418,5 @@ export class PanoramaPlayerComponent implements OnInit {
     this.store.dispatch(removeProjectGalleryPhoto({ projectId, image_id: [$event.item.name] }));
   }
 
-  saveSettings(projectId) {
-    const data = {
-      zoom: this.form.value.zoom,
-      rotation_y: this.form.value.rotationY
-    };
-    this.store.dispatch(updateProject({ projectId, data }))
-  }
+
 }
