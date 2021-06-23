@@ -83,6 +83,9 @@
             aria-labelledby="dropdownForm1"
           >
             <form class="px-4 py-3">
+
+              <h3>Defaults</h3>
+
               <div class="form-group">
                 <label>Zoom</label>
                 <div class="range-slider">
@@ -134,18 +137,46 @@
                   </span>
                 </div>
               </div>
+
               <button
                 type="button"
                 (click)="saveSettings(data.project_id)"
                 class="btn btn-success"
               >
-                Save
+                Save defaults
               </button>
 
               <div class="dropdown-divider"></div>
+              <h4>Panorama</h4>
 
               <div class="form-group">
-                <label>Panorama rotation</label>
+                <label>Zoom</label>
+                <div class="range-slider">
+                  <input
+                    class="range-slider__range"
+                    (input)="panoZoomChange()"
+                    type="range"
+                    formControlName="panoZoom"
+                    step="1"
+                    min="30"
+                    max="120"
+                  />
+                  <span class="range-slider__value">
+                    <input
+                      type="number"
+                      formControlName="panoZoom"
+                      (change)="panoZoomChange()"
+                      [value]="form.value.panoZoom"
+                      step="1"
+                      min="30"
+                      max="120"
+                    />
+                  </span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Rotation</label>
                 <div class="range-slider">
                   <input
                     class="range-slider__range"
@@ -167,15 +198,17 @@
                       max="6.3"
                     />
                   </span>
-                  <button
-                    type="button"
-                    class="btn btn-success"
-                    (click)="updatePanoCameraAngle()"
-                  >
-                    Save pano
-                  </button>
                 </div>
               </div>
+
+              <button
+                type="button"
+                class="btn btn-success"
+                (click)="updatePanoSettings()"
+              >
+                Save panorama
+              </button>
+
             </form>
           </div>
         </div>
@@ -196,18 +229,10 @@
               name="radioBasic"
               formControlName="sidebarSide"
             >
-              <label
-                ngbButtonLabel
-                class="btn-primary"
-                (click)="moveSidebar('l')"
-              >
+              <label ngbButtonLabel class="btn-primary">
                 <input ngbButton type="radio" value="l" /> Left
               </label>
-              <label
-                ngbButtonLabel
-                class="btn-primary"
-                (click)="moveSidebar('r')"
-              >
+              <label ngbButtonLabel class="btn-primary">
                 <input ngbButton type="radio" value="r" /> Right
               </label>
             </div>
@@ -292,7 +317,7 @@
                       [class.active]="floorActiveIndex === n"
                       [ngStyle]="getStyleForDot(f, p)"
                     >
-                      {{ n + 1 }}
+                      {{ data.panos[n].panoramas.order }}
                     </div>
 
                     <ng-container *ngIf="floorActiveIndex === n">
@@ -556,7 +581,7 @@
             #virtualTour
             id="virtualTour"
             [propertyspacesVirtualTour]="data"
-            (init)="vrInit()"
+            (init)="vrInit(data)"
             (navigationChange)="changeActive($event)"
             (change)="viewChange($event)"
           ></canvas>

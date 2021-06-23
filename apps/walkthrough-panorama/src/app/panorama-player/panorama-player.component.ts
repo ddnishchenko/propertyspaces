@@ -27,14 +27,14 @@ function parseModel(model) {
   let panos = allPanos.filter(t => !t.name.includes('_'));
   let panosHDR = panos.map((p, i) => {
     return {
-        ...p,
-        panoramas: {
-          ...p.panoramas,
-          floor: +p.panoramas.floor || 1,
-        },
-        dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
-        light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
-        hdr_pano: allPanos.find(t => t.name.includes(`${p.name}_hdr`)),
+      ...p,
+      panoramas: {
+        ...p.panoramas,
+        floor: +p.panoramas.floor || 1,
+      },
+      dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
+      light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
+      hdr_pano: allPanos.find(t => t.name.includes(`${p.name}_hdr`)),
     };
   }).sort((a, b) => a.floor - b.floor);
   let floors: number[] = panosHDR.map(p => p.panoramas.floor);
@@ -73,7 +73,7 @@ function parseModel(model) {
     const xSide = xMax - (xMin);
     const zSide = zMax - (zMin);
 
-    const floorplanMap = f.map((p,i) => ({
+    const floorplanMap = f.map((p, i) => ({
       name: p.name,
       z: (zArray[i] / zSide) * 100,
       x: (xArray[i] / xSide) * 100
@@ -107,7 +107,7 @@ const aspectRations = [
   },
   {
     name: 'Landscape',
-    value: 566/1080,
+    value: 566 / 1080,
   },
   {
     name: 'Portrait',
@@ -177,6 +177,7 @@ export class PanoramaPlayerComponent implements OnInit {
   form;
   isEdit = false;
   rotationAngle = 0;
+  defaultZoom = 0;
   floorActiveIndex = 0;
   floors$;
   modalContent = null;
@@ -193,11 +194,11 @@ export class PanoramaPlayerComponent implements OnInit {
     const projectId = this.route.snapshot.params.id;
     this.isEdit = this.router.url.includes('model');
     this.createForm();
-    this.store.dispatch(loadProjectGallery({projectId}));
-    this.store.dispatch(loadPanoramas({projectId}));
+    this.store.dispatch(loadProjectGallery({ projectId }));
+    this.store.dispatch(loadPanoramas({ projectId }));
     this.gallery$ = this.store.pipe(
       select(selectOrderedGallery),
-      tap(() => this.updateMasonty())
+      tap(() => setTimeout(() => this.updateMasonty(), 100))
     );
     this.data$ = this.store.pipe(
       select(selectVirtualTourParams),
@@ -219,6 +220,7 @@ export class PanoramaPlayerComponent implements OnInit {
       panoCameraStartAngle: new FormControl(''),
       editMode: new FormControl(false),
       zoom: new FormControl(0),
+      panoZoom: new FormControl(0),
       aspectRatio: new FormControl(''),
       customRatio: new FormControl(''),
       sidebarSide: new FormControl('l')
@@ -231,12 +233,13 @@ export class PanoramaPlayerComponent implements OnInit {
     }
   }
 
-  vrInit() {
+  vrInit(data) {
     this.form.patchValue({
-      rotationY: +this.virtualTour.virtualTourService.mesh.rotation.y,
-      zoom: this.virtualTour.virtualTourService.OrbitControls.object.fov
+      rotationY: +this.virtualTour.virtualTourService.defaultY,
+      zoom: this.virtualTour.virtualTourService.defaultZoom
     });
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
+    this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
   }
 
   editModeSwitch() {
@@ -250,13 +253,16 @@ export class PanoramaPlayerComponent implements OnInit {
   panoCameraStartAngleChange() {
     this.virtualTour.virtualTourService.changeMeshRotationForCurrentPano(this.form.value.panoCameraStartAngle);
   }
-
-  saveY(projectId) {
-    const data = {zoom: this.form.value.zoom, rotation_y: this.form.value.rotationY};
-    this.store.dispatch(updateProject({projectId, data}))
+  panoZoomChange() {
+    this.virtualTour.virtualTourService.changeZoomForCurrentPano(+this.form.value.panoZoom);
   }
 
-  updatePanoCameraAngle() {
+  saveY(projectId) {
+    const data = { zoom: this.form.value.zoom, rotation_y: this.form.value.rotationY };
+    this.store.dispatch(updateProject({ projectId, data }))
+  }
+
+  updatePanoSettings() {
     const { name, panoramas } = this.virtualTour.virtualTourService.currentPanorama;
     const panorama: Panorama = {
       name, panoramas
@@ -277,14 +283,17 @@ export class PanoramaPlayerComponent implements OnInit {
   changeActive($event) {
     this.activePoint = $event;
     this.form.patchValue({
-      panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoramas.panoCameraStartAngle || 0
+      panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoramas.panoCameraStartAngle || 0,
+      panoZoom: this.virtualTour.virtualTourService.currentPano.panoramas.zoom || 0
     })
   }
   zoomChange() {
     this.virtualTour.virtualTourService.changeZoom(+this.form.value.zoom)
   }
+
   viewChange($event) {
-    this.form.get('zoom').patchValue($event.object.fov);
+    // this.form.get('zoom').patchValue($event.object.fov);
+    // this.defaultZoom = $event.object.fov;
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getAzimuthalAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
   }
 
@@ -295,7 +304,8 @@ export class PanoramaPlayerComponent implements OnInit {
     modalRef.componentInstance.data = data;
     modalRef.result.then(data => {
       if (data) {
-        this.store.dispatch(updateProject({projectId: data.project_id, data}))
+        const projectId = this.route.snapshot.params.id;
+        this.store.dispatch(updateProject({ projectId, data }))
       }
     }).catch(e => {
       console.log('Dismissed');
@@ -321,7 +331,7 @@ export class PanoramaPlayerComponent implements OnInit {
     const screenshot = this.virtualTour.virtualTourService.takeScreenshot();
     ;
     const file = dataURLtoFile(screenshot.dataUrl, screenshot.name);
-    this.store.dispatch(uploadProjectGalleryPhoto({projectId: this.route.snapshot.params.id, file}));
+    this.store.dispatch(uploadProjectGalleryPhoto({ projectId: this.route.snapshot.params.id, file }));
   }
 
   updateCanvasSize() {
@@ -335,8 +345,6 @@ export class PanoramaPlayerComponent implements OnInit {
   resizeCanvas() {
     this.virtualTour.virtualTourService.resize();
   }
-
-  moveSidebar() {}
 
   openSectionModal(modalWrapper, content, modalTitle) {
     this.modalContent = content;
@@ -365,8 +373,8 @@ export class PanoramaPlayerComponent implements OnInit {
   canvasAspect(sceneWrapper) {
     if (this.form.value.aspectRatio !== 'custom') {
       return this.form.value.aspectRatio
-      ? sceneWrapper.offsetHeight / this.form.value.aspectRatio + 'px'
-      : '100%'
+        ? sceneWrapper.offsetHeight / this.form.value.aspectRatio + 'px'
+        : '100%'
     } else {
       return sceneWrapper.offsetHeight / this.form.value.customRatio + 'px';
     }
@@ -388,15 +396,15 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   imageNameChanged($event, projectId) {
-    console.log({...$event, projectId});
-    this.store.dispatch(renamePhoto({...$event, projectId}));
+    console.log({ ...$event, projectId });
+    this.store.dispatch(renamePhoto({ ...$event, projectId }));
   }
   sortChanged($event, projectId) {
-    console.log({projectId, photos: $event});
-    this.store.dispatch(changeOrderOfPhoto({projectId, photos: $event.map(item => item.name)}))
+    console.log({ projectId, photos: $event });
+    this.store.dispatch(changeOrderOfPhoto({ projectId, photos: $event.map(item => item.name) }))
   }
   deleteGalleryImage($event, projectId) {
-    this.store.dispatch(removeProjectGalleryPhoto({projectId, image_id: [$event.item.name]}));
+    this.store.dispatch(removeProjectGalleryPhoto({ projectId, image_id: [$event.item.name] }));
   }
 
   saveSettings(projectId) {
@@ -404,6 +412,6 @@ export class PanoramaPlayerComponent implements OnInit {
       zoom: this.form.value.zoom,
       rotation_y: this.form.value.rotationY
     };
-    this.store.dispatch(updateProject({projectId, data}))
+    this.store.dispatch(updateProject({ projectId, data }))
   }
 }

@@ -26,8 +26,8 @@ export const reducer = createReducer(
   initialState,
 
   on(ProjectsActions.loadProjects, state => state),
-  on(ProjectsActions.loadProjectsSuccess, (state, {projects}) => ({...state, projects})),
-  on(ProjectsActions.createProjectSuccess, (state, {project}) => {
+  on(ProjectsActions.loadProjectsSuccess, (state, { projects }) => ({ ...state, projects })),
+  on(ProjectsActions.createProjectSuccess, (state, { project }) => {
 
     return {
       ...state,
@@ -57,19 +57,18 @@ export const reducer = createReducer(
       })
     };
   }),
-  on(ProjectsActions.editProjectSuccess, (state, {projectId, name}) => {
+  on(ProjectsActions.editProjectSuccess, (state, { projectId, name }) => {
     return {
       ...state,
-      virtualTourParameters: {...state.virtualTourParameters, name}
+      virtualTourParameters: { ...state.virtualTourParameters, name }
     };
   }),
-  on(ProjectsActions.setActiveProject, (state, {projectId}) => ({...state, activeProjectId: projectId})),
+  on(ProjectsActions.setActiveProject, (state, { projectId }) => ({ ...state, activeProjectId: projectId })),
   on(
     ProjectsActions.loadPanoramasSuccess,
     ProjectsActions.createPanoramaSuccess,
     ProjectsActions.updatePanoramaSuccess,
     ProjectsActions.createHdrPanoramaSuccess,
-    ProjectsActions.updateProjectSuccess,
     (state, { project }) => {
       return {
         ...state,
@@ -77,7 +76,18 @@ export const reducer = createReducer(
       }
     }
   ),
-  on(ProjectsActions.deletePanoramaSuccess, (state, {projectId, names}) => {
+  on(ProjectsActions.updateProjectSuccess, (state, { project }) => {
+    return {
+      ...state,
+      virtualTourParameters: {
+        ...state.virtualTourParameters,
+        additional_data: state.virtualTourParameters.additional_data ? {
+          ...project
+        } : state.virtualTourParameters.additional_data
+      }
+    }
+  }),
+  on(ProjectsActions.deletePanoramaSuccess, (state, { projectId, names }) => {
     return {
       ...state,
       virtualTourParameters: {
@@ -92,7 +102,7 @@ export const reducer = createReducer(
       panoEditForm: panorama
     }
   }),
-  on(ProjectsActions.panoFormMode, (state, {isEdit}) => {
+  on(ProjectsActions.panoFormMode, (state, { isEdit }) => {
     return {
       ...state,
       isEditMode: isEdit

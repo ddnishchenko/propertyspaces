@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { Panorama } from '../../../interfaces/panorama';
 import { fileToBase64 } from '../../../utils';
@@ -47,6 +45,7 @@ export class PanoramaFormComponent implements OnInit {
       y: new FormControl(data?.panoramas?.y, validators),
       z: new FormControl(data?.panoramas?.z, validators),
       floor: new FormControl(data?.panoramas?.floor, validators),
+      order: new FormControl(data?.panoramas?.order),
       url: new FormControl(data?.url)
     });
   }
@@ -58,6 +57,7 @@ export class PanoramaFormComponent implements OnInit {
       y: data?.panoramas?.y,
       z: data?.panoramas?.z,
       floor: data?.panoramas?.floor,
+      order: data?.panoramas?.order,
       url: data?.url
     }
   }
@@ -73,6 +73,8 @@ export class PanoramaFormComponent implements OnInit {
   }
   async uploadImage($event, panoName) {
     if ($event.target.files.length) {
+      const order = !isNaN(parseInt(''+this.form.value.order, 10)) ? this.form.value.order : this.panoData.data.length;
+      this.form.patchValue({order});
       const file: File[] = Array.from($event.target.files);
       const fileName = file[0].name.split('.').slice(0, -1).join('.');
       const fileNameParts = fileName.split('_');
@@ -103,7 +105,8 @@ export class PanoramaFormComponent implements OnInit {
             name: theName,
             panoramas: {
               panorama: url,
-              ...coords
+              ...coords,
+              order
             }
           };
           this.store.dispatch(createPanorama({ projectId: this.panoData.project_id, panorama: rawPano }));
@@ -130,13 +133,13 @@ export class PanoramaFormComponent implements OnInit {
         };
         this.store.dispatch(updatePanorama({ projectId: this.panoData.project_id, panorama: rawPano }));
       } else {
-        const {x, y, z, name, floor} = this.form.value;
+        const {x, y, z, name, floor, order} = this.form.value;
         const n = `${name}_${posfix}`;
         rawPano = {
           name: n,
           panoramas: {
             panorama: url,
-            x, y, z, floor
+            x, y, z, floor, order
           }
         };
         this.store.dispatch(createPanorama({ projectId: this.panoData.project_id, panorama: rawPano }));
@@ -146,14 +149,22 @@ export class PanoramaFormComponent implements OnInit {
   }
 
   submit() {
+    const {
+      name,
+      x,
+      y,
+      z,
+      floor,
+      order
+    } = this.form.value;
     this.activeModal.close({
-      name: this.form.value.name,
+      name,
       panoramas: {
-        // neighbors: this.form.value.neighbors,
-        x: this.form.value.x,
-        y: this.form.value.y,
-        z: this.form.value.z,
-        floor: this.form.value.floor
+        x,
+        y,
+        z,
+        floor,
+        order
       }
     });
   }

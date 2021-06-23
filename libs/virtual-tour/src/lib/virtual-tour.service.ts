@@ -14,18 +14,21 @@ export interface VRScreenshot {
   currentPano: any;
 }
 
-function ringsShape(index = 0, font) {
-  const outerRingGeometry = new THREE.RingGeometry( 1.90, 2, 30, 1, 0 );
-  const outerRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
-  const outerRingMesh = new THREE.Mesh( outerRingGeometry, outerRingMaterial );
 
-  const innerRingGeometry = new THREE.RingGeometry( 1.5, 1.8, 30, 1, 0 );
-  const innerRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
-  const innerRingMesh = new THREE.Mesh( innerRingGeometry, innerRingMaterial );
+function ringsShape(pano, font) {
+  const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 30, 1, 0);
+  const outerRingMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+  const outerRingMesh = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
 
-  const circleGeometry = new THREE.CircleGeometry( 2, 30 );
-  const circleMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, transparent: true, opacity: 0 } );
-  const circleMesh = new THREE.Mesh( circleGeometry, circleMaterial );
+  const innerRingGeometry = new THREE.RingGeometry(1.5, 1.8, 30, 1, 0);
+  const innerRingMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+  const innerRingMesh = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
+
+  const circleGeometry = new THREE.CircleGeometry(2, 30);
+  const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 });
+  const circleMesh = new THREE.Mesh(circleGeometry, circleMaterial);
+
+  const index = pano?.order || 0;
 
   const textGeometry = new THREE.TextGeometry(`${index}`, {
     font,
@@ -37,8 +40,8 @@ function ringsShape(index = 0, font) {
     bevelOffset: 0,
     bevelSegments: 0
   });
-  const textMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
-  const textMesh = new THREE.Mesh( textGeometry, textMaterial );
+  const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const textMesh = new THREE.Mesh(textGeometry, textMaterial);
 
   const group = new THREE.Group();
   group.add(outerRingMesh);
@@ -49,7 +52,7 @@ function ringsShape(index = 0, font) {
   textMesh.rotation.set(2, 4, 0);
   textMesh.position.set(1, 0, 1);
 
-  console.log(textMesh);
+  console.log(textMesh, pano);
 
   group.rotation.set(11, 0, 0);
 
@@ -180,7 +183,7 @@ export class VirtualTourService {
       this.meshModel.position.set(currPos.x, currPos.y, currPos.z)
       this.transitionMesh.visible = false
       this.panos.forEach((pano, index) => {
-          pano.object.visible = true; //this.currentPanoId !== index;
+        pano.object.visible = true; //this.currentPanoId !== index;
       })
     }
     this.meshModel.material.needsUpdate = true
@@ -193,7 +196,7 @@ export class VirtualTourService {
       if (this.transition.state > 1) this.transition.state = 1
       this.runTransition()
     }
-    this.controlsTarget = {x: this.OrbitControls.target.x, y: this.OrbitControls.target.y, z: this.OrbitControls.target.z};
+    this.controlsTarget = { x: this.OrbitControls.target.x, y: this.OrbitControls.target.y, z: this.OrbitControls.target.z };
   };
 
   updateDotInfo(dotInfo: any) {
@@ -236,11 +239,11 @@ export class VirtualTourService {
     const isTouch = event.changedTouches && event.changedTouches.length;
     const x = isTouch ? event.changedTouches[0].pageX : event.pageX;
     const y = isTouch ? event.changedTouches[0].pageY : event.pageY;
-    this.mouseModel.x = ( (x - boundBox.x) / boundBox.width ) * 2 - 1;
-    this.mouseModel.y = - ( (y - boundBox.y) / boundBox.height ) * 2 + 1;
-    this.raycasterModel.setFromCamera( this.mouseModel, this.camera );
+    this.mouseModel.x = ((x - boundBox.x) / boundBox.width) * 2 - 1;
+    this.mouseModel.y = - ((y - boundBox.y) / boundBox.height) * 2 + 1;
+    this.raycasterModel.setFromCamera(this.mouseModel, this.camera);
 
-    let intersects = this.raycasterModel.intersectObjects( this.scene.children, true );
+    let intersects = this.raycasterModel.intersectObjects(this.scene.children, true);
     let target = null
     intersects.forEach((item) => {
       if (item.distance > 200) { //panorama sphere
@@ -270,7 +273,7 @@ export class VirtualTourService {
     this.transition.state = 0;
     let camPos = this.camera.position
 
-    this.transition.startPos = {x: camPos.x, y: camPos.y, z: camPos.z}
+    this.transition.startPos = { x: camPos.x, y: camPos.y, z: camPos.z }
     this.transition.endPos = cameraPos
     this.transition.texture = this.loadedTextures[panoId];
 
@@ -291,7 +294,7 @@ export class VirtualTourService {
       this.changeZoom(this.defaultZoom);
     }
 
-    this.events.emit({type: VirtualTourService.EVENTS.NAV_TO, data: this.activeIndex})
+    this.events.emit({ type: VirtualTourService.EVENTS.NAV_TO, data: this.activeIndex })
   }
 
   scaleToModel(pos) {
@@ -311,12 +314,12 @@ export class VirtualTourService {
     );
     this.loadedTextures = this.panos.map(
       (pano, i) => loader.load(`${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`,
-      (t) => {
-        if (!i) {
-          this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
-          this.events.emit({type: VirtualTourService.EVENTS.INIT, data: t})
-        }
-    }));
+        (t) => {
+          if (!i) {
+            this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
+            this.events.emit({ type: VirtualTourService.EVENTS.INIT, data: t })
+          }
+        }));
 
     // asyncLoader()
 
@@ -326,7 +329,7 @@ export class VirtualTourService {
     console.log(this.panos)
     this.panos.forEach((pano) => {
       if (!pano.object) {
-        const mesh = ringsShape(pano.panoramas.order, this.font);
+        const mesh = ringsShape(pano.panoramas, this.font);
         pano.object = mesh;
         this.scene.add(mesh);
 
@@ -339,9 +342,9 @@ export class VirtualTourService {
 
   addNavPoints(model: any) {
     const loader = new THREE.FontLoader();
-    loader.load( 'assets/fonts/helvetiker_regular.typeface.json', ( font ) => {
+    loader.load('assets/fonts/helvetiker_regular.typeface.json', (font) => {
       this.font = font;
-      this.panos = model.panos.filter(p => p.name).map(p => ({...p, position: p.panoramas}));
+      this.panos = model.panos.filter(p => p.name).map(p => ({ ...p, position: p.panoramas }));
       this.loadTextures(model);
       this.addPanosMarks();
       this.setSettingsControls();
@@ -481,7 +484,7 @@ export class VirtualTourService {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
 
-    this.renderer.setSize( width, height );
+    this.renderer.setSize(width, height);
   }
 
   /**
@@ -524,9 +527,9 @@ export class VirtualTourService {
     const width = this.renderer.domElement.parentElement.offsetWidth;
     const height = this.renderer.domElement.parentElement.offsetHeight;
     this.renderer.setSize(width, height);
-    this.renderer.setPixelRatio( window.devicePixelRatio );
-    this.renderer.setSize( this.element.clientWidth, this.element.clientHeight );
-    this.renderer.setClearColor( 0x000000, 1 );
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(this.element.clientWidth, this.element.clientHeight);
+    this.renderer.setClearColor(0x000000, 1);
     this.renderer.autoClear = false;
     this.renderer.sortObjects = false;
 
@@ -550,7 +553,7 @@ export class VirtualTourService {
     this.OrbitControls.autoRotateSpeed = 2.0;
     // this.OrbitControls.object.position.z = 1;
 
-    this.DeviceOrientationControls = new DeviceOrientationControls( this.camera, this.renderer.domElement );
+    this.DeviceOrientationControls = new DeviceOrientationControls(this.camera, this.renderer.domElement);
     // @ts-ignore
     this.DeviceOrientationControls.name = 'device-orientation';
     this.DeviceOrientationControls.enabled = false;
@@ -561,7 +564,7 @@ export class VirtualTourService {
     this.loaderModel = new THREE.TextureLoader();
     this.sphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
     this.sphereGeometryModel.scale(-1, 1, 1);
-    this.meshModel = new THREE.Mesh(this.sphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 1}));
+    this.meshModel = new THREE.Mesh(this.sphereGeometryModel, new THREE.MeshBasicMaterial({ transparent: true, opacity: 1 }));
     this.meshModel.rotation.y = this.defaultY;
     this.scene.add(this.meshModel);
     this.meshModel.position.set(0, 0, 0);
@@ -569,14 +572,14 @@ export class VirtualTourService {
     // 2
     let tSphereGeometryModel = new THREE.SphereGeometry(360, 60, 40);
     tSphereGeometryModel.scale(-1, 1, 1);
-    this.transitionMesh = new THREE.Mesh(tSphereGeometryModel, new THREE.MeshBasicMaterial({transparent: true, opacity: 0}));
+    this.transitionMesh = new THREE.Mesh(tSphereGeometryModel, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }));
     this.transitionMesh.rotation.y = this.defaultY;
     this.scene.add(this.transitionMesh);
     this.addNavPoints(config);
 
 
     this.OrbitControls.addEventListener('end', (e) => {
-      this.events.emit({type: VirtualTourService.EVENTS.CHANGE, data: e.target});
+      this.events.emit({ type: VirtualTourService.EVENTS.CHANGE, data: e.target });
       // if (this.configureNavigationMode) {
       //   let startValue = 0;
       //   if (this.confNavStart) {
@@ -588,10 +591,10 @@ export class VirtualTourService {
       // }
     });
 
-   this.camera.addEventListener('zoom', (e) => {
-     this.events.emit({type: VirtualTourService.EVENTS.ZOOM, data: e.target.object.fov});
-     console.log(e);
-   })
+    this.camera.addEventListener('zoom', (e) => {
+      this.events.emit({ type: VirtualTourService.EVENTS.ZOOM, data: e.target.object.fov });
+      console.log(e);
+    })
   }
 
   /**
@@ -609,9 +612,9 @@ export class VirtualTourService {
 
       window.addEventListener('resize', () => this.resize());
 
-      document.addEventListener( 'mousedown', (event) => this.onDocumentMouseDown(event), { passive: false } );
-      document.addEventListener( 'touchend', (event) => this.onDocumentMouseDown(event), false );
-      document.addEventListener( 'mousemove', (event) => this.onDocumentMouseMove(event), { passive: false } );
+      document.addEventListener('mousedown', (event) => this.onDocumentMouseDown(event), { passive: false });
+      document.addEventListener('touchend', (event) => this.onDocumentMouseDown(event), false);
+      document.addEventListener('mousemove', (event) => this.onDocumentMouseMove(event), { passive: false });
 
     });
   }

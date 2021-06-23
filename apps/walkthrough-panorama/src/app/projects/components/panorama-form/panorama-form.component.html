@@ -84,7 +84,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12">
+          <div class="col-6">
             <div class="input-group mb-3">
               <span class="input-group-text" id="floor">floor</span>
               <input
@@ -97,6 +97,24 @@
               <div
                 class="invalid-feedback d-block"
                 *ngIf="form.get('floor').invalid"
+              >
+                It should be number!
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="order">order</span>
+              <input
+                (change)="updateName()"
+                type="number"
+                class="form-control"
+                formControlName="order"
+                placeholder="order"
+              />
+              <div
+                class="invalid-feedback d-block"
+                *ngIf="form.get('order').invalid"
               >
                 It should be number!
               </div>

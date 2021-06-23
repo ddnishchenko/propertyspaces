@@ -121,9 +121,12 @@ export class ProjectGalleryEffects {
       mergeMap(
         payload => this.projectService.changeGalleryImageName(payload.projectId, payload.oldName, payload.newName).pipe(
           mergeMap(
-            () => this.projectService.getPanoramas(payload.projectId).pipe(
+            (res) => this.projectService.getPanoramas(payload.projectId).pipe(
               mergeMap(
                 project => {
+                  if (!res.error) {
+
+                  }
                   const ids = parseNames(project.additional_data?.galleryOrder);
                   const items = ids.map(p => p === payload.oldName ? payload.newName : p);
                   const galleryOrderString = stringifyNames(items);

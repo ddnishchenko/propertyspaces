@@ -109,7 +109,7 @@ export class ProjectsService {
   removeGalleryImage(project_id, image_id) {
     return this.http.post(host + 'remove-project-file', {client_id: 1295, project_id, image_id});
   }
-  changeGalleryImageName(project_id, old_name, name) {
+  changeGalleryImageName(project_id, old_name, name): Observable<any> {
     return this.http.post(host + 'change-name-project-file', {client_id: 1295, project_id, old_name, name});
   }
 
