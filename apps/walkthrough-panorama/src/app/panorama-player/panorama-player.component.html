@@ -83,7 +83,6 @@
             aria-labelledby="dropdownForm1"
           >
             <form class="px-4 py-3">
-
               <h3>Defaults</h3>
 
               <div class="form-group">
@@ -208,7 +207,6 @@
               >
                 Save panorama
               </button>
-
             </form>
           </div>
         </div>
@@ -282,11 +280,12 @@
         ngbNav
         (navChange)="navFloor($event, data.panoFloors, data.panos)"
         #nav="ngbNav"
+        [activeId]="activeFloor"
         class="nav-tabs mb-5"
       >
         <li
           *ngFor="let f of data.additional_data.floors; index as i"
-          [ngbNavItem]="i"
+          [ngbNavItem]="f.floor"
         >
           <a ngbNavLink>{{ f.floor }}</a>
           <ng-template ngbNavContent>
@@ -313,25 +312,31 @@
                   >
                     <div
                       class="vt-map-point"
-                      (click)="navTo(p.name, data.panos, n)"
-                      [class.active]="floorActiveIndex === n"
+                      (click)="activePoint === p.index ? false : navTo(p.index)"
+                      [class.active]="activePoint === p.index"
                       [ngStyle]="getStyleForDot(f, p)"
                     >
-                      {{ data.panos[n].panoramas.order }}
+                      <div class="vt-map-point-order">{{ p.order }}</div>
+                      <div
+                        *ngIf="activePoint === p.index"
+                        class="pointer"
+                        [style.transform]="'rotate(' + rotationAngle + 'rad)'"
+                      ></div>
                     </div>
 
-                    <ng-container *ngIf="floorActiveIndex === n">
+                    <ng-template #activePointTpl>
                       <div
                         [className]="'vt-map-point active'"
                         [ngStyle]="getStyleForDot(f, p)"
                       >
+                        <div class="vt-map-point-order">{{ p.order }}</div>
                         <div
                           class="pointer"
                           [style.transform]="'rotate(' + rotationAngle + 'rad)'"
                         ></div>
                         <!-- (lon + currentDot.rotation_angle) -->
                       </div>
-                    </ng-container>
+                    </ng-template>
                   </ng-container>
                 </div>
               </div>
@@ -582,7 +587,7 @@
             id="virtualTour"
             [propertyspacesVirtualTour]="data"
             (init)="vrInit(data)"
-            (navigationChange)="changeActive($event)"
+            (navigationChange)="changeActive($event, data.panos)"
             (change)="viewChange($event)"
           ></canvas>
         </div>

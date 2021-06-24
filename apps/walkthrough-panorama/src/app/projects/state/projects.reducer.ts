@@ -16,7 +16,7 @@ export interface ProjectsState {
 export const initialState: ProjectsState = {
   projects: [],
   activeProjectId: null,
-  virtualTourParameters: null,
+  virtualTourParameters: {},
   panoEditForm: {},
   isEditMode: false
 };
@@ -82,6 +82,7 @@ export const reducer = createReducer(
       virtualTourParameters: {
         ...state.virtualTourParameters,
         additional_data: state.virtualTourParameters.additional_data ? {
+          ...state.virtualTourParameters.additional_data,
           ...project
         } : state.virtualTourParameters.additional_data
       }

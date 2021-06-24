@@ -1,23 +1,24 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectsService } from '../projects/service/projects.service';
-import { map, tap } from 'rxjs/operators';
+import { map, skip, skipUntil, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
-import { selectVirtualTourParams } from '../projects/state/projects.selectors';
+import { selectHdrVirtualTourPanoramasDividerOnFloors, selectProjectsState, selectVirtualTourPanoramas, selectVirtualTourParams } from '../projects/state/projects.selectors';
 import { loadPanoramas, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
 import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
-import { selectGallery, selectOrderedGallery } from '../projects/state/gallery/project-gallery.selectors';
+import { selectOrderedGallery } from '../projects/state/gallery/project-gallery.selectors';
 import { dataURLtoFile } from '../utils';
 import { NgxMasonryComponent, NgxMasonryOptions } from 'ngx-masonry';
-import { GalleryComponent, ImageItem } from 'ng-gallery';
+import { GalleryComponent } from 'ng-gallery';
 import { GalleryEditorComponent } from '../shared/components/gallery-editor/gallery-editor.component';
 import { slideInAnimation } from '../utils/animations';
+import { combineLatest } from 'rxjs';
 
 function parseModel(model) {
   if (!model) {
@@ -30,7 +31,7 @@ function parseModel(model) {
       ...p,
       panoramas: {
         ...p.panoramas,
-        floor: +p.panoramas.floor || 1,
+        floor: isNaN(p.panoramas.floor) ? 1 : p.panoramas.floor,
       },
       dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
       light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
@@ -171,6 +172,7 @@ export class PanoramaPlayerComponent implements OnInit {
   };
   isGalleryOpened = false;
   activePoint = 0;
+  activeFloor = 0;
   aspectRatio = null;
   aspects = aspectRations;
   data$;
@@ -178,7 +180,6 @@ export class PanoramaPlayerComponent implements OnInit {
   isEdit = false;
   rotationAngle = 0;
   defaultZoom = 0;
-  floorActiveIndex = 0;
   floors$;
   modalContent = null;
   modalTitle = null;
@@ -200,6 +201,7 @@ export class PanoramaPlayerComponent implements OnInit {
       select(selectOrderedGallery),
       tap(() => setTimeout(() => this.updateMasonty(), 100))
     );
+    /*
     this.data$ = this.store.pipe(
       select(selectVirtualTourParams),
       // tap(data => console.log(data))
@@ -211,7 +213,17 @@ export class PanoramaPlayerComponent implements OnInit {
         }
         return parsedData;
       })
-    );
+    ); */
+
+    this.data$ = combineLatest([
+      this.store.pipe(select(selectVirtualTourParams)),
+      this.store.pipe(select(selectHdrVirtualTourPanoramasDividerOnFloors))
+    ]).pipe(
+      map(([project, panoFloors]) => {
+        return {...project, ...panoFloors};
+      }),
+      skip(1)
+    )
   }
 
   createForm() {
@@ -240,6 +252,7 @@ export class PanoramaPlayerComponent implements OnInit {
     });
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
     this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
+    this.activePoint = this.virtualTour.virtualTourService.activeIndex;
   }
 
   editModeSwitch() {
@@ -284,15 +297,16 @@ export class PanoramaPlayerComponent implements OnInit {
     this.store.dispatch(updateProject({ projectId, data }))
   }
 
-  navTo(name, panos, i) {
-    const index = panos.findIndex(pano => pano.name === name);
+  navTo(index) {
     this.activePoint = index;
-    this.floorActiveIndex = i;
-    this.virtualTour.virtualTourService.moveMark(this.activePoint);
+    this.virtualTour.virtualTourService.moveMark(index);
   }
 
-  changeActive($event) {
+  changeActive($event, panos) {
     this.activePoint = $event;
+    const pano = panos.find(p => p.panoramas.index === $event);
+    const floor = pano.panoramas.floor;
+    this.activeFloor = floor;
     this.form.patchValue({
       panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoramas.panoCameraStartAngle || 0,
       panoZoom: this.virtualTour.virtualTourService.currentPano.panoramas.zoom || 0
@@ -351,7 +365,7 @@ export class PanoramaPlayerComponent implements OnInit {
   navFloor($event, floors, panos) {
     console.log(floors[$event.nextId]);
     const pano = floors[$event.nextId][0]
-    this.navTo(pano.name, panos, 0);
+    this.navTo(pano.panoramas.index);
   }
   resizeCanvas() {
     this.virtualTour.virtualTourService.resize();

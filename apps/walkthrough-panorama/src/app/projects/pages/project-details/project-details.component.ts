@@ -31,9 +31,13 @@ export class ProjectDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(loadPanoramas({projectId: this.route.snapshot.params.id}));
+    this.store.dispatch(loadPanoramas({ projectId: this.route.snapshot.params.id }));
     this.project$ = this.store.pipe(select(selectVirtualTourParams));
     this.panoramas$ = this.store.pipe(select(selectHdrVirtualTourPanoramas));
+  }
+
+  numbersComparator(itemA, itemB) {
+    return parseInt(itemA, 10) > parseInt(itemB, 10) ? 1 : -1;
   }
 
   openCreateForm(panoramas) {
@@ -46,7 +50,7 @@ export class ProjectDetailsComponent implements OnInit {
     modalRef.result.then(value => {
       if (value) {
         // Edit Pano
-        this.store.dispatch(updatePanorama({projectId: this.route.snapshot.params.id, panorama: value}))
+        this.store.dispatch(updatePanorama({ projectId: this.route.snapshot.params.id, panorama: value }))
       }
     });
   }
@@ -62,7 +66,7 @@ export class ProjectDetailsComponent implements OnInit {
     modalRef.result.then(value => {
       if (value) {
         // Edit Pano
-        this.store.dispatch(updatePanorama({projectId: this.route.snapshot.params.id, panorama: value}))
+        this.store.dispatch(updatePanorama({ projectId: this.route.snapshot.params.id, panorama: value }))
       }
     });
   }
@@ -74,14 +78,14 @@ export class ProjectDetailsComponent implements OnInit {
       if (value) {
         // Delete projects
         const names = name ? [name] : this.panoNames;
-        this.store.dispatch(deletePanorama({names, projectId: this.route.snapshot.params.id}));
+        this.store.dispatch(deletePanorama({ names, projectId: this.route.snapshot.params.id }));
       }
     });
   }
 
   onCheckChange($event) {
     const v = $event.target.value;
-    if (this.panoNames.includes(v) ) {
+    if (this.panoNames.includes(v)) {
       this.panoNames = this.panoNames.filter(n => n !== v);
     } else {
       this.panoNames = [
@@ -97,7 +101,7 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   saveName(projectId) {
-    this.store.dispatch(editProject({projectId, name: this.projectName}))
+    this.store.dispatch(editProject({ projectId, name: this.projectName }))
   }
 
   openMapModal(project, panoramas) {
@@ -105,18 +109,18 @@ export class ProjectDetailsComponent implements OnInit {
     modal.componentInstance.project_id = project.project_id;
     modal.componentInstance.project = project.project;
     modal.result.then(
-      reslove => this.store.dispatch(updateAddressData({projectId: project.project_id, data: reslove})),
-      reject => {}
+      reslove => this.store.dispatch(updateAddressData({ projectId: project.project_id, data: reslove })),
+      reject => { }
     );
   }
 
   openContactModal(project_id) {
-    const modal = this.modalService.open(ContactInfoModalComponent, {size: 'lg'});
+    const modal = this.modalService.open(ContactInfoModalComponent, { size: 'lg' });
     modal.componentInstance.project_id = project_id;
   }
 
   openGalleryModal(project_id) {
-    const modal = this.modalService.open(GalleryModalComponent, {size: 'xl'});
+    const modal = this.modalService.open(GalleryModalComponent, { size: 'xl' });
     modal.componentInstance.project_id = project_id;
   }
 }

@@ -16,12 +16,13 @@ export interface VRScreenshot {
 
 
 function ringsShape(pano, font) {
+  const color = pano?.transitionFrom ? 0xff00ff : 0xffffff;
   const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 30, 1, 0);
-  const outerRingMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+  const outerRingMaterial = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
   const outerRingMesh = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
 
   const innerRingGeometry = new THREE.RingGeometry(1.5, 1.8, 30, 1, 0);
-  const innerRingMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+  const innerRingMaterial = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
   const innerRingMesh = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
 
   const circleGeometry = new THREE.CircleGeometry(2, 30);
@@ -52,7 +53,6 @@ function ringsShape(pano, font) {
   textMesh.rotation.set(2, 4, 0);
   textMesh.position.set(1, 0, 1);
 
-  console.log(textMesh, pano);
 
   group.rotation.set(11, 0, 0);
 
@@ -181,10 +181,8 @@ export class VirtualTourService {
       this.meshModel.material.map = this.transition.texture
       this.meshModel.material.opacity = 1
       this.meshModel.position.set(currPos.x, currPos.y, currPos.z)
-      this.transitionMesh.visible = false
-      this.panos.forEach((pano, index) => {
-        pano.object.visible = true; //this.currentPanoId !== index;
-      })
+      this.transitionMesh.visible = false;
+      this.toggleNavPoints(true);
     }
     this.meshModel.material.needsUpdate = true
     this.transitionMesh.material.needsUpdate = true
@@ -230,6 +228,7 @@ export class VirtualTourService {
     // this.OrbitControls.noPan = true;
 
     // Observable
+    this.currentPanoId = this.panos[0].panoramas.index;
     this.updateDotInfo(this.currentPanoId);
     this.moveMark(this.currentPanoId);
   }
@@ -253,19 +252,32 @@ export class VirtualTourService {
       for (let i = 0; i < this.panos.length; i++) {
         const panoUuids = this.panos[i].object.children.map(m => m.uuid);
         if (panoUuids.includes(item.object.uuid)) {
-          target = i
+          target = this.panos[i].panoramas.index;
         }
       }
     });
     return target
   }
 
-  moveMark(panoId) {
-    this.panos.forEach((pano, index) => {
-      pano.object.visible = false
-    })
+  toggleNavPoints(toggle) {
+    if (toggle) {
+      this.panos.forEach((pano, index) => {
+        if (this.currentPano.panoramas.floor === pano.panoramas.floor || this.currentPano.panoramas.floor === pano.panoramas.transitionFrom) {
+          pano.object.visible = true;
+        }
+      })
+    } else {
+      this.panos.forEach((pano, index) => {
+        pano.object.visible = false;
+      })
+    }
 
-    let pano = this.panos[panoId];
+  }
+
+  moveMark(panoId) {
+    this.toggleNavPoints(false);
+
+    let pano = this.panos.find(p => p.panoramas.index === panoId);
     this.activeIndex = panoId;
     this.currentPano = pano;
     this.currentPanoId
@@ -274,8 +286,9 @@ export class VirtualTourService {
     let camPos = this.camera.position
 
     this.transition.startPos = { x: camPos.x, y: camPos.y, z: camPos.z }
-    this.transition.endPos = cameraPos
-    this.transition.texture = this.loadedTextures[panoId];
+    this.transition.endPos = cameraPos;
+    const currentTexture = this.loadedTextures.find(t => t.index === panoId);
+    this.transition.texture = currentTexture.texture;
 
     this.transitionMesh.position.set(cameraPos.x, cameraPos.y, cameraPos.z)
     this.transitionMesh.material.map = this.transition.texture
@@ -313,13 +326,20 @@ export class VirtualTourService {
       )
     );
     this.loadedTextures = this.panos.map(
-      (pano, i) => loader.load(`${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`,
-        (t) => {
-          if (!i) {
-            this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
-            this.events.emit({ type: VirtualTourService.EVENTS.INIT, data: t })
-          }
-        }));
+      (pano, i) => {
+        return {
+          texture: loader.load(`${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`,
+          (t) => {
+            if (!i) {
+              this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
+              this.events.emit({ type: VirtualTourService.EVENTS.INIT, data: t })
+            }
+          }),
+          index: pano.panoramas.index
+        };
+
+      }
+    );
 
     // asyncLoader()
 
@@ -416,8 +436,9 @@ export class VirtualTourService {
       })
       let panoId = this.getPanoId(event)
       if (panoId !== null) {
+        const panoIndex = this.panos.findIndex(p => p.panoramas.index === panoId)
         // this.panos[panoId].object.material.opacity = 0.5
-        this.panos[panoId].object.children.forEach(mesh => {
+        this.panos[panoIndex].object.children.forEach(mesh => {
           if (mesh.geometry !== 'CircleGeometry') {
             mesh.material.opacity = 0.5;
           }
@@ -436,16 +457,11 @@ export class VirtualTourService {
 
   takeScreenshot(options?: TakeScreenshotOptions): VRScreenshot {
 
-
-    this.panos.forEach((pano) => {
-      pano.object.visible = false;
-    });
+    this.toggleNavPoints(false);
     this.OrbitControls.update();
     this.renderer.render(this.scene, this.camera);
     const dataURL = this.renderer.domElement.toDataURL('image/jpeg', 1);
-    this.panos.forEach((pano) => {
-      pano.object.visible = true;
-    });
+    this.toggleNavPoints(true);
     const d = new Date();
     const filename = `screenshot_n${this.currentPanoId}_${d.toJSON()}.jpeg`
     if (options?.download) {
