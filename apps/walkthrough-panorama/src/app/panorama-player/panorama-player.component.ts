@@ -180,10 +180,8 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   updatePanoSettings() {
-    const { name, panoramas } = this.virtualTour.virtualTourService.currentPanorama;
-    const panorama: Panorama = {
-      name, panoramas
-    };
+    const {panoramas, name}: Panorama = this.virtualTour.virtualTourService.currentPanorama;
+    const panorama = {panoramas, name};
     this.store.dispatch(updatePanorama({
       projectId: this.route.snapshot.params.id,
       panorama
@@ -206,7 +204,7 @@ export class PanoramaPlayerComponent implements OnInit {
         });
 
         const changedPanos = this.virtualTour.virtualTourService.panos.filter(
-          p => !isNaN(p.panoramas.zoom) && p.panoramas.zoom !== null  || !isNaN(p.panoramas.panoCameraStartAngle) && p.panoramas.panoCameraStartAngle !== null
+          p => !isNaN(parseInt(p.panoramas.zoom, 10))  || !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
         );
         const resetPano = p => {
 
@@ -220,18 +218,8 @@ export class PanoramaPlayerComponent implements OnInit {
           }
 
         };
-        this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos
-          .map(resetPano);
-        const resetedPanos = changedPanos.map(resetPano);
-        // const { name, panoramas } = this.virtualTour.virtualTourService.currentPanorama;
-        /* const panorama: Panorama = {
-          name,
-          panoramas: {
-            ...panoramas,
-            zoom: undefined,
-            panoCameraStartAngle: undefined
-          }
-        }; */
+        this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos.map(resetPano);
+        const resetedPanos = changedPanos.map(resetPano).map(({name, panoramas}) => ({name, panoramas}));
 
         this.virtualTour.virtualTourService.defaultY = data.rotation_y;
         this.virtualTour.virtualTourService.defaultZoom = data.zoom;
