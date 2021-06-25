@@ -16,6 +16,7 @@ import { GalleryEditorComponent } from './components/gallery-editor/gallery-edit
 import { AgmCoreModule } from '@agm/core';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { GalleryPipe } from './pipes/gallery.pipe';
+import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { GalleryPipe } from './pipes/gallery.pipe';
     ConnectFormDirective,
     SafePipe,
     GalleryEditorComponent,
+    ConfirmationModalComponent,
     GalleryPipe
   ],
   exports: [
@@ -35,6 +37,7 @@ import { GalleryPipe } from './pipes/gallery.pipe';
     AgmCoreModule,
     NgbTooltipModule,
     GalleryEditorComponent,
+    ConfirmationModalComponent,
     OrderModule
   ],
   imports: [

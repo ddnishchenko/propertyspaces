@@ -16,7 +16,7 @@ export interface VRScreenshot {
 
 
 function ringsShape(pano, font) {
-  const color = pano?.transitionFrom ? 0xff00ff : 0xffffff;
+  const color = isNaN(pano?.transitionFrom) ? 0xffffff : 0xff00ff;
   const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 30, 1, 0);
   const outerRingMaterial = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
   const outerRingMesh = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
@@ -295,16 +295,17 @@ export class VirtualTourService {
     this.transitionMesh.material.needsUpdate = true
     this.transitionMesh.visible = true;
 
-    if (!isNaN(pano.panoramas.panoCameraStartAngle)) {
-      this.meshModel.rotation.y = +pano.panoramas.panoCameraStartAngle;
-    } else {
+    if (isNaN(pano.panoramas.panoCameraStartAngle)) {
       this.meshModel.rotation.y = this.defaultY;
+    } else {
+      this.meshModel.rotation.y = +pano.panoramas.panoCameraStartAngle;
     }
 
-    if (!isNaN(pano.panoramas.zoom)) {
-      this.changeZoom(+pano.panoramas.zoom);
-    } else {
+    if (isNaN(pano.panoramas.zoom)) {
       this.changeZoom(this.defaultZoom);
+    } else {
+      this.changeZoom(+pano.panoramas.zoom);
+
     }
 
     this.events.emit({ type: VirtualTourService.EVENTS.NAV_TO, data: this.activeIndex })

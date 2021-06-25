@@ -24,7 +24,6 @@ import { ProjectsComponent } from './projects.component';
 import { ProjectListComponent } from './pages/project-list/project-list.component';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
 import { ProjectFormComponent } from './components/project-form/project-form.component';
-import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { PanoramaFormComponent } from './components/panorama-form/panorama-form.component';
 import { FloorplanFormComponent } from './components/floorplan-form/floorplan-form.component';
 import { MapModalComponent } from './components/map-modal/map-modal.component';
@@ -46,7 +45,6 @@ import { ProjectLocationEffects } from './state/project-location/project-locatio
     ProjectListComponent,
     ProjectDetailsComponent,
     ProjectFormComponent,
-    ConfirmationModalComponent,
     PanoramaFormComponent,
     FloorplanFormComponent,
     MapModalComponent,
@@ -68,7 +66,6 @@ import { ProjectLocationEffects } from './state/project-location/project-locatio
   entryComponents: [
     ProjectFormComponent,
     FloorplanFormComponent,
-    ConfirmationModalComponent
   ]
 })
 export class ProjectsModule { }

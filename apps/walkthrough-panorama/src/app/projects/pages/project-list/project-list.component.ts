@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
-import { forkJoin } from 'rxjs';
-import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
+import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
 import { ProjectsService } from '../../service/projects.service';
 import { copyProject, createProject, deleteProjects, loadProjects } from '../../state/projects.actions';

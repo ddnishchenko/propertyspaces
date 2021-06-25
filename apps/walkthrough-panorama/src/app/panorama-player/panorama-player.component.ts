@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectsService } from '../projects/service/projects.service';
-import { map, skip, skipUntil, tap } from 'rxjs/operators';
+import { map, skip, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
-import { selectHdrVirtualTourPanoramasDividerOnFloors, selectProjectsState, selectVirtualTourPanoramas, selectVirtualTourParams } from '../projects/state/projects.selectors';
+import { selectHdrVirtualTourPanoramasDividerOnFloors, selectVirtualTourParams } from '../projects/state/projects.selectors';
 import { loadPanoramas, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
 import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
@@ -19,87 +18,7 @@ import { GalleryComponent } from 'ng-gallery';
 import { GalleryEditorComponent } from '../shared/components/gallery-editor/gallery-editor.component';
 import { slideInAnimation } from '../utils/animations';
 import { combineLatest } from 'rxjs';
-
-function parseModel(model) {
-  if (!model) {
-    return false;
-  }
-  const allPanos = model.data;
-  let panos = allPanos.filter(t => !t.name.includes('_'));
-  let panosHDR = panos.map((p, i) => {
-    return {
-      ...p,
-      panoramas: {
-        ...p.panoramas,
-        floor: isNaN(p.panoramas.floor) ? 1 : p.panoramas.floor,
-      },
-      dark_pano: allPanos.find(t => t.name.includes(`${p.name}_dark`)),
-      light_pano: allPanos.find(t => t.name.includes(`${p.name}_light`)),
-      hdr_pano: allPanos.find(t => t.name.includes(`${p.name}_hdr`)),
-    };
-  }).sort((a, b) => a.floor - b.floor);
-  let floors: number[] = panosHDR.map(p => p.panoramas.floor);
-  floors = Array.from(new Set(floors)).sort((a, b) => a - b);
-  let panoFloors = floors.map(f => panosHDR.filter(p => p.panoramas.floor === f));
-  let panoFloorsCoord = panoFloors.map(f => {
-    let xArray = f.map(p => +p.panoramas.x);
-    let zArray = f.map(p => +p.panoramas.z);
-
-    let xMin = Math.min(...xArray);
-    let xMax = Math.max(...xArray);
-
-    let zMin = Math.min(...zArray);
-    let zMax = Math.max(...zArray);
-
-    if (xMin < 0) {
-      xArray = f.map(p => Math.abs(xMin) + +p.panoramas.x);
-      xMin = Math.min(...xArray);
-      xMax = Math.max(...xArray);
-    } else if (xMin > 0) {
-      xArray = f.map(p => +p.panoramas.x - Math.abs(xMin));
-      xMin = Math.min(...xArray);
-      xMax = Math.max(...xArray);
-    }
-
-    if (zMin < 0) {
-      zArray = f.map(p => Math.abs(zMin) + +p.panoramas.z);
-      zMin = Math.min(...zArray);
-      zMax = Math.max(...zArray);
-    } else if (zMin > 0) {
-      zArray = f.map(p => +p.panoramas.z - Math.abs(zMin));
-      zMin = Math.min(...zArray);
-      zMax = Math.max(...zArray);
-    }
-
-    const xSide = xMax - (xMin);
-    const zSide = zMax - (zMin);
-
-    const floorplanMap = f.map((p, i) => ({
-      name: p.name,
-      z: (zArray[i] / zSide) * 100,
-      x: (xArray[i] / xSide) * 100
-    }));
-    return floorplanMap;
-    // const size = 50;
-
-    // const floorplanArea = (xSide * zSide) * size;
-    // const width = (zSide  + (zMin*2)) * size;
-    // const height = (xSide  + (zMin*2)) * size;
-    // console.log(floorplanMap);
-  });
-
-
-  return {
-    ...model,
-    _t: Date.now(),
-    panos: panosHDR,
-    panoFloorsCoord,
-    panoFloors,
-    floors,
-    hostname: environment.apiHost,
-    projectFolder: environment.apiHost + model.path
-  }
-}
+import { ConfirmationModalComponent } from '../shared/components/confirmation-modal/confirmation-modal.component';
 
 const aspectRations = [
   {
@@ -201,38 +120,23 @@ export class PanoramaPlayerComponent implements OnInit {
       select(selectOrderedGallery),
       tap(() => setTimeout(() => this.updateMasonty(), 100))
     );
-    /*
-    this.data$ = this.store.pipe(
-      select(selectVirtualTourParams),
-      // tap(data => console.log(data))
-      map(data => {
-        console.log(data);
-        const parsedData = parseModel(data);
-        if (this.route.snapshot.params.floorplan && this.isEdit && parsedData) {
-          this.openFloorplanEditor(parsedData);
-        }
-        return parsedData;
-      })
-    ); */
 
     this.data$ = combineLatest([
       this.store.pipe(select(selectVirtualTourParams)),
       this.store.pipe(select(selectHdrVirtualTourPanoramasDividerOnFloors))
     ]).pipe(
-      map(([project, panoFloors]) => {
-        return {...project, ...panoFloors};
-      }),
+      map(([project, panoFloors]) => ({...project, ...panoFloors})),
       skip(1)
     )
   }
 
   createForm() {
     this.form = new FormGroup({
-      rotationY: new FormControl(''),
-      panoCameraStartAngle: new FormControl(''),
       editMode: new FormControl(false),
+      rotationY: new FormControl(''),
       zoom: new FormControl(0),
       panoZoom: new FormControl(0),
+      panoCameraStartAngle: new FormControl(''),
       aspectRatio: new FormControl(''),
       customRatio: new FormControl(''),
       sidebarSide: new FormControl('l')
@@ -287,14 +191,48 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   saveSettings(projectId) {
+    const modal = this.modalService.open(ConfirmationModalComponent);
+    modal.componentInstance.msg = 'Settings of Panoramas will be lost and default setting will be applied after saving defaults. Proceed?';
 
-    const data = {
-      zoom: this.form.value.zoom,
-      rotation_y: this.form.value.rotationY
-    };
-    this.virtualTour.virtualTourService.defaultY = data.rotation_y;
-    this.virtualTour.virtualTourService.defaultZoom = data.zoom;
-    this.store.dispatch(updateProject({ projectId, data }))
+    modal.result.then(answer => {
+      if (answer) {
+        const data = {
+          zoom: this.form.value.zoom,
+          rotation_y: this.form.value.rotationY
+        };
+        this.form.patchValue({
+          panoZoom: 0,
+          panoCameraStartAngle: 0,
+        });
+        this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos.map(p => {
+          return p.panoramas.index === this.virtualTour.virtualTourService.currentPanorama.index ?
+            {
+              ...p,
+              panoramas: {
+                ...p.panoramas,
+                zoom: undefined,
+                panoCameraStartAngle: undefined
+              }
+            }
+            : p;
+        })
+        const { name, panoramas } = this.virtualTour.virtualTourService.currentPanorama;
+        const panorama: Panorama = {
+          name,
+          panoramas: {
+            ...panoramas,
+            zoom: undefined,
+            panoCameraStartAngle: undefined
+          }
+        };
+
+        this.virtualTour.virtualTourService.defaultY = data.rotation_y;
+        this.virtualTour.virtualTourService.defaultZoom = data.zoom;
+        this.store.dispatch(updateProject({projectId, data}));
+        this.store.dispatch(updatePanorama({projectId, panorama}))
+      }
+    })
+
   }
 
   navTo(index) {

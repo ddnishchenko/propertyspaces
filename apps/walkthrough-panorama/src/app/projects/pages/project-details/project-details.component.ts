@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
-import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal.component';
+import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
 import { GalleryModalComponent } from '../../components/gallery-modal/gallery-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
