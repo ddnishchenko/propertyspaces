@@ -204,32 +204,42 @@ export class PanoramaPlayerComponent implements OnInit {
           panoZoom: 0,
           panoCameraStartAngle: 0,
         });
-        this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos.map(p => {
-          return p.panoramas.index === this.virtualTour.virtualTourService.currentPanorama.index ?
-            {
-              ...p,
-              panoramas: {
-                ...p.panoramas,
-                zoom: undefined,
-                panoCameraStartAngle: undefined
-              }
+
+        const changedPanos = this.virtualTour.virtualTourService.panos.filter(
+          p => !isNaN(p.panoramas.zoom) && p.panoramas.zoom !== null  || !isNaN(p.panoramas.panoCameraStartAngle) && p.panoramas.panoCameraStartAngle !== null
+        );
+        const resetPano = p => {
+
+          return {
+            ...p,
+            panoramas: {
+              ...p.panoramas,
+              zoom: undefined,
+              panoCameraStartAngle: undefined
             }
-            : p;
-        })
-        const { name, panoramas } = this.virtualTour.virtualTourService.currentPanorama;
-        const panorama: Panorama = {
+          }
+
+        };
+        this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos
+          .map(resetPano);
+        const resetedPanos = changedPanos.map(resetPano);
+        // const { name, panoramas } = this.virtualTour.virtualTourService.currentPanorama;
+        /* const panorama: Panorama = {
           name,
           panoramas: {
             ...panoramas,
             zoom: undefined,
             panoCameraStartAngle: undefined
           }
-        };
+        }; */
 
         this.virtualTour.virtualTourService.defaultY = data.rotation_y;
         this.virtualTour.virtualTourService.defaultZoom = data.zoom;
         this.store.dispatch(updateProject({projectId, data}));
-        this.store.dispatch(updatePanorama({projectId, panorama}))
+        resetedPanos.forEach(panorama => {
+          this.store.dispatch(updatePanorama({projectId, panorama}));
+        })
+
       }
     })
 

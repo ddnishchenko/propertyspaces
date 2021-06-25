@@ -228,7 +228,7 @@ export class VirtualTourService {
     // this.OrbitControls.noPan = true;
 
     // Observable
-    this.currentPanoId = this.panos[0].panoramas.index;
+    // this.currentPanoId = this.panos[0].panoramas.index;
     this.updateDotInfo(this.currentPanoId);
     this.moveMark(this.currentPanoId);
   }

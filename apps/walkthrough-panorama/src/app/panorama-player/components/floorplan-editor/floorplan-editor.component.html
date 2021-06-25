@@ -236,7 +236,7 @@
                       *ngFor="let p of data.panoFloorsCoord[i]; index as index"
                       [ngStyle]="getStyleForDot(p, i)"
                     >
-                      {{ data.panos[index].panoramas.order }}
+                      {{ p.order }}
                     </div>
                   </div>
                   <!-- [style.top]="p.x  + '%'" [style.left]="p.z + '%'" -->

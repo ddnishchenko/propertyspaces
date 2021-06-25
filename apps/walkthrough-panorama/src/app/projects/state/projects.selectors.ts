@@ -19,7 +19,7 @@ export const selectVirtualTourPanoramas =
       if (state?.data) {
         const panoramas = state.data
           .slice()
-          .map((p, index) => ({ ...p, panoramas: { ...p.panoramas, order: +p.panoramas.order, floor: +p.panoramas.floor, index } }));
+          .map((p, index) => ({ ...p, panoramas: { ...p.panoramas, order: +p.panoramas.order, floor: +p.panoramas.floor, index, transitionFrom: undefined } }));
 
         const sortedFloors =
           panoramas
@@ -64,7 +64,7 @@ export const selectVirtualTourPanoramas =
             }
           )
         ;
-        console.log(floors);
+        console.log(floors.map(p => p.panoramas).map(({floor, order, transitionFrom}) => ({floor, order, transitionFrom}))  );
         return floors;
       }
       return [];

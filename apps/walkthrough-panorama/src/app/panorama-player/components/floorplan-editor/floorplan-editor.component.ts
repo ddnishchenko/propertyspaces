@@ -246,7 +246,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
           };
         }
         return v;
-      })
+      }).sort((a, b) => a.floor - b.floor);
       const res: any = await this.projectsService.updateDataProject(this.data.project_id, { floors: additionalData }).toPromise();
       this.formArray.at(index).patchValue({ [`floorplan_f${floor}.svg`]: `floorplan_f${floor}.svg` });
       this.data._t = Date.now()
