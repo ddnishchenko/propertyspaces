@@ -2,6 +2,7 @@ import { AgmMap, MapsAPILoader } from '@agm/core';
 import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { GoogleStreetViewDirective } from '../../../shared/directives/google-street-view.directive';
 import { ProjectsService } from '../../service/projects.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { ProjectsService } from '../../service/projects.service';
 })
 export class MapModalComponent implements OnInit, AfterViewInit {
   @ViewChild('search') searchElementRef: ElementRef;
-  @ViewChild('streetView') streetViewRef: ElementRef;
+  @ViewChild(GoogleStreetViewDirective) streetViewRef: GoogleStreetViewDirective;
   @ViewChild(AgmMap) agmMap: AgmMap;
   form;
   latitude = 51.678418;
@@ -22,8 +23,7 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   constructor(
     public activeModal: NgbActiveModal,
     private mapsAPILoader: MapsAPILoader,
-    private ngZone: NgZone,
-    private projectService: ProjectsService
+    private ngZone: NgZone
   ) { }
 
 
@@ -33,12 +33,15 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   }
 
   createForm() {
+
     this.form = new FormGroup({
-      map: new FormControl(this.project.map?.link),
-      tours: new FormControl(this.project.tour?.link),
-      address: new FormControl(this.project.address),
-      latitude: new FormControl(+this.project.latitude),
-      longitude: new FormControl(+this.project.longitude)
+      mapEnabled: new FormControl(!this.project.additional_data.hasOwnProperty('mapEnabled') ? true : this.project.additional_data.mapEnabled),
+      streetViewEnabled: new FormControl(!this.project.additional_data.hasOwnProperty('streetViewEnabled') ? true : this.project.additional_data.streetViewEnabled),
+      map: new FormControl(this.project.project.map?.link),
+      tours: new FormControl(this.project.project.tour?.link),
+      address: new FormControl(this.project.project.address),
+      latitude: new FormControl(+this.project.project.latitude),
+      longitude: new FormControl(+this.project.project.longitude)
     });
   }
 
@@ -46,17 +49,18 @@ export class MapModalComponent implements OnInit, AfterViewInit {
     await this.mapsAPILoader.load();
     const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
 
+    /*
     const fenway = { lat: this.form.value.latitude, lng: this.form.value.longitude };
     const panorama = new google.maps.StreetViewPanorama(
       this.streetViewRef.nativeElement as HTMLElement,
       {
         position: fenway,
         pov: {
-          heading: 34,
-          pitch: 10,
+          heading: 0,
+          pitch: 0,
         },
       }
-    );
+    ); */
 
     autocomplete.addListener("place_changed", () => {
       this.ngZone.run(() => {
@@ -75,15 +79,13 @@ export class MapModalComponent implements OnInit, AfterViewInit {
           address: place.formatted_address,
           latitude: place.geometry.location.lat(),
           longitude: place.geometry.location.lng()
-        })
-        panorama.setPosition({
+        });
+
+        this.streetViewRef.setView({
           lat: +this.form.value.latitude,
           lng: +this.form.value.latitude
         });
-        panorama.setPov({
-          heading: 0,
-          pitch: 0,
-        })
+
       });
     })
   }

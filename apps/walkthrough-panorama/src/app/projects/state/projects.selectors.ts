@@ -34,6 +34,7 @@ export const selectVirtualTourPanoramas =
             .sort((a,b) => +a.panoramas.order - +b.panoramas.order)
         )
         .reduce((prev, next) => prev.concat(next))
+        .sort((a,b) => +a.panoramas.index - +b.panoramas.index)
         .map(
             (currentValue, index, arr) => {
               if (index > 0 && index < arr.length - 1) {
@@ -63,6 +64,7 @@ export const selectVirtualTourPanoramas =
               return currentValue;
             }
           )
+          .sort((a,b) => +a.panoramas.floor - +b.panoramas.floor)
         ;
         console.log(floors.map(p => p.panoramas).map(({floor, order, transitionFrom}) => ({floor, order, transitionFrom}))  );
         return floors;

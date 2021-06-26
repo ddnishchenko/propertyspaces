@@ -107,7 +107,7 @@ export class ProjectDetailsComponent implements OnInit {
   openMapModal(project, panoramas) {
     const modal = this.modalService.open(MapModalComponent, { size: 'lg' });
     modal.componentInstance.project_id = project.project_id;
-    modal.componentInstance.project = project.project;
+    modal.componentInstance.project = project;
     modal.result.then(
       reslove => this.store.dispatch(updateAddressData({ projectId: project.project_id, data: reslove })),
       reject => { }

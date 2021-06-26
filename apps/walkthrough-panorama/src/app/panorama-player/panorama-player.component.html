@@ -348,10 +348,11 @@
     </div>
   </ng-template>
 
-  <ng-template #mapTpl>
+  <ng-template #mapTplAgm>
     <agm-map
       [latitude]="+data.project.latitude"
       [longitude]="+data.project.longitude"
+      [zoom]="17"
     >
       <agm-marker
         [latitude]="+data.project.latitude"
@@ -360,8 +361,31 @@
     </agm-map>
   </ng-template>
 
+  <ng-template #mapTpl>
+    <div
+      *ngIf="data.project.map.link; else mapTplAgm"
+      class="embed-responsive embed-responsive-1by1"
+    >
+      <iframe
+        class="embed-responsive-item"
+        [src]="data.project.map.link | safe: 'resourceUrl'"
+      ></iframe>
+    </div>
+  </ng-template>
+
+  <ng-template #streetViewTplNative>
+    <div
+      propertyspacesGoogleStreetView
+      [coords]="{ lat: +data.project.latitude, lng: +data.project.longitude }"
+      id="street-view"
+    ></div>
+  </ng-template>
+
   <ng-template #streetViewTpl>
-    <div class="embed-responsive embed-responsive-1by1">
+    <div
+      *ngIf="data.project.tour.link; else streetViewTplNative"
+      class="embed-responsive embed-responsive-1by1"
+    >
       <iframe
         class="embed-responsive-item"
         [src]="data.project.tour.link | safe: 'resourceUrl'"
@@ -460,7 +484,10 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel cardClass="sidebar-card">
+          <ngb-panel
+            cardClass="sidebar-card"
+            *ngIf="data.additional_data.mapEnabled"
+          >
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"
@@ -479,7 +506,10 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel *ngIf="data.project?.tour" cardClass="sidebar-card">
+          <ngb-panel
+            cardClass="sidebar-card"
+            *ngIf="data.additional_data.streetViewEnabled"
+          >
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"

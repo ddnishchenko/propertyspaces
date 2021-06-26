@@ -262,7 +262,12 @@ export class VirtualTourService {
   toggleNavPoints(toggle) {
     if (toggle) {
       this.panos.forEach((pano, index) => {
-        if (this.currentPano.panoramas.floor === pano.panoramas.floor || this.currentPano.panoramas.floor === pano.panoramas.transitionFrom) {
+        const isFromCurrent = this.currentPano.panoramas.floor === pano.panoramas.floor || this.currentPano.panoramas.floor === pano.panoramas.transitionFrom;
+        const isNumber = !Number.isNaN(parseInt(pano.panoramas.transitionFrom));
+        const isNeighborFloor = (pano.panoramas.transitionFrom - 1) === this.currentPano.panoramas.floor
+        ||
+        (pano.panoramas.transitionFrom + 1) === this.currentPano.panoramas.floor
+        if (isFromCurrent || (isNumber && isNeighborFloor)) {
           pano.object.visible = true;
         }
       })

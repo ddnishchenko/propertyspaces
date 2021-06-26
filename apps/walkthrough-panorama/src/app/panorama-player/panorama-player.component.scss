@@ -253,13 +253,15 @@ gallery {
   left: 0;
 }
 
-agm-map {
+agm-map,
+#street-view {
   height: 300px;
 }
 
 .modal-body {
   position: relative;
-  agm-map {
+  agm-map,
+  #street-view {
     position: absolute;
     top: 0;
     left: 0;

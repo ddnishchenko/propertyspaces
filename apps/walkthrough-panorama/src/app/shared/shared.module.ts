@@ -17,6 +17,7 @@ import { AgmCoreModule } from '@agm/core';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { GalleryPipe } from './pipes/gallery.pipe';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
+import { GoogleStreetViewDirective } from './directives/google-street-view.directive';
 
 
 @NgModule({
@@ -25,10 +26,12 @@ import { ConfirmationModalComponent } from './components/confirmation-modal/conf
     SafePipe,
     GalleryEditorComponent,
     ConfirmationModalComponent,
-    GalleryPipe
+    GalleryPipe,
+    GoogleStreetViewDirective
   ],
   exports: [
     ConnectFormDirective,
+    GoogleStreetViewDirective,
     SafePipe,
     GalleryPipe,
     GalleryModule,
