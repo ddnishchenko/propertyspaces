@@ -261,7 +261,8 @@ agm-map,
 .modal-body {
   position: relative;
   agm-map,
-  #street-view {
+  #street-view,
+  .map-wrapper {
     position: absolute;
     top: 0;
     left: 0;

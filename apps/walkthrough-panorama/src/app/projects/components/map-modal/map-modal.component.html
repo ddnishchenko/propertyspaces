@@ -13,7 +13,11 @@
   </button>
 </div>
 
-<form class="modal-body" [formGroup]="form">
+<form
+  class="modal-body"
+  [class.needs-validation]="form.invalid"
+  [formGroup]="form"
+>
   <div class="text-center">
     <div class="form-check">
       <input
@@ -53,25 +57,53 @@
       />
     </div>
 
-    <agm-map
-      [latitude]="form.value.latitude"
-      [longitude]="form.value.longitude"
-      [zoom]="17"
-    >
-      <agm-marker
+    <ng-template #mapTpl>
+      <agm-map
         [latitude]="form.value.latitude"
         [longitude]="form.value.longitude"
-      ></agm-marker>
-    </agm-map>
+        [zoom]="17"
+        (mapReady)="mapLoaded($event)"
+      >
+        <agm-marker
+          [latitude]="form.value.latitude"
+          [longitude]="form.value.longitude"
+        ></agm-marker>
+      </agm-map>
+    </ng-template>
+
+    <ng-container *ngIf="form.value.map && form.get('map').valid; else mapTpl">
+      <div class="embed-responsive embed-responsive-16by9 map-wrapper">
+        <iframe
+          class="embed-responsive-item"
+          [src]="form.value.map | safe: 'resourceUrl'"
+        ></iframe>
+      </div>
+    </ng-container>
 
     <div class="my-5"></div>
 
-    <div
-      #streetView
-      propertyspacesGoogleStreetView
-      [coords]="{ lat: form.value.latitude, lng: form.value.longitude }"
-      id="street-view"
-    ></div>
+    <ng-template #streetViewTpl>
+      <div
+        #streetView
+        propertyspacesGoogleStreetView
+        [coords]="{ lat: form.value.latitude, lng: form.value.longitude }"
+        id="street-view"
+      ></div>
+    </ng-template>
+
+    <ng-container
+      *ngIf="
+        form.value.streetView && form.get('streetView').valid;
+        else streetViewTpl
+      "
+    >
+      <div class="embed-responsive embed-responsive-16by9 map-wrapper">
+        <iframe
+          class="embed-responsive-item"
+          [src]="form.value.streetView | safe: 'resourceUrl'"
+        ></iframe>
+      </div>
+    </ng-container>
 
     <h3 class="mt-5">Insert Your Own Custom Map or Street View</h3>
     <p>
@@ -83,12 +115,20 @@
         >Google Maps Embeded Code</label
       >
       <textarea
+        (paste)="filterPaste($event)"
         formControlName="map"
         class="form-control"
         id="exampleFormControlTextarea1"
         rows="3"
         placeholder="Google Maps Embeded Code"
       ></textarea>
+      <div
+        *ngIf="form.get('map').invalid"
+        class="alert alert-danger"
+        role="alert"
+      >
+        Invalid url
+      </div>
     </div>
 
     <hr />
@@ -100,12 +140,20 @@
         >Google Street View Embeded Code</label
       >
       <textarea
-        formControlName="tours"
+        (paste)="filterPaste($event)"
+        formControlName="streetView"
         class="form-control"
         id="exampleFormControlTextarea1"
         rows="3"
         placeholder="Google Street View Embeded Code"
       ></textarea>
+      <div
+        *ngIf="form.get('streetView').invalid"
+        class="alert alert-danger"
+        role="alert"
+      >
+        Invalid url
+      </div>
     </div>
     <!-- <button type="button" class="btn btn-primary">Submit</button> -->
   </div>

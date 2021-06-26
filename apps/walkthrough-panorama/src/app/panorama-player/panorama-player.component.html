@@ -362,15 +362,14 @@
   </ng-template>
 
   <ng-template #mapTpl>
-    <div
-      *ngIf="data.project.map.link; else mapTplAgm"
-      class="embed-responsive embed-responsive-1by1"
-    >
-      <iframe
-        class="embed-responsive-item"
-        [src]="data.project.map.link | safe: 'resourceUrl'"
-      ></iframe>
-    </div>
+    <ng-container *ngIf="data.additional_data.map; else mapTplAgm">
+      <div class="embed-responsive embed-responsive-1by1 map-wrapper">
+        <iframe
+          class="embed-responsive-item"
+          [src]="data.additional_data.map | safe: 'resourceUrl'"
+        ></iframe>
+      </div>
+    </ng-container>
   </ng-template>
 
   <ng-template #streetViewTplNative>
@@ -382,15 +381,16 @@
   </ng-template>
 
   <ng-template #streetViewTpl>
-    <div
-      *ngIf="data.project.tour.link; else streetViewTplNative"
-      class="embed-responsive embed-responsive-1by1"
+    <ng-container
+      *ngIf="data.additional_data.streetView; else streetViewTplNative"
     >
-      <iframe
-        class="embed-responsive-item"
-        [src]="data.project.tour.link | safe: 'resourceUrl'"
-      ></iframe>
-    </div>
+      <div class="embed-responsive embed-responsive-1by1 map-wrapper">
+        <iframe
+          class="embed-responsive-item"
+          [src]="data.additional_data.streetView | safe: 'resourceUrl'"
+        ></iframe>
+      </div>
+    </ng-container>
   </ng-template>
 
   <ng-template #galleryTpl>
