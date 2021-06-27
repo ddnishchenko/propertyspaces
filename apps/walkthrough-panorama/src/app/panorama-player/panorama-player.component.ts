@@ -87,7 +87,9 @@ export class PanoramaPlayerComponent implements OnInit {
   @ViewChild(GalleryComponent) galleryCmp: GalleryComponent;
   @ViewChild(NgxMasonryComponent) masonry: NgxMasonryComponent;
   public masonryOptions: NgxMasonryOptions = {
-    gutter: 20,
+    gutter: 0,
+    columnWidth: 200,
+    fitWidth: true
   };
   isGalleryOpened = false;
   activePoint = 0;
@@ -117,8 +119,7 @@ export class PanoramaPlayerComponent implements OnInit {
     this.store.dispatch(loadProjectGallery({ projectId }));
     this.store.dispatch(loadPanoramas({ projectId }));
     this.gallery$ = this.store.pipe(
-      select(selectOrderedGallery),
-      tap(() => setTimeout(() => this.updateMasonty(), 100))
+      select(selectOrderedGallery)
     );
 
     this.data$ = combineLatest([
@@ -305,6 +306,7 @@ export class PanoramaPlayerComponent implements OnInit {
   }
   resizeCanvas() {
     this.virtualTour.virtualTourService.resize();
+    this.updateMasonty();
   }
 
   openSectionModal(modalWrapper, content, modalTitle) {

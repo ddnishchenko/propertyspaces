@@ -394,7 +394,28 @@
   </ng-template>
 
   <ng-template #galleryTpl>
-    <ngx-masonry
+    <div
+      *ngIf="gallery$ | async as images"
+      class="masonry-grid"
+      [style.column-count]="sidebar.clientWidth > 400 ? 3 : 2"
+    >
+      <div
+        *ngFor="let img of images | gallery; index as i"
+        class="masonry-grid-item"
+        (click)="openImage(i)"
+      >
+        <figure class="gallery-image m-0">
+          <img
+            class="img-fluid gallery-img"
+            [src]="img.data.src"
+            [alt]="img.data.thumb"
+          />
+          <figcaption>{{ img.data.name }}</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- <ngx-masonry
       style="min-height: 100px"
       [options]="masonryOptions"
       [ordered]="true"
@@ -405,14 +426,18 @@
         *ngFor="let img of images | gallery; index as i"
         (click)="openImage(i)"
         class="masonry-item"
+        [prepend]="false"
       >
-        <img
-          class="img-fluid gallery-img"
-          [src]="img.data.src"
-          [alt]="img.data.thumb"
-        />
+        <figure class="gallery-image m-0">
+          <img
+            class="img-fluid gallery-img"
+            [src]="img.data.src"
+            [alt]="img.data.thumb"
+          />
+          <figcaption>{{ img.data.name }}</figcaption>
+        </figure>
       </div>
-    </ngx-masonry>
+    </ngx-masonry> -->
   </ng-template>
 
   <ng-template #galleryEditorTpl>
@@ -532,7 +557,7 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel cardClass="sidebar-card">
+          <ngb-panel cardClass="sidebar-card gallery-panel">
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"

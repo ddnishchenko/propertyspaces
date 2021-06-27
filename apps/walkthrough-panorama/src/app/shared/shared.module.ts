@@ -18,6 +18,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { GalleryPipe } from './pipes/gallery.pipe';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { GoogleStreetViewDirective } from './directives/google-street-view.directive';
+import { ImageGridComponent } from './components/image-grid/image-grid.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { GoogleStreetViewDirective } from './directives/google-street-view.direc
     GalleryEditorComponent,
     ConfirmationModalComponent,
     GalleryPipe,
-    GoogleStreetViewDirective
+    GoogleStreetViewDirective,
+    ImageGridComponent
   ],
   exports: [
     ConnectFormDirective,

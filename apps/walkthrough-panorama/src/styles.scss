@@ -7,6 +7,8 @@
 @import '~ng-snotify/styles/material';
 @import '~@angular/cdk/overlay-prebuilt.css';
 
+@import 'assets/scss/gallery-msnr';
+
 html,
 body {
   height: 100%;
@@ -114,9 +116,13 @@ mwlResizable {
 ngx-masonry {
   margin: 0 auto;
   .masonry-item {
-    width: 340px;
-    margin-bottom: 20px;
+    width: 200px;
+    margin-bottom: 0;
   }
+}
+
+.gallery-panel .card-body {
+  padding: 0;
 }
 
 lightbox {

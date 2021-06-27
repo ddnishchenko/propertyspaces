@@ -286,3 +286,13 @@ agm-map,
   padding: 20px 25px;
   text-align: center;
 }
+
+.masonry-grid {
+  font-size: 0;
+  column-count: 3;
+}
+
+.masonry-grid-item {
+  // min-width: 50px;
+  // width: 150px;
+}
