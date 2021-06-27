@@ -53,8 +53,7 @@ export class GoogleStreetViewDirective implements AfterContentInit {
     // this.streetView.setPosition(pano.data.location.latLng);
     this.streetView = null;
     removeAllChildNodes(this.el.nativeElement);
-    setTimeout(() => {
-
+    this.mapsAPILoader.load().then(() => {
       this.streetView = new google.maps.StreetViewPanorama(
         this.el.nativeElement as HTMLElement,
         {
@@ -65,8 +64,13 @@ export class GoogleStreetViewDirective implements AfterContentInit {
           },
         }
       );
+      console.log(this.streetView);
+    });
+    setTimeout(() => {
 
-    }, 500);
+
+
+    }, 1000);
 
 
   }

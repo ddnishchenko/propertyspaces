@@ -22,6 +22,7 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   project_id;
   project;
   coords$;
+  isStreetViewVisible = true;
   constructor(
     public activeModal: NgbActiveModal,
     private mapsAPILoader: MapsAPILoader,
@@ -68,7 +69,7 @@ export class MapModalComponent implements OnInit, AfterViewInit {
 
     autocomplete.addListener("place_changed", () => {
       // some details
-
+      this.isStreetViewVisible = false;
       this.ngZone.run(() => {
         let place: google.maps.places.PlaceResult = autocomplete.getPlace();
         /* this.address = place.formatted_address;
@@ -86,10 +87,13 @@ export class MapModalComponent implements OnInit, AfterViewInit {
           longitude: place.geometry.location.lng()
         });
 
-        this.streetViewRef.setView({
+        setTimeout(() => {
+          this.isStreetViewVisible = true;
+        }, 500);
+        /* this.streetViewRef.setView({
           lat: +this.form.value.latitude,
           lng: +this.form.value.latitude
-        });
+        }); */
 
 
       });

@@ -85,6 +85,7 @@
     <ng-template #streetViewTpl>
       <div
         #streetView
+        *ngIf="isStreetViewVisible"
         propertyspacesGoogleStreetView
         [coords]="{ lat: form.value.latitude, lng: form.value.longitude }"
         id="street-view"
