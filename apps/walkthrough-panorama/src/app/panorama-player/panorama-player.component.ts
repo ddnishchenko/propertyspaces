@@ -118,9 +118,7 @@ export class PanoramaPlayerComponent implements OnInit {
     this.createForm();
     this.store.dispatch(loadProjectGallery({ projectId }));
     this.store.dispatch(loadPanoramas({ projectId }));
-    this.gallery$ = this.store.pipe(
-      select(selectOrderedGallery)
-    );
+    this.gallery$ = this.store.pipe(select(selectOrderedGallery));
 
     this.data$ = combineLatest([
       this.store.pipe(select(selectVirtualTourParams)),

@@ -194,6 +194,7 @@ input::-moz-focus-outer {
 }
 
 .sidebar {
+  min-width: 280px;
   width: 400px;
   position: relative;
   height: 100%;

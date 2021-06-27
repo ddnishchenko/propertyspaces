@@ -5,9 +5,10 @@ import { select, Store } from '@ngrx/store';
 import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
-import { GalleryModalComponent } from '../../components/gallery-modal/gallery-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
+import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../../state/gallery/project-gallery.actions';
+import { selectOrderedGallery } from '../../state/gallery/project-gallery.selectors';
 import { deletePanorama, editProject, loadPanoramas, updateAddressData, updatePanorama } from '../../state/projects.actions';
 import { selectHdrVirtualTourPanoramas, selectVirtualTourParams } from '../../state/projects.selectors';
 
@@ -21,6 +22,7 @@ export class ProjectDetailsComponent implements OnInit {
   isMenuCollapsed = true;
   project$;
   panoramas$;
+  gallery$;
   panoNames = [];
   isEditName = false;
   projectName;
@@ -31,9 +33,12 @@ export class ProjectDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(loadPanoramas({ projectId: this.route.snapshot.params.id }));
+    const projectId = this.route.snapshot.params.id;
+    this.store.dispatch(loadPanoramas({ projectId }));
+    this.store.dispatch(loadProjectGallery({ projectId }));
     this.project$ = this.store.pipe(select(selectVirtualTourParams));
     this.panoramas$ = this.store.pipe(select(selectHdrVirtualTourPanoramas));
+    this.gallery$ = this.store.pipe(select(selectOrderedGallery));
   }
 
   numbersComparator(itemA, itemB) {
@@ -119,8 +124,27 @@ export class ProjectDetailsComponent implements OnInit {
     modal.componentInstance.project_id = project_id;
   }
 
-  openGalleryModal(project_id) {
-    const modal = this.modalService.open(GalleryModalComponent, { size: 'xl' });
-    modal.componentInstance.project_id = project_id;
+  openGalleryModal(tpl) {
+    const modal = this.modalService.open(tpl, { windowClass: 'fullscreen-modal' });
   }
+
+  imageNameChanged($event, projectId) {
+    console.log({ ...$event, projectId });
+    this.store.dispatch(renamePhoto({ ...$event, projectId }));
+  }
+  sortChanged($event, projectId) {
+    console.log({ projectId, photos: $event });
+    this.store.dispatch(changeOrderOfPhoto({ projectId, photos: $event.map(item => item.name) }))
+  }
+  deleteGalleryImage($event, projectId) {
+    this.store.dispatch(removeProjectGalleryPhoto({ projectId, image_id: [$event.item.name] }));
+  }
+
+  uploadImage($event, projectId) {
+    if ($event.target.files.length) {
+      const file = $event.target.files[0];
+      this.store.dispatch(uploadProjectGalleryPhoto({projectId, file}));
+    }
+  }
+
 }

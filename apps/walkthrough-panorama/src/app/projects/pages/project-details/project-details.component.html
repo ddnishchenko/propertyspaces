@@ -1,5 +1,49 @@
 <ng-container *ngIf="project$ | async as project">
   <ng-container *ngIf="panoramas$ | async as panoramas">
+    <ng-template #galleryEditorTpl let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          (click)="modal.dismiss('Cross click')"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #form class="modal-body">
+          <div class="container-fluid">
+            <input
+              type="file"
+              name="files"
+              id="photo"
+              hidden
+              (change)="uploadImage($event, project.project_id)"
+            />
+            <label class="btn btn-primary" for="photo">Upload Image</label>
+          </div>
+        </form>
+        <ng-container *ngIf="gallery$ | async as orderedImages">
+          <propertyspaces-gallery-editor
+            [items]="orderedImages"
+            (nameChange)="imageNameChanged($event, project.project_id)"
+            (sortChange)="sortChanged($event, project.project_id)"
+            (moveToTrash)="deleteGalleryImage($event, project.project_id)"
+          ></propertyspaces-gallery-editor>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          (click)="modal.close('Save click')"
+        >
+          Close
+        </button>
+      </div>
+    </ng-template>
     <!-- NAV MENU BEGIN -->
     <nav class="navbar navbar-dark bg-dark sticky-top navbar-expand-lg">
       <div class="container">
@@ -125,7 +169,7 @@
 
             <div class="list-group-item list-group-item-action d-flex">
               <a
-                (click)="openGalleryModal(project.project_id)"
+                (click)="openGalleryModal(galleryEditorTpl)"
                 href="javascript:;"
                 class="btn btn-link text-dark flex-fill text-left"
                 ><i class="mr-2 fa fa-image"></i>Photo Gallery</a
