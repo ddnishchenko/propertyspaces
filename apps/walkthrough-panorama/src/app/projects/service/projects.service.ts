@@ -119,8 +119,8 @@ export class ProjectsService {
         addr => this.updateDataProject(project_id, {
           mapEnabled: data.mapEnabled,
           streetViewEnabled: data.streetViewEnabled,
-          map: data.map,
-          streetView: data.streetView
+          map: data.map === '' ? null : data.map,
+          streetView: data.streetView === '' ? null : data.streetView
         })
       )
     );
