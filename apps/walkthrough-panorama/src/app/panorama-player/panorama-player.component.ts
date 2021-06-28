@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, skip, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -109,7 +109,8 @@ export class PanoramaPlayerComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private modalService: NgbModal,
-    private store: Store
+    private store: Store,
+    private zone: NgZone
   ) { }
 
   ngOnInit(): void {
@@ -303,8 +304,11 @@ export class PanoramaPlayerComponent implements OnInit {
     this.navTo(pano.panoramas.index);
   }
   resizeCanvas() {
-    this.virtualTour.virtualTourService.resize();
-    this.updateMasonty();
+    // this.virtualTour.virtualTourService.resize();
+    // this.updateMasonty();
+    this.zone.runOutsideAngular(() => {
+      window.dispatchEvent(new Event('resize'));
+    })
   }
 
   openSectionModal(modalWrapper, content, modalTitle) {

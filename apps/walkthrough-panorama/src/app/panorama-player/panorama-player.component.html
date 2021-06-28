@@ -443,6 +443,7 @@
   <ng-template #galleryEditorTpl>
     <ng-container *ngIf="gallery$ | async as orderedImages">
       <propertyspaces-gallery-editor
+        [isEditable]="isEdit"
         [items]="orderedImages"
         (nameChange)="imageNameChanged($event, data.project_id)"
         (sortChange)="sortChanged($event, data.project_id)"
@@ -474,13 +475,6 @@
         (rzResizing)="resizeCanvas()"
         (rzStop)="updateMasonty()"
       >
-        <div
-          class="close-gallery"
-          *ngIf="isGalleryOpened"
-          (click)="closeGallery()"
-        >
-          <i class="fa fa-3x fa-close"></i>
-        </div>
         <ngb-accordion
           class="sidebar-accordion"
           #acc="ngbAccordion"
@@ -608,12 +602,20 @@
         </ngb-accordion>
       </div>
       <div class="content">
-        <ng-container *ngIf="gallery$ | async as galleryItems">
+        <div class="gallery-wrapper" *ngIf="gallery$ | async as galleryItems">
+          <div
+            class="close-gallery"
+            *ngIf="isGalleryOpened"
+            (click)="closeGallery()"
+          >
+            <span class="h1">&times;</span>
+          </div>
           <gallery
             id="project-gallery"
             [class.d-none]="!isGalleryOpened"
             [items]="galleryItems | gallery"
             [itemTemplate]="itemTemplate"
+            [thumb]="false"
           ></gallery>
           <ng-template
             #itemTemplate
@@ -630,7 +632,7 @@
               {{ data?.name }}
             </span>
           </ng-template>
-        </ng-container>
+        </div>
 
         <div
           class="main-scene-wrapper"

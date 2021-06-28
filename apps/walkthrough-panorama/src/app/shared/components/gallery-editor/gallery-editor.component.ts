@@ -7,6 +7,7 @@ import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
   styleUrls: ['./gallery-editor.component.scss']
 })
 export class GalleryEditorComponent implements OnInit {
+  @Input() isEditable = true;
   @Input() items = [];
   @Output() sortChange: EventEmitter<any[]> = new EventEmitter();
   @Output() nameChange: EventEmitter<any> = new EventEmitter();
@@ -66,7 +67,10 @@ export class GalleryEditorComponent implements OnInit {
   }
 
   toggleEditMode(index, value) {
-    this.items = this.items.map((item, i) => i === index ? ({...item, nameEditing: value}) : item );
+    if (this.isEditable) {
+      this.items = this.items.map((item, i) => i === index ? ({...item, nameEditing: value}) : item );
+    }
+
   }
 
 }

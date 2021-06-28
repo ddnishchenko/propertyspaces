@@ -205,18 +205,7 @@ input::-moz-focus-outer {
     flex-direction: column;
     height: 100%;
   }
-  .close-gallery {
-    position: absolute;
-    transition: 0.3s ease-out;
-    right: -48px;
-    color: rgba(255, 255, 255, 0.5);
-    z-index: 2;
-    cursor: pointer;
-    width: 38px;
-    &:hover {
-      color: rgba(255, 255, 255, 1);
-    }
-  }
+
   &.stick-right {
     .close-gallery {
       left: -48px;
@@ -252,6 +241,26 @@ gallery {
   bottom: 0;
   right: 0;
   left: 0;
+}
+
+.gallery-wrapper {
+  .close-gallery {
+    position: absolute;
+    transition: 0.3s ease-out;
+    right: 10px;
+    top: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 2;
+    cursor: pointer;
+    width: 38px;
+    &.stick-to-left {
+      right: initial;
+      left: 10px;
+    }
+    &:hover {
+      color: rgba(255, 255, 255, 1);
+    }
+  }
 }
 
 agm-map,

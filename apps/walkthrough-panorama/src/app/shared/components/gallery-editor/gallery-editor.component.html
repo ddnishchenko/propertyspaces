@@ -11,6 +11,7 @@
   <div
     *ngFor="let d of items; index as i"
     [dndDraggable]="d"
+    [dndDisableIf]="!isEditable"
     [dndEffectAllowed]="'copyMove'"
     (dndStart)="onDragStart($event)"
     (dndCopied)="onDragged(d, items, 'copy')"
@@ -22,7 +23,7 @@
   >
     <div class="gallery-editor__item_edit">
       <img class="img-fluid" [src]="d.url" />
-      <div class="gallery-editor__item_position-block">
+      <div class="gallery-editor__item_position-block" *ngIf="isEditable">
         <i class="fa fa-arrows gallery-editor__item_move" dndHandle></i>
         <button
           type="button"
