@@ -19,6 +19,7 @@ import { GalleryEditorComponent } from '../shared/components/gallery-editor/gall
 import { slideInAnimation } from '../utils/animations';
 import { combineLatest } from 'rxjs';
 import { ConfirmationModalComponent } from '../shared/components/confirmation-modal/confirmation-modal.component';
+import { ResizeEvent } from 'angular-resizable-element';
 
 const aspectRations = [
   {
@@ -105,6 +106,7 @@ export class PanoramaPlayerComponent implements OnInit {
   modalContent = null;
   modalTitle = null;
   gallery$;
+  styleDeSidbar = {};
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -358,6 +360,16 @@ export class PanoramaPlayerComponent implements OnInit {
       this.masonry.reloadItems();
       this.masonry.layout();
     }
+  }
+
+  onResizeEnd(event: ResizeEvent): void {
+    this.styleDeSidbar = {
+      // position: 'fixed',
+      // left: `${event.rectangle.left}px`,
+      // top: `${event.rectangle.top}px`,
+      width: `${event.rectangle.width}px`,
+      // height: `${event.rectangle.height}px`
+    };
   }
 
   imageNameChanged($event, projectId) {

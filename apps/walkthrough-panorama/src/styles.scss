@@ -67,14 +67,6 @@ mwlResizable {
   width: 5px;
 }
 
-.resize-handle-left {
-  left: 0;
-}
-
-.resize-handle-right {
-  right: 0;
-}
-
 .ng-draggable {
   cursor: grab;
 }
@@ -180,4 +172,19 @@ lightbox {
   min-height: 72px;
   border: 1px dashed green;
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+.tooltop-p-0 {
+  top: 20px;
+  &.show {
+    opacity: 1;
+  }
+  .tooltip-inner {
+    padding: 0;
+    transform: translate(-26px, 0px);
+  }
+  .arrow::before {
+    border-bottom-color: #fff;
+    border-width: 0 16px 16px;
+  }
 }
