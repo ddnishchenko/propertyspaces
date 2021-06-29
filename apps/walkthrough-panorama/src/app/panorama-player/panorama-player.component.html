@@ -653,10 +653,12 @@
             right: form.value.sidebarSide !== 'r',
             left: form.value.sidebarSide === 'r'
           }"
-          class="resize-handle"
+          class="resize-handle d-flex align-items-center justify-content-center"
           [class.resize-handle-left]="form.value.sidebarSide !== 'r'"
           [class.resize-handle-right]="form.value.sidebarSide === 'r'"
-        ></div>
+        >
+          <div><img src="assets/img/icons/resize.svg" alt="Resize" /></div>
+        </div>
       </div>
       <div class="content">
         <div class="gallery-wrapper" *ngIf="gallery$ | async as galleryItems">

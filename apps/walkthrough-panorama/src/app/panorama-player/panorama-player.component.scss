@@ -225,6 +225,7 @@ input::-moz-focus-outer {
   border-radius: 50%;
   border: 2px solid #9f1f15;
   background: #fff;
+  font-size: 0;
   &-left {
     right: 0;
     transform: translate(50%, -50%);

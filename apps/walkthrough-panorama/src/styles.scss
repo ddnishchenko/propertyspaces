@@ -175,7 +175,7 @@ lightbox {
 }
 
 .tooltop-p-0 {
-  top: 20px;
+  top: 20px !important;
   &.show {
     opacity: 1;
   }
@@ -183,8 +183,14 @@ lightbox {
     padding: 0;
     transform: translate(-26px, 0px);
   }
+  .arrow {
+    left: calc(60% - 0.4rem) !important;
+  }
   .arrow::before {
     border-bottom-color: #fff;
     border-width: 0 16px 16px;
+  }
+  label.btn {
+    font-size: 15px;
   }
 }
