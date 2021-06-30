@@ -1,4 +1,4 @@
-<ng-container *ngIf="data$ | async as data">
+<div [formGroup]="form" *ngIf="data$ | async as data">
   <ng-template #addFloorplanBtn>
     <button
       *ngIf="isEdit"
@@ -10,7 +10,6 @@
     </button>
   </ng-template>
   <nav
-    [formGroup]="form"
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
   >
     <a class="navbar-brand" href="javascript: alert('Logo')">
@@ -266,12 +265,22 @@
         <ng-template #loginBtn>
           <button 
           type="button"
-          class="btn btn-lg btn-dark rounded-pill btn-black ml-3"
+          class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5"
         >
           <span>Log in</span>
         </button>
         </ng-template>
-        <button *ngIf="isEdit; else loginBtn"
+        
+        <ng-container *ngIf="isEdit; else loginBtn">
+          <button type="button" class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
+            <span>Log out</span>
+          </button>
+          <button type="button" class="btn btn-danger rounded-pill text-uppercase border-1 border-white ml-3 px-5">
+            <span>Publish</span>
+          </button>
+        </ng-container>
+
+        <!-- <button *ngIf="isEdit; else loginBtn"
             #tooltipView="ngbTooltip"
             type="button"
             class="btn btn-lg btn-dark rounded-pill btn-change-view btn-black ml-3"
@@ -287,7 +296,7 @@
               [class.angle-flip]="tooltipView.isOpen()"
               alt="angle"
             />
-          </button>
+        </button> -->
 
         
 
@@ -519,8 +528,9 @@
   </ng-template>
 
   <ng-template #editTpl>
-    <ngb-accordion (panelChange)="beforeChange($event)">
-      <ngb-panel id="preventchange-1" title="EDIT ALL NAV POINTS">
+
+    <ngb-accordion #editAcc [closeOthers]="true" class="inner-accordion">
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'all-points')" id="all-points" title="EDIT ALL NAV POINTS">
         <ng-template ngbPanelContent>
           Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
           aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
@@ -530,7 +540,7 @@
           labore sustainable VHS.
         </ng-template>
       </ngb-panel>
-      <ngb-panel id="preventchange-2" title="EDIT ACTIVE NAV POINT">
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'active-point')" id="active-point" title="EDIT ACTIVE NAV POINT">
         <ng-template ngbPanelContent>
           Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
           aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
@@ -540,7 +550,7 @@
           labore sustainable VHS.
         </ng-template>
       </ngb-panel>
-      <ngb-panel id="preventchange-3" title="FLOOR PLAN OPTIONS">
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'edit-floorplan')" id="edit-floorplan" title="FLOOR PLAN OPTIONS">
         <ng-template ngbPanelContent>
           Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
           aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
@@ -550,7 +560,7 @@
           labore sustainable VHS.
         </ng-template>
       </ngb-panel>
-      <ngb-panel id="preventchange-4" title="CREATE PHOTO GALLERY">
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'create-gallery')" id="create-gallery" title="CREATE PHOTO GALLERY">
         <ng-template ngbPanelContent>
           Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
           aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
@@ -560,7 +570,7 @@
           labore sustainable VHS.
         </ng-template>
       </ngb-panel>
-      <ngb-panel id="preventchange-4" title="EDIT MAP & STREET VIEW">
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'edit-map-street')" id="edit-map-street" title="EDIT MAP & STREET VIEW">
         <ng-template ngbPanelContent>
           Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
           aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
@@ -570,7 +580,37 @@
           labore sustainable VHS.
         </ng-template>
       </ngb-panel>
-      <ngb-panel id="preventchange-4" title="EDIT CONTACT INFO">
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'edit-contact')" id="edit-contact" title="EDIT CONTACT INFO">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'edit-panorama')" id="edit-panorama" title="EDIT PANORAMA">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'edit-menu-view')" id="edit-menu-view" title="CHANGE MENU VIEW">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel [cardClass]="panelActiveClass(editAcc.activeIds, 'edit-description')" id="edit-description" title="ADD DESCRIPTION">
         <ng-template ngbPanelContent>
           Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
           aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
@@ -581,6 +621,7 @@
         </ng-template>
       </ngb-panel>
     </ngb-accordion>
+    
   </ng-template>
 
   <main class="panorama-player d-flex">
@@ -815,6 +856,43 @@
           #sceneWrapper
           [style.width]="canvasAspect(sceneWrapper)"
         >
+          <button type="button"
+          class="btn btn-danger"
+          id="take-tour-screenshot" (click)="takeScreenshot()"><img src="assets/img/icons/camera.svg" alt="Take a screeshot"></button>
+
+          <button type="button" class="btn" id="fullscreen">
+            <img src="assets/img/icons/expand.svg" alt="Fullscreen">
+          </button>
+
+
+          <div class="card py-3 px-5 edit-nav-points-form" *ngIf="editProperties.allPoints === form.value.activeEditProperty">
+            <form>
+
+              <div class="form-group">
+                <label>Nav point rotation</label>
+                <propertyspaces-slider (input)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
+                
+
+              </div>
+
+              <div class="form-group">
+                <label>Zoom</label>
+                <propertyspaces-slider (input)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+              </div>
+              
+              <div class="text-center">
+                <button
+                  type="button"
+                  (click)="saveSettings(data.project_id)"
+                  class="btn btn-dark rounded-pill px-5"
+                >
+                  Save
+                </button>
+              </div>
+              
+            </form>
+          </div>
+
           <canvas
             #virtualTour
             id="virtualTour"
@@ -827,4 +905,4 @@
       </div>
     </div>
   </main>
-</ng-container>
+</div>

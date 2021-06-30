@@ -107,6 +107,10 @@ export class PanoramaPlayerComponent implements OnInit {
   modalTitle = null;
   gallery$;
   styleDeSidbar = {};
+  editProperties = {
+    allPoints: 'allPoints',
+    createGallery: 'createGallery',
+  };
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -141,7 +145,8 @@ export class PanoramaPlayerComponent implements OnInit {
       panoCameraStartAngle: new FormControl(''),
       aspectRatio: new FormControl(''),
       customRatio: new FormControl(''),
-      sidebarSide: new FormControl('l')
+      sidebarSide: new FormControl('l'),
+      activeEditProperty: new FormControl()
     });
   }
 
@@ -401,6 +406,10 @@ export class PanoramaPlayerComponent implements OnInit {
     if ($event.panelId === 'preventchange-3' && $event.nextState === false) {
       $event.preventDefault();
     }
+  }
+
+  crementControl(field, val) {
+    this.form.patchValue({[field]: this.form.value[field] + val });
   }
 
 }

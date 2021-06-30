@@ -1,0 +1,38 @@
+<ng-template #simpleTpl>
+
+  <div class="range-slider">
+    <input
+      class="range-slider__range"
+      (input)="slide($event)"
+      type="range"
+      [step]="step"
+      [min]="min"
+      [max]="max"
+      [value]="value"
+    />
+  </div>  
+
+</ng-template>
+
+
+
+<div class="d-flex align-items-center" *ngIf="crement; else simpleTpl">
+
+  <button type="button" class="btn" (click)="crementControl(-step)"><img src="assets/img/icons/minus.svg" alt="minus"></button>
+
+  <div class="range-slider">
+    <input
+      class="range-slider__range"
+      (input)="slide($event)"
+      type="range"
+      [step]="step"
+      [min]="min"
+      [max]="max"
+      [value]="value"
+    />
+  </div>
+
+  <button type="button" class="btn" (click)="crementControl(step)"><img src="assets/img/icons/plus.svg" alt="plus"></button>
+
+  <input class="value-display" type="number" (input)="slide($event)" [value]="value" [step]="step" [min]="min" [max]="max">
+</div>

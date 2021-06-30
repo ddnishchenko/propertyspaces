@@ -91,13 +91,17 @@ mwlResizable {
 
 .sidebar-card {
   min-height: 63px;
+  border: 0;
 }
 
 
-.card-header {
-  transition: .3s ease-in;  
+.accordion > .card > .card-header {
+  transition: .3s ease-in;
+  margin-bottom: 0;
+  border-bottom-width: 3px;
 }
-.sidebar-card.active, .card-header:hover {
+.sidebar-accordion > .sidebar-card.active > .card-header,
+.sidebar-accordion.accordion > .card > .card-header:hover {
   .btn {
     color: #fff;
   }
@@ -116,6 +120,29 @@ mwlResizable {
 
 .sidebar-card > .collapse {
   overflow: auto;
+}
+
+.inner-accordion {
+  .card {
+    border: 0;
+  }
+  .card-header {
+    padding: 0;
+  }
+
+}
+
+.inner-accordion .card-header > .btn-link {
+  display: block;
+  width: 100%;
+  color: #231F20;
+}
+
+.inner-accordion .card.active .card-header {
+  background: #A1332A;
+  .btn-link {
+    color: #fff;
+  }
 }
 
 .pac-container {
