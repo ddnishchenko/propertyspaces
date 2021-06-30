@@ -200,6 +200,7 @@ input::-moz-focus-outer {
   position: relative;
   height: 100%;
   border-right: 4px solid #4e4e4e;
+  background-color: #fff;
   left: 0 !important;
 
   &-accordion {
@@ -331,9 +332,12 @@ agm-map,
   // width: 150px;
 }
 
-.btn-change-view {
-  background: #363233;
+.btn-black {
   font-size: 18px;
+  background: #363233;
+}
+
+.btn-change-view {
   span {
     padding-right: 10px;
   }
@@ -347,4 +351,5 @@ agm-map,
 
 .navbar {
   padding: 25px 35px;
+  border-bottom: 3px solid #fff;
 }

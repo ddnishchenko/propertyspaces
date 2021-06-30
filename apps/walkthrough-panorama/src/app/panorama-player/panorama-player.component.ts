@@ -4,7 +4,7 @@ import { map, skip, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
 import { selectHdrVirtualTourPanoramasDividerOnFloors, selectVirtualTourParams } from '../projects/state/projects.selectors';
@@ -384,5 +384,23 @@ export class PanoramaPlayerComponent implements OnInit {
     this.store.dispatch(removeProjectGalleryPhoto({ projectId, image_id: [$event.item.name] }));
   }
 
+  panelActiveClass(ids, id) {
+    if (ids.length) {
+      return ids.includes(id) ? 'active' : '';
+    }
+    return '';
+    
+  }
+
+  public beforeChange($event: NgbPanelChangeEvent) {
+
+    if ($event.panelId === 'preventchange-2') {
+      $event.preventDefault();
+    }
+
+    if ($event.panelId === 'preventchange-3' && $event.nextState === false) {
+      $event.preventDefault();
+    }
+  }
 
 }

@@ -93,6 +93,27 @@ mwlResizable {
   min-height: 63px;
 }
 
+
+.card-header {
+  transition: .3s ease-in;  
+}
+.sidebar-card.active, .card-header:hover {
+  .btn {
+    color: #fff;
+  }
+  .sidebar-header-icon-fill svg path {
+    fill: #fff !important;
+  }
+  .sidebar-header-icon-stroke svg path {
+    stroke: #fff !important;
+  }
+}
+
+.sidebar-card.active > .card-header, .sidebar-card:hover > .card-header {
+  background:  #231F20;
+  color: #fff;
+}
+
 .sidebar-card > .collapse {
   overflow: auto;
 }
@@ -113,7 +134,7 @@ ngx-masonry {
   }
 }
 
-.gallery-panel .card-body {
+.sidebar-card .card-body {
   padding: 0;
 }
 

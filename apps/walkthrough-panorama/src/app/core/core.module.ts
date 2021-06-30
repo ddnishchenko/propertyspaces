@@ -16,6 +16,7 @@ import { reducers, metaReducers } from './state/core.reducer';
 import { ProjectsEffects } from '../projects/state/projects.effects';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 
 const agmConfig: LazyMapsAPILoaderConfigLiteral = {
@@ -36,6 +37,7 @@ const agmConfig: LazyMapsAPILoaderConfigLiteral = {
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     EffectsModule.forRoot([ProjectsEffects]),
     StoreRouterConnectingModule.forRoot(),
+    AngularSvgIconModule.forRoot(),
     AgmCoreModule.forRoot(agmConfig),
     BrowserAnimationsModule
   ],

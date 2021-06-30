@@ -263,24 +263,33 @@
             <img src="assets/img/icons/facebook.svg" alt="Facebook" />
           </a>
         </div>
-
-        <button
-          #tooltipView="ngbTooltip"
+        <ng-template #loginBtn>
+          <button 
           type="button"
-          class="btn btn-lg btn-dark rounded-pill btn-change-view ml-3"
-          [ngbTooltip]="tipContent"
-          tooltipClass="tooltop-p-0"
-          triggers="click"
-          [autoClose]="'outside'"
+          class="btn btn-lg btn-dark rounded-pill btn-black ml-3"
         >
-          <span>Change view</span>
-          <img
-            src="assets/img/icons/angle.svg"
-            class="angle"
-            [class.angle-flip]="tooltipView.isOpen()"
-            alt="angle"
-          />
+          <span>Log in</span>
         </button>
+        </ng-template>
+        <button *ngIf="isEdit; else loginBtn"
+            #tooltipView="ngbTooltip"
+            type="button"
+            class="btn btn-lg btn-dark rounded-pill btn-change-view btn-black ml-3"
+            [ngbTooltip]="tipContent"
+            tooltipClass="tooltop-p-0"
+            triggers="click"
+            [autoClose]="'outside'"
+          >
+            <span>Change view</span>
+            <img
+              src="assets/img/icons/angle.svg"
+              class="angle"
+              [class.angle-flip]="tooltipView.isOpen()"
+              alt="angle"
+            />
+          </button>
+
+        
 
         <!-- <ng-container *ngTemplateOutlet="addFloorplanBtn"></ng-container> -->
       </div>
@@ -509,6 +518,71 @@
     sustainable VHS.
   </ng-template>
 
+  <ng-template #editTpl>
+    <ngb-accordion (panelChange)="beforeChange($event)">
+      <ngb-panel id="preventchange-1" title="EDIT ALL NAV POINTS">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel id="preventchange-2" title="EDIT ACTIVE NAV POINT">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel id="preventchange-3" title="FLOOR PLAN OPTIONS">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel id="preventchange-4" title="CREATE PHOTO GALLERY">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel id="preventchange-4" title="EDIT MAP & STREET VIEW">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel id="preventchange-4" title="EDIT CONTACT INFO">
+        <ng-template ngbPanelContent>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia
+          aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
+          sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+          craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings
+          occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+          labore sustainable VHS.
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </ng-template>
+
   <main class="panorama-player d-flex">
     <!-- [rzHandles]="form.value.sidebarSide === 'r' ? 'w' : 'e'" -->
     <div class="boxes d-flex">
@@ -524,23 +598,23 @@
         <ngb-accordion
           class="sidebar-accordion"
           #acc="ngbAccordion"
-          activeIds="ngb-panel-0"
         >
-          <ngb-panel cardClass="sidebar-card">
+          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"
               >
-                <button ngbPanelToggle class="btn btn-link p-0">
-                  Floor Plan
+                <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                  <svg-icon src="assets/img/icons/floorplan.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                  <span class="text-uppercase">Floor Plan</span>
                 </button>
                 <button
-                  class="btn btn-primary"
+                  class="btn"
                   (click)="
                     openSectionModal(modalWrapper, floorplanTpl, 'Floor Plan')
                   "
                 >
-                  <i class="fa fa-expand"></i>
+                <svg-icon src="assets/img/icons/expand.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                 </button>
               </div>
             </ng-template>
@@ -550,19 +624,25 @@
           </ngb-panel>
 
           <ngb-panel
-            cardClass="sidebar-card"
+          [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-map')"
+            id="panel-map"
             *ngIf="data.additional_data.mapEnabled"
           >
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"
               >
-                <button ngbPanelToggle class="btn btn-link p-0">Map</button>
+                <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                  <svg-icon src="assets/img/icons/map-marker.svg" class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
+                  <span class="text-uppercase">Map</span>
+                </button>
                 <button
-                  class="btn btn-primary"
-                  (click)="openSectionModal(modalWrapper, mapTpl, 'Map')"
+                  class="btn"
+                  (click)="
+                    openSectionModal(modalWrapper, mapTpl, 'Map')
+                  "
                 >
-                  <i class="fa fa-expand"></i>
+                  <svg-icon src="assets/img/icons/expand.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                 </button>
               </div>
             </ng-template>
@@ -572,23 +652,25 @@
           </ngb-panel>
 
           <ngb-panel
-            cardClass="sidebar-card"
+          [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-sv')"
+            id="panel-sv"
             *ngIf="data.additional_data.streetViewEnabled"
           >
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"
               >
-                <button ngbPanelToggle class="btn btn-link p-0">
-                  Street View
-                </button>
+                <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                  <svg-icon src="assets/img/icons/map-marker.svg" class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
+                  <span class="text-uppercase">Street view</span>
+                </button>              
                 <button
-                  class="btn btn-primary"
+                  class="btn"
                   (click)="
                     openSectionModal(modalWrapper, streetViewTpl, 'Street View')
                   "
                 >
-                  <i class="fa fa-expand"></i>
+                  <svg-icon src="assets/img/icons/expand.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                 </button>
               </div>
             </ng-template>
@@ -597,17 +679,19 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel cardClass="sidebar-card gallery-panel">
+          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')" 
+          id="panel-gallery">
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"
               >
-                <button ngbPanelToggle class="btn btn-link p-0">
-                  Photo Gallery
+                <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                  <svg-icon src="assets/img/icons/picture.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                  <span class="text-uppercase">Photo Gallery</span>
                 </button>
                 <button
                   *ngIf="gallery$ | async as galleryPhotos"
-                  class="btn btn-primary"
+                  class="btn"
                   (click)="
                     openSectionModal(
                       modalWrapper,
@@ -616,7 +700,7 @@
                     )
                   "
                 >
-                  <i class="fa fa-expand"></i>
+                  <svg-icon src="assets/img/icons/expand.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                 </button>
               </div>
             </ng-template>
@@ -625,19 +709,23 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel cardClass="sidebar-card">
+          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-contact')" 
+          id="panel-contact">
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"
               >
-                <button ngbPanelToggle class="btn btn-link p-0">Contact</button>
+                <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                  <svg-icon src="assets/img/icons/contact.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                  <span class="text-uppercase">Contact</span>
+                </button>
                 <button
-                  class="btn btn-primary"
+                  class="btn"
                   (click)="
                     openSectionModal(modalWrapper, contactTpl, 'Contact')
                   "
                 >
-                  <i class="fa fa-expand"></i>
+                  <svg-icon src="assets/img/icons/expand.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                 </button>
               </div>
             </ng-template>
@@ -645,7 +733,36 @@
               <ng-container *ngTemplateOutlet="contactTpl"></ng-container>
             </ng-template>
           </ngb-panel>
+
+          <ngb-panel *ngIf="isEdit" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-edit')" 
+          id="panel-edit">
+            <ng-template ngbPanelHeader>
+              <div
+                class="d-flex justify-content-between align-items-center w-100"
+              >
+                <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                  <svg-icon src="assets/img/icons/edit.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                  <span class="text-uppercase">Edit</span>
+                </button>
+                <button
+                  class="btn"
+                  (click)="
+                    openSectionModal(modalWrapper, editTpl, 'Edit')
+                  "
+                >
+                  <svg-icon src="assets/img/icons/cog.svg" class="sidebar-header-icon-stroke sidebar-header-icon-fill"></svg-icon>
+                </button>
+              </div>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <ng-container *ngTemplateOutlet="editTpl"></ng-container>
+            </ng-template>
+          </ngb-panel>
+
         </ngb-accordion>
+        
+
+
 
         <div
           mwlResizeHandle

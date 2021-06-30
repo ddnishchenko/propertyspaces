@@ -6,6 +6,7 @@
   },
   "strictTemplates": true,
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true
+    "fullTemplateTypeCheck": true,
+    "strictTemplates": true
   }
 }

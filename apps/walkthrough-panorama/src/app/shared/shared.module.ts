@@ -10,6 +10,7 @@ import { NgxMasonryModule } from 'ngx-masonry';
 import { DndModule } from 'ngx-drag-drop';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrderModule } from 'ngx-order-pipe';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 
 import { GalleryEditorComponent } from './components/gallery-editor/gallery-editor.component';
@@ -43,7 +44,8 @@ import { ImageGridComponent } from './components/image-grid/image-grid.component
     NgbTooltipModule,
     GalleryEditorComponent,
     ConfirmationModalComponent,
-    OrderModule
+    OrderModule,
+    AngularSvgIconModule
   ],
   imports: [
     CommonModule,
@@ -51,7 +53,8 @@ import { ImageGridComponent } from './components/image-grid/image-grid.component
     LightboxModule,
     NgxMasonryModule,
     DndModule,
-    OrderModule
+    OrderModule,
+    AngularSvgIconModule
   ]
 })
 export class SharedModule { }
