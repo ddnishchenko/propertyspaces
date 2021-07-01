@@ -109,7 +109,15 @@ export class PanoramaPlayerComponent implements OnInit {
   styleDeSidbar = {};
   editProperties = {
     allPoints: 'allPoints',
+    activePoint: 'activePoint',
+    floorplan: 'floorplan',
     createGallery: 'createGallery',
+    editGallery: 'editGallery',
+    editLocation: 'editLocation',
+    editContact: 'editContact',
+    editPano: 'editPano',
+    changeMenu: 'changeMenu',
+    description: 'description'
   };
   constructor(
     private router: Router,
@@ -196,47 +204,52 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   saveSettings(projectId) {
-    const modal = this.modalService.open(ConfirmationModalComponent);
-    modal.componentInstance.msg = 'Settings of Panoramas will be lost and default setting will be applied after saving defaults. Proceed?';
-
-    modal.result.then(answer => {
-      if (answer) {
-        const data = {
-          zoom: this.form.value.zoom,
-          rotation_y: this.form.value.rotationY
-        };
-        this.form.patchValue({
-          panoZoom: 0,
-          panoCameraStartAngle: 0,
-        });
-
-        const changedPanos = this.virtualTour.virtualTourService.panos.filter(
-          p => !isNaN(parseInt(p.panoramas.zoom, 10))  || !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
-        );
-        const resetPano = p => {
-
-          return {
-            ...p,
-            panoramas: {
-              ...p.panoramas,
-              zoom: undefined,
-              panoCameraStartAngle: undefined
+    if (this.editProperties.allPoints === this.form.value.activeEditProperty) {
+      const modal = this.modalService.open(ConfirmationModalComponent);
+      modal.componentInstance.msg = 'Settings of Panoramas will be lost and default setting will be applied after saving defaults. Proceed?';
+  
+      modal.result.then(answer => {
+        if (answer) {
+          const data = {
+            zoom: this.form.value.zoom,
+            rotation_y: this.form.value.rotationY
+          };
+          this.form.patchValue({
+            panoZoom: 0,
+            panoCameraStartAngle: 0,
+          });
+  
+          const changedPanos = this.virtualTour.virtualTourService.panos.filter(
+            p => !isNaN(parseInt(p.panoramas.zoom, 10))  || !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
+          );
+          const resetPano = p => {
+  
+            return {
+              ...p,
+              panoramas: {
+                ...p.panoramas,
+                zoom: undefined,
+                panoCameraStartAngle: undefined
+              }
             }
-          }
-
-        };
-        this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos.map(resetPano);
-        const resetedPanos = changedPanos.map(resetPano).map(({name, panoramas}) => ({name, panoramas}));
-
-        this.virtualTour.virtualTourService.defaultY = data.rotation_y;
-        this.virtualTour.virtualTourService.defaultZoom = data.zoom;
-        this.store.dispatch(updateProject({projectId, data}));
-        resetedPanos.forEach(panorama => {
-          this.store.dispatch(updatePanorama({projectId, panorama}));
-        })
-
-      }
-    })
+  
+          };
+          this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos.map(resetPano);
+          const resetedPanos = changedPanos.map(resetPano).map(({name, panoramas}) => ({name, panoramas}));
+  
+          this.virtualTour.virtualTourService.defaultY = data.rotation_y;
+          this.virtualTour.virtualTourService.defaultZoom = data.zoom;
+          this.store.dispatch(updateProject({projectId, data}));
+          resetedPanos.forEach(panorama => {
+            this.store.dispatch(updatePanorama({projectId, panorama}));
+          })
+  
+        }
+      });
+    } else {
+      this.updatePanoSettings();
+    }
+    
 
   }
 

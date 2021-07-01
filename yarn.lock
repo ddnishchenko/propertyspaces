@@ -175,12 +175,12 @@
   dependencies:
     tslib "^2.1.0"
 
-"@angular/cdk@^12.0.4":
-  version "12.0.4"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-12.0.4.tgz#074f17dc3f3f2ed054dace5ea2d6c89126e000df"
-  integrity sha512-NX/1kEc6ndyEHjGcMtMJYEjwmoURuwRSqKJLbGcHTUwXuuR+hfDP/vU1XDOeXNC80SV+0B4BpJnREkINILfYKw==
+"@angular/cdk@^12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-12.1.1.tgz#83b7ec7d5b97a003d31ea0dd25403e890d5e06ea"
+  integrity sha512-MJENa8qmfLAr6t59u1+mEC2YPbCn4n3vsY6k8fKyf+ILXwwGHWNZlYblaRMBjrF/crSx1Kd5vb30RCqIcNTGsA==
   dependencies:
-    tslib "^2.1.0"
+    tslib "^2.2.0"
   optionalDependencies:
     parse5 "^5.0.0"
 
@@ -4006,6 +4006,11 @@ bcrypt-pbkdf@^1.0.0:
   integrity sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=
   dependencies:
     tweetnacl "^0.14.3"
+
+bezier-easing@*:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/bezier-easing/-/bezier-easing-2.1.0.tgz#c04dfe8b926d6ecaca1813d69ff179b7c2025d86"
+  integrity sha1-wE3+i5JtbsrKGBPWn/F5t8ICXYY=
 
 big.js@^5.2.2:
   version "5.2.2"
@@ -9348,6 +9353,14 @@ ngx-progressbar@^6.1.0:
   resolved "https://registry.yarnpkg.com/ngx-progressbar/-/ngx-progressbar-6.1.0.tgz#21f60aaf314b6ace42623850b6b8ea257f4997a4"
   integrity sha512-++Mnch3k+eJyDatlNs3Lhd5hj6KGItlat1LaNksWj/7otP/VVrS6I0V7HYvCAQhMsJYrLBAiemqBqT3x11DSpA==
   dependencies:
+    tslib "^2.0.0"
+
+ngx-scrollbar@^7.5.6:
+  version "7.5.6"
+  resolved "https://registry.yarnpkg.com/ngx-scrollbar/-/ngx-scrollbar-7.5.6.tgz#62453d88630d784d3186d31faca11d5002838c27"
+  integrity sha512-Kx/rs6wHrMTbMFhQX2qNjZj2K7hE/ji1/cf0m49KxaOWV79GDvytMUcGweYsU6WUGPE7ARjR0XULDv0Mvkk4LA==
+  dependencies:
+    bezier-easing "*"
     tslib "^2.0.0"
 
 nice-try@^1.0.4:

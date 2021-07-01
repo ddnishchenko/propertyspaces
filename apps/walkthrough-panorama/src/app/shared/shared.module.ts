@@ -11,6 +11,7 @@ import { DndModule } from 'ngx-drag-drop';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrderModule } from 'ngx-order-pipe';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 
 import { GalleryEditorComponent } from './components/gallery-editor/gallery-editor.component';
@@ -48,7 +49,8 @@ import { SliderComponent } from './components/slider/slider.component';
     ConfirmationModalComponent,
     OrderModule,
     AngularSvgIconModule,
-    SliderComponent
+    SliderComponent,
+    NgScrollbarModule
   ],
   imports: [
     CommonModule,
@@ -57,7 +59,8 @@ import { SliderComponent } from './components/slider/slider.component';
     NgxMasonryModule,
     DndModule,
     OrderModule,
-    AngularSvgIconModule
+    AngularSvgIconModule,
+    NgScrollbarModule
   ]
 })
 export class SharedModule { }

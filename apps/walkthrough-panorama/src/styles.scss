@@ -242,3 +242,40 @@ lightbox {
     font-size: 15px;
   }
 }
+
+
+.edit-menu {
+  .btn:focus, .btn.focus {
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+  }
+  .btn {
+    color: $body-color;
+    border: 0;
+    background-color: rgba(0, 0, 0, 0.03);
+    &.active {
+      background-color: $danger;
+      color: $white;
+    }
+  }
+}
+
+.gallery-bar-scroll {
+  .ng-scrollbar-wrapper>scrollbar-y.scrollbar-control {
+    background: #fff;
+    border-left: 1px solid #B7B7B7;
+    border-right: 1px solid #B7B7B7;
+  }
+  .ng-scrollbar-wrapper>scrollbar-y.scrollbar-control>.ng-scrollbar-track {
+    width: 10px;
+    border-radius: 10px;
+    z-index: auto;
+    .ng-scrollbar-thumb {
+      background-color: $danger;
+    }
+  }
+  .ng-scroll-content {
+    padding: 0 10px;
+  }
+}
