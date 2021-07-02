@@ -444,4 +444,7 @@ export class PanoramaPlayerComponent implements OnInit {
       setTimeout(() => this.form.patchValue({activeEditProperty: ''}));
     }
   }
+  closeModal() {
+    this.form.patchValue({activeEditProperty: ''});
+  }
 }
