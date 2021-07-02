@@ -873,7 +873,7 @@
           <div *ngIf="modalEditing" class="modal-content canvas-modal">
             <div class="modal-header align-items-center">
               <h5 class="modal-title text-uppercase h4 text-danger">Modal title</h5>
-              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <button type="button" (click)="closeModal()" class="close" data-bs-dismiss="modal" aria-label="Close">
                 <div class="rounded-circle close-inner"><img src="assets/img/icons/cross.svg" alt="Close"></div>
               </button>
             </div>
