@@ -1,5 +1,6 @@
-import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { Component, ContentChild, EventEmitter, forwardRef, Input, Output, TemplateRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { SliderMinusDirective, SliderPlusDirective } from './slider.directives';
 
 @Component({
   selector: 'propertyspaces-slider',
@@ -14,7 +15,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ]
 })
 export class SliderComponent implements ControlValueAccessor {
-  @Input() crement = true;
+  @ContentChild(SliderPlusDirective, {read: TemplateRef}) plusTpl: TemplateRef<any>;
+  @ContentChild(SliderMinusDirective, {read: TemplateRef}) minusTpl: TemplateRef<any>;
+  @Input() customClass = '';
+  @Input() showCrement = true;
+  @Input() showValue = true;
   @Input() step;
   @Input() min;
   @Input() max;

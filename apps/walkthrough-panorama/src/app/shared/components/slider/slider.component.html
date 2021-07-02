@@ -1,28 +1,18 @@
-<ng-template #simpleTpl>
-
-  <div class="range-slider">
-    <input
-      class="range-slider__range"
-      (input)="slide($event)"
-      type="range"
-      [step]="step"
-      [min]="min"
-      [max]="max"
-      [value]="value"
-    />
-  </div>  
-
+<ng-template #defaultMinusTpl>
+  <img src="assets/img/icons/minus.svg" alt="minus">
+</ng-template>
+<ng-template #defaultPlusTpl>
+  <img src="assets/img/icons/plus.svg" alt="plus">
 </ng-template>
 
+<div class="d-flex align-items-center">
 
-
-<div class="d-flex align-items-center" *ngIf="crement; else simpleTpl">
-
-  <button type="button" class="btn" (click)="crementControl(-step)"><img src="assets/img/icons/minus.svg" alt="minus"></button>
+  <button type="button" *ngIf="showCrement" class="btn" (click)="crementControl(-step)"><ng-template [ngTemplateOutlet]="minusTpl || defaultMinusTpl"></ng-template></button>
 
   <div class="range-slider">
+    <!-- <input type="range" class="form-control-range" id="formControlRange"> -->
     <input
-      class="range-slider__range"
+      class="range-slider__range {{customClass}}"
       (input)="slide($event)"
       type="range"
       [step]="step"
@@ -32,7 +22,7 @@
     />
   </div>
 
-  <button type="button" class="btn" (click)="crementControl(step)"><img src="assets/img/icons/plus.svg" alt="plus"></button>
+  <button type="button" *ngIf="showCrement" class="btn" (click)="crementControl(step)"><ng-template [ngTemplateOutlet]="plusTpl || defaultPlusTpl"></ng-template></button>
 
-  <input class="value-display" type="number" (input)="slide($event)" [value]="value" [step]="step" [min]="min" [max]="max">
+  <input class="value-display" *ngIf="showValue" type="number" (input)="slide($event)" [value]="value" [step]="step" [min]="min" [max]="max">
 </div>

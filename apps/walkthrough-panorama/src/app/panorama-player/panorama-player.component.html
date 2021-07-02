@@ -779,13 +779,15 @@
             let-data="data"
             let-currIndex="currIndex"
           >
-            <span
-              *ngIf="type === 'image' && index === currIndex"
-              [@slideAnimation]
-              class="item-text"
-            >
-              {{ data?.name }}
-            </span>
+          <div *ngIf="type === 'image' && index === currIndex"
+          [@slideAnimation]
+          class="item-description-block">
+            <span class="gallery-item-name mb-2">{{ data?.name }}</span>
+            <button class="btn btn-link">
+              <span class="mr-1">Download</span> <img src="assets/img/icons/download.svg" alt="Download" />
+            </button>
+          </div>
+            
           </ng-template>
         </div>
 
@@ -825,6 +827,17 @@
             
           </div>
 
+          <div class="gallery-create-zoom" *ngIf="editProperties.createGallery === form.value.activeEditProperty">
+            <propertyspaces-slider [customClass]="'white-slider'" [showValue]="false" (input)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120">
+              <ng-template propertyspacesSliderMinus>
+                <img src="assets/img/icons/minus-white.svg" alt="-">
+              </ng-template>
+              <ng-template propertyspacesSliderPlus>
+                <img src="assets/img/icons/plus-white.svg" alt="+">
+              </ng-template>
+            </propertyspaces-slider>
+          </div>
+
 
           <div class="card py-3 px-5 edit-nav-points-form" *ngIf="editProperties.allPoints === form.value.activeEditProperty || editProperties.activePoint === form.value.activeEditProperty">
             <form>
@@ -833,7 +846,7 @@
                 <label>Nav point rotation</label>
 
                 <propertyspaces-slider *ngIf="editProperties.allPoints === form.value.activeEditProperty" (input)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
-                <propertyspaces-slider *ngIf="editProperties.activePoint === form.value.activeEditProperty" (input)="panoZoomChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.activePoint === form.value.activeEditProperty" (input)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
                 
 
               </div>

@@ -22,6 +22,7 @@ import { ConfirmationModalComponent } from './components/confirmation-modal/conf
 import { GoogleStreetViewDirective } from './directives/google-street-view.directive';
 import { ImageGridComponent } from './components/image-grid/image-grid.component';
 import { SliderComponent } from './components/slider/slider.component';
+import { SliderMinusDirective, SliderPlusDirective } from './components/slider/slider.directives';
 
 
 @NgModule({
@@ -33,7 +34,9 @@ import { SliderComponent } from './components/slider/slider.component';
     GalleryPipe,
     GoogleStreetViewDirective,
     ImageGridComponent,
-    SliderComponent
+    SliderComponent,
+    SliderMinusDirective,
+    SliderPlusDirective
   ],
   exports: [
     ConnectFormDirective,
@@ -50,6 +53,8 @@ import { SliderComponent } from './components/slider/slider.component';
     OrderModule,
     AngularSvgIconModule,
     SliderComponent,
+    SliderMinusDirective,
+    SliderPlusDirective,
     NgScrollbarModule
   ],
   imports: [

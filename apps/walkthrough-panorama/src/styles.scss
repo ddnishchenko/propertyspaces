@@ -8,6 +8,7 @@
 @import '~@angular/cdk/overlay-prebuilt.css';
 
 @import 'assets/scss/gallery-msnr';
+@import 'assets/scss/range-slider';
 
 html,
 body {
@@ -279,3 +280,4 @@ lightbox {
     padding: 0 10px;
   }
 }
+
