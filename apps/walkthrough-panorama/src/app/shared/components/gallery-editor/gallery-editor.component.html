@@ -24,48 +24,23 @@
     <div class="gallery-editor__item_edit">
       <img class="img-fluid" [src]="d.url" />
       <div class="gallery-editor__item_position-block" *ngIf="isEditable">
-        <i class="fa fa-arrows gallery-editor__item_move" dndHandle></i>
-        <button
-          type="button"
-          (click)="toggleEditMode(i, true)"
-          class="btn btn-dark px-0 d-flex flex-column align-items-center justify-content-center gallery-editor__item_rename"
-        >
-          <i class="fa fa-lg fa-pencil"></i><span>Rename</span>
-        </button>
-        <button
-          type="button"
-          (click)="removeItem(d, i)"
-          class="btn btn-dark px-0 d-flex flex-column align-items-center justify-content-center gallery-editor__item_delete"
-        >
-          <i class="fa fa-lg fa-trash"></i><span>Trash</span>
-        </button>
-        <label
-          class="btn btn-dark p-0 text-center gallery-editor__item_checkbox"
-        >
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              [id]="'item_checkbox_' + i"
-            />
-            <label class="custom-control-label" [for]="'item_checkbox_' + i"
-              >Select as header image</label
-            >
+        <img dndHandle class="gallery-editor__item_move" src="assets/img/icons/drag.svg" alt="Drag">
+        <div class="d-flex align-items-center justify-content-between gallery-editor__item-actions">
+          <div class="gallery-editor__item-rename d-flex">
+            <span class="m-1" [class.d-none]="d.nameEditing" (click)="toggleEditMode(i, true)">
+              {{ d.name }}
+            </span>
+            <textarea
+              rows="1"
+              class="textname rounded-pill m-1"
+              [class.d-none]="!d.nameEditing"
+              (blur)="saveTitle($event, d, i)"
+              >{{ d.name }}</textarea>
+            <img (click)="toggleEditMode(i, true)" src="assets/img/icons/pencil.svg" alt="Edit name">
           </div>
-        </label>
+          <img class="gallery-editor__item-remove" (click)="removeItem(d, i)" src="assets/img/icons/trash-red.svg" alt="Delete">
+        </div>
       </div>
-    </div>
-    <div class="edit-name">
-      <span [class.d-none]="d.nameEditing" (click)="toggleEditMode(i, true)">{{
-        d.name
-      }}</span>
-      <textarea
-        rows="1"
-        class="textname"
-        [class.d-none]="!d.nameEditing"
-        (blur)="saveTitle($event, d, i)"
-        >{{ d.name }}</textarea
-      >
     </div>
   </div>
 </div>

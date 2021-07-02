@@ -119,6 +119,15 @@ export class PanoramaPlayerComponent implements OnInit {
     changeMenu: 'changeMenu',
     description: 'description'
   };
+  get modalEditing() {
+    if (this.form) {
+      const { editGallery, editContact, editLocation
+        } = this.editProperties;
+      const modalEdit = [editGallery, editContact, editLocation];
+      return modalEdit.includes(this.form.value.activeEditProperty);
+    }
+    return false;
+  }
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -156,6 +165,10 @@ export class PanoramaPlayerComponent implements OnInit {
       sidebarSide: new FormControl('l'),
       activeEditProperty: new FormControl()
     });
+
+    this.form.get('activeEditProperty').valueChanges.subscribe(val => {
+      console.log(val)
+    })
   }
 
   calcRatio(ratio) {
@@ -268,8 +281,9 @@ export class PanoramaPlayerComponent implements OnInit {
       panoZoom: this.virtualTour.virtualTourService.currentPano.panoramas.zoom || 0
     })
   }
-  zoomChange() {
-    this.virtualTour.virtualTourService.changeZoom(+this.form.value.zoom)
+  zoomChange($event?) {
+    const val = $event || +this.form.value.zoom;
+    this.virtualTour.virtualTourService.changeZoom(val);
   }
 
   viewChange($event) {
@@ -424,5 +438,10 @@ export class PanoramaPlayerComponent implements OnInit {
   crementControl(field, val) {
     this.form.patchValue({[field]: this.form.value[field] + val });
   }
-
+  checkForReset(val) {
+    if (val === this.form.value.activeEditProperty) {
+      // TODO: Refactor
+      setTimeout(() => this.form.patchValue({activeEditProperty: ''}));
+    }
+  }
 }

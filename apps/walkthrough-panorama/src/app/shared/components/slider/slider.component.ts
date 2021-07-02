@@ -23,7 +23,7 @@ export class SliderComponent implements ControlValueAccessor {
   @Input() step;
   @Input() min;
   @Input() max;
-  @Output() input = new EventEmitter();
+  @Output() slide = new EventEmitter();
   value;
 
   onChange = (value) => {};
@@ -41,9 +41,9 @@ export class SliderComponent implements ControlValueAccessor {
     this.value = value;
   }
 
-  slide($event) {
-    this.value = $event.target.value;
-    this.input.emit(this.value);
+  changing($event) {
+    this.value = +$event.target.value;
+    this.slide.emit(this.value);
     this.onChange(this.value);
   }
 
@@ -56,7 +56,7 @@ export class SliderComponent implements ControlValueAccessor {
     const n = +this.value + (+step);
     const rn = n.toFixed(fix);
     this.value = +rn;
-    this.input.emit(this.value);
+    this.slide.emit(this.value);
     this.onChange(this.value);
   }
 }

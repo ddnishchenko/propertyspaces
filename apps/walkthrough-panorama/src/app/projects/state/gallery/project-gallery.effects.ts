@@ -6,6 +6,7 @@ import { forkJoin } from 'rxjs';
 
 import * as ProjectGalleryActions from './project-gallery.actions';
 import { ProjectsService } from '../../service/projects.service';
+import { SnotifyService } from 'ng-snotify';
 
 
 function parseNames(data: string): string[] {
@@ -59,9 +60,10 @@ export class ProjectGalleryEffects {
                   return this.projectService.updateDataProject(payload.projectId, {
                     galleryOrder: galleryOrderString
                   }).pipe(
-                    map(updatedProject =>
-                      ProjectGalleryActions.uploadProjectGalleryPhotoSuccess({photo, order: galleryOrderString})
-                    )
+                    map(updatedProject => {
+                      this.snotifyService.success('Image uploaded'); 
+                      return ProjectGalleryActions.uploadProjectGalleryPhotoSuccess({photo, order: galleryOrderString})
+                    })
                   )
                 }
               )
@@ -156,7 +158,8 @@ export class ProjectGalleryEffects {
 
   constructor(
     private actions$: Actions,
-    private projectService: ProjectsService
+    private projectService: ProjectsService,
+    private snotifyService: SnotifyService
   ) {}
 
 }

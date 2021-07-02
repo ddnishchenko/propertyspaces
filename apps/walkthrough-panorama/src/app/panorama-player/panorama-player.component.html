@@ -529,34 +529,34 @@
 
   <ng-template #editTpl>
     <div class="btn-group btn-group-toggle d-flex flex-column edit-menu" ngbRadioGroup name="editingSection" formControlName="activeEditProperty">
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.allPoints)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.allPoints"> EDIT ALL NAV POINTS
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.activePoint)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.activePoint"> EDIT ACTIVE NAV POINT
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.floorplan)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.floorplan"> FLOOR PLAN OPTIONS
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.createGallery)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.createGallery"> CREATE PHOTO GALLERY
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.editGallery)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.editGallery"> EDIT PHOTO GALLERY
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.editLocation)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.editLocation"> EDIT MAP & STREET VIEW
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.editContact)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.editContact"> EDIT CONTACT INFO
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.editPano)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.editPano"> EDIT PANORAMA
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.changeMenu)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.changeMenu"> CHANGE MENU VIEW
       </label>
-      <label ngbButtonLabel class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.description)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.description"> ADD DESCRIPTION
       </label>
     </div>
@@ -828,7 +828,7 @@
           </div>
 
           <div class="gallery-create-zoom" *ngIf="editProperties.createGallery === form.value.activeEditProperty">
-            <propertyspaces-slider [customClass]="'white-slider'" [showValue]="false" (input)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120">
+            <propertyspaces-slider [customClass]="'white-slider'" [showValue]="false" (slide)="zoomChange($event)" [step]="1" [min]="30" [max]="120">
               <ng-template propertyspacesSliderMinus>
                 <img src="assets/img/icons/minus-white.svg" alt="-">
               </ng-template>
@@ -845,16 +845,16 @@
               <div class="form-group">
                 <label>Nav point rotation</label>
 
-                <propertyspaces-slider *ngIf="editProperties.allPoints === form.value.activeEditProperty" (input)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
-                <propertyspaces-slider *ngIf="editProperties.activePoint === form.value.activeEditProperty" (input)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.allPoints === form.value.activeEditProperty" (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.activePoint === form.value.activeEditProperty" (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
                 
 
               </div>
 
               <div class="form-group">
                 <label>Zoom</label>
-                <propertyspaces-slider *ngIf="editProperties.allPoints === form.value.activeEditProperty" (input)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
-                <propertyspaces-slider *ngIf="editProperties.activePoint === form.value.activeEditProperty" (input)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.allPoints === form.value.activeEditProperty" (slide)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.activePoint === form.value.activeEditProperty" (slide)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
               </div>
               
               <div class="text-center">
@@ -868,6 +868,33 @@
               </div>
               
             </form>
+          </div>
+
+          <div *ngIf="modalEditing" class="modal-content canvas-modal">
+            <div class="modal-header align-items-center">
+              <h5 class="modal-title text-uppercase h4 text-danger">Modal title</h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <div class="rounded-circle close-inner"><img src="assets/img/icons/cross.svg" alt="Close"></div>
+              </button>
+            </div>
+            <div class="modal-body">
+              <ng-scrollbar [ngSwitch]="form.value.activeEditProperty">
+                <ng-container *ngSwitchCase="editProperties.editGallery">
+                  <ng-container *ngIf="gallery$ | async as orderedImages">
+                    <propertyspaces-gallery-editor
+                      [isEditable]="isEdit"
+                      [items]="orderedImages"
+                      (nameChange)="imageNameChanged($event, data.project_id)"
+                      (sortChange)="sortChanged($event, data.project_id)"
+                      (moveToTrash)="deleteGalleryImage($event, data.project_id)"
+                    ></propertyspaces-gallery-editor>
+                  </ng-container>
+                </ng-container>
+              </ng-scrollbar>
+            </div>
+            <!-- <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-danger rounded-pill px-5">Save</button>
+            </div> -->
           </div>
 
           <canvas

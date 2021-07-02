@@ -1,9 +1,9 @@
 .gallery-editor {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-gap: 6px;
   .dndPlaceholder {
-    height: 145px;
-    width: 190px;
+    
   }
   .textname {
     resize: none;
@@ -17,17 +17,33 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    // max-width: calc(100% / 7);
-    padding: 0 15px;
-    margin-bottom: 15px;
+    &-actions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 10px;
+      font-size: 12px;
+      img {
+        cursor: pointer;
+      }
+    }
+    &-rename {
+      color: #fff;
+      
+    }
     &_edit {
       display: flex;
       justify-content: center;
       position: relative;
-      height: 145px;
-      width: 190px;
-      padding: 5px;
-      margin-bottom: 5px;
+      height: 100%;
+      width: 100%;
+      .img-fluid {
+        height: 170px;
+        width: 100%;
+        object-fit: cover;
+      }
     }
     &_position-block {
       position: absolute;
@@ -107,27 +123,6 @@
     }
     &_position-block:hover &_checkbox {
       bottom: 10px;
-    }
-    &_position-block::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      z-index: 1;
-      bottom: 0;
-      height: 0;
-      width: 0;
-      border: 0 solid green;
-      margin: auto;
-      transition: all 0.3s ease-in;
-      pointer-events: none;
-    }
-    &_position-block:hover:after {
-      content: '';
-      height: 100%;
-      width: 100%;
-      border-width: 5px;
     }
   }
 }

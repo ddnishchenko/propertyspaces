@@ -25,7 +25,6 @@
               "apps/walkthrough-panorama/src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "node_modules/angular2-draggable/css/resizable.min.css",
               "apps/walkthrough-panorama/src/styles.scss"
             ],
