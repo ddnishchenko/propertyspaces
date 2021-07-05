@@ -1,9 +1,7 @@
-import { AgmMap, MapsAPILoader } from '@agm/core';
-import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AgmMap } from '@agm/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { map } from 'rxjs/operators';
-import { GoogleStreetViewDirective } from '../../../shared/directives/google-street-view.directive';
 
 const urlRegEx = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
 @Component({
@@ -11,9 +9,7 @@ const urlRegEx = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127
   templateUrl: './map-modal.component.html',
   styleUrls: ['./map-modal.component.scss']
 })
-export class MapModalComponent implements OnInit, AfterViewInit {
-  @ViewChild('search') searchElementRef: ElementRef;
-  @ViewChild(GoogleStreetViewDirective) streetViewRef: GoogleStreetViewDirective;
+export class MapModalComponent implements OnInit {
   @ViewChild(AgmMap) agmMap: AgmMap;
   form;
   latitude = 51.678418;
@@ -21,12 +17,9 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   searching = false;
   project_id;
   project;
-  coords$;
   isStreetViewVisible = true;
   constructor(
     public activeModal: NgbActiveModal,
-    private mapsAPILoader: MapsAPILoader,
-    private ngZone: NgZone
   ) { }
 
 
@@ -45,66 +38,23 @@ export class MapModalComponent implements OnInit, AfterViewInit {
       latitude: new FormControl(+this.project.project.latitude),
       longitude: new FormControl(+this.project.project.longitude)
     });
-    this.coords$ = this.form.get('latitude').valueChanges.pipe(
-      map(() => this.form.value)
-    );
   }
 
-  async ngAfterViewInit() {
-    await this.mapsAPILoader.load();
-    const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
+  
 
-    /*
-    const fenway = { lat: this.form.value.latitude, lng: this.form.value.longitude };
-    const panorama = new google.maps.StreetViewPanorama(
-      this.streetViewRef.nativeElement as HTMLElement,
-      {
-        position: fenway,
-        pov: {
-          heading: 0,
-          pitch: 0,
-        },
-      }
-    ); */
+  onAutocomplete($event) {
+    this.isStreetViewVisible = false;
+    this.latitude = $event.geometry.location.lat();
+    this.longitude = $event.geometry.location.lng();
+    this.form.patchValue({
+      address: $event.formatted_address,
+      latitude: $event.geometry.location.lat(),
+      longitude: $event.geometry.location.lng()
+    });
 
-    autocomplete.addListener("place_changed", () => {
-      // some details
-      this.isStreetViewVisible = false;
-      this.ngZone.run(() => {
-        let place: google.maps.places.PlaceResult = autocomplete.getPlace();
-        /* this.address = place.formatted_address;
-        this.web_site = place.website;
-        this.name = place.name;
-        this.zip_code = place.address_components[place.address_components.length - 1].long_name;
-        //set latitude, longitude and zoom
-
-        this.zoom = 12; */
-        this.latitude = place.geometry.location.lat();
-        this.longitude = place.geometry.location.lng();
-        this.form.patchValue({
-          address: place.formatted_address,
-          latitude: place.geometry.location.lat(),
-          longitude: place.geometry.location.lng()
-        });
-
-        setTimeout(() => {
-          this.isStreetViewVisible = true;
-        }, 500);
-        /* this.streetViewRef.setView({
-          lat: +this.form.value.latitude,
-          lng: +this.form.value.latitude
-        }); */
-
-
-      });
-    })
-  }
-
-  mapLoaded($event) {
-    console.log($event);
-    const panorama = $event.getStreetView();
-    // panorama.setPosition({ lat: +this.form.value.latitude, lng: +this.form.value.latitude });
-    // panorama.setVisible(true);
+    setTimeout(() => {
+      this.isStreetViewVisible = true;
+    }, 300);
   }
 
   submit() {

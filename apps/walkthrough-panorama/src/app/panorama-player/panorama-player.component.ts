@@ -3,16 +3,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map, skip, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
 import { selectHdrVirtualTourPanoramasDividerOnFloors, selectVirtualTourParams } from '../projects/state/projects.selectors';
-import { loadPanoramas, updatePanorama, updateProject } from '../projects/state/projects.actions';
+import { loadPanoramas, updateAddressData, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
 import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 import { selectOrderedGallery } from '../projects/state/gallery/project-gallery.selectors';
-import { dataURLtoFile } from '../utils';
+import { dataURLtoFile, urlRegEx } from '../utils';
 import { NgxMasonryComponent, NgxMasonryOptions } from 'ngx-masonry';
 import { GalleryComponent } from 'ng-gallery';
 import { GalleryEditorComponent } from '../shared/components/gallery-editor/gallery-editor.component';
@@ -74,7 +74,20 @@ const aspectRations = [
     name: 'iPhone X',
     value: 2.1653333333333333
   } */
-]
+];
+
+const titles = {
+  allPoints: 'EDIT ALL NAV POINTS',
+  activePoint: 'EDIT ACTIVE NAV POINT',
+  floorplan: 'FLOOR PLAN OPTIONS',
+  createGallery: 'CREATE PHOTO GALLERY',
+  editGallery: 'EDIT PHOTO GALLERY',
+  editLocation: 'EDIT MAP & STREET VIEW',
+  editContact: 'EDIT CONTACT INFO',
+  editPano: 'EDIT PANORAMA',
+  changeMenu: 'CHANGE MENU VIEW',
+  description: 'ADD DESCRIPTION'
+};
 
 @Component({
   selector: 'propertyspaces-panorama-player',
@@ -99,6 +112,8 @@ export class PanoramaPlayerComponent implements OnInit {
   aspects = aspectRations;
   data$;
   form;
+  mapForm;
+  vrTourSettingsForm;
   isEdit = false;
   rotationAngle = 0;
   defaultZoom = 0;
@@ -107,6 +122,7 @@ export class PanoramaPlayerComponent implements OnInit {
   modalTitle = null;
   gallery$;
   styleDeSidbar = {};
+  editTitles = titles;
   editProperties = {
     allPoints: 'allPoints',
     activePoint: 'activePoint',
@@ -119,14 +135,26 @@ export class PanoramaPlayerComponent implements OnInit {
     changeMenu: 'changeMenu',
     description: 'description'
   };
+  activeEditProperty = '';
+  isStreetViewVisible = true;
+  sidebarSide = 'l';
+  get activeEditTitle() {
+    return this.editTitles[this.activeEditProperty];
+  }
   get modalEditing() {
     if (this.form) {
       const { editGallery, editContact, editLocation
         } = this.editProperties;
       const modalEdit = [editGallery, editContact, editLocation];
-      return modalEdit.includes(this.form.value.activeEditProperty);
+      return modalEdit.includes(this.activeEditProperty);
     }
     return false;
+  }
+  get isSaveButton() {
+    const { editContact, editLocation
+      } = this.editProperties;
+    const modalEdit = [editContact, editLocation];
+    return modalEdit.includes(this.activeEditProperty);
   }
   constructor(
     private router: Router,
@@ -155,20 +183,26 @@ export class PanoramaPlayerComponent implements OnInit {
 
   createForm() {
     this.form = new FormGroup({
-      editMode: new FormControl(false),
+      aspectRatio: new FormControl(''),
+      customRatio: new FormControl(''),
+    });
+
+    this.vrTourSettingsForm = new FormGroup({
       rotationY: new FormControl(''),
       zoom: new FormControl(0),
       panoZoom: new FormControl(0),
       panoCameraStartAngle: new FormControl(''),
-      aspectRatio: new FormControl(''),
-      customRatio: new FormControl(''),
-      sidebarSide: new FormControl('l'),
-      activeEditProperty: new FormControl()
     });
 
-    this.form.get('activeEditProperty').valueChanges.subscribe(val => {
-      console.log(val)
-    })
+    this.mapForm = new FormGroup({
+      mapEnabled: new FormControl(false),
+      streetViewEnabled: new FormControl(false),
+      map: new FormControl('', [Validators.pattern(urlRegEx)]),
+      streetView: new FormControl('', [Validators.pattern(urlRegEx)]),
+      address: new FormControl(''),
+      latitude: new FormControl(0),
+      longitude: new FormControl()
+    });
   }
 
   calcRatio(ratio) {
@@ -178,7 +212,16 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   vrInit(data) {
-    this.form.patchValue({
+    this.mapForm.patchValue({
+      mapEnabled: data.additional_data.hasOwnProperty('mapEnabled') ? true : data.additional_data.mapEnabled,
+      streetViewEnabled: !data.additional_data.hasOwnProperty('streetViewEnabled') ? true : data.additional_data.streetViewEnabled,
+      map: data.additional_data.map,
+      streetView: data.additional_data.streetView,
+      address: data.project.address,
+      latitude: +data.project.latitude,
+      longitude: +data.project.longitude
+    })
+    this.vrTourSettingsForm.patchValue({
       rotationY: +this.virtualTour.virtualTourService.defaultY,
       zoom: this.virtualTour.virtualTourService.defaultZoom
     });
@@ -187,23 +230,23 @@ export class PanoramaPlayerComponent implements OnInit {
     this.activePoint = this.virtualTour.virtualTourService.activeIndex;
   }
 
-  editModeSwitch() {
-    this.virtualTour.virtualTourService.toggleNavMode(this.form.value.editMode);
+  editModeSwitch(editMode) {
+    this.virtualTour.virtualTourService.toggleNavMode(editMode);
   }
 
   rotationYChange() {
-    this.virtualTour.virtualTourService.changeMeshRotation(this.form.value.rotationY);
+    this.virtualTour.virtualTourService.changeMeshRotation(this.vrTourSettingsForm.value.rotationY);
   }
 
   panoCameraStartAngleChange() {
-    this.virtualTour.virtualTourService.changeMeshRotationForCurrentPano(this.form.value.panoCameraStartAngle);
+    this.virtualTour.virtualTourService.changeMeshRotationForCurrentPano(this.vrTourSettingsForm.value.panoCameraStartAngle);
   }
   panoZoomChange() {
-    this.virtualTour.virtualTourService.changeZoomForCurrentPano(+this.form.value.panoZoom);
+    this.virtualTour.virtualTourService.changeZoomForCurrentPano(+this.vrTourSettingsForm.value.panoZoom);
   }
 
   saveY(projectId) {
-    const data = { zoom: this.form.value.zoom, rotation_y: this.form.value.rotationY };
+    const data = { zoom: this.vrTourSettingsForm.value.zoom, rotation_y: this.vrTourSettingsForm.value.rotationY };
     this.store.dispatch(updateProject({ projectId, data }))
   }
 
@@ -217,17 +260,17 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   saveSettings(projectId) {
-    if (this.editProperties.allPoints === this.form.value.activeEditProperty) {
+    if (this.editProperties.allPoints === this.activeEditProperty) {
       const modal = this.modalService.open(ConfirmationModalComponent);
       modal.componentInstance.msg = 'Settings of Panoramas will be lost and default setting will be applied after saving defaults. Proceed?';
   
       modal.result.then(answer => {
         if (answer) {
           const data = {
-            zoom: this.form.value.zoom,
-            rotation_y: this.form.value.rotationY
+            zoom: this.vrTourSettingsForm.value.zoom,
+            rotation_y: this.vrTourSettingsForm.value.rotationY
           };
-          this.form.patchValue({
+          this.vrTourSettingsForm.patchValue({
             panoZoom: 0,
             panoCameraStartAngle: 0,
           });
@@ -276,18 +319,18 @@ export class PanoramaPlayerComponent implements OnInit {
     const pano = panos.find(p => p.panoramas.index === $event);
     const floor = pano.panoramas.floor;
     this.activeFloor = floor;
-    this.form.patchValue({
+    this.vrTourSettingsForm.patchValue({
       panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoramas.panoCameraStartAngle || 0,
       panoZoom: this.virtualTour.virtualTourService.currentPano.panoramas.zoom || 0
     })
   }
   zoomChange($event?) {
-    const val = $event || +this.form.value.zoom;
+    const val = $event || +this.vrTourSettingsForm.value.zoom;
     this.virtualTour.virtualTourService.changeZoom(val);
   }
 
   viewChange($event) {
-    // this.form.get('zoom').patchValue($event.object.fov);
+    // this.vrTourSettingsForm.get('zoom').patchValue($event.object.fov);
     // this.defaultZoom = $event.object.fov;
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getAzimuthalAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
   }
@@ -436,15 +479,78 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   crementControl(field, val) {
-    this.form.patchValue({[field]: this.form.value[field] + val });
+    this.vrTourSettingsForm.patchValue({[field]: this.vrTourSettingsForm.value[field] + val });
   }
   checkForReset(val) {
-    if (val === this.form.value.activeEditProperty) {
+    if (val === this.activeEditProperty) {
       // TODO: Refactor
-      setTimeout(() => this.form.patchValue({activeEditProperty: ''}));
+      setTimeout(() => this.activeEditProperty = '')
     }
   }
   closeModal() {
-    this.form.patchValue({activeEditProperty: ''});
+    this.activeEditProperty = '';
+  }
+
+  onAutocomplete($event) {
+    this.isStreetViewVisible = false;
+    this.mapForm.patchValue({
+      address: $event.formatted_address,
+      latitude: $event.geometry.location.lat(),
+      longitude: $event.geometry.location.lng()
+    });
+
+    setTimeout(() => {
+      this.isStreetViewVisible = true;
+    }, 300);
+  }
+
+  filterPaste($event) {
+    // @ts-ignore
+    let paste = ($event.clipboardData || window.clipboardData).getData('text');
+    let url;
+    try {
+      url = new URL(paste);
+      url = url.href;
+    } catch (e) {
+      const div = document.createElement('div');
+      div.innerHTML = paste;
+      const iframe = div.querySelector('iframe');
+      if (!iframe?.src) {
+        alert('Invalid embed code or url');
+      } else {
+        url = iframe.src;
+      }
+      div.remove();
+    }
+    const field = $event.target.getAttribute('formcontrolname');
+    this.mapForm.patchValue({[field]: url});
+    $event.preventDefault();
+  }
+
+  saveContact(projectId) {
+    const profile = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      showForBranded: false
+    };
+    const company = {
+      companyName: '',
+      addressName: '',
+      copmanyPhone: '',
+      companyEmail: '',
+      companyFax: '',
+      companyLogo: '',
+      showForBranded: ''
+    };
+    this.store.dispatch(updateProject({projectId, data: {} }))
+  }
+  saveModal(projectId) {
+    switch(this.activeEditProperty) {
+      case this.editProperties.editLocation:
+        this.store.dispatch(updateAddressData({ projectId, data: this.mapForm.value }));
+        break;
+    }
   }
 }

@@ -1,4 +1,4 @@
-<div [formGroup]="form" *ngIf="data$ | async as data">
+<div *ngIf="data$ | async as data">
   <ng-template #addFloorplanBtn>
     <button
       *ngIf="isEdit"
@@ -9,6 +9,7 @@
       Add floorplan
     </button>
   </ng-template>
+
   <nav
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
   >
@@ -67,167 +68,23 @@
       </ul> -->
 
       <div class="d-flex flex-wrap ml-auto">
-        <!-- <div
-          *ngIf="isEdit"
-          ngbDropdown
-          [autoClose]="false"
-          placement="left"
-          class="d-inline-block"
-        >
-          <button class="btn btn-primary" id="dropdownForm1" ngbDropdownToggle>
-            Settings
-          </button>
-
-          <div
-            ngbDropdownMenu
-            style="min-width: 280px"
-            aria-labelledby="dropdownForm1"
-          >
-            <form class="px-4 py-3">
-              <h3>Defaults</h3>
-
-              <div class="form-group">
-                <label>Zoom</label>
-                <div class="range-slider">
-                  <input
-                    class="range-slider__range"
-                    (input)="zoomChange()"
-                    type="range"
-                    formControlName="zoom"
-                    step="0"
-                    min="30"
-                    max="120"
-                  />
-                  <span class="range-slider__value">
-                    <input
-                      (change)="zoomChange()"
-                      [value]="form.value.zoom"
-                      type="number"
-                      formControlName="zoom"
-                      step="1"
-                      min="30"
-                      max="120"
-                      placeholder="number"
-                    />
-                  </span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Default rotation</label>
-                <div class="range-slider">
-                  <input
-                    class="range-slider__range"
-                    (input)="rotationYChange()"
-                    type="range"
-                    formControlName="rotationY"
-                    step="0.1"
-                    min="0"
-                    max="6.3"
-                  />
-                  <span class="range-slider__value">
-                    <input
-                      type="number"
-                      formControlName="rotationY"
-                      (change)="rotationYChange()"
-                      [value]="form.value.rotationY"
-                      step="0.1"
-                      min="0"
-                      max="6.3"
-                    />
-                  </span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                (click)="saveSettings(data.project_id)"
-                class="btn btn-success"
-              >
-                Save defaults
-              </button>
-
-              <div class="dropdown-divider"></div>
-              <h4>Panorama</h4>
-
-              <div class="form-group">
-                <label>Zoom</label>
-                <div class="range-slider">
-                  <input
-                    class="range-slider__range"
-                    (input)="panoZoomChange()"
-                    type="range"
-                    formControlName="panoZoom"
-                    step="1"
-                    min="30"
-                    max="120"
-                  />
-                  <span class="range-slider__value">
-                    <input
-                      type="number"
-                      formControlName="panoZoom"
-                      (change)="panoZoomChange()"
-                      [value]="form.value.panoZoom"
-                      step="1"
-                      min="30"
-                      max="120"
-                    />
-                  </span>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Rotation</label>
-                <div class="range-slider">
-                  <input
-                    class="range-slider__range"
-                    (input)="panoCameraStartAngleChange()"
-                    type="range"
-                    formControlName="panoCameraStartAngle"
-                    step="0.1"
-                    min="0"
-                    max="6.3"
-                  />
-                  <span class="range-slider__value">
-                    <input
-                      type="number"
-                      formControlName="panoCameraStartAngle"
-                      (change)="panoCameraStartAngleChange()"
-                      [value]="form.value.panoCameraStartAngle"
-                      step="0.1"
-                      min="0"
-                      max="6.3"
-                    />
-                  </span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                class="btn btn-success"
-                (click)="updatePanoSettings()"
-              >
-                Save panorama
-              </button>
-            </form>
-          </div>
-        </div> -->
 
         <ng-template #tipContent>
           <div
             class="btn-group btn-group-lg btn-group-toggle"
             ngbRadioGroup
             name="radioBasic"
-            formControlName="sidebarSide"
+            [(ngModel)]="sidebarSide"
           >
             <label
               ngbButtonLabel
-              [class.btn-light]="form.value.sidebarSide !== 'l'"
-              [class.btn-danger]="form.value.sidebarSide === 'l'"
+              [class.btn-light]="sidebarSide !== 'l'"
+              [class.btn-danger]="sidebarSide === 'l'"
             >
               <input ngbButton type="radio" value="l" />
               <img
                 src="assets/img/icons/sidebar-{{
-                  form.value.sidebarSide === 'l' ? 'left' : 'right'
+                  sidebarSide === 'l' ? 'left' : 'right'
                 }}.svg"
                 alt="sidebar-left"
               />
@@ -235,13 +92,13 @@
             </label>
             <label
               ngbButtonLabel
-              [class.btn-light]="form.value.sidebarSide !== 'r'"
-              [class.btn-danger]="form.value.sidebarSide === 'r'"
+              [class.btn-light]="sidebarSide !== 'r'"
+              [class.btn-danger]="sidebarSide === 'r'"
             >
               <input ngbButton type="radio" value="r" /> Right
               <img
                 src="assets/img/icons/sidebar-{{
-                  form.value.sidebarSide !== 'l' ? 'left' : 'right'
+                  sidebarSide !== 'l' ? 'left' : 'right'
                 }}.svg"
                 alt="sidebar-left"
               />
@@ -317,7 +174,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body" *ngIf="modalContent">
+    <div class="modal-body fullscreen-map" *ngIf="modalContent">
       <ng-container *ngTemplateOutlet="modalContent"></ng-container>
     </div>
     <div class="modal-footer">
@@ -412,7 +269,7 @@
   </ng-template>
 
   <ng-template #mapTplAgm>
-    <agm-map
+    <agm-map class="google-map"
       [latitude]="+data.project.latitude"
       [longitude]="+data.project.longitude"
       [zoom]="17"
@@ -436,7 +293,7 @@
   </ng-template>
 
   <ng-template #streetViewTplNative>
-    <div
+    <div class="google-map"
       propertyspacesGoogleStreetView
       [coords]="{ lat: +data.project.latitude, lng: +data.project.longitude }"
       id="street-view"
@@ -528,7 +385,7 @@
   </ng-template>
 
   <ng-template #editTpl>
-    <div class="btn-group btn-group-toggle d-flex flex-column edit-menu" ngbRadioGroup name="editingSection" formControlName="activeEditProperty">
+    <div class="btn-group btn-group-toggle d-flex flex-column edit-menu" ngbRadioGroup name="editingSection" [(ngModel)]="activeEditProperty">
       <label ngbButtonLabel (click)="checkForReset(editProperties.allPoints)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.allPoints"> EDIT ALL NAV POINTS
       </label>
@@ -563,17 +420,18 @@
   </ng-template>
 
   <main class="panorama-player d-flex">
-    <!-- [rzHandles]="form.value.sidebarSide === 'r' ? 'w' : 'e'" -->
+    <!-- [rzHandles]="sidebarSide === 'r' ? 'w' : 'e'" -->
     <div class="boxes d-flex">
       <div
         class="sidebar"
         #sidebar
-        [class.stick-right]="form.value.sidebarSide === 'r'"
+        [class.stick-right]="sidebarSide === 'r'"
         mwlResizable
         [style]="styleDeSidbar"
         (resizing)="onResizeEnd($event); resizeCanvas()"
         (resizeEnd)="onResizeEnd($event); updateMasonty()"
       >
+
         <ngb-accordion
           class="sidebar-accordion"
           #acc="ngbAccordion"
@@ -740,18 +598,15 @@
 
         </ngb-accordion>
         
-
-
-
         <div
           mwlResizeHandle
           [resizeEdges]="{
-            right: form.value.sidebarSide !== 'r',
-            left: form.value.sidebarSide === 'r'
+            right: sidebarSide !== 'r',
+            left: sidebarSide === 'r'
           }"
           class="resize-handle d-flex align-items-center justify-content-center"
-          [class.resize-handle-left]="form.value.sidebarSide !== 'r'"
-          [class.resize-handle-right]="form.value.sidebarSide === 'r'"
+          [class.resize-handle-left]="sidebarSide !== 'r'"
+          [class.resize-handle-right]="sidebarSide === 'r'"
         >
           <div><img src="assets/img/icons/resize.svg" alt="Resize" /></div>
         </div>
@@ -797,19 +652,19 @@
           [style.width]="canvasAspect(sceneWrapper)"
         >
 
-          <button *ngIf="!form.value.activeEditProperty" type="button" class="btn" id="fullscreen">
+          <button *ngIf="!activeEditProperty" type="button" class="btn" id="fullscreen">
             <img src="assets/img/icons/expand.svg" alt="Fullscreen">
           </button>
 
           <button type="button" 
-          *ngIf="editProperties.createGallery === form.value.activeEditProperty"
+          *ngIf="editProperties.createGallery === activeEditProperty"
           class="btn btn-danger"
           id="take-tour-screenshot" (click)="takeScreenshot()"><img src="assets/img/icons/camera.svg" alt="Take a screeshot"></button>
 
-          <div class="gallery-bar d-flex flex-column" *ngIf="editProperties.createGallery === form.value.activeEditProperty">
+          <div class="gallery-bar d-flex flex-column" *ngIf="editProperties.createGallery === activeEditProperty">
             <div class="gallery-bar-title">Thumbnails</div>
             <div class="gallery-bar-content flex-fill">
-              <ng-scrollbar *ngIf="gallery$ | async as galleryItems" class="gallery-bar-scroll" thumbClass="white-scrollbars">
+              <ng-scrollbar *ngIf="gallery$ | async as galleryItems" class="scrollbar-danger">
                 <div *ngFor="let img of galleryItems | gallery; index as i" class="gallery-bar-image mt-1" (click)="openImage(i)">
                   <figure class="gallery-bar-image__figure m-0">
                     <img
@@ -827,7 +682,7 @@
             
           </div>
 
-          <div class="gallery-create-zoom" *ngIf="editProperties.createGallery === form.value.activeEditProperty">
+          <div class="gallery-create-zoom" *ngIf="editProperties.createGallery === activeEditProperty">
             <propertyspaces-slider [customClass]="'white-slider'" [showValue]="false" (slide)="zoomChange($event)" [step]="1" [min]="30" [max]="120">
               <ng-template propertyspacesSliderMinus>
                 <img src="assets/img/icons/minus-white.svg" alt="-">
@@ -839,22 +694,22 @@
           </div>
 
 
-          <div class="card py-3 px-5 edit-nav-points-form" *ngIf="editProperties.allPoints === form.value.activeEditProperty || editProperties.activePoint === form.value.activeEditProperty">
-            <form>
+          <div class="card py-3 px-5 edit-nav-points-form" *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty">
+            <form [formGroup]="vrTourSettingsForm">
 
               <div class="form-group">
                 <label>Nav point rotation</label>
 
-                <propertyspaces-slider *ngIf="editProperties.allPoints === form.value.activeEditProperty" (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
-                <propertyspaces-slider *ngIf="editProperties.activePoint === form.value.activeEditProperty" (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
                 
 
               </div>
 
               <div class="form-group">
                 <label>Zoom</label>
-                <propertyspaces-slider *ngIf="editProperties.allPoints === form.value.activeEditProperty" (slide)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
-                <propertyspaces-slider *ngIf="editProperties.activePoint === form.value.activeEditProperty" (slide)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+                <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
               </div>
               
               <div class="text-center">
@@ -870,32 +725,245 @@
             </form>
           </div>
 
-          <div *ngIf="modalEditing" class="modal-content canvas-modal">
+          <ng-scrollbar *ngIf="modalEditing" class="modal-content canvas-modal scrollbar-danger">
             <div class="modal-header align-items-center">
-              <h5 class="modal-title text-uppercase h4 text-danger">Modal title</h5>
+              <h5 class="modal-title text-uppercase h4 text-danger">{{ activeEditTitle }}</h5>
               <button type="button" (click)="closeModal()" class="close" data-bs-dismiss="modal" aria-label="Close">
                 <div class="rounded-circle close-inner"><img src="assets/img/icons/cross.svg" alt="Close"></div>
               </button>
             </div>
-            <div class="modal-body">
-              <ng-scrollbar [ngSwitch]="form.value.activeEditProperty">
-                <ng-container *ngSwitchCase="editProperties.editGallery">
-                  <ng-container *ngIf="gallery$ | async as orderedImages">
-                    <propertyspaces-gallery-editor
-                      [isEditable]="isEdit"
-                      [items]="orderedImages"
-                      (nameChange)="imageNameChanged($event, data.project_id)"
-                      (sortChange)="sortChanged($event, data.project_id)"
-                      (moveToTrash)="deleteGalleryImage($event, data.project_id)"
-                    ></propertyspaces-gallery-editor>
-                  </ng-container>
+            <div class="modal-body" [ngSwitch]="activeEditProperty">
+
+              <ng-container *ngSwitchCase="editProperties.editGallery">
+                <ng-container *ngIf="gallery$ | async as orderedImages">
+                  <propertyspaces-gallery-editor
+                    [isEditable]="isEdit"
+                    [items]="orderedImages"
+                    (nameChange)="imageNameChanged($event, data.project_id)"
+                    (sortChange)="sortChanged($event, data.project_id)"
+                    (moveToTrash)="deleteGalleryImage($event, data.project_id)"
+                  ></propertyspaces-gallery-editor>
                 </ng-container>
-              </ng-scrollbar>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="editProperties.editContact">
+                <div class="d-flex flex-column align-items-between">
+                  <ngb-accordion class="contact-accordion" #contactAccordion="ngbAccordion" activeIds="ngb-panel-0">
+                    <ngb-panel>
+                      <ng-template ngbPanelHeader  let-opened="opened">
+                        <button ngbPanelToggle class="contact-accordion-title btn w-100 d-flex align-items-center justify-content-between">
+                          <span><img src="assets/img/icons/accessability.svg" alt="accessability">  Your Profile</span>
+                          <img src="assets/img/icons/caret.svg" class="caret" [class.caret-flipped]="opened" [alt]="opened ? 'close' : 'open'">
+                        </button>
+                      </ng-template>
+                      <ng-template ngbPanelContent>
+
+                        <label class="input">
+                          <input class="input__field" type="text" placeholder=" " />
+                          <span class="input__label">First Name<sup>*</sup> </span>
+                        </label>
+
+                        <label class="input">
+                          <input class="input__field" type="text" placeholder=" " />
+                          <span class="input__label">Last Name<sup>*</sup> </span>
+                        </label>
+
+                        <label class="input">
+                          <input class="input__field" type="email" placeholder=" " />
+                          <span class="input__label">Email<sup>*</sup> </span>
+                        </label>
+
+                        <label class="input">
+                          <input class="input__field" type="tel" placeholder=" " />
+                          <span class="input__label">Phone<sup>*</sup> </span>
+                        </label>
+
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="isForBranded">
+                          <label class="custom-control-label" for="isForBranded">Display this info in all your branded walkthroughs</label>
+                        </div>
+
+                      </ng-template>
+                    </ngb-panel>
+                    <ngb-panel>
+                      <ng-template ngbPanelHeader  let-opened="opened">
+                        <button ngbPanelToggle class="contact-accordion-title btn w-100 d-flex align-items-center justify-content-between">
+                          <span><img src="assets/img/icons/bank.svg" alt="Profile">  Your Profile</span>
+                          <img src="assets/img/icons/caret.svg" class="caret" [class.caret-flipped]="opened" [alt]="opened ? 'close' : 'open'">
+                        </button>
+                      </ng-template>
+                      <ng-template ngbPanelContent>
+                        <p class="text-center">Add your company or organization details (optional)</p>
+
+                        <label class="input">
+                          <input class="input__field" type="text" placeholder=" " />
+                          <span class="input__label">Company name<sup>*</sup> </span>
+                        </label>
+
+                        <label class="input">
+                          <input class="input__field" type="text" placeholder=" " />
+                          <span class="input__label">Company Address<sup>*</sup> </span>
+                        </label>
+
+                        <label class="input">
+                          <input class="input__field" type="tel" placeholder=" " />
+                          <span class="input__label">Company phone<sup>*</sup> </span>
+                        </label>
+
+                        <label class="input">
+                          <input class="input__field" type="email" placeholder=" " />
+                          <span class="input__label">Company email<sup>*</sup> </span>
+                        </label>
+
+                        <label class="input">
+                          <input class="input__field" type="tel" placeholder=" " />
+                          <span class="input__label">Fax<sup>*</sup> </span>
+                        </label>
+
+                        <div class="d-flex justify-content-between mt-3">
+                          <label class="d-flex align-items-between justify-content-center" for="uploadLogoOrganization">
+                            <input type="text" id="uploadLogoOrganization" class="d-none">
+
+                            <button type="button" style="width: 55px; height: 55px" class="btn btn-secondary rounded-circle mr-2">
+                              <img src="assets/img/icons/camera.svg" alt="Upload photo">
+                            </button>
+                            <div class="d-flex align-items-center">
+                              <img src="assets/img/icons/paperclip.svg" alt="upload">
+                              <span class="text-danger">Upload logo organization</span>
+                            </div>
+                          </label>
+
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="isForBranded">
+                            <label class="custom-control-label" for="isForBranded">Display this info in all your branded walkthroughs</label>
+                          </div>
+                        </div>
+
+
+                      </ng-template>
+                    </ngb-panel>
+                  </ngb-accordion>
+                </div>
+                
+              </ng-container>
+
+              <ng-container *ngSwitchCase="editProperties.editLocation">
+                <form [formGroup]="mapForm">
+
+                  <div class="text-center">
+                    <h5>Property Address</h5>
+                    <p>Please type in the address and verify that it is correct on the map and the street view</p>
+                  </div>
+                  
+  
+                  <label class="input mb-5">
+                    <input class="input__field input__field_gray"
+                    formControlName="address"
+                    propertyspacesGoogleAutocomplete
+                    (placeChanged)="onAutocomplete($event)" 
+                    type="text" placeholder=" " />
+                    <span class="input__label">Type property address</span>
+                  </label>
+  
+                  <ng-template #editMapTpl>
+                    <agm-map class="google-map"
+                      [latitude]="mapForm.value.latitude"
+                      [longitude]="mapForm.value.longitude"
+                      [zoom]="17"
+                    >
+                      <agm-marker
+                        [latitude]="mapForm.value.latitude"
+                        [longitude]="mapForm.value.longitude"
+                      ></agm-marker>
+                    </agm-map>
+                  </ng-template>
+              
+                  <ng-container *ngIf="mapForm.value.map && mapForm.get('map').valid; else editMapTpl">
+                    <div class="embed-responsive embed-responsive-16by9 map-wrapper">
+                      <iframe
+                        class="embed-responsive-item"
+                        [src]="mapForm.value.map | safe: 'resourceUrl'"
+                      ></iframe>
+                    </div>
+                  </ng-container>
+
+                  <div class="my-4"></div>
+  
+                  <ng-template #editStreetViewTpl>
+                    <div class="google-map"
+                      *ngIf="isStreetViewVisible"
+                      propertyspacesGoogleStreetView
+                      [coords]="{ lat: mapForm.value.latitude, lng: mapForm.value.longitude }"
+                    ></div>
+                  </ng-template>
+              
+                  <ng-container
+                    *ngIf="
+                    mapForm.value.streetView && mapForm.get('streetView').valid;
+                      else editStreetViewTpl
+                    "
+                  >
+                    <div class="embed-responsive embed-responsive-16by9 map-wrapper">
+                      <iframe
+                        class="embed-responsive-item"
+                        [src]="mapForm.value.streetView | safe: 'resourceUrl'"
+                      ></iframe>
+                    </div>
+                  </ng-container>
+              
+                  <h3 class="mt-5 text-center">Insert Your Own Custom Map or Street View</h3>
+                  <p class="text-center">
+                    Use the embed code fields below to insert your own map or street view.
+                  </p>
+
+                  <label class="input mb-4">
+                    <textarea
+                      (paste)="filterPaste($event)"
+                      formControlName="map"
+                      class="input__field input__field_gray"
+                      id="mapEmbedCode"
+                      rows="3"
+                      placeholder=" "
+                    ></textarea>
+                    <span class="input__label">Google Maps Embeded Code</span>
+                  </label>
+
+                  <div
+                    *ngIf="mapForm.get('map').invalid"
+                    class="alert alert-danger"
+                    role="alert"
+                  >
+                    Invalid url
+                  </div>
+
+                  <label class="input">
+                    <textarea
+                      (paste)="filterPaste($event)"
+                      formControlName="streetView"
+                      class="input__field input__field_gray"
+                      id="mapEmbedCode"
+                      rows="3"
+                      placeholder=" "
+                    ></textarea>
+                    <span class="input__label">Google Street View Embeded Code</span>
+                  </label>
+
+                  <div
+                    *ngIf="mapForm.get('streetView').invalid"
+                    class="alert alert-danger"
+                    role="alert"
+                  >
+                    Invalid url
+                  </div>
+
+                </form>
+                
+              </ng-container>
             </div>
-            <!-- <div class="modal-footer justify-content-center">
-              <button type="button" class="btn btn-danger rounded-pill px-5">Save</button>
-            </div> -->
-          </div>
+            <div class="modal-footer justify-content-center border-top-0" *ngIf="isSaveButton">
+              <button type="button" class="btn btn-danger rounded-pill px-5" (click)="saveModal(data.project_id)">Save</button>
+            </div>
+          </ng-scrollbar>
 
           <canvas
             #virtualTour

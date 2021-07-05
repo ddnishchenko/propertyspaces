@@ -55,8 +55,6 @@ import { ProjectLocationEffects } from './state/project-location/project-locatio
     CommonModule,
     SharedModule,
     ProjectsRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
     StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
     EffectsModule.forFeature([ProjectsEffects, ProjectGalleryEffects, ProjectLocationEffects]),
     ...ngbs,

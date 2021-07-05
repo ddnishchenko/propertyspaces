@@ -23,6 +23,8 @@ import { GoogleStreetViewDirective } from './directives/google-street-view.direc
 import { ImageGridComponent } from './components/image-grid/image-grid.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { SliderMinusDirective, SliderPlusDirective } from './components/slider/slider.directives';
+import { GoogleAutocompleteDirective } from './directives/google-autocomplete.directive';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -36,7 +38,8 @@ import { SliderMinusDirective, SliderPlusDirective } from './components/slider/s
     ImageGridComponent,
     SliderComponent,
     SliderMinusDirective,
-    SliderPlusDirective
+    SliderPlusDirective,
+    GoogleAutocompleteDirective
   ],
   exports: [
     ConnectFormDirective,
@@ -55,10 +58,15 @@ import { SliderMinusDirective, SliderPlusDirective } from './components/slider/s
     SliderComponent,
     SliderMinusDirective,
     SliderPlusDirective,
-    NgScrollbarModule
+    NgScrollbarModule,
+    GoogleAutocompleteDirective,
+    ReactiveFormsModule,
+    FormsModule,
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
     GalleryModule,
     LightboxModule,
     NgxMasonryModule,

@@ -207,16 +207,9 @@ gallery {
   }
 }
 
-agm-map,
-#street-view {
-  height: 300px;
-}
-
-.modal-body {
-  position: relative;
-  agm-map,
-  #street-view,
-  .map-wrapper {
+.google-map {
+  height: 410px;
+  &.container-contain {
     position: absolute;
     top: 0;
     left: 0;
@@ -225,6 +218,17 @@ agm-map,
     height: 100%;
   }
 }
+.fullscreen-map {
+  .google-map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+  }
+}
+
 
 .item-description-block {
   position: absolute;
@@ -343,9 +347,17 @@ agm-map,
   background: #fff;
   margin: 30px;
   width: auto;
+  height: auto;
   .close-inner {
     background: #EEEEEF;
     font-size: 0;
     padding: 11px;
   }
 }
+.caret {
+  transition: .3s ease-in;
+  &-flipped {
+    transform: rotate(180deg);
+  }
+}
+

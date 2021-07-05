@@ -10,6 +10,8 @@
 @import 'assets/scss/gallery-msnr';
 @import 'assets/scss/range-slider';
 
+@import 'assets/scss/bootstrap-mat-input';
+
 html,
 body {
   height: 100%;
@@ -262,7 +264,7 @@ lightbox {
   }
 }
 
-.gallery-bar-scroll {
+.scrollbar-danger {
   .ng-scrollbar-wrapper>scrollbar-y.scrollbar-control {
     background: #fff;
     border-left: 1px solid #B7B7B7;
@@ -281,3 +283,12 @@ lightbox {
   }
 }
 
+
+.contact-accordion.accordion > .card {
+  .card-header {
+    border-radius: 10px;
+  }
+  .contact-accordion-title {
+    font-size: 20px;
+  } 
+}

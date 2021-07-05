@@ -2,7 +2,7 @@ import { Directive, Input } from '@angular/core';
 import { FormGroupDirective } from '@angular/forms';
 
 @Directive({
-  selector: '[propertyspacesConnectForm]'
+  selector: '[formGroup][propertyspacesConnectForm]'
 })
 export class ConnectFormDirective {
   @Input('propertyspacesConnectForm')

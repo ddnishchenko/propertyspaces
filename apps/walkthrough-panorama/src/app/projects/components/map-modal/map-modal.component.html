@@ -49,6 +49,8 @@
       <label class="sr-only" for="address">Adderss</label>
       <input
         #search
+        propertyspacesGoogleAutocomplete
+        (placeChanged)="onAutocomplete($event)"
         type="search"
         class="form-control"
         id="address"
@@ -62,7 +64,6 @@
         [latitude]="form.value.latitude"
         [longitude]="form.value.longitude"
         [zoom]="17"
-        (mapReady)="mapLoaded($event)"
       >
         <agm-marker
           [latitude]="form.value.latitude"

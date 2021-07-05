@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { PanoramaPlayerRoutingModule } from './panorama-player-routing.module';
 import { PanoramaPlayerComponent } from './panorama-player.component';
@@ -20,7 +19,6 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [PanoramaPlayerComponent, FloorplanEditorComponent],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     PanoramaPlayerRoutingModule,
     VirtualTourModule,
     DragResizeModule,
