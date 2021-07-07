@@ -1,4 +1,4 @@
-<div *ngIf="data$ | async as data">
+<ng-scrollbar class="scrollbar-danger" *ngIf="data$ | async as data">
   <ng-template #addFloorplanBtn>
     <button
       *ngIf="isEdit"
@@ -10,62 +10,29 @@
     </button>
   </ng-template>
 
-  <nav
+  <nav *ngIf="!isFullscreenActive"
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
   >
     <a class="navbar-brand" href="javascript: alert('Logo')">
-      <img src="assets/img/logo.svg" alt="Lidarama" />
+      <img src="assets/img/logo.svg" alt="Lidarama" class="logo" />
     </a>
     <button
       (click)="isCollapsed = !isCollapsed"
-      class="navbar-toggler"
+      class="navbar-toggler border-0 p-0"
+      [class.opened]="!isCollapsed"
       type="button"
       aria-controls="navbarSupportedContent"
       [attr.aria-expanded]="isCollapsed"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon"></span>
+      <svg width="40" height="40" viewBox="0 0 100 100">
+        <path class="line line1" d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058" />
+        <path class="line line2" d="M 20,50 H 80" />
+        <path class="line line3" d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942" />
+      </svg>
     </button>
 
-    <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
-      <!-- <ul class="navbar-nav mr-auto">
-        <li class="nav-item" *ngIf="isEdit">
-          <a [routerLink]="['/projects']" class="nav-link">Projects</a>
-        </li>
-        <li class="nav-item">
-          <button
-            class="btn btn-success mr-2"
-            type="button"
-            (click)="takeScreenshot()"
-          >
-            Take screenshot
-          </button>
-        </li>
-        <li class="nav-item">
-          <select
-            class="custom-select"
-            formControlName="aspectRatio"
-            name="aspectRatio"
-            (change)="updateCanvasSize()"
-          >
-            <option *ngFor="let aspect of aspects" [value]="aspect.value">
-              {{ aspect.name }}
-            </option>
-          </select>
-        </li>
-        <li class="nav-item">
-          <input
-            *ngIf="form.value.aspectRatio === 'custom'"
-            type="number"
-            min="0"
-            max="2"
-            step="0.1"
-            class="form-control"
-            placeholder="Ratio"
-            formControlName="customRatio"
-          />
-        </li>
-      </ul> -->
+    <div class="collapse navbar-collapse">
 
       <div class="d-flex flex-wrap ml-auto">
 
@@ -120,14 +87,14 @@
           </a>
         </div>
         <ng-template #loginBtn>
-          <button 
+          <button
           type="button"
           class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5"
         >
           <span>Log in</span>
         </button>
         </ng-template>
-        
+
         <ng-container *ngIf="isEdit; else loginBtn">
           <button type="button" class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
             <span>Log out</span>
@@ -155,10 +122,11 @@
             />
         </button> -->
 
-        
+
 
         <!-- <ng-container *ngTemplateOutlet="addFloorplanBtn"></ng-container> -->
       </div>
+
     </div>
   </nav>
 
@@ -283,7 +251,7 @@
 
   <ng-template #mapTpl>
     <ng-container *ngIf="data.additional_data.map; else mapTplAgm">
-      <div class="embed-responsive embed-responsive-1by1 map-wrapper">
+      <div class="embed-responsive embed-responsive-21by9 map-wrapper">
         <iframe
           class="embed-responsive-item"
           [src]="data.additional_data.map | safe: 'resourceUrl'"
@@ -304,7 +272,7 @@
     <ng-container
       *ngIf="data.additional_data.streetView; else streetViewTplNative"
     >
-      <div class="embed-responsive embed-responsive-1by1 map-wrapper">
+      <div class="embed-responsive embed-responsive-21by9 map-wrapper">
         <iframe
           class="embed-responsive-item"
           [src]="data.additional_data.streetView | safe: 'resourceUrl'"
@@ -392,13 +360,13 @@
       <label ngbButtonLabel (click)="checkForReset(editProperties.activePoint)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.activePoint"> EDIT ACTIVE NAV POINT
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.floorplan)" class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.floorplan)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.floorplan"> FLOOR PLAN OPTIONS
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.createGallery)" class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.createGallery)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.createGallery"> CREATE PHOTO GALLERY
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.editGallery)" class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.editGallery)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.editGallery"> EDIT PHOTO GALLERY
       </label>
       <label ngbButtonLabel (click)="checkForReset(editProperties.editLocation)" class="btn rounded-0 mt-1">
@@ -407,23 +375,24 @@
       <label ngbButtonLabel (click)="checkForReset(editProperties.editContact)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.editContact"> EDIT CONTACT INFO
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.editPano)" class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.editPano)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.editPano"> EDIT PANORAMA
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.changeMenu)" class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.changeMenu)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.changeMenu"> CHANGE MENU VIEW
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.description)" class="btn rounded-0 mt-1">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.description)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.description"> ADD DESCRIPTION
       </label>
     </div>
   </ng-template>
 
-  <main class="panorama-player d-flex">
+  <main class="panorama-player d-block d-lg-flex">
     <!-- [rzHandles]="sidebarSide === 'r' ? 'w' : 'e'" -->
-    <div class="boxes d-flex">
+    <div class="boxes navbar-expand-lg d-block d-lg-flex flex-lg-row">
       <div
-        class="sidebar"
+        class="sidebar collapse navbar-collapse"
+        [ngbCollapse]="isCollapsed"
         #sidebar
         [class.stick-right]="sidebarSide === 'r'"
         mwlResizable
@@ -433,7 +402,7 @@
       >
 
         <ngb-accordion
-          class="sidebar-accordion"
+          class="sidebar-accordion flex-lg-fill"
           #acc="ngbAccordion"
         >
           <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
@@ -500,7 +469,7 @@
                 <button ngbPanelToggle class="btn flex-fill text-left p-0">
                   <svg-icon src="assets/img/icons/map-marker.svg" class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
                   <span class="text-uppercase">Street view</span>
-                </button>              
+                </button>
                 <button
                   class="btn"
                   (click)="
@@ -516,7 +485,7 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')" 
+          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')"
           id="panel-gallery">
             <ng-template ngbPanelHeader>
               <div
@@ -546,7 +515,7 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-contact')" 
+          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-contact')"
           id="panel-contact">
             <ng-template ngbPanelHeader>
               <div
@@ -571,7 +540,7 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel *ngIf="isEdit" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-edit')" 
+          <ngb-panel *ngIf="isEdit" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-edit')"
           id="panel-edit">
             <ng-template ngbPanelHeader>
               <div
@@ -597,14 +566,14 @@
           </ngb-panel>
 
         </ngb-accordion>
-        
+
         <div
           mwlResizeHandle
           [resizeEdges]="{
             right: sidebarSide !== 'r',
             left: sidebarSide === 'r'
           }"
-          class="resize-handle d-flex align-items-center justify-content-center"
+          class="resize-handle d-none d-lg-flex align-items-center justify-content-center"
           [class.resize-handle-left]="sidebarSide !== 'r'"
           [class.resize-handle-right]="sidebarSide === 'r'"
         >
@@ -642,7 +611,7 @@
               <span class="mr-1">Download</span> <img src="assets/img/icons/download.svg" alt="Download" />
             </button>
           </div>
-            
+
           </ng-template>
         </div>
 
@@ -652,11 +621,11 @@
           [style.width]="canvasAspect(sceneWrapper)"
         >
 
-          <button *ngIf="!activeEditProperty" type="button" class="btn" id="fullscreen">
+          <button *ngIf="!activeEditProperty && isFullscreenAvailable" (click)="toggleFullscreen()" type="button" class="btn" id="fullscreen">
             <img src="assets/img/icons/expand.svg" alt="Fullscreen">
           </button>
 
-          <button type="button" 
+          <button type="button"
           *ngIf="editProperties.createGallery === activeEditProperty"
           class="btn btn-danger"
           id="take-tour-screenshot" (click)="takeScreenshot()"><img src="assets/img/icons/camera.svg" alt="Take a screeshot"></button>
@@ -664,7 +633,7 @@
           <div class="gallery-bar d-flex flex-column" *ngIf="editProperties.createGallery === activeEditProperty">
             <div class="gallery-bar-title">Thumbnails</div>
             <div class="gallery-bar-content flex-fill">
-              <ng-scrollbar *ngIf="gallery$ | async as galleryItems" class="scrollbar-danger">
+              <ng-scrollbar *ngIf="gallery$ | async as galleryItems" class="scrollbar-danger content-padding">
                 <div *ngFor="let img of galleryItems | gallery; index as i" class="gallery-bar-image mt-1" (click)="openImage(i)">
                   <figure class="gallery-bar-image__figure m-0">
                     <img
@@ -679,7 +648,7 @@
                 </div>
               </ng-scrollbar>
             </div>
-            
+
           </div>
 
           <div class="gallery-create-zoom" *ngIf="editProperties.createGallery === activeEditProperty">
@@ -694,7 +663,7 @@
           </div>
 
 
-          <div class="card py-3 px-5 edit-nav-points-form" *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty">
+          <div class="card p-2 py-lg-3 px-lg-5 edit-nav-points-form" *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty">
             <form [formGroup]="vrTourSettingsForm">
 
               <div class="form-group">
@@ -702,7 +671,7 @@
 
                 <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
                 <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
-                
+
 
               </div>
 
@@ -711,7 +680,7 @@
                 <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
                 <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
               </div>
-              
+
               <div class="text-center">
                 <button
                   type="button"
@@ -721,11 +690,11 @@
                   Save
                 </button>
               </div>
-              
+
             </form>
           </div>
 
-          <ng-scrollbar *ngIf="modalEditing" class="modal-content canvas-modal scrollbar-danger">
+          <ng-scrollbar *ngIf="modalEditing" class="modal-content canvas-modal scrollbar-danger m-1 m-md-4">
             <div class="modal-header align-items-center">
               <h5 class="modal-title text-uppercase h4 text-danger">{{ activeEditTitle }}</h5>
               <button type="button" (click)="closeModal()" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -844,7 +813,7 @@
                     </ngb-panel>
                   </ngb-accordion>
                 </div>
-                
+
               </ng-container>
 
               <ng-container *ngSwitchCase="editProperties.editLocation">
@@ -854,17 +823,17 @@
                     <h5>Property Address</h5>
                     <p>Please type in the address and verify that it is correct on the map and the street view</p>
                   </div>
-                  
-  
+
+
                   <label class="input mb-5">
                     <input class="input__field input__field_gray"
                     formControlName="address"
                     propertyspacesGoogleAutocomplete
-                    (placeChanged)="onAutocomplete($event)" 
+                    (placeChanged)="onAutocomplete($event)"
                     type="text" placeholder=" " />
                     <span class="input__label">Type property address</span>
                   </label>
-  
+
                   <ng-template #editMapTpl>
                     <agm-map class="google-map"
                       [latitude]="mapForm.value.latitude"
@@ -877,7 +846,7 @@
                       ></agm-marker>
                     </agm-map>
                   </ng-template>
-              
+
                   <ng-container *ngIf="mapForm.value.map && mapForm.get('map').valid; else editMapTpl">
                     <div class="embed-responsive embed-responsive-16by9 map-wrapper">
                       <iframe
@@ -888,7 +857,7 @@
                   </ng-container>
 
                   <div class="my-4"></div>
-  
+
                   <ng-template #editStreetViewTpl>
                     <div class="google-map"
                       *ngIf="isStreetViewVisible"
@@ -896,7 +865,7 @@
                       [coords]="{ lat: mapForm.value.latitude, lng: mapForm.value.longitude }"
                     ></div>
                   </ng-template>
-              
+
                   <ng-container
                     *ngIf="
                     mapForm.value.streetView && mapForm.get('streetView').valid;
@@ -910,7 +879,7 @@
                       ></iframe>
                     </div>
                   </ng-container>
-              
+
                   <h3 class="mt-5 text-center">Insert Your Own Custom Map or Street View</h3>
                   <p class="text-center">
                     Use the embed code fields below to insert your own map or street view.
@@ -941,7 +910,7 @@
                       (paste)="filterPaste($event)"
                       formControlName="streetView"
                       class="input__field input__field_gray"
-                      id="mapEmbedCode"
+                      id="streetViewEmbedCode"
                       rows="3"
                       placeholder=" "
                     ></textarea>
@@ -957,7 +926,7 @@
                   </div>
 
                 </form>
-                
+
               </ng-container>
             </div>
             <div class="modal-footer justify-content-center border-top-0" *ngIf="isSaveButton">
@@ -977,4 +946,4 @@
       </div>
     </div>
   </main>
-</div>
+</ng-scrollbar>

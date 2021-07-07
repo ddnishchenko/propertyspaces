@@ -20,6 +20,7 @@ import { slideInAnimation } from '../utils/animations';
 import { combineLatest } from 'rxjs';
 import { ConfirmationModalComponent } from '../shared/components/confirmation-modal/confirmation-modal.component';
 import { ResizeEvent } from 'angular-resizable-element';
+import { Fullscreen } from '../utils/fullscreen';
 
 const aspectRations = [
   {
@@ -96,6 +97,8 @@ const titles = {
   animations: [slideInAnimation]
 })
 export class PanoramaPlayerComponent implements OnInit {
+  isFullscreenAvailable = Fullscreen.isAvailable;
+  isFullscreenActive = false;
   isCollapsed = true;
   @ViewChild(VirtualTourDirective) virtualTour;
   @ViewChild(GalleryComponent) galleryCmp: GalleryComponent;
@@ -263,7 +266,7 @@ export class PanoramaPlayerComponent implements OnInit {
     if (this.editProperties.allPoints === this.activeEditProperty) {
       const modal = this.modalService.open(ConfirmationModalComponent);
       modal.componentInstance.msg = 'Settings of Panoramas will be lost and default setting will be applied after saving defaults. Proceed?';
-  
+
       modal.result.then(answer => {
         if (answer) {
           const data = {
@@ -274,12 +277,12 @@ export class PanoramaPlayerComponent implements OnInit {
             panoZoom: 0,
             panoCameraStartAngle: 0,
           });
-  
+
           const changedPanos = this.virtualTour.virtualTourService.panos.filter(
             p => !isNaN(parseInt(p.panoramas.zoom, 10))  || !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
           );
           const resetPano = p => {
-  
+
             return {
               ...p,
               panoramas: {
@@ -288,24 +291,24 @@ export class PanoramaPlayerComponent implements OnInit {
                 panoCameraStartAngle: undefined
               }
             }
-  
+
           };
           this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos.map(resetPano);
           const resetedPanos = changedPanos.map(resetPano).map(({name, panoramas}) => ({name, panoramas}));
-  
+
           this.virtualTour.virtualTourService.defaultY = data.rotation_y;
           this.virtualTour.virtualTourService.defaultZoom = data.zoom;
           this.store.dispatch(updateProject({projectId, data}));
           resetedPanos.forEach(panorama => {
             this.store.dispatch(updatePanorama({projectId, panorama}));
           })
-  
+
         }
       });
     } else {
       this.updatePanoSettings();
     }
-    
+
 
   }
 
@@ -464,7 +467,7 @@ export class PanoramaPlayerComponent implements OnInit {
       return ids.includes(id) ? 'active' : '';
     }
     return '';
-    
+
   }
 
   public beforeChange($event: NgbPanelChangeEvent) {
@@ -482,6 +485,7 @@ export class PanoramaPlayerComponent implements OnInit {
     this.vrTourSettingsForm.patchValue({[field]: this.vrTourSettingsForm.value[field] + val });
   }
   checkForReset(val) {
+    this.isCollapsed = true;
     if (val === this.activeEditProperty) {
       // TODO: Refactor
       setTimeout(() => this.activeEditProperty = '')
@@ -552,5 +556,9 @@ export class PanoramaPlayerComponent implements OnInit {
         this.store.dispatch(updateAddressData({ projectId, data: this.mapForm.value }));
         break;
     }
+  }
+  toggleFullscreen() {
+    Fullscreen.toggle();
+    this.isFullscreenActive = !this.isFullscreenActive;
   }
 }

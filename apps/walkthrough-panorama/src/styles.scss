@@ -11,6 +11,7 @@
 @import 'assets/scss/range-slider';
 
 @import 'assets/scss/bootstrap-mat-input';
+@import 'assets/scss/hamburger-button';
 
 html,
 body {
@@ -93,13 +94,14 @@ mwlResizable {
 }
 
 .sidebar-card {
-  min-height: 63px;
   border: 0;
+  .card-header {
+    padding: 0 0.75rem;
+  }
 }
 
-
 .accordion > .card > .card-header {
-  transition: .3s ease-in;
+  transition: 0.3s ease-in;
   margin-bottom: 0;
   border-bottom-width: 3px;
 }
@@ -116,8 +118,9 @@ mwlResizable {
   }
 }
 
-.sidebar-card.active > .card-header, .sidebar-card:hover > .card-header {
-  background:  #231F20;
+.sidebar-card.active > .card-header,
+.sidebar-card:hover > .card-header {
+  background: #231f20;
   color: #fff;
 }
 
@@ -132,17 +135,16 @@ mwlResizable {
   .card-header {
     padding: 0;
   }
-
 }
 
 .inner-accordion .card-header > .btn-link {
   display: block;
   width: 100%;
-  color: #231F20;
+  color: #231f20;
 }
 
 .inner-accordion .card.active .card-header {
-  background: #A1332A;
+  background: #a1332a;
   .btn-link {
     color: #fff;
   }
@@ -246,9 +248,9 @@ lightbox {
   }
 }
 
-
 .edit-menu {
-  .btn:focus, .btn.focus {
+  .btn:focus,
+  .btn.focus {
     border: 0;
     outline: 0;
     box-shadow: none;
@@ -265,12 +267,12 @@ lightbox {
 }
 
 .scrollbar-danger {
-  .ng-scrollbar-wrapper>scrollbar-y.scrollbar-control {
+  .ng-scrollbar-wrapper > scrollbar-y.scrollbar-control {
     background: #fff;
-    border-left: 1px solid #B7B7B7;
-    border-right: 1px solid #B7B7B7;
+    border-left: 1px solid #b7b7b7;
+    border-right: 1px solid #b7b7b7;
   }
-  .ng-scrollbar-wrapper>scrollbar-y.scrollbar-control>.ng-scrollbar-track {
+  .ng-scrollbar-wrapper > scrollbar-y.scrollbar-control > .ng-scrollbar-track {
     width: 10px;
     border-radius: 10px;
     z-index: auto;
@@ -278,11 +280,12 @@ lightbox {
       background-color: $danger;
     }
   }
-  .ng-scroll-content {
-    padding: 0 10px;
+  &.content-padding {
+    .ng-scroll-content {
+      padding: 0 10px;
+    }
   }
 }
-
 
 .contact-accordion.accordion > .card {
   .card-header {
@@ -290,5 +293,24 @@ lightbox {
   }
   .contact-accordion-title {
     font-size: 20px;
-  } 
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .sidebar-card {
+    .card-header {
+      padding: 0.75rem 1.25rem;
+    }
+  }
+}
+
+.nav-tabs {
+  .nav-link {
+    color: $gray-600;
+  }
+  .nav-link.active {
+    background: transparent;
+    color: $black;
+    border-color: $danger $danger $danger;
+  }
 }

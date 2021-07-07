@@ -1,4 +1,4 @@
-$color-light: #C9C9CB;
+$color-light: #c9c9cb;
 $color-dark: #212121;
 $color-signal: #79261f;
 
@@ -6,46 +6,46 @@ $color-background: $color-light;
 $color-text: $color-dark;
 $color-accent: $color-signal;
 
-$size-bezel: .5rem;
+$size-bezel: 0.5rem;
 $size-radius: 4px;
 
 .input {
-    position: relative;
+  position: relative;
+  display: block;
+  &__label {
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    white-space: nowrap;
+    transform: translate(0, 0);
+    transform-origin: 0 0;
+    transition: transform 120ms ease-in;
+    line-height: 1.2;
+    color: $color-light;
+  }
+  &__field {
+    box-sizing: border-box;
     display: block;
-    &__label {
-      position: absolute;
-      left: 18px;
-      top: 18px;
-      white-space: nowrap;
-      transform: translate(0, 0);
-      transform-origin: 0 0;
-      transition: transform 120ms ease-in;
-      line-height: 1.2;
-      color: $color-light;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid $color-light;
+    background: transparent;
+    padding: 1rem;
+    &_gray {
+      background: #f9f9f9;
+      border-radius: 10px 10px 0 0;
     }
-    &__field {
-      box-sizing: border-box;
-      display: block;
-      width: 100%;
+    &:focus {
+      outline: none;
       border: none;
-      border-bottom: 1px solid $color-light;
-      background: transparent;
-      padding: 1rem;
-      &_gray {
-        background: #F9F9F9;
-        border-radius: 10px 10px 0 0;
-      }
-      &:focus {
-          outline: none;
-          border: none;
-          border-bottom: 1px solid $color-accent;
-      }
-      &:focus,
-      &:not(:placeholder-shown) {
-        & + .input__label {
-          transform: translate(-2px, -100%) scale(0.8);
-          color: $color-accent;
-        }
+      border-bottom: 1px solid $color-accent;
+    }
+    &:focus,
+    &:not(:placeholder-shown) {
+      & + .input__label {
+        transform: translate(-2px, -100%) scale(0.8);
+        color: $color-accent;
       }
     }
   }
+}
