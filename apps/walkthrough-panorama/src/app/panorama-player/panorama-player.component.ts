@@ -98,7 +98,10 @@ const titles = {
 })
 export class PanoramaPlayerComponent implements OnInit {
   isFullscreenAvailable = Fullscreen.isAvailable;
-  isFullscreenActive = false;
+  isFullscreenActive$ = Fullscreen.change$.pipe(
+    map(active => ({active})),
+    tap(() => setTimeout(() =>this.resizeCanvas(), 100) ),
+  );
   isCollapsed = true;
   @ViewChild(VirtualTourDirective) virtualTour;
   @ViewChild(GalleryComponent) galleryCmp: GalleryComponent;
@@ -559,6 +562,5 @@ export class PanoramaPlayerComponent implements OnInit {
   }
   toggleFullscreen() {
     Fullscreen.toggle();
-    this.isFullscreenActive = !this.isFullscreenActive;
   }
 }

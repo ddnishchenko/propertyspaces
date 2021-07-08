@@ -1,4 +1,16 @@
+import { fromEvent } from "rxjs";
+import { map, startWith } from "rxjs/operators";
+
+function isFullscreenActive() {
+  // @ts-ignore
+  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+}
+
 export class Fullscreen {
+  static change$ = fromEvent(document, 'fullscreenchange').pipe(
+    startWith(isFullscreenActive()),
+    map(() => Fullscreen.isActive)
+  );
   static getRequestFullscreen(): any {
       const elem = document.documentElement;
       const requestFullscreenMethodToBeInvoked =
@@ -16,9 +28,7 @@ export class Fullscreen {
   }
 
   static get isActive(): boolean {
-    // @ts-ignore
-    const active = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement;
-    return !!active;
+    return !!isFullscreenActive();
   }
 
   static request(): Promise<any> {
@@ -39,4 +49,5 @@ export class Fullscreen {
   static toggle() {
     Fullscreen.isActive ? Fullscreen.exit() : Fullscreen.request();
   }
+
 }

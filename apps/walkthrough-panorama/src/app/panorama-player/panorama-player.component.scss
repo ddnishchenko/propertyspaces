@@ -68,6 +68,9 @@
 .panorama-player {
   position: relative;
   height: calc(100vh - 67px);
+  &-fullscreen {
+    height: 100vh !important;
+  }
 }
 .boxes {
   position: absolute;
@@ -113,6 +116,9 @@
 .sidebar {
   background-color: #fff;
   box-sizing: border-box;
+  &.sidebar-hidden {
+    display: none !important;
+  }
   &-accordion {
     display: flex;
     flex-direction: column;
