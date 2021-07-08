@@ -312,7 +312,7 @@ export class VirtualTourService {
   scaleToModel(pos) {
     let result = { x: pos.x, y: pos.y, z: pos.z };
     result.x *= this.panoScaleFactor;
-    // result.y;
+    result.y *= this.panoScaleFactor;
     result.z *= this.panoScaleFactor;
     return result;
   }

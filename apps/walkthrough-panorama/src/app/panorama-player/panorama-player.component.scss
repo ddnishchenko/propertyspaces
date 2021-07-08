@@ -357,7 +357,11 @@ gallery {
   .navbar {
     padding: 25px 35px;
   }
+
   .sidebar {
+    &.navbar-collapse {
+      flex-grow: initial;
+    }
     position: relative;
     border-right: 4px solid #4e4e4e;
     width: 400px;
