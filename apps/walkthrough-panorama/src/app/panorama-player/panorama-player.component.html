@@ -1,4 +1,4 @@
-<ng-scrollbar class="scrollbar-danger" *ngIf="data$ | async as data">
+<div *ngIf="data$ | async as data">
   <ng-template #addFloorplanBtn>
     <button
       *ngIf="isEdit"
@@ -946,4 +946,4 @@
       </div>
     </div>
   </main>
-</ng-scrollbar>
+</div>
