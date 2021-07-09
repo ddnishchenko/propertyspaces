@@ -165,7 +165,7 @@
     <div
       *ngIf="gallery$ | async as images"
       class="masonry-grid"
-      [style.column-count]="sidebar.clientWidth > 400 ? 3 : 2"
+
     >
       <div
         *ngFor="let img of images | gallery; index as i"
@@ -609,10 +609,10 @@
           <div *ngIf="type === 'image' && index === currIndex"
           [@slideAnimation]
           class="item-description-block">
-            <span class="gallery-item-name mb-2">{{ data?.name }}</span>
-            <button class="btn btn-link">
+            <span class="gallery-item-name mb-2">{{ data.name }}</span>
+            <a class="btn btn-link" [href]="data.url" [download]="data.name">
               <span class="mr-1">Download</span> <img src="assets/img/icons/download.svg" alt="Download" />
-            </button>
+            </a>
           </div>
 
           </ng-template>

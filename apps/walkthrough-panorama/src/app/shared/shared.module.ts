@@ -25,6 +25,7 @@ import { SliderComponent } from './components/slider/slider.component';
 import { SliderMinusDirective, SliderPlusDirective } from './components/slider/slider.directives';
 import { GoogleAutocompleteDirective } from './directives/google-autocomplete.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DownloadDirective } from './directives/download.directive';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     SliderComponent,
     SliderMinusDirective,
     SliderPlusDirective,
-    GoogleAutocompleteDirective
+    GoogleAutocompleteDirective,
+    DownloadDirective
   ],
   exports: [
     ConnectFormDirective,
@@ -62,6 +64,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     GoogleAutocompleteDirective,
     ReactiveFormsModule,
     FormsModule,
+    DownloadDirective
   ],
   imports: [
     CommonModule,

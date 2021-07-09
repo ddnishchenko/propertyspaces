@@ -459,7 +459,7 @@ export class VirtualTourService {
     this.toggleNavPoints(false);
     this.OrbitControls.update();
     this.renderer.render(this.scene, this.camera);
-    const dataURL = this.renderer.domElement.toDataURL('image/jpeg', 1);
+    const dataURL = this.renderer.domElement.toDataURL('image/jpeg');
     this.toggleNavPoints(true);
     const d = new Date();
     const filename = `screenshot_n${this.currentPanoId}_${d.toJSON()}.jpeg`

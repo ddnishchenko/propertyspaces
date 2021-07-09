@@ -563,4 +563,12 @@ export class PanoramaPlayerComponent implements OnInit {
   toggleFullscreen() {
     Fullscreen.toggle();
   }
+  downloadFile(url) {
+    const a = document.createElement('a');
+    a.target = '_blank';
+    a.download = 'download.jpeg';
+    a.href = url;
+    a.click();
+    a.remove();
+  }
 }
