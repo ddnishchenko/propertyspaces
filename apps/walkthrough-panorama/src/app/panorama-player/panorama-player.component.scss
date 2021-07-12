@@ -356,6 +356,16 @@ gallery {
 .logo {
   width: 110px;
 }
+
+.copied-text {
+  top: -10px;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+  &-show {
+    opacity: 1;
+  }
+}
+
 @media screen and (min-width: 992px) {
   .panorama-player {
     height: calc(100vh - 112px);

@@ -305,12 +305,29 @@ lightbox {
 }
 
 .nav-tabs {
+  &.nav-tabs-share {
+    .nav-link {
+      position: relative;
+      color: #fff;
+      &.active {
+        color: #fff;
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -1px;
+          border: 10px solid transparent;
+          border-bottom-color: #fff;
+          left: calc(50% - 10px);
+        }
+      }
+    }
+  }
   .nav-link {
     color: $gray-600;
-  }
-  .nav-link.active {
-    background: transparent;
-    color: $black;
-    border-color: $danger $danger $danger;
+    &.active {
+      background: transparent;
+      color: $black;
+      border-color: $danger $danger $danger;
+    }
   }
 }

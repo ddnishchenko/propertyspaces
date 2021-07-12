@@ -267,6 +267,70 @@
     </div>
   </ng-template>
 
+  <ng-template #shareModal>
+    <div class="modal-header d-block p-0">
+      <ul ngbNav #nav="ngbNav" class="nav-tabs nav-tabs-share justify-content-center bg-primary border-0">
+        <li ngbNavItem>
+          <a class="border-0" ngbNavLink><i class="fa fa-link"></i></a>
+          <ng-template ngbNavContent>
+            <u class="text-underline text-uppercase">Copy link</u>
+            <p><strong class="text-dagnger">Click below</strong> to copy the link to this Realvision tour:</p>
+            <!-- <button type="button" class="btn btn-outline-dark d-block w-100" (click)="copyLink()">{{shareLink}}</button> -->
+            <div class="form-group position-relative text-center">
+              <input type="text" class="form-control text-center" #f (click)="copyLink(f)" (blur)="textRecentlyCopied = false" [value]="shareLink">
+              <span class="text-primary position-relative copied-text bg-white" [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="defaultCheck1" [(ngModel)]="copyBrandedLink">
+              <label class="form-check-label" for="defaultCheck1">
+                Unbranded (check only for posting to MLS)
+              </label>
+            </div>
+            <div class="alert alert-info">
+              After copying, <span class="text-danger">RIGHT CLICK</span> on
+              any text input in another site or app, and select <span class="text-danger">PASTE</span>.
+            </div>
+          </ng-template>
+        </li>
+        <li ngbNavItem>
+          <a class="border-0" ngbNavLink><i class="fa fa-code"></i></a>
+          <ng-template ngbNavContent>
+            <u class="text-underline text-uppercase">EMBED ON YOUR WEBSITE</u>
+            <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Realvision tour in another website:</p>
+            <div class="form-group position-relative text-center">
+              <textarea rows="3"  class="form-control" #ta (click)="copyLink(ta)" (blur)="textRecentlyCopied = false">{{embedCode}}</textarea>
+              <span class="text-primary position-relative copied-text bg-white" [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="defaultCheck1" [(ngModel)]="copyBrandedLink">
+              <label class="form-check-label" for="defaultCheck1">
+                Unbranded (check only for posting to MLS)
+              </label>
+            </div>
+            <div class="alert alert-info">
+              After copying, <span class="text-danger">RIGHT CLICK</span> on
+              any text input in another site or app, and select <span class="text-danger">PASTE</span>.
+            </div>
+          </ng-template>
+        </li>
+        <li ngbNavItem>
+          <a ngbNavLink class="border-0"><i class="fa fa-facebook"></i></a>
+          <ng-template ngbNavContent>Post to Facebook</ng-template>
+        </li>
+        <li ngbNavItem>
+          <a ngbNavLink class="border-0"><i class="fa fa-linkedin"></i></a>
+          <ng-template ngbNavContent>Post to LinkedIn</ng-template>
+        </li>
+        <li ngbNavItem>
+          <a ngbNavLink class="border-0"><i class="fa fa-twitter"></i></a>
+          <ng-template ngbNavContent>Post to Twitter</ng-template>
+        </li>
+      </ul>
+    </div>
+
+    <div class="modal-body" [ngbNavOutlet]="nav"></div>
+  </ng-template>
+
   <ng-container *ngIf="isFullscreenActive$ | async as isFullscreenActive">
     <nav
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
@@ -333,6 +397,7 @@
         </ng-template>
 
         <div>
+          <button type="button" class="btn btn-link text-white" (click)="openShareModal(shareModal)"><i class="fa fa-lg fa-share-alt"></i></button>
           <a class="btn btn-link" href="javascript:;">
             <img src="assets/img/icons/youtube.svg" alt="YouTube" />
           </a>
@@ -408,7 +473,8 @@
           class="sidebar-accordion flex-lg-fill"
           #acc="ngbAccordion"
         >
-          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
+          <ngb-panel *ngIf="data.additional_data && data.additional_data.floors"
+          [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"
@@ -432,10 +498,9 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel
-          [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-map')"
+          <ngb-panel *ngIf="data.additional_data.mapEnabled && +data.project.latitude || data.additional_data.map"
+            [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-map')"
             id="panel-map"
-            *ngIf="data.additional_data.mapEnabled"
           >
             <ng-template ngbPanelHeader>
               <div
@@ -460,10 +525,9 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel
-          [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-sv')"
+          <ngb-panel *ngIf="data.additional_data.streetViewEnabled && +data.project.latitude || data.additional_data.streetView"
+            [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-sv')"
             id="panel-sv"
-            *ngIf="data.additional_data.streetViewEnabled"
           >
             <ng-template ngbPanelHeader>
               <div
@@ -488,38 +552,40 @@
             </ng-template>
           </ngb-panel>
 
-          <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')"
-          id="panel-gallery">
-            <ng-template ngbPanelHeader>
-              <div
-                class="d-flex justify-content-between align-items-center w-100"
-              >
-                <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                  <svg-icon src="assets/img/icons/picture.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
-                  <span class="text-uppercase">Photo Gallery</span>
-                </button>
-                <button
-                  *ngIf="gallery$ | async as galleryPhotos"
-                  class="btn"
-                  (click)="
-                    openSectionModal(
-                      modalWrapper,
-                      galleryEditorTpl,
-                      'Gallery Editor'
-                    )
-                  "
+          <ng-container *ngIf="gallery$ | async as galleryPhotos">
+            <ngb-panel *ngIf="galleryPhotos.length" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')"
+            id="panel-gallery">
+              <ng-template ngbPanelHeader>
+                <div
+                  class="d-flex justify-content-between align-items-center w-100"
                 >
-                  <svg-icon src="assets/img/icons/expand.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                </button>
-              </div>
-            </ng-template>
-            <ng-template ngbPanelContent>
-              <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
-            </ng-template>
-          </ngb-panel>
+                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                    <svg-icon src="assets/img/icons/picture.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                    <span class="text-uppercase">Photo Gallery</span>
+                  </button>
+                  <button
+                    class="btn"
+                    (click)="
+                      openSectionModal(
+                        modalWrapper,
+                        galleryEditorTpl,
+                        'Gallery Editor'
+                      )
+                    "
+                  >
+                    <svg-icon src="assets/img/icons/expand.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                  </button>
+                </div>
+              </ng-template>
+              <ng-template ngbPanelContent>
+                <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
+              </ng-template>
+            </ngb-panel>
+          </ng-container>
+
 
           <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-contact')"
-          id="panel-contact">
+            id="panel-contact">
             <ng-template ngbPanelHeader>
               <div
                 class="d-flex justify-content-between align-items-center w-100"

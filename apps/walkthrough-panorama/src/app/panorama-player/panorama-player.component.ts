@@ -144,6 +144,13 @@ export class PanoramaPlayerComponent implements OnInit {
   activeEditProperty = '';
   isStreetViewVisible = true;
   sidebarSide = 'l';
+  textRecentlyCopied;
+  embedCode = `<iframe src="${this.shareLink}" width="100%" height="720px" frameborder="0" allowfullscreen></iframe>`
+  get shareLink() {
+    const link = location.origin + '/projects/vr-tour-embed/1422';
+    return this.copyBrandedLink ? link + '?b=1' : link;
+  }
+  copyBrandedLink = false;
   get activeEditTitle() {
     return this.editTitles[this.activeEditProperty];
   }
@@ -563,12 +570,13 @@ export class PanoramaPlayerComponent implements OnInit {
   toggleFullscreen() {
     Fullscreen.toggle();
   }
-  downloadFile(url) {
-    const a = document.createElement('a');
-    a.target = '_blank';
-    a.download = 'download.jpeg';
-    a.href = url;
-    a.click();
-    a.remove();
+
+  openShareModal(content) {
+    this.modalService.open(content, {centered: true});
+  }
+  copyLink(f) {
+    f.select();
+    document.execCommand('copy');
+    this.textRecentlyCopied = true;
   }
 }
