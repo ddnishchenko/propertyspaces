@@ -262,7 +262,13 @@ export class VirtualTourService {
   toggleNavPoints(toggle) {
     if (toggle) {
       this.panos.forEach((pano) => {
-        pano.object.visible = this.currentPano.panoramas.neighbors.includes(pano.name);
+        if (this.currentPano.panoramas.neighbors) {
+          pano.object.visible = this.currentPano.panoramas.neighbors.includes(pano.name);
+        } else {
+          // TODO: Remove backword compatibility
+          pano.object.visible = pano.panoramas.floor === this.currentPano.panoramas.floor;
+        }
+
       })
     } else {
       this.panos.forEach((pano) => {
