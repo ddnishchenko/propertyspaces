@@ -842,7 +842,9 @@
                           </label>
 
                           <label class="input">
-                            <input formControlName="address" class="input__field" type="text" placeholder=" " />
+                            <input propertyspacesGoogleAutocomplete
+                            (placeChanged)="companyForm.get('address').patchValue($event.formatted_address)"
+                            formControlName="address" class="input__field" type="text" placeholder=" " />
                             <span class="input__label">Company Address<sup>*</sup> </span>
                           </label>
 
@@ -862,14 +864,14 @@
                           </label>
 
                           <div class="d-flex justify-content-between mt-3">
-                            <label class="d-flex align-items-between justify-content-center" for="uploadLogoOrganization">
-                              <input formControlName="logo" propertyspacesInputFileReader type="file" id="uploadLogoOrganization" class="d-none">
+                            <label class="d-flex btn align-items-between justify-content-center cursor-p" for="uploadLogoOrganization">
+                              <input formControlName="companyLogo" propertyspacesInputFileReader type="file" accept="image/*" id="uploadLogoOrganization" class="d-none">
 
-                              <button type="button" style="width: 55px; height: 55px" class="btn btn-secondary rounded-circle mr-2">
-                                <img *ngIf="!companyForm.value.logo" src="assets/img/icons/camera.svg" alt="Upload photo">
-                                <img *ngIf="companyForm.value.logo && !companyForm.value.logo.includes('logo')" [src]="companyForm.value.logo" alt="Upload photo">
-                                <img *ngIf="companyForm.value.logo && companyForm.value.logo.includes('logo')" [src]="companyForm.value.logo" alt="Upload photo">
-                              </button>
+                              <div
+                                [style.background-image]="showCompanyLogo(data.projectFolder, companyForm.value.companyLogo)"
+                                class="change-logo d-flex btn btn-secondary rounded-circle mr-2">
+                                <img *ngIf="!companyForm.value.companyLogo" src="assets/img/icons/camera.svg" alt="Upload photo">
+                              </div>
                               <div class="d-flex align-items-center">
                                 <img src="assets/img/icons/paperclip.svg" alt="upload">
                                 <span class="text-danger">Upload logo organization</span>

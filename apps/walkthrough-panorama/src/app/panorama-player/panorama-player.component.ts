@@ -8,7 +8,7 @@ import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
 import { selectHdrVirtualTourPanoramasDividerOnFloors, selectVirtualTourParams } from '../projects/state/projects.selectors';
-import { loadPanoramas, updateAddressData, updatePanorama, updateProject } from '../projects/state/projects.actions';
+import { loadPanoramas, updateAddressData, updateContacts, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
 import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 import { selectOrderedGallery } from '../projects/state/gallery/project-gallery.selectors';
@@ -220,21 +220,21 @@ export class PanoramaPlayerComponent implements OnInit {
     });
 
     this.profileForm = new FormGroup({
-      firstName: new FormControl(),
-      lastName: new FormControl(),
-      email: new FormControl(),
-      phone: new FormControl(),
-      showInBranded: new FormControl()
+      firstName: new FormControl(''),
+      lastName: new FormControl(''),
+      email: new FormControl(''),
+      phone: new FormControl(''),
+      showInBranded: new FormControl(false)
     });
 
     this.companyForm = new FormGroup({
-      name: new FormControl(),
-      address: new FormControl(),
-      email: new FormControl(),
-      phone: new FormControl(),
-      fax: new FormControl(),
-      logo: new FormControl(),
-      showInBranded: new FormControl()
+      name: new FormControl(''),
+      address: new FormControl(''),
+      email: new FormControl(''),
+      phone: new FormControl(''),
+      fax: new FormControl(''),
+      companyLogo: new FormControl(''),
+      showInBranded: new FormControl(false)
     });
   }
 
@@ -258,6 +258,19 @@ export class PanoramaPlayerComponent implements OnInit {
       rotationY: +this.virtualTour.virtualTourService.defaultY,
       zoom: this.virtualTour.virtualTourService.defaultZoom
     });
+    if (data.additional_data.profile && data.additional_data.profile !== 'profile') {
+      this.profileForm.patchValue(JSON.parse(data.additional_data.profile));
+    }
+
+    if (data.additional_data.company && data.additional_data.company !== 'company') {
+      const d = JSON.parse(data.additional_data.company);
+      this.companyForm.patchValue({
+        ...d,
+        companyLogo: data.additional_data.companyLogo
+      });
+    }
+
+
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
     this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
     this.activePoint = this.virtualTour.virtualTourService.activeIndex;
@@ -339,7 +352,15 @@ export class PanoramaPlayerComponent implements OnInit {
       this.updatePanoSettings();
     }
 
+  }
 
+  saveContacts(projectId) {
+    const data = {
+      profile: this.profileForm.value,
+      company: {...this.companyForm.value, companyLogo: undefined},
+      companyLogo: this.companyForm.value.companyLogo
+    };
+    this.store.dispatch(updateContacts({projectId, data}));
   }
 
   navTo(index) {
@@ -561,30 +582,13 @@ export class PanoramaPlayerComponent implements OnInit {
     $event.preventDefault();
   }
 
-  saveContact(projectId) {
-    const profile = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      showForBranded: false
-    };
-    const company = {
-      companyName: '',
-      addressName: '',
-      copmanyPhone: '',
-      companyEmail: '',
-      companyFax: '',
-      companyLogo: '',
-      showForBranded: ''
-    };
-    this.store.dispatch(updateProject({projectId, data: {} }))
-  }
   saveModal(projectId) {
     switch(this.activeEditProperty) {
       case this.editProperties.editLocation:
         this.store.dispatch(updateAddressData({ projectId, data: this.mapForm.value }));
         break;
+      case this.editProperties.editContact:
+        this.saveContacts(projectId);
     }
   }
   toggleFullscreen() {
@@ -598,5 +602,13 @@ export class PanoramaPlayerComponent implements OnInit {
     f.select();
     document.execCommand('copy');
     this.textRecentlyCopied = true;
+  }
+  showCompanyLogo(root, logo) {
+    if (logo && logo.includes('companyLogo')) {
+      return `url(${root}${logo})`
+    } else if (logo) {
+      return `url(${logo})`;
+    }
+    return '';
   }
 }

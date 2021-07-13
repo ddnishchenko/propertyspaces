@@ -68,11 +68,21 @@ export class ProjectsEffects {
   updateProject$ = createEffect(() => this.actions$.pipe(
     ofType(ProjectsActions.updateProject),
     mergeMap(
-      payload => this.projectsService.updateDataProject(payload.projectId, payload.data).pipe(
-        map(project => ProjectsActions.updateProjectSuccess({ project: payload.data }))
+        payload => this.projectsService.updateDataProject(payload.projectId, payload.data).pipe(
+          map(project => ProjectsActions.updateProjectSuccess({ project: payload.data }))
+        )
       )
     )
-  )
+  );
+
+  updateContacts$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.updateContacts),
+    mergeMap(
+        payload => this.projectsService.updateContact(payload.projectId, payload.data).pipe(
+          map(project => ProjectsActions.loadPanoramasSuccess({ project }))
+        )
+      )
+    )
   )
 
   loadPanoramas$ = createEffect(() => this.actions$.pipe(
@@ -137,7 +147,7 @@ export class ProjectsEffects {
         tap(() => this.store.dispatch(ProjectsActions.loadPanoramas({ projectId: payload.projectId })))
       )
     )
-  ), { dispatch: false })
+  ), { dispatch: false });
 
 
   constructor(

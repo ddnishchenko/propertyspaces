@@ -125,4 +125,28 @@ export class ProjectsService {
       )
     );
   }
+
+  updateContact(project_id, additional_data): Observable<Project> {
+    return this.updateDataProject(project_id, {
+      ...additional_data,
+      profile: JSON.stringify(additional_data.profile),
+      company: JSON.stringify(additional_data.company),
+    }).pipe(
+      mergeMap(
+        () => this.getPanoramas(project_id).pipe(
+          map(data => {
+            return {
+              ...data,
+              additional_data: {
+                ...data.additional_data,
+                profile: JSON.parse(data.additional_data.profile),
+                company: JSON.parse(data.additional_data.company),
+              }
+            }
+          })
+        )
+      )
+
+    );
+  }
 }

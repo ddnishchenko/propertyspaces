@@ -10,7 +10,11 @@ export const selectProjects = createSelector(selectProjectsState, state => state
 export const selectProjectById = (id: string) => createSelector(selectProjects, projects => projects.find(p => p.id === id));
 export const selectVirtualTourParams = createSelector(
   selectProjectsState,
-  state => ({...state.virtualTourParameters, hostname: environment.apiHost, projectFolder: environment.apiHost + state.virtualTourParameters.path})
+  state => ({
+    ...state.virtualTourParameters,
+    hostname: environment.apiHost,
+    projectFolder: environment.apiHost + state.virtualTourParameters.path
+  })
 );
 export const selectVirtualTourPanoramas =
   createSelector(

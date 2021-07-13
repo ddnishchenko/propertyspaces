@@ -178,3 +178,8 @@ export const updateAddressData = createAction(
   `${prefix} Update Address`,
   props<{projectId: string; data: any}>()
 )
+
+export const updateContacts = createAction(
+  `${prefix} Update Contacts`,
+  props<{projectId: string; data: any}>()
+)

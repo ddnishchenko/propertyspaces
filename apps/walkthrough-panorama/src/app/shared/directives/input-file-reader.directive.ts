@@ -1,4 +1,4 @@
-import { Directive, ElementRef, forwardRef, HostListener } from '@angular/core';
+import { Directive, forwardRef, HostListener } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { fileToBase64 } from '../../utils';
 
@@ -23,7 +23,7 @@ export class InputFileReaderDirective implements ControlValueAccessor {
     }
 
   }
-  constructor(private el: ElementRef<HTMLInputElement>) { }
+  constructor() { }
   registerOnChange(onChange: any) {
     this.onChange = onChange;
   }

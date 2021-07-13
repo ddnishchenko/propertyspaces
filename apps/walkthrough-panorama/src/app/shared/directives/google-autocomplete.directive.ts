@@ -1,8 +1,8 @@
 import { MapsAPILoader } from '@agm/core';
-import { AfterContentInit, Directive, ElementRef, EventEmitter, NgZone, OnInit, Output } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, NgZone, OnInit, Output } from '@angular/core';
 
 @Directive({
-  selector: '[propertyspacesGoogleAutocomplete]'
+  selector: 'input[propertyspacesGoogleAutocomplete]',
 })
 export class GoogleAutocompleteDirective implements OnInit {
   @Output() placeChanged = new EventEmitter();

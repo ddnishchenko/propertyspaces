@@ -366,6 +366,12 @@ gallery {
   }
 }
 
+.change-logo {
+  width: 55px;
+  height: 55px;
+  background-size: cover;
+}
+
 @media screen and (min-width: 992px) {
   .panorama-player {
     height: calc(100vh - 112px);
