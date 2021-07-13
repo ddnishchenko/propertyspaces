@@ -221,15 +221,34 @@
   </ng-template>
 
   <ng-template #contactTpl>
-    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-    richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
-    dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
-    tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-    assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
-    wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
-    vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic
-    synth nesciunt you probably haven't heard of them accusamus labore
-    sustainable VHS.
+    <div class="p-4">
+      <table *ngIf="data.additional_data.profile && data.additional_data.profile !== 'profile'">
+        <tr *ngIf="data.additional_data.profile.firstName || data.additional_data.profile.lastName">
+          <th>Contact person</th>
+          <td>{{ data.additional_data.profile.firstName }} {{ data.additional_data.profile.lastName }}</td>
+        </tr>
+        <tr *ngIf="data.additional_data.profile.email">
+          <th>Email</th>
+          <td>{{ data.additional_data.profile.email }}</td>
+        </tr>
+        <tr *ngIf="data.additional_data.profile.phone">
+          <th>Phone</th>
+          <td>{{ data.additional_data.profile.phone }}</td>
+        </tr>
+      </table>
+      <hr>
+      <div class="media" *ngIf="data.additional_data.company && data.additional_data.company !== 'company'">
+        <img *ngIf="!companyForm.value.companyLogo" src="assets/img/icons/camera.svg" alt="Upload photo">
+        <img *ngIf="data.additional_data.company.companyLogo" [src]="showCompanyLogo(data.projectFolder, companyForm.value.companyLogo, false)" class="mr-3 rounded-circle" [alt]="data.additional_data.company.name">
+        <div class="media-body">
+          <h5 class="mt-0">{{ data.additional_data.company.name }}</h5>
+          <p *ngIf="data.additional_data.company.address">Address: {{ data.additional_data.company.address }}</p>
+          <div *ngIf="data.additional_data.company.email">Email: {{ data.additional_data.company.email }}</div>
+          <div *ngIf="data.additional_data.company.phone">Phone: {{ data.additional_data.company.phone }}</div>
+          <div *ngIf="data.additional_data.company.fax">Fax: {{ data.additional_data.company.fax }}</div>
+        </div>
+      </div>
+    </div>
   </ng-template>
 
   <ng-template #editTpl>

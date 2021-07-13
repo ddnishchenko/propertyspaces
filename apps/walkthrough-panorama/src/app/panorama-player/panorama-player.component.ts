@@ -188,7 +188,27 @@ export class PanoramaPlayerComponent implements OnInit {
     this.gallery$ = this.store.pipe(select(selectOrderedGallery));
 
     this.data$ = combineLatest([
-      this.store.pipe(select(selectVirtualTourParams)),
+      this.store.pipe(select(selectVirtualTourParams)).pipe(
+        map(data => {
+          if (data.additional_data) {
+            const profile = data.additional_data.profile && data.additional_data.profile !== 'profile' ? JSON.parse(data.additional_data.profile) : data.additional_data.profile;
+            let company = data.additional_data.company && data.additional_data.company !== 'company' ? JSON.parse(data.additional_data.company) : data.additional_data.company;
+            company = {
+              ...company,
+              companyLogo: data.additional_data.companyLogo
+            };
+            return {
+              ...data,
+              additional_data: {
+                ...data.additional_data,
+                profile,
+                company
+              }
+            }
+          }
+          return data;
+        })
+      ),
       this.store.pipe(select(selectHdrVirtualTourPanoramasDividerOnFloors))
     ]).pipe(
       map(([project, panoFloors]) => ({...project, ...panoFloors})),
@@ -258,18 +278,9 @@ export class PanoramaPlayerComponent implements OnInit {
       rotationY: +this.virtualTour.virtualTourService.defaultY,
       zoom: this.virtualTour.virtualTourService.defaultZoom
     });
-    if (data.additional_data.profile && data.additional_data.profile !== 'profile') {
-      this.profileForm.patchValue(JSON.parse(data.additional_data.profile));
-    }
 
-    if (data.additional_data.company && data.additional_data.company !== 'company') {
-      const d = JSON.parse(data.additional_data.company);
-      this.companyForm.patchValue({
-        ...d,
-        companyLogo: data.additional_data.companyLogo
-      });
-    }
-
+    this.profileForm.patchValue(data.additional_data.profile);
+    this.companyForm.patchValue(data.additional_data.company);
 
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
     this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
@@ -603,11 +614,11 @@ export class PanoramaPlayerComponent implements OnInit {
     document.execCommand('copy');
     this.textRecentlyCopied = true;
   }
-  showCompanyLogo(root, logo) {
+  showCompanyLogo(root, logo, wrapUrl = true) {
     if (logo && logo.includes('companyLogo')) {
-      return `url(${root}${logo})`
+      return wrapUrl ? `url(${root}${logo})` : `${root}${logo}`;
     } else if (logo) {
-      return `url(${logo})`;
+      return wrapUrl ? `url(${logo})` : logo;
     }
     return '';
   }
