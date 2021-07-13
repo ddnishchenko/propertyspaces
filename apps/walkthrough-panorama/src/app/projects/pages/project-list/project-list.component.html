@@ -39,6 +39,7 @@
               <tr>
                 <th>#</th>
                 <th scope="col">Name</th>
+                <th>Address</th>
                 <th class="text-right" scope="col">Action</th>
               </tr>
             </thead>
@@ -62,6 +63,9 @@
                 <th scope="row">
                   <a [routerLink]="[project.id]">{{ project.name }}</a>
                 </th>
+                <td>
+                  {{ project.address }}
+                </td>
                 <td class="text-right">
                   <div class="btn-group">
                     <button

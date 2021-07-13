@@ -120,6 +120,8 @@ export class PanoramaPlayerComponent implements OnInit {
   form;
   mapForm;
   vrTourSettingsForm;
+  profileForm;
+  companyForm;
   isEdit = false;
   rotationAngle = 0;
   defaultZoom = 0;
@@ -215,6 +217,24 @@ export class PanoramaPlayerComponent implements OnInit {
       address: new FormControl(''),
       latitude: new FormControl(0),
       longitude: new FormControl()
+    });
+
+    this.profileForm = new FormGroup({
+      firstName: new FormControl(),
+      lastName: new FormControl(),
+      email: new FormControl(),
+      phone: new FormControl(),
+      showInBranded: new FormControl()
+    });
+
+    this.companyForm = new FormGroup({
+      name: new FormControl(),
+      address: new FormControl(),
+      email: new FormControl(),
+      phone: new FormControl(),
+      fax: new FormControl(),
+      logo: new FormControl(),
+      showInBranded: new FormControl()
     });
   }
 

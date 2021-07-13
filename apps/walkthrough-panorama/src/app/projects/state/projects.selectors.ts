@@ -16,7 +16,7 @@ export const selectVirtualTourPanoramas =
   createSelector(
     selectVirtualTourParams,
     state => {
-      if (state?.data) {
+      if (state?.data?.length) {
         const panoramas = state.data
           .slice()
           .map((p, index) => ({ ...p, panoramas: { ...p.panoramas, order: +p.panoramas.order, floor: +p.panoramas.floor, index, transitionFrom: undefined } }));

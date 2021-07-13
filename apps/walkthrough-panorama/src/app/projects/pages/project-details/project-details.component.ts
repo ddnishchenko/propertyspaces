@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
@@ -9,7 +9,7 @@ import { MapModalComponent } from '../../components/map-modal/map-modal.componen
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
 import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../../state/gallery/project-gallery.actions';
 import { selectOrderedGallery } from '../../state/gallery/project-gallery.selectors';
-import { deletePanorama, editProject, loadPanoramas, updateAddressData, updatePanorama } from '../../state/projects.actions';
+import { deletePanorama, deleteProjects, editProject, loadPanoramas, updateAddressData, updatePanorama } from '../../state/projects.actions';
 import { selectHdrVirtualTourPanoramas, selectVirtualTourParams } from '../../state/projects.selectors';
 
 @Component({
@@ -29,6 +29,7 @@ export class ProjectDetailsComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private route: ActivatedRoute,
+    private router: Router,
     private store: Store
   ) { }
 
@@ -126,6 +127,17 @@ export class ProjectDetailsComponent implements OnInit {
 
   openGalleryModal(tpl) {
     const modal = this.modalService.open(tpl, { windowClass: 'fullscreen-modal' });
+  }
+
+  deleteProject(id) {
+    const modal = this.modalService.open(ConfirmationModalComponent);
+    modal.componentInstance.title = `Are you sure?`;
+    modal.result.then((v) => {
+      if (v) {
+        this.store.dispatch(deleteProjects({projectIds: [id]}));
+        this.router.navigate(['/projects']);
+      }
+    })
   }
 
   imageNameChanged($event, projectId) {

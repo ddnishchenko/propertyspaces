@@ -336,7 +336,7 @@
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
     [class.d-none]="isFullscreenActive.active"
   >
-    <a class="navbar-brand" href="javascript: alert('Logo')">
+    <a class="navbar-brand" [routerLink]="this.isEdit ? '/projects/' + data.project_id : ''">
       <img src="assets/img/logo.svg" alt="Lidarama" class="logo" />
     </a>
     <button
@@ -795,89 +795,94 @@
                         </button>
                       </ng-template>
                       <ng-template ngbPanelContent>
+                        <form [formGroup]="profileForm">
 
-                        <label class="input">
-                          <input class="input__field" type="text" placeholder=" " />
-                          <span class="input__label">First Name<sup>*</sup> </span>
-                        </label>
+                          <label class="input">
+                            <input formControlName="firstName" class="input__field" type="text" placeholder=" " />
+                            <span class="input__label">First Name<sup>*</sup> </span>
+                          </label>
 
-                        <label class="input">
-                          <input class="input__field" type="text" placeholder=" " />
-                          <span class="input__label">Last Name<sup>*</sup> </span>
-                        </label>
+                          <label class="input">
+                            <input formControlName="lastName" class="input__field" type="text" placeholder=" " />
+                            <span class="input__label">Last Name<sup>*</sup> </span>
+                          </label>
 
-                        <label class="input">
-                          <input class="input__field" type="email" placeholder=" " />
-                          <span class="input__label">Email<sup>*</sup> </span>
-                        </label>
+                          <label class="input">
+                            <input formControlName="email" class="input__field" type="email" placeholder=" " />
+                            <span class="input__label">Email<sup>*</sup> </span>
+                          </label>
 
-                        <label class="input">
-                          <input class="input__field" type="tel" placeholder=" " />
-                          <span class="input__label">Phone<sup>*</sup> </span>
-                        </label>
+                          <label class="input">
+                            <input formControlName="phone" class="input__field" type="tel" placeholder=" " />
+                            <span class="input__label">Phone<sup>*</sup> </span>
+                          </label>
 
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="isForBranded">
-                          <label class="custom-control-label" for="isForBranded">Display this info in all your branded walkthroughs</label>
-                        </div>
+                          <div class="custom-control custom-checkbox">
+                            <input formControlName="showInBranded" type="checkbox" class="custom-control-input" id="isForBranded">
+                            <label class="custom-control-label" for="isForBranded">Display this info in all your branded walkthroughs</label>
+                          </div>
 
+                        </form>
                       </ng-template>
                     </ngb-panel>
                     <ngb-panel>
                       <ng-template ngbPanelHeader  let-opened="opened">
                         <button ngbPanelToggle class="contact-accordion-title btn w-100 d-flex align-items-center justify-content-between">
-                          <span><img src="assets/img/icons/bank.svg" alt="Profile">  Your Profile</span>
+                          <span><img src="assets/img/icons/bank.svg" alt="Profile"> Your Organization Profile</span>
                           <img src="assets/img/icons/caret.svg" class="caret" [class.caret-flipped]="opened" [alt]="opened ? 'close' : 'open'">
                         </button>
                       </ng-template>
                       <ng-template ngbPanelContent>
                         <p class="text-center">Add your company or organization details (optional)</p>
+                        <form [formGroup]="companyForm">
 
-                        <label class="input">
-                          <input class="input__field" type="text" placeholder=" " />
-                          <span class="input__label">Company name<sup>*</sup> </span>
-                        </label>
-
-                        <label class="input">
-                          <input class="input__field" type="text" placeholder=" " />
-                          <span class="input__label">Company Address<sup>*</sup> </span>
-                        </label>
-
-                        <label class="input">
-                          <input class="input__field" type="tel" placeholder=" " />
-                          <span class="input__label">Company phone<sup>*</sup> </span>
-                        </label>
-
-                        <label class="input">
-                          <input class="input__field" type="email" placeholder=" " />
-                          <span class="input__label">Company email<sup>*</sup> </span>
-                        </label>
-
-                        <label class="input">
-                          <input class="input__field" type="tel" placeholder=" " />
-                          <span class="input__label">Fax<sup>*</sup> </span>
-                        </label>
-
-                        <div class="d-flex justify-content-between mt-3">
-                          <label class="d-flex align-items-between justify-content-center" for="uploadLogoOrganization">
-                            <input type="text" id="uploadLogoOrganization" class="d-none">
-
-                            <button type="button" style="width: 55px; height: 55px" class="btn btn-secondary rounded-circle mr-2">
-                              <img src="assets/img/icons/camera.svg" alt="Upload photo">
-                            </button>
-                            <div class="d-flex align-items-center">
-                              <img src="assets/img/icons/paperclip.svg" alt="upload">
-                              <span class="text-danger">Upload logo organization</span>
-                            </div>
+                          <label class="input">
+                            <input formControlName="name" class="input__field" type="text" placeholder=" " />
+                            <span class="input__label">Company name<sup>*</sup> </span>
                           </label>
 
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="isForBranded">
-                            <label class="custom-control-label" for="isForBranded">Display this info in all your branded walkthroughs</label>
+                          <label class="input">
+                            <input formControlName="address" class="input__field" type="text" placeholder=" " />
+                            <span class="input__label">Company Address<sup>*</sup> </span>
+                          </label>
+
+                          <label class="input">
+                            <input formControlName="phone" class="input__field" type="tel" placeholder=" " />
+                            <span class="input__label">Company phone<sup>*</sup> </span>
+                          </label>
+
+                          <label class="input">
+                            <input formControlName="email" class="input__field" type="email" placeholder=" " />
+                            <span class="input__label">Company email<sup>*</sup> </span>
+                          </label>
+
+                          <label class="input">
+                            <input formControlName="fax" class="input__field" type="tel" placeholder=" " />
+                            <span class="input__label">Fax<sup>*</sup> </span>
+                          </label>
+
+                          <div class="d-flex justify-content-between mt-3">
+                            <label class="d-flex align-items-between justify-content-center" for="uploadLogoOrganization">
+                              <input formControlName="logo" propertyspacesInputFileReader type="file" id="uploadLogoOrganization" class="d-none">
+
+                              <button type="button" style="width: 55px; height: 55px" class="btn btn-secondary rounded-circle mr-2">
+                                <img *ngIf="!companyForm.value.logo" src="assets/img/icons/camera.svg" alt="Upload photo">
+                                <img *ngIf="companyForm.value.logo && !companyForm.value.logo.includes('logo')" [src]="companyForm.value.logo" alt="Upload photo">
+                                <img *ngIf="companyForm.value.logo && companyForm.value.logo.includes('logo')" [src]="companyForm.value.logo" alt="Upload photo">
+                              </button>
+                              <div class="d-flex align-items-center">
+                                <img src="assets/img/icons/paperclip.svg" alt="upload">
+                                <span class="text-danger">Upload logo organization</span>
+                              </div>
+                            </label>
+
+                            <div class="custom-control custom-checkbox">
+                              <input formControlName="showInBranded" type="checkbox" class="custom-control-input" id="isForBranded">
+                              <label class="custom-control-label" for="isForBranded">Display this info in all your branded walkthroughs</label>
+                            </div>
                           </div>
-                        </div>
 
-
+                        </form>
                       </ng-template>
                     </ngb-panel>
                   </ngb-accordion>

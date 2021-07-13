@@ -1,0 +1,2 @@
+# /bin/sh
+docker run -it -u $UID:$EUID -w /home/node/app -v $(pwd):/home/node/app -p 4200:4200 node:lts bash

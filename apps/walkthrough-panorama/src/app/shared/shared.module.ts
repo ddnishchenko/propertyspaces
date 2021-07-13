@@ -26,6 +26,7 @@ import { SliderMinusDirective, SliderPlusDirective } from './components/slider/s
 import { GoogleAutocompleteDirective } from './directives/google-autocomplete.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DownloadDirective } from './directives/download.directive';
+import { InputFileReaderDirective } from './directives/input-file-reader.directive';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { DownloadDirective } from './directives/download.directive';
     SliderMinusDirective,
     SliderPlusDirective,
     GoogleAutocompleteDirective,
-    DownloadDirective
+    DownloadDirective,
+    InputFileReaderDirective
   ],
   exports: [
     ConnectFormDirective,
@@ -64,7 +66,8 @@ import { DownloadDirective } from './directives/download.directive';
     GoogleAutocompleteDirective,
     ReactiveFormsModule,
     FormsModule,
-    DownloadDirective
+    DownloadDirective,
+    InputFileReaderDirective
   ],
   imports: [
     CommonModule,
