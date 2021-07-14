@@ -679,4 +679,15 @@ export class PanoramaPlayerComponent implements OnInit {
     }
     return '';
   }
+  postToFacebook() {
+    const app_id = 1973653629466963;
+    const uri = this.shareLink;
+    const width = 400;
+    const height = 600;
+    const left = window.screenX + window.outerWidth / 2 - width / 2;
+    const top = window.screenY + window.outerHeight / 2 - height / 2;
+    var url = `https://www.facebook.com/dialog/share?app_id=${app_id}&href=${uri}`;
+    const options = `${left > 0 && top > 0 ? `left=${left},top=${top},` : ''}width=${width},height=${height},toolbar=0,resizable=0`;
+    window.open(url, '', options).moveTo(left, top);
+  }
 }

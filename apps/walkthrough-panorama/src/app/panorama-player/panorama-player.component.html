@@ -334,7 +334,10 @@
         </li>
         <li ngbNavItem>
           <a ngbNavLink class="border-0"><i class="fa fa-facebook"></i></a>
-          <ng-template ngbNavContent>Post to Facebook</ng-template>
+          <ng-template ngbNavContent>
+            <button (click)="postToFacebook()" type="type" class="btn btn-primary">Post to Facebook</button>
+
+          </ng-template>
         </li>
         <li ngbNavItem>
           <a ngbNavLink class="border-0"><i class="fa fa-linkedin"></i></a>
