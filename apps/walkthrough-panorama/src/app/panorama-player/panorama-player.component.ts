@@ -689,7 +689,7 @@ export class PanoramaPlayerComponent implements OnInit {
     this.openSocialMedia(url);
   }
   postToTwiiter(input) {
-    const tweet = encodeURIComponent(input.innterText + '\n' + this.shareLink);
+    const tweet = encodeURIComponent(input.value + '\n' + this.shareLink);
     const url =  `http://twitter.com/intent/tweet?text=${tweet}`;
     this.openSocialMedia(url);
   }
