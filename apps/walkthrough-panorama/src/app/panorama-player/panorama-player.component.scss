@@ -372,6 +372,16 @@ gallery {
   background-size: cover;
 }
 
+.panorama-image-placeholder {
+  background: #fcfcfc;
+  border: 1px dashed #bfbfbf;
+}
+
+.image-header {
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
 @media screen and (min-width: 992px) {
   .panorama-player {
     height: calc(100vh - 112px);

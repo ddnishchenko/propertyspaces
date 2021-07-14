@@ -784,7 +784,10 @@
 
           <ng-scrollbar *ngIf="modalEditing" class="modal-content canvas-modal scrollbar-danger m-1 m-md-4">
             <div class="modal-header align-items-center">
-              <h5 class="modal-title text-uppercase h4 text-danger">{{ activeEditTitle }}</h5>
+              <h5 class="modal-title text-uppercase h4 text-danger">
+                {{ activeEditTitle }}
+                <ng-container *ngIf="activeEditProperty === editProperties.editPano">#{{this.currentPanorama.panoramas.order}}</ng-container>
+              </h5>
               <button type="button" (click)="closeModal()" class="close" data-bs-dismiss="modal" aria-label="Close">
                 <div class="rounded-circle close-inner"><img src="assets/img/icons/cross.svg" alt="Close"></div>
               </button>
@@ -1023,6 +1026,44 @@
                 </form>
 
               </ng-container>
+
+              <ng-container *ngSwitchCase="editProperties.editPano">
+                <form class="p-4" [formGroup]="panoForm">
+                  <b>Select Floor Number:</b>
+
+                  <div class="btn-group btn-group-toggle nav nav-tabs mb-5" ngbRadioGroup name="panoFloor" formControlName="floor">
+                    <label ngbButtonLabel class="nav-link flex-grow-0" *ngFor="let f of [1,2,3]">
+                      <input ngbButton type="radio" [value]="f"> {{f}}
+                    </label>
+                  </div>
+
+                  <div *ngIf="!panoForm.value.name" class="d-flex align-items-center justify-content-center panorama-image-placeholder p-5 mb-5">
+                    <div class="d-flex flex-column mt-5">
+                      <img class="mb-5" src="assets/img/icons/picture-big.svg" alt="Picture alt">
+                      <button type="button" class="btn btn-link">
+                        <span class="mr-2 text-secondary">Upload</span> <img src="assets/img/icons/upload-alt.svg" alt="Upload">
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="position-relative">
+                    <img class="img-fluid" [src]="panoForm.value.panorama ? panoForm.value.panorama : data.projectFolder + currentPanorama.name" [alt]="currentPanorama.name">
+                    <div class="position-absolute d-flex justify-content-between align-items-center w-100 p-3 image-header">
+                      <b class="text-white">Single shot</b>
+                      <div>
+                        <label for="replaceImage" class="btn btn-light rounded-pill px-3 mr-3 mb-0">
+                          <input formControlName="panorama" propertyspacesInputFileReader type="file" id="replaceImage" class="d-none">
+                          <span class="mr-2">Replace</span> <img src="assets/img/icons/refresh.svg" alt="Uplaod New">
+                        </label>
+                        <a class="btn btn-light rounded-pill px-3"
+                        [href]="data.projectFolder + currentPanorama.name" [download]="currentPanorama.name + (currentPanorama.name.includes('.jp') ? '' : '.jpg')"><span class="mr-2">Download</span> <img src="assets/img/icons/download-red.svg" alt="Download"></a>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+              </ng-container>
+
             </div>
             <div class="modal-footer justify-content-center border-top-0" *ngIf="isSaveButton">
               <button type="button" class="btn btn-danger rounded-pill px-5" (click)="saveModal(data.project_id)">Save</button>
@@ -1034,7 +1075,7 @@
             id="virtualTour"
             [propertyspacesVirtualTour]="data"
             (init)="vrInit(data)"
-            (navigationChange)="changeActive($event, data.panos)"
+            (navigationChange)="changeActive($event, data)"
             (change)="viewChange($event)"
           ></canvas>
         </div>

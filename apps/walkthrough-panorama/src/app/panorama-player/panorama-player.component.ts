@@ -113,6 +113,7 @@ export class PanoramaPlayerComponent implements OnInit {
   };
   isGalleryOpened = false;
   activePoint = 0;
+  currentPanorama;
   activeFloor = 0;
   aspectRatio = null;
   aspects = aspectRations;
@@ -122,6 +123,7 @@ export class PanoramaPlayerComponent implements OnInit {
   vrTourSettingsForm;
   profileForm;
   companyForm;
+  panoForm;
   isEdit = false;
   rotationAngle = 0;
   defaultZoom = 0;
@@ -158,17 +160,17 @@ export class PanoramaPlayerComponent implements OnInit {
   }
   get modalEditing() {
     if (this.form) {
-      const { editGallery, editContact, editLocation
+      const { floorplan, editGallery, editContact, editLocation, editPano, changeMenu, description
         } = this.editProperties;
-      const modalEdit = [editGallery, editContact, editLocation];
+      const modalEdit = [floorplan, editGallery, editContact, editLocation, editPano, changeMenu, description];
       return modalEdit.includes(this.activeEditProperty);
     }
     return false;
   }
   get isSaveButton() {
-    const { editContact, editLocation
+    const { editContact, editLocation, editPano
       } = this.editProperties;
-    const modalEdit = [editContact, editLocation];
+    const modalEdit = [editContact, editLocation, editPano];
     return modalEdit.includes(this.activeEditProperty);
   }
   constructor(
@@ -217,6 +219,11 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   createForm() {
+
+    const validators = [
+      Validators.required
+    ];
+
     this.form = new FormGroup({
       aspectRatio: new FormControl(''),
       customRatio: new FormControl(''),
@@ -256,6 +263,16 @@ export class PanoramaPlayerComponent implements OnInit {
       companyLogo: new FormControl(''),
       showInBranded: new FormControl(false)
     });
+
+    this.panoForm = new FormGroup({
+      name: new FormControl('', [Validators.required]),
+      x: new FormControl('', validators),
+      y: new FormControl('', validators),
+      z: new FormControl('', validators),
+      floor: new FormControl('', validators),
+      order: new FormControl(''),
+      panorama: new FormControl('')
+    })
   }
 
   calcRatio(ratio) {
@@ -285,6 +302,7 @@ export class PanoramaPlayerComponent implements OnInit {
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
     this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
     this.activePoint = this.virtualTour.virtualTourService.activeIndex;
+    this.currentPanorama = this.virtualTour.virtualTourService.currentPano;
   }
 
   editModeSwitch(editMode) {
@@ -379,15 +397,21 @@ export class PanoramaPlayerComponent implements OnInit {
     this.virtualTour.virtualTourService.moveMark(index);
   }
 
-  changeActive($event, panos) {
+  changeActive($event, data) {
     this.activePoint = $event;
-    const pano = panos.find(p => p.panoramas.index === $event);
+    const pano = data.panos.find(p => p.panoramas.index === $event);
+    this.currentPanorama = pano;
     const floor = pano.panoramas.floor;
     this.activeFloor = floor;
+
+    this.panoForm.patchValue({
+      name: pano.name,
+      ...pano.panoramas
+    });
     this.vrTourSettingsForm.patchValue({
       panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoramas.panoCameraStartAngle || 0,
       panoZoom: this.virtualTour.virtualTourService.currentPano.panoramas.zoom || 0
-    })
+    });
   }
   zoomChange($event?) {
     const val = $event || +this.vrTourSettingsForm.value.zoom;
@@ -543,14 +567,17 @@ export class PanoramaPlayerComponent implements OnInit {
     }
   }
 
-  crementControl(field, val) {
-    this.vrTourSettingsForm.patchValue({[field]: this.vrTourSettingsForm.value[field] + val });
-  }
   checkForReset(val) {
     this.isCollapsed = true;
     if (val === this.activeEditProperty) {
       // TODO: Refactor
       setTimeout(() => this.activeEditProperty = '')
+    } else {
+      switch(this.activeEditProperty) {
+        case this.editProperties.editPano:
+
+        break;
+      }
     }
   }
   closeModal() {
@@ -593,6 +620,16 @@ export class PanoramaPlayerComponent implements OnInit {
     $event.preventDefault();
   }
 
+  updatePano(projectId) {
+    const { name } = this.panoForm.value;
+    this.store.dispatch(updatePanorama({projectId, panorama: {
+      name,
+      panoramas: {
+        ...this.panoForm.value
+      }
+    }}))
+  }
+
   saveModal(projectId) {
     switch(this.activeEditProperty) {
       case this.editProperties.editLocation:
@@ -600,6 +637,10 @@ export class PanoramaPlayerComponent implements OnInit {
         break;
       case this.editProperties.editContact:
         this.saveContacts(projectId);
+        break;
+      case this.editProperties.editPano:
+        this.updatePano(projectId);
+        break;
     }
   }
   toggleFullscreen() {
