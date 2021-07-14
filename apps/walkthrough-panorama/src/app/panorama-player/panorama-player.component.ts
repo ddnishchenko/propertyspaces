@@ -621,13 +621,18 @@ export class PanoramaPlayerComponent implements OnInit {
   }
 
   updatePano(projectId) {
-    const { name } = this.panoForm.value;
-    this.store.dispatch(updatePanorama({projectId, panorama: {
+    const { name, panorama, floor, order, x, y, z } = this.panoForm.value;
+    const p: any = {
       name,
       panoramas: {
-        ...this.panoForm.value
+        floor, order, x, y, z
       }
-    }}))
+    };
+    if (panorama) {
+      p.panoramas.panorama = panorama;
+    }
+
+    this.store.dispatch(updatePanorama({projectId, panorama: p}))
   }
 
   saveModal(projectId) {
