@@ -293,7 +293,7 @@
           <a class="border-0" ngbNavLink><i class="fa fa-link"></i></a>
           <ng-template ngbNavContent>
             <u class="text-underline text-uppercase">Copy link</u>
-            <p><strong class="text-dagnger">Click below</strong> to copy the link to this Realvision tour:</p>
+            <p><strong class="text-dagnger">Click below</strong> to copy the link to this Lidorama tour:</p>
             <!-- <button type="button" class="btn btn-outline-dark d-block w-100" (click)="copyLink()">{{shareLink}}</button> -->
             <div class="form-group position-relative text-center">
               <input type="text" class="form-control text-center" #f (click)="copyLink(f)" (blur)="textRecentlyCopied = false" [value]="shareLink">
@@ -315,7 +315,7 @@
           <a class="border-0" ngbNavLink><i class="fa fa-code"></i></a>
           <ng-template ngbNavContent>
             <u class="text-underline text-uppercase">EMBED ON YOUR WEBSITE</u>
-            <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Realvision tour in another website:</p>
+            <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidorama tour in another website:</p>
             <div class="form-group position-relative text-center">
               <textarea rows="3"  class="form-control" #ta (click)="copyLink(ta)" (blur)="textRecentlyCopied = false">{{embedCode}}</textarea>
               <span class="text-primary position-relative copied-text bg-white" [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
@@ -350,8 +350,29 @@
     <div class="modal-body" [ngbNavOutlet]="nav"></div>
   </ng-template>
 
+  <ng-template #shareFullscreen>
+    <div class="modal-body">
+      <u class="text-underline text-uppercase">EMBED ON YOUR WEBSITE</u>
+      <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidorama tour in another website:</p>
+      <div class="form-group position-relative text-center">
+        <textarea rows="3"  class="form-control" #ta (click)="copyLink(ta)" (blur)="textRecentlyCopied = false">{{embedCodeFullscreen}}</textarea>
+        <span class="text-primary position-relative copied-text bg-white" [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="defaultCheck1" [(ngModel)]="copyBrandedLink">
+        <label class="form-check-label" for="defaultCheck1">
+          Unbranded (check only for posting to MLS)
+        </label>
+      </div>
+      <div class="alert alert-info">
+        After copying, <span class="text-danger">RIGHT CLICK</span> on
+        any text input in another site or app, and select <span class="text-danger">PASTE</span>.
+      </div>
+    </div>
+  </ng-template>
+
   <ng-container *ngIf="isFullscreenActive$ | async as isFullscreenActive">
-    <nav
+    <nav *ngIf="!isQueryFullscreen"
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
     [class.d-none]="isFullscreenActive.active"
   >
@@ -473,10 +494,10 @@
     </div>
   </nav>
 
-  <main class="panorama-player d-block d-lg-flex" [class.panorama-player-fullscreen]="isFullscreenActive.active">
+  <main class="panorama-player d-block d-lg-flex" [class.panorama-player-fullscreen]="isFullscreenActive.active || isQueryFullscreen">
     <!-- [rzHandles]="sidebarSide === 'r' ? 'w' : 'e'" -->
     <div class="boxes navbar-expand-lg d-block d-lg-flex flex-lg-row">
-      <div
+      <div *ngIf="!isQueryFullscreen"
         class="sidebar collapse navbar-collapse"
         [ngbCollapse]="isCollapsed"
         [class.sidebar-hidden]="isFullscreenActive.active"
@@ -709,9 +730,17 @@
           [style.width]="canvasAspect(sceneWrapper)"
         >
 
-          <button *ngIf="!activeEditProperty && isFullscreenAvailable" (click)="toggleFullscreen()" type="button" class="btn" id="fullscreen">
-            <img src="assets/img/icons/expand.svg" alt="Fullscreen">
-          </button>
+          <ng-container>
+            <button (click)="toggleFullscreen()" type="button" class="btn" id="fullscreen">
+              <img src="assets/img/icons/expand.svg" alt="Fullscreen">
+            </button>
+            <button *ngIf="!isQueryFullscreen"
+              (click)="openShareModal(shareFullscreen)"
+              type="button"
+              id="share-fullscreen-embed"
+              class="position-absolute btn"><i class="fa fa-lg fa-share-alt"></i></button>
+          </ng-container>
+
 
           <button type="button"
           *ngIf="editProperties.createGallery === activeEditProperty"

@@ -103,6 +103,11 @@
   right: 13px;
 }
 
+#share-fullscreen-embed {
+  top: 0;
+  right: 66px;
+}
+
 .edit-nav-points-form {
   font-size: 1rem;
   position: absolute;
@@ -406,6 +411,10 @@ gallery {
   #fullscreen {
     top: 33px;
     right: 50px;
+  }
+  #share-fullscreen-embed {
+    top: 33px;
+    right: 100px;
   }
   .logo {
     width: auto;

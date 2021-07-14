@@ -149,10 +149,20 @@ export class PanoramaPlayerComponent implements OnInit {
   isStreetViewVisible = true;
   sidebarSide = 'l';
   textRecentlyCopied;
-  embedCode = `<iframe src="${this.shareLink}" width="100%" height="720px" frameborder="0" allowfullscreen></iframe>`
+  get embedCode() {
+    return `<iframe src="${this.shareLink}" width="100%" height="720px" frameborder="0" allowfullscreen></iframe>`;
+  };
+  get embedCodeFullscreen() {
+    return `<iframe src="${this.shareFullscreen}" width="100%" height="720px" frameborder="0" allowfullscreen></iframe>`;
+  }
+  isQueryFullscreen;
   get shareLink() {
     const link = location.origin + '/projects/vr-tour-embed/1422';
     return this.copyBrandedLink ? link + '?b=1' : link;
+  }
+  get shareFullscreen() {
+    const link = location.origin + '/projects/vr-tour-embed/1422?fullscreen=true';
+    return this.copyBrandedLink ? link + '&b=1' : link;
   }
   copyBrandedLink = false;
   get activeEditTitle() {
@@ -183,6 +193,7 @@ export class PanoramaPlayerComponent implements OnInit {
 
   ngOnInit(): void {
     const projectId = this.route.snapshot.params.id;
+    this.isQueryFullscreen = this.route.snapshot.queryParams.fullscreen == 'true';
     this.isEdit = this.router.url.includes('model');
     this.createForm();
     this.store.dispatch(loadProjectGallery({ projectId }));
