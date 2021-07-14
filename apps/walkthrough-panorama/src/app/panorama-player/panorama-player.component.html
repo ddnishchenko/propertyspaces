@@ -293,7 +293,7 @@
           <a class="border-0" ngbNavLink><i class="fa fa-link"></i></a>
           <ng-template ngbNavContent>
             <u class="text-underline text-uppercase">Copy link</u>
-            <p><strong class="text-dagnger">Click below</strong> to copy the link to this Lidorama tour:</p>
+            <p><strong class="text-dagnger">Click below</strong> to copy the link to this Lidarama tour:</p>
             <!-- <button type="button" class="btn btn-outline-dark d-block w-100" (click)="copyLink()">{{shareLink}}</button> -->
             <div class="form-group position-relative text-center">
               <input type="text" class="form-control text-center" #f (click)="copyLink(f)" (blur)="textRecentlyCopied = false" [value]="shareLink">
@@ -315,7 +315,7 @@
           <a class="border-0" ngbNavLink><i class="fa fa-code"></i></a>
           <ng-template ngbNavContent>
             <u class="text-underline text-uppercase">EMBED ON YOUR WEBSITE</u>
-            <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidorama tour in another website:</p>
+            <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidarama tour in another website:</p>
             <div class="form-group position-relative text-center">
               <textarea rows="3"  class="form-control" #ta (click)="copyLink(ta)" (blur)="textRecentlyCopied = false">{{embedCode}}</textarea>
               <span class="text-primary position-relative copied-text bg-white" [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
@@ -335,17 +335,37 @@
         <li ngbNavItem>
           <a ngbNavLink class="border-0"><i class="fa fa-facebook"></i></a>
           <ng-template ngbNavContent>
+            <u class="text-underline text-uppercase">Facebook page share</u>
+            <p>
+              Share this Lidarama tour on Facebook for all to see! You'll have a chance to enter a custom message.
+            </p>
             <button (click)="postToFacebook()" type="type" class="btn btn-primary">Post to Facebook</button>
 
           </ng-template>
         </li>
         <li ngbNavItem>
           <a ngbNavLink class="border-0"><i class="fa fa-linkedin"></i></a>
-          <ng-template ngbNavContent>Post to LinkedIn</ng-template>
+          <ng-template ngbNavContent>
+            <u class="text-underline text-uppercase">Create a LinkedIn post</u>
+            <p>
+              Post this Lidarama tour to LinkedIn to share with your professional network. You'll have a chance to enter your own message.
+            </p>
+            <button (click)="postToLinkedIn()" type="type" class="btn btn-primary">Post to LinkedId</button>
+          </ng-template>
         </li>
         <li ngbNavItem>
           <a ngbNavLink class="border-0"><i class="fa fa-twitter"></i></a>
-          <ng-template ngbNavContent>Post to Twitter</ng-template>
+          <ng-template ngbNavContent>
+            <u class="text-underline text-uppercase">Share a tweet</u>
+            <p>
+              Enter your tweet (we've included a link back to this Realvision listing):
+            </p>
+            <div class="form-group position-relative text-center">
+              <textarea rows="3" class="form-control" (input)="$event" #tweet maxlength="280">Visit a 24/7 open house of {{data.project.address}} in Lidarama:</textarea>
+              <span class="text-primary position-relative symbol-limiter bg-white">{{tweet.value.length}}/280</span>
+            </div>
+            <button (click)="postToTwiiter(tweet)" type="type" class="btn btn-primary">Tweet</button>
+          </ng-template>
         </li>
       </ul>
     </div>

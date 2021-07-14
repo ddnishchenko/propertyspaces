@@ -681,12 +681,23 @@ export class PanoramaPlayerComponent implements OnInit {
   }
   postToFacebook() {
     const app_id = 1973653629466963;
-    const uri = this.shareLink;
+    const url = `https://www.facebook.com/dialog/share?app_id=${app_id}&href=${this.shareLink}`;
+    this.openSocialMedia(url);
+  }
+  postToLinkedIn() {
+    const url = `http://www.linkedin.com/shareArticle?url=${this.shareLink}`;
+    this.openSocialMedia(url);
+  }
+  postToTwiiter(input) {
+    const tweet = encodeURIComponent(input.innterText + '\n' + this.shareLink);
+    const url =  `http://twitter.com/intent/tweet?text=${tweet}`;
+    this.openSocialMedia(url);
+  }
+  openSocialMedia(url) {
     const width = 400;
     const height = 600;
     const left = window.screenX + window.outerWidth / 2 - width / 2;
     const top = window.screenY + window.outerHeight / 2 - height / 2;
-    var url = `https://www.facebook.com/dialog/share?app_id=${app_id}&href=${uri}`;
     const options = `${left > 0 && top > 0 ? `left=${left},top=${top},` : ''}width=${width},height=${height},toolbar=0,resizable=0`;
     window.open(url, '', options).moveTo(left, top);
   }
