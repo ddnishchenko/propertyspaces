@@ -527,7 +527,10 @@ export class PanoramaPlayerComponent implements OnInit {
     }
 
   }
-  openImage(i) {
+  openImage(i, closeModal = false) {
+    if (closeModal) {
+      this.modalService.dismissAll();
+    }
     this.isGalleryOpened = true;
     this.galleryCmp.galleryRef.set(i);
   }

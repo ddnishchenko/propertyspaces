@@ -161,7 +161,7 @@
     </ng-container>
   </ng-template>
 
-  <ng-template #galleryTpl>
+  <ng-template #galleryTpl let-closeModal>
     <div
       *ngIf="gallery$ | async as images"
       class="masonry-grid"
@@ -170,7 +170,7 @@
       <div
         *ngFor="let img of images | gallery; index as i"
         class="masonry-grid-item"
-        (click)="openImage(i)"
+        (click)="openImage(i, closeModal)"
       >
         <figure class="gallery-image m-0">
           <img
@@ -182,42 +182,12 @@
         </figure>
       </div>
     </div>
-
-    <!-- <ngx-masonry
-      style="min-height: 100px"
-      [options]="masonryOptions"
-      [ordered]="true"
-      *ngIf="gallery$ | async as images"
-    >
-      <div
-        ngxMasonryItem
-        *ngFor="let img of images | gallery; index as i"
-        (click)="openImage(i)"
-        class="masonry-item"
-        [prepend]="false"
-      >
-        <figure class="gallery-image m-0">
-          <img
-            class="img-fluid gallery-img"
-            [src]="img.data.src"
-            [alt]="img.data.thumb"
-          />
-          <figcaption>{{ img.data.name }}</figcaption>
-        </figure>
-      </div>
-    </ngx-masonry> -->
   </ng-template>
 
   <ng-template #galleryEditorTpl>
-    <ng-container *ngIf="gallery$ | async as orderedImages">
-      <propertyspaces-gallery-editor
-        [isEditable]="isEdit"
-        [items]="orderedImages"
-        (nameChange)="imageNameChanged($event, data.project_id)"
-        (sortChange)="sortChanged($event, data.project_id)"
-        (moveToTrash)="deleteGalleryImage($event, data.project_id)"
-      ></propertyspaces-gallery-editor>
-    </ng-container>
+    <div class="masonry-grid-fullscreen-modal">
+      <ng-container *ngTemplateOutlet="galleryTpl; context: {$implicit: true}"></ng-container>
+    </div>
   </ng-template>
 
   <ng-template #contactTpl>
@@ -621,7 +591,7 @@
                       openSectionModal(
                         modalWrapper,
                         galleryEditorTpl,
-                        'Gallery Editor'
+                        'Gallery'
                       )
                     "
                   >
@@ -709,6 +679,17 @@
             (click)="closeGallery()"
           >
             <span class="h1">&times;</span>
+          </div>
+          <div
+            class="open-gallery-grid-modal"
+            *ngIf="isGalleryOpened"
+            (click)="openSectionModal(
+              modalWrapper,
+              galleryEditorTpl,
+              'Gallery'
+            )"
+          >
+            <i class="fa fa-lg fa-th"></i>
           </div>
           <gallery
             id="project-gallery"
