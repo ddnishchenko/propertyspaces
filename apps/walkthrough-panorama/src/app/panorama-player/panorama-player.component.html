@@ -401,6 +401,10 @@
     </div>
   </ng-template>
 
+  <ng-template #descriptionTpl>
+    <div class="p-4" [innerHTML]="data.additional_data.description"></div>
+  </ng-template>
+
   <ng-container *ngIf="isFullscreenActive$ | async as isFullscreenActive">
     <nav *ngIf="!isQueryFullscreen"
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
@@ -428,8 +432,6 @@
     <div class="collapse navbar-collapse">
 
       <div class="d-flex flex-wrap ml-auto">
-
-
 
         <div>
           <button type="button" class="btn btn-link text-white" (click)="openShareModal(shareModal)"><i class="fa fa-lg fa-share-alt"></i></button>
@@ -628,6 +630,32 @@
             </ng-template>
             <ng-template ngbPanelContent>
               <ng-container *ngTemplateOutlet="contactTpl"></ng-container>
+            </ng-template>
+          </ngb-panel>
+
+
+          <ngb-panel *ngIf="data.additional_data.description" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-description')"
+            id="panel-description">
+            <ng-template ngbPanelHeader>
+              <div
+                class="d-flex justify-content-between align-items-center w-100"
+              >
+                <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                  <svg-icon src="assets/img/icons/contact.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                  <span class="text-uppercase">Description</span>
+                </button>
+                <button
+                  class="btn"
+                  (click)="
+                    openSectionModal(modalWrapper, descriptionTpl, 'Description')
+                  "
+                >
+                  <svg-icon src="assets/img/icons/expand.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                </button>
+              </div>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <ng-container *ngTemplateOutlet="descriptionTpl"></ng-container>
             </ng-template>
           </ngb-panel>
 
@@ -1093,16 +1121,16 @@
               <ng-container *ngSwitchCase="editProperties.description">
 
                 <form [formGroup]="descriptionFrom" class="p-3 description-form">
-                  <label class="input">
-                    <textarea
-                      (paste)="filterPaste($event)"
+
+                  <div class="NgxEditor__Wrapper h-100">
+                    <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+                    <ngx-editor
+                      [editor]="editor"
                       formControlName="description"
-                      class="input__field"
-                      rows="15"
-                      placeholder=" "
-                    ></textarea>
-                    <span class="input__label">Add your description*</span>
-                  </label>
+                      [disabled]="false"
+                      [placeholder]="'Add your description*'"
+                    ></ngx-editor>
+                  </div>
                 </form>
 
               </ng-container>

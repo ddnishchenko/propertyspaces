@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, skip, tap } from 'rxjs/operators';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
@@ -12,13 +12,13 @@ import { Panorama } from '../interfaces/panorama';
 import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 import { selectOrderedGallery } from '../projects/state/gallery/project-gallery.selectors';
 import { dataURLtoFile, urlRegEx } from '../utils';
-import { NgxMasonryComponent, NgxMasonryOptions } from 'ngx-masonry';
 import { GalleryComponent } from 'ng-gallery';
 import { GalleryEditorComponent } from '../shared/components/gallery-editor/gallery-editor.component';
 import { slideInAnimation } from '../utils/animations';
 import { combineLatest } from 'rxjs';
 import { ConfirmationModalComponent } from '../shared/components/confirmation-modal/confirmation-modal.component';
 import { ResizeEvent } from 'angular-resizable-element';
+import { Editor } from 'ngx-editor';
 import { Fullscreen } from '../utils/fullscreen';
 
 const aspectRations = [
@@ -95,21 +95,17 @@ const titles = {
   styleUrls: ['./panorama-player.component.scss'],
   animations: [slideInAnimation]
 })
-export class PanoramaPlayerComponent implements OnInit {
+export class PanoramaPlayerComponent implements OnInit, OnDestroy {
+  @ViewChild(VirtualTourDirective) virtualTour;
+  @ViewChild(GalleryComponent) galleryCmp: GalleryComponent;
+
   isFullscreenAvailable = Fullscreen.isAvailable;
   isFullscreenActive$ = Fullscreen.change$.pipe(
     map(active => ({active})),
     tap(() => setTimeout(() =>this.resizeCanvas(), 100) ),
   );
   isCollapsed = true;
-  @ViewChild(VirtualTourDirective) virtualTour;
-  @ViewChild(GalleryComponent) galleryCmp: GalleryComponent;
-  @ViewChild(NgxMasonryComponent) masonry: NgxMasonryComponent;
-  public masonryOptions: NgxMasonryOptions = {
-    gutter: 0,
-    columnWidth: 200,
-    fitWidth: true
-  };
+  editor: Editor;
   isGalleryOpened = false;
   activePoint = 0;
   currentPanorama;
@@ -192,6 +188,7 @@ export class PanoramaPlayerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.editor = new Editor();
     const projectId = this.route.snapshot.params.id;
     this.isQueryFullscreen = this.route.snapshot.queryParams.fullscreen == 'true';
     this.isEdit = this.router.url.includes('model');
@@ -227,6 +224,10 @@ export class PanoramaPlayerComponent implements OnInit {
       map(([project, panoFloors]) => ({...project, ...panoFloors})),
       skip(1)
     )
+  }
+
+  ngOnDestroy() {
+    this.editor.destroy();
   }
 
   createForm() {
@@ -539,10 +540,7 @@ export class PanoramaPlayerComponent implements OnInit {
     this.resizeCanvas();
   }
   updateMasonty() {
-    if (this.masonry) {
-      this.masonry.reloadItems();
-      this.masonry.layout();
-    }
+
   }
 
   onResizeEnd(event: ResizeEvent): void {
