@@ -1,10 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
-import { NgxMasonryOptions } from 'ngx-masonry';
-import { map } from 'rxjs/operators';
-import { ProjectsService } from '../../service/projects.service';
 import { loadProjectGallery, removeProjectGalleryPhoto, uploadProjectGalleryPhoto } from '../../state/gallery/project-gallery.actions';
 import { selectGallery } from '../../state/gallery/project-gallery.selectors';
 
@@ -14,9 +10,6 @@ import { selectGallery } from '../../state/gallery/project-gallery.selectors';
   styleUrls: ['./gallery-modal.component.scss']
 })
 export class GalleryModalComponent implements OnInit {
-  public masonryOptions: NgxMasonryOptions = {
-    gutter: 20,
-  };
   testImgs = [];
   project_id;
   gallery$;

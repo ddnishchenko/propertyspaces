@@ -6,12 +6,11 @@ import { SafePipe } from './pipes/safe.pipe';
 
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
-import { NgxMasonryModule } from 'ngx-masonry';
 import { DndModule } from 'ngx-drag-drop';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrderModule } from 'ngx-order-pipe';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { NgxEditorModule } from 'ngx-editor';
 
 
 import { GalleryEditorComponent } from './components/gallery-editor/gallery-editor.component';
@@ -52,7 +51,6 @@ import { InputFileReaderDirective } from './directives/input-file-reader.directi
     GalleryPipe,
     GalleryModule,
     LightboxModule,
-    NgxMasonryModule,
     AgmCoreModule,
     NgbTooltipModule,
     GalleryEditorComponent,
@@ -67,7 +65,8 @@ import { InputFileReaderDirective } from './directives/input-file-reader.directi
     ReactiveFormsModule,
     FormsModule,
     DownloadDirective,
-    InputFileReaderDirective
+    InputFileReaderDirective,
+    NgxEditorModule
   ],
   imports: [
     CommonModule,
@@ -75,11 +74,11 @@ import { InputFileReaderDirective } from './directives/input-file-reader.directi
     FormsModule,
     GalleryModule,
     LightboxModule,
-    NgxMasonryModule,
     DndModule,
     OrderModule,
     AngularSvgIconModule,
-    NgScrollbarModule
+    NgScrollbarModule,
+    NgxEditorModule
   ]
 })
 export class SharedModule { }
