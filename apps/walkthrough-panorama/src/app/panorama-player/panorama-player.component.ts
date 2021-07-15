@@ -1,7 +1,6 @@
 import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, skip, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
@@ -124,6 +123,7 @@ export class PanoramaPlayerComponent implements OnInit {
   profileForm;
   companyForm;
   panoForm;
+  descriptionFrom;
   isEdit = false;
   rotationAngle = 0;
   defaultZoom = 0;
@@ -178,9 +178,9 @@ export class PanoramaPlayerComponent implements OnInit {
     return false;
   }
   get isSaveButton() {
-    const { editContact, editLocation, editPano
+    const { editContact, editLocation, editPano, description
       } = this.editProperties;
-    const modalEdit = [editContact, editLocation, editPano];
+    const modalEdit = [editContact, editLocation, editPano, description];
     return modalEdit.includes(this.activeEditProperty);
   }
   constructor(
@@ -283,6 +283,10 @@ export class PanoramaPlayerComponent implements OnInit {
       floor: new FormControl('', validators),
       order: new FormControl(''),
       panorama: new FormControl('')
+    });
+
+    this.descriptionFrom = new FormGroup({
+      description: new FormControl()
     })
   }
 
@@ -309,6 +313,7 @@ export class PanoramaPlayerComponent implements OnInit {
 
     this.profileForm.patchValue(data.additional_data.profile);
     this.companyForm.patchValue(data.additional_data.company);
+    this.descriptionFrom.patchValue({description: data.additional_data.description});
 
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
     this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
@@ -656,6 +661,12 @@ export class PanoramaPlayerComponent implements OnInit {
         break;
       case this.editProperties.editPano:
         this.updatePano(projectId);
+        break;
+      case this.editProperties.description:
+        const data = {
+          description: this.descriptionFrom.value.description
+        }
+        this.store.dispatch(updateProject({projectId, data}));
         break;
     }
   }

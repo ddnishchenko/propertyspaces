@@ -394,6 +394,43 @@
     </div>
   </ng-template>
 
+  <ng-template #changeViewTpl>
+    <div
+      class="btn-group btn-group-lg btn-group-toggle"
+      ngbRadioGroup
+      name="radioBasic"
+      [(ngModel)]="sidebarSide"
+    >
+      <label
+        ngbButtonLabel
+        [class.btn-dark]="sidebarSide !== 'l'"
+        [class.btn-danger]="sidebarSide === 'l'"
+      >
+        <input ngbButton type="radio" value="l" />
+        <img
+          src="assets/img/icons/sidebar-{{
+            sidebarSide === 'l' ? 'left' : 'right'
+          }}.svg"
+          alt="sidebar-left"
+        />
+        Left
+      </label>
+      <label
+        ngbButtonLabel
+        [class.btn-dark]="sidebarSide !== 'r'"
+        [class.btn-danger]="sidebarSide === 'r'"
+      >
+        <input ngbButton type="radio" value="r" /> Right
+        <img
+          src="assets/img/icons/sidebar-{{
+            sidebarSide !== 'l' ? 'left' : 'right'
+          }}.svg"
+          alt="sidebar-left"
+        />
+      </label>
+    </div>
+  </ng-template>
+
   <ng-container *ngIf="isFullscreenActive$ | async as isFullscreenActive">
     <nav *ngIf="!isQueryFullscreen"
     class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
@@ -422,56 +459,10 @@
 
       <div class="d-flex flex-wrap ml-auto">
 
-        <ng-template #tipContent>
-          <div
-            class="btn-group btn-group-lg btn-group-toggle"
-            ngbRadioGroup
-            name="radioBasic"
-            [(ngModel)]="sidebarSide"
-          >
-            <label
-              ngbButtonLabel
-              [class.btn-light]="sidebarSide !== 'l'"
-              [class.btn-danger]="sidebarSide === 'l'"
-            >
-              <input ngbButton type="radio" value="l" />
-              <img
-                src="assets/img/icons/sidebar-{{
-                  sidebarSide === 'l' ? 'left' : 'right'
-                }}.svg"
-                alt="sidebar-left"
-              />
-              Left
-            </label>
-            <label
-              ngbButtonLabel
-              [class.btn-light]="sidebarSide !== 'r'"
-              [class.btn-danger]="sidebarSide === 'r'"
-            >
-              <input ngbButton type="radio" value="r" /> Right
-              <img
-                src="assets/img/icons/sidebar-{{
-                  sidebarSide !== 'l' ? 'left' : 'right'
-                }}.svg"
-                alt="sidebar-left"
-              />
-            </label>
-          </div>
-        </ng-template>
+
 
         <div>
           <button type="button" class="btn btn-link text-white" (click)="openShareModal(shareModal)"><i class="fa fa-lg fa-share-alt"></i></button>
-          <a class="btn btn-link" href="javascript:;">
-            <img src="assets/img/icons/youtube.svg" alt="YouTube" />
-          </a>
-
-          <a class="btn btn-link" href="javascript:;">
-            <img src="assets/img/icons/instagram.svg" alt="Instagram" />
-          </a>
-
-          <a class="btn btn-link" href="javascript:;">
-            <img src="assets/img/icons/facebook.svg" alt="Facebook" />
-          </a>
         </div>
         <ng-template #loginBtn>
           <button
@@ -495,7 +486,7 @@
             #tooltipView="ngbTooltip"
             type="button"
             class="btn btn-lg btn-dark rounded-pill btn-change-view btn-black ml-3"
-            [ngbTooltip]="tipContent"
+            [ngbTooltip]="changeViewTpl"
             tooltipClass="tooltop-p-0"
             triggers="click"
             [autoClose]="'outside'"
@@ -508,8 +499,6 @@
               alt="angle"
             />
         </button> -->
-
-
 
         <!-- <ng-container *ngTemplateOutlet="addFloorplanBtn"></ng-container> -->
       </div>
@@ -834,7 +823,7 @@
             </form>
           </div>
 
-          <ng-scrollbar *ngIf="modalEditing" class="modal-content canvas-modal scrollbar-danger m-1 m-md-4">
+          <ng-scrollbar *ngIf="modalEditing" [ngClass]="'canvas-modal-'+activeEditProperty" class="modal-content canvas-modal scrollbar-danger m-1 m-md-4">
             <div class="modal-header align-items-center">
               <h5 class="modal-title text-uppercase h4 text-danger">
                 {{ activeEditTitle }}
@@ -1099,7 +1088,7 @@
                   </div>
 
                   <div class="position-relative">
-                    <img class="img-fluid" [src]="panoForm.value.panorama ? panoForm.value.panorama : data.projectFolder + currentPanorama.name + '?_t=data._t'" [alt]="currentPanorama.name">
+                    <img class="img-fluid" [src]="panoForm.value.panorama ? panoForm.value.panorama : data.projectFolder + currentPanorama.name + '?_t=' + data._t" [alt]="currentPanorama.name">
                     <div class="position-absolute d-flex justify-content-between align-items-center w-100 p-3 image-header">
                       <b class="text-white">Single shot</b>
                       <div>
@@ -1112,6 +1101,27 @@
                       </div>
                     </div>
                   </div>
+                </form>
+
+              </ng-container>
+
+              <ng-container *ngSwitchCase="editProperties.changeMenu">
+                <ng-container *ngTemplateOutlet="changeViewTpl"></ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="editProperties.description">
+
+                <form [formGroup]="descriptionFrom" class="p-3 description-form">
+                  <label class="input">
+                    <textarea
+                      (paste)="filterPaste($event)"
+                      formControlName="description"
+                      class="input__field"
+                      rows="15"
+                      placeholder=" "
+                    ></textarea>
+                    <span class="input__label">Add your description*</span>
+                  </label>
                 </form>
 
               </ng-container>

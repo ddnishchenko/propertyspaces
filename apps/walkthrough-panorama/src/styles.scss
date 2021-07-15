@@ -331,3 +331,11 @@ lightbox {
     }
   }
 }
+
+.canvas-modal {
+  .ng-scroll-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+}

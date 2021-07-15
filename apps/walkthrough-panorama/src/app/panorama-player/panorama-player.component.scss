@@ -387,6 +387,52 @@ gallery {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+.description-form {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  .input,
+  .input__field {
+    height: 100%;
+  }
+}
+
+.canvas-modal {
+  &-changeMenu {
+    .modal-body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .btn-group {
+        width: 550px;
+        .btn {
+          padding: 1.125rem 1rem;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-height: 700px) {
+  .canvas-modal {
+    &-description {
+      max-height: 630px;
+      top: calc(50% - 630px / 2);
+    }
+  }
+}
+
+@media screen and (min-height: 400px) {
+  .canvas-modal {
+    &-changeMenu {
+      max-height: 320px;
+      top: calc(50% - 320px / 2);
+    }
+  }
+}
+
 @media screen and (min-width: 992px) {
   .panorama-player {
     height: calc(100vh - 112px);
