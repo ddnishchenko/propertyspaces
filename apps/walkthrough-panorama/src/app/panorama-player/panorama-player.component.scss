@@ -213,6 +213,13 @@ gallery {
   }
 }
 
+.resize-active {
+  .google-map,
+  .embed-responsive {
+    pointer-events: none;
+  }
+}
+
 .google-map {
   height: 410px;
   &.container-contain {
