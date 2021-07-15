@@ -23,20 +23,10 @@
     }
   },
   "projects": {
-    "walkthrough-panorama": {
-      "tags": []
-    },
-    "walkthrough-panorama-e2e": {
-      "tags": [],
-      "implicitDependencies": ["walkthrough-panorama"]
-    },
     "api": {
       "tags": []
     },
     "api-interfaces": {
-      "tags": []
-    },
-    "virtual-tour": {
       "tags": []
     },
     "drag-resize": {
@@ -44,6 +34,24 @@
     },
     "subjx": {
       "tags": []
+    },
+    "virtual-tour": {
+      "tags": []
+    },
+    "walkthrough-panorama": {
+      "tags": []
+    },
+    "walkthrough-panorama-e2e": {
+      "tags": [],
+      "implicitDependencies": ["walkthrough-panorama"]
     }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
   }
 }
