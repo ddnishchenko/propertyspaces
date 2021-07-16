@@ -1,8 +1,8 @@
-import { fromEvent } from "rxjs";
-import { map, startWith } from "rxjs/operators";
+import { fromEvent } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 function isFullscreenActive() {
-  // @ts-ignore
+  // eslint-disable-next-line
   return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
 }
 
@@ -11,11 +11,11 @@ export class Fullscreen {
     startWith(isFullscreenActive()),
     map(() => Fullscreen.isActive)
   );
-  static getRequestFullscreen(): any {
+  static getRequestFullscreen(): boolean {
       const elem = document.documentElement;
       const requestFullscreenMethodToBeInvoked =
           elem.requestFullscreen
-          // @ts-ignore
+          // eslint-disable-next-line
           || elem.webkitRequestFullScreen
           || elem['mozRequestFullscreen']
           || elem['msRequestFullscreen'];
@@ -31,15 +31,15 @@ export class Fullscreen {
     return !!isFullscreenActive();
   }
 
-  static request(): Promise<any> {
+  static request(): Promise<void> {
       return Fullscreen.getRequestFullscreen()()
       .catch(err => console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`));
   }
 
-  static exit(): Promise<any> {
+  static exit(): Promise<void> {
       const exitFullscreenMethodToBeInvoked =
           document.exitFullscreen ||
-          // @ts-ignore
+          // eslint-disable-next-line
           document.webkitExitFullscreen ||
           document['mozExitFullscreen'] ||
           document['msExitFullscreen'];

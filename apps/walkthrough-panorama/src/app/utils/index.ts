@@ -9,7 +9,7 @@ export function fileToBase64(file: File): Promise<string | ArrayBuffer | null> {
 
 export function dataURLtoFile(dataurl, filename): File {
 
-  var arr = dataurl.split(','),
+  let arr = dataurl.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[1]),
       n = bstr.length,

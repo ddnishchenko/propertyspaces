@@ -23,12 +23,11 @@ export class InputFileReaderDirective implements ControlValueAccessor {
     }
 
   }
-  constructor() { }
-  registerOnChange(onChange: any) {
+  registerOnChange(onChange) {
     this.onChange = onChange;
   }
 
-  registerOnTouched(onTouched: any) {
+  registerOnTouched(onTouched) {
     this.onTouched = onTouched;
   }
   writeValue(value: string) {

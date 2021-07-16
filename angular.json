@@ -270,14 +270,12 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "apps/walkthrough-panorama/tsconfig.app.json",
-              "apps/walkthrough-panorama/tsconfig.spec.json",
-              "apps/walkthrough-panorama/tsconfig.editor.json"
-            ],
-            "exclude": ["**/node_modules/**", "!apps/walkthrough-panorama/**/*"]
+            "lintFilePatterns": [
+              "apps/walkthrough-panorama/src/**/*.ts",
+              "apps/walkthrough-panorama/src/**/*.html"
+            ]
           }
         },
         "test": {
@@ -309,13 +307,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/walkthrough-panorama-e2e/tsconfig.e2e.json"],
-            "exclude": [
-              "**/node_modules/**",
-              "!apps/walkthrough-panorama-e2e/**/*"
-            ]
+            "lintFilePatterns": ["apps/walkthrough-panorama-e2e/**/*.{js,ts}"]
           }
         }
       }
@@ -334,6 +328,10 @@
     "@nrwl/cypress": {
       "cypress-project": {
         "linter": "tslint"
+      },
+      "convert-tslint-to-eslint": {
+        "ignoreExistingTslintConfig": true,
+        "removeTSLintIfNoMoreTSLintTargets": false
       }
     },
     "@nrwl/node": {
@@ -373,6 +371,12 @@
     },
     "@nrwl/angular:component": {
       "style": "scss"
+    },
+    "@nrwl/angular": {
+      "convert-tslint-to-eslint": {
+        "ignoreExistingTslintConfig": true,
+        "removeTSLintIfNoMoreTSLintTargets": true
+      }
     }
   },
   "defaultProject": "walkthrough-panorama"
