@@ -384,7 +384,7 @@ export class VirtualTourService {
 
   addNavPoints(model: any) {
     const loader = new THREE.FontLoader();
-    loader.load('assets/fonts/helvetiker_regular.typeface.json', (font) => {
+    loader.load('assets/fonts/roboto-normal-400.json', (font) => {
       this.font = font;
       this.panos = model.panos.filter(p => p.name).map(p => ({ ...p, position: p.panoramas }));
       this.loadTextures(model);
