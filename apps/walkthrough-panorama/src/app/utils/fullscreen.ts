@@ -3,6 +3,7 @@ import { map, startWith } from 'rxjs/operators';
 
 function isFullscreenActive() {
   // eslint-disable-next-line
+  // @ts-ignore
   return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
 }
 
@@ -16,6 +17,7 @@ export class Fullscreen {
       const requestFullscreenMethodToBeInvoked =
           elem.requestFullscreen
           // eslint-disable-next-line
+          // @ts-ignore
           || elem.webkitRequestFullScreen
           || elem['mozRequestFullscreen']
           || elem['msRequestFullscreen'];
@@ -32,6 +34,7 @@ export class Fullscreen {
   }
 
   static request(): Promise<void> {
+      // @ts-ignore
       return Fullscreen.getRequestFullscreen()()
       .catch(err => console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`));
   }
@@ -40,6 +43,7 @@ export class Fullscreen {
       const exitFullscreenMethodToBeInvoked =
           document.exitFullscreen ||
           // eslint-disable-next-line
+          // @ts-ignore
           document.webkitExitFullscreen ||
           document['mozExitFullscreen'] ||
           document['msExitFullscreen'];
