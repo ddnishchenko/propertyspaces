@@ -98,6 +98,7 @@ const titles = {
 export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   @ViewChild(VirtualTourDirective) virtualTour;
   @ViewChild(GalleryComponent) galleryCmp: GalleryComponent;
+  @ViewChild(FloorplanEditorComponent) floorplanEditor: FloorplanEditorComponent;
 
   isFullscreenAvailable = Fullscreen.isAvailable;
   isFullscreenActive$ = Fullscreen.change$.pipe(
@@ -174,9 +175,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     return false;
   }
   get isSaveButton() {
-    const { editContact, editLocation, editPano, description
-      } = this.editProperties;
-    const modalEdit = [editContact, editLocation, editPano, description];
+    const {
+      editContact, editLocation, editPano, description, floorplan
+    } = this.editProperties;
+    const modalEdit = [editContact, editLocation, editPano, description, floorplan];
     return modalEdit.includes(this.activeEditProperty);
   }
   constructor(
@@ -444,6 +446,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   openFloorplanEditor(data) {
     const modalRef = this.modalService.open(FloorplanEditorComponent, {
       windowClass: 'fullscreen-modal',
+      scrollable: true
     });
     modalRef.componentInstance.data = data;
     modalRef.result.then(data => {
@@ -499,6 +502,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.modalTitle = modalTitle;
     const m = this.modalService.open(modalWrapper, {
       windowClass: 'fullscreen-modal',
+      scrollable: true
     });
 
     m.result.then(
@@ -513,7 +517,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
   openGalleryEditor(photos) {
     const modal = this.modalService.open(GalleryEditorComponent, {
-      windowClass: 'fullscreen-modal'
+      windowClass: 'fullscreen-modal',
+      scrollable: true
     });
     modal.componentInstance.items = photos;
   }
@@ -538,9 +543,6 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   closeGallery() {
     this.isGalleryOpened = false;
     this.resizeCanvas();
-  }
-  updateMasonty() {
-
   }
 
   onResizeEnd(event: ResizeEvent): void {
@@ -666,8 +668,12 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       case this.editProperties.description:
         const data = {
           description: this.descriptionFrom.value.description
-        }
+        };
         this.store.dispatch(updateProject({projectId, data}));
+        break;
+      case this.editProperties.floorplan:
+        const floorplanEditorData = this.floorplanEditor.form.value;
+        this.store.dispatch(updateProject({projectId, data: floorplanEditorData}));
         break;
     }
   }

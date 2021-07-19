@@ -64,7 +64,7 @@
                 [style.transform]="'rotate(' + -f.nav_dots_rotation + 'deg)'"
               >
                 <img
-                  class="vt-map-wrapper-floorplan"
+                  class="vt-map-wrapper-floorplan img-fluid"
                   #floorplanImage
                   [src]="
                     data.projectFolder +
@@ -751,7 +751,7 @@
           [style.width]="canvasAspect(sceneWrapper)"
         >
 
-          <ng-container>
+          <ng-container *ngIf="activeEditProperty">
             <button (click)="toggleFullscreen()" type="button" class="btn" id="fullscreen">
               <img src="assets/img/icons/expand.svg" alt="Fullscreen">
             </button>
@@ -854,6 +854,10 @@
                     (moveToTrash)="deleteGalleryImage($event, data.project_id)"
                   ></propertyspaces-gallery-editor>
                 </ng-container>
+              </ng-container>
+
+              <ng-container  *ngSwitchCase="editProperties.floorplan">
+                <propertyspaces-floorplan-editor [data]="data"></propertyspaces-floorplan-editor>
               </ng-container>
 
               <ng-container *ngSwitchCase="editProperties.editContact">

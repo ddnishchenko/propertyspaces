@@ -68,9 +68,8 @@ export const selectVirtualTourPanoramas =
               return currentValue;
             }
           )
-          .sort((a,b) => +a.panoramas.floor - +b.panoramas.floor)
-        ;
-        console.log(floors.map(p => p.panoramas).map(({floor, order, transitionFrom}) => ({floor, order, transitionFrom}))  );
+          .sort((a,b) => +a.panoramas.floor - +b.panoramas.floor);
+
         return floors;
       }
       return [];
@@ -138,7 +137,6 @@ export const selectHdrVirtualTourPanoramasDividerOnFloors = createSelector(selec
     // const floorplanArea = (xSide * zSide) * size;
     // const width = (zSide  + (zMin*2)) * size;
     // const height = (xSide  + (zMin*2)) * size;
-    // console.log(floorplanMap);
   });
 
 

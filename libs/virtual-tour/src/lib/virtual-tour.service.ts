@@ -62,17 +62,9 @@ function ringsShape(pano, font) {
   group.add(innerRingMesh);
   group.add(circleMesh);
   group.add(shapesTextMesh);
-
-  // textMesh.rotation.set(2, 4, 0);
-  // textMesh.position.set(1, 0, 1);
-  // shapesTextMesh.rotation.set(2, 4, 0);
-  // shapesTextMesh.position.set(1, 0, 1);
-
-
-
   group.rotation.set(11, 0, 0);
   group.children[2].position.set(0,0,-0.001);
-  console.log(group);
+
   return group;
 }
 
@@ -368,7 +360,6 @@ export class VirtualTourService {
   }
 
   addPanosMarks() {
-    console.log(this.panos)
     this.panos.forEach((pano) => {
       if (!pano.object) {
         const mesh = ringsShape(pano.panoramas, this.font);
@@ -635,7 +626,6 @@ export class VirtualTourService {
 
     this.camera.addEventListener('zoom', (e) => {
       this.events.emit({ type: VirtualTourService.EVENTS.ZOOM, data: e.target.object.fov });
-      console.log(e);
     })
   }
 

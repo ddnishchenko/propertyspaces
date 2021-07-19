@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DraggableDirective } from '@propertyspaces/drag-resize';
 import { SubjxDirective } from '@propertyspaces/subjx';
+import { lastValueFrom } from 'rxjs';
 import { ProjectsService } from '../../../projects/service/projects.service';
 import { fileToBase64 } from '../../../utils';
 
@@ -11,16 +12,12 @@ import { fileToBase64 } from '../../../utils';
   templateUrl: './floorplan-editor.component.html',
   styleUrls: ['./floorplan-editor.component.scss']
 })
-export class FloorplanEditorComponent implements OnInit, AfterViewInit {
+export class FloorplanEditorComponent implements OnInit {
+  @Input() data;
   @ViewChild(DraggableDirective) floorplanWrapper!: DraggableDirective;
   @ViewChild(SubjxDirective) subjxWrapper!: SubjxDirective;
   @ViewChild('floorPlan') floorPlan: ElementRef<HTMLImageElement>;
   @ViewChild('bound') bound: ElementRef<HTMLImageElement>;
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event) {
-    this.activeModal.dismiss();
-  }
-  data;
   form;
   get formArray() {
     return this.form?.get('floors') as FormArray;
@@ -28,14 +25,10 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
   dotSize = 24;
   prevRotate = 0;
   constructor(
-    public activeModal: NgbActiveModal,
     private projectsService: ProjectsService
   ) { }
   ngOnInit(): void {
     this.createForm();
-  }
-  ngAfterViewInit() {
-    console.log(this.floorplanWrapper);
   }
 
   createForm() {
@@ -87,7 +80,6 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
       ...this.data.additional_data,
       ...this.form.value
     }
-    this.activeModal.close(additional_data);
   }
   rotate(d, i) {
     const form = this.formArray.at(i)?.value;
@@ -201,6 +193,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     })
   }
   rotationChange($event, i) {
+    /*
     if (false) {
       console.log($event.type);
       const form = this.formArray.at(i).value;
@@ -210,7 +203,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
     }
 
 
-    /* this.data.floorplanMap = this.data.floorplanMap.map(coord => {
+     this.data.floorplanMap = this.data.floorplanMap.map(coord => {
       const percentX = form.nav_dots_width / 100;
       const percentH = form.nav_dots_height / 100;
       const newCoord = {
@@ -218,7 +211,8 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
         z: (coord.z * percentH)+ Math.sin(delta) * form.nav_dots_height
       };
       return newCoord;
-    }); */
+    });
+    */
     /*
     if ($event.type === 'input') {
       const delta = 1 * Math.PI/180;
@@ -245,7 +239,7 @@ export class FloorplanEditorComponent implements OnInit, AfterViewInit {
         }
         return v;
       }).sort((a, b) => a.floor - b.floor);
-      const res: any = await this.projectsService.updateDataProject(this.data.project_id, { floors: additionalData }).toPromise();
+      const res: any = await lastValueFrom(this.projectsService.updateDataProject(this.data.project_id, { floors: additionalData }));
       this.formArray.at(index).patchValue({ [`floorplan_f${floor}.svg`]: `floorplan_f${floor}.svg` });
       this.data._t = Date.now()
     }

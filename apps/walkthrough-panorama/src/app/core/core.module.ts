@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { SnotifyModule, SnotifyPosition, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { ApiInterceptor } from './api.interceptor';
 import { reducers, metaReducers } from './state/core.reducer';
 import { ProjectsEffects } from '../projects/state/projects.effects';
@@ -53,7 +53,15 @@ const agmConfig: LazyMapsAPILoaderConfigLiteral = {
       multi: true
     },
     SnotifyService,
-    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+    {
+      provide: 'SnotifyToastConfig', useValue: {
+        ...ToastDefaults,
+        toast: {
+          ...ToastDefaults.toast,
+          position: SnotifyPosition.rightTop
+        }
+      }
+    },
   ]
 })
 export class CoreModule { }

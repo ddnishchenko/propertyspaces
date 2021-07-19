@@ -7,7 +7,10 @@
 
 <div class="d-flex align-items-center">
 
-  <button type="button" *ngIf="showCrement" class="btn" (click)="crementControl(-step)"><ng-template [ngTemplateOutlet]="minusTpl || defaultMinusTpl"></ng-template></button>
+  <button type="button" *ngIf="showCrement"
+  class="btn"
+  [class.invisible]="decrementVisible"
+  (click)="crementControl(-step)"><ng-template [ngTemplateOutlet]="minusTpl || defaultMinusTpl"></ng-template></button>
 
   <div class="range-slider">
     <!-- <input type="range" class="form-control-range" id="formControlRange"> -->
@@ -22,7 +25,10 @@
     />
   </div>
 
-  <button type="button" *ngIf="showCrement" class="btn" (click)="crementControl(step)"><ng-template [ngTemplateOutlet]="plusTpl || defaultPlusTpl"></ng-template></button>
+  <button type="button" *ngIf="showCrement"
+  class="btn"
+  [class.invisible]="incrementVisible"
+  (click)="crementControl(step)"><ng-template [ngTemplateOutlet]="plusTpl || defaultPlusTpl"></ng-template></button>
 
   <input class="value-display" *ngIf="showValue" type="number" (input)="slide($event)" [value]="value" [step]="step" [min]="min" [max]="max">
 </div>

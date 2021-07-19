@@ -24,6 +24,20 @@ export class SliderComponent implements ControlValueAccessor {
   @Input() min;
   @Input() max;
   @Output() slide = new EventEmitter();
+  get incrementVisible(): boolean {
+    const test = this.max + '';
+    if (!Number.isNaN(+test)) {
+      return this.value >= this.max;
+    }
+    return false;
+  }
+  get decrementVisible(): boolean {
+    const test = this.min + '';
+    if (!Number.isNaN(+test)) {
+      return this.value <= this.min;
+    }
+    return false;
+  }
   value;
 
   onChange = (value) => {};

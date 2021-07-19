@@ -91,6 +91,9 @@ mwlResizable {
   .modal-content {
     min-height: 100%;
   }
+  .modal-dialog-scrollable {
+    min-height: 100vh !important;
+  }
 }
 
 .sidebar-card {
