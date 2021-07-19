@@ -36,7 +36,7 @@ function ringsShape(pano, font) {
     transparent: true,
     side: THREE.DoubleSide
   } );
-  const shapesText = font.generateShapes(`${index}`, 2);
+  const shapesText = font.generateShapes(`${index}`, 1.5);
   const shapesTextGeometry = new THREE.ShapeGeometry(shapesText);
   shapesTextGeometry.computeBoundingBox();
   const xMid = (-1 * (shapesTextGeometry.boundingBox.max.x + shapesTextGeometry.boundingBox.min.x)) / 2;
