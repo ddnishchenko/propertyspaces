@@ -17,19 +17,32 @@ export interface VRScreenshot {
 
 function ringsShape(pano, font) {
   const color = isNaN(pano?.transitionFrom) ? 0xffffff : 0xff00ff;
-  const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 30, 1, 0);
-  const outerRingMaterial = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
+  const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 314, 1, 0);
+  const outerRingMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, side: THREE.DoubleSide });
   const outerRingMesh = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
 
-  const innerRingGeometry = new THREE.RingGeometry(1.5, 1.8, 30, 1, 0);
-  const innerRingMaterial = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
+  const innerRingGeometry = new THREE.RingGeometry(1.5, 1.8, 314, 1, 0);
+  const innerRingMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, side: THREE.DoubleSide });
   const innerRingMesh = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
 
-  const circleGeometry = new THREE.CircleGeometry(2, 30);
-  const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 });
+  const circleGeometry = new THREE.CircleGeometry(2, 128);
+  const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 });
   const circleMesh = new THREE.Mesh(circleGeometry, circleMaterial);
 
   const index = pano?.order || 0;
+
+  const matLite = new THREE.MeshBasicMaterial( {
+    color: color,
+    transparent: true,
+    side: THREE.DoubleSide
+  } );
+  const shapesText = font.generateShapes(`${index}`, 2);
+  const shapesTextGeometry = new THREE.ShapeGeometry(shapesText);
+  shapesTextGeometry.computeBoundingBox();
+  const xMid = (-1 * (shapesTextGeometry.boundingBox.max.x + shapesTextGeometry.boundingBox.min.x)) / 2;
+  const yMid = (-1 * (shapesTextGeometry.boundingBox.max.y + shapesTextGeometry.boundingBox.min.y)) / 2;
+  shapesTextGeometry.translate(xMid, yMid, 0);
+  const shapesTextMesh = new THREE.Mesh(shapesTextGeometry, matLite);
 
   const textGeometry = new THREE.TextGeometry(`${index}`, {
     font,
@@ -39,7 +52,7 @@ function ringsShape(pano, font) {
     bevelThickness: 0.1,
     bevelSize: 0,
     bevelOffset: 0,
-    bevelSegments: 0
+    bevelSegments: 0,
   });
   const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
   const textMesh = new THREE.Mesh(textGeometry, textMaterial);
@@ -48,14 +61,18 @@ function ringsShape(pano, font) {
   group.add(outerRingMesh);
   group.add(innerRingMesh);
   group.add(circleMesh);
-  group.add(textMesh);
+  group.add(shapesTextMesh);
 
-  textMesh.rotation.set(2, 4, 0);
-  textMesh.position.set(1, 0, 1);
+  // textMesh.rotation.set(2, 4, 0);
+  // textMesh.position.set(1, 0, 1);
+  // shapesTextMesh.rotation.set(2, 4, 0);
+  // shapesTextMesh.position.set(1, 0, 1);
+
 
 
   group.rotation.set(11, 0, 0);
-
+  group.children[2].position.set(0,0,-0.001);
+  console.log(group);
   return group;
 }
 
@@ -433,8 +450,8 @@ export class VirtualTourService {
       this.panos.forEach(pano => {
         // pano.object.material.opacity = 0.25
         pano.object.children.forEach(mesh => {
-          if (mesh.geometry !== 'CircleGeometry') {
-            mesh.material.opacity = 0.25;
+          if (!(mesh.geometry instanceof THREE.CircleGeometry)) {
+            mesh.material.opacity = 0.4;
           }
 
         });
@@ -444,8 +461,8 @@ export class VirtualTourService {
         const panoIndex = this.panos.findIndex(p => p.panoramas.index === panoId)
         // this.panos[panoId].object.material.opacity = 0.5
         this.panos[panoIndex].object.children.forEach(mesh => {
-          if (mesh.geometry !== 'CircleGeometry') {
-            mesh.material.opacity = 0.5;
+          if (!(mesh.geometry instanceof THREE.CircleGeometry)) {
+            mesh.material.opacity = 1;
           }
 
         });
@@ -612,9 +629,19 @@ export class VirtualTourService {
       // }
     });
 
+    this.OrbitControls.addEventListener('change', e => {
+      this.spinCircle(e.target.getAzimuthalAngle());
+    });
+
     this.camera.addEventListener('zoom', (e) => {
       this.events.emit({ type: VirtualTourService.EVENTS.ZOOM, data: e.target.object.fov });
       console.log(e);
+    })
+  }
+
+  spinCircle(angle) {
+    this.panos.forEach((p, i) => {
+      this.panos[i].object.rotation.set(11, 0, angle);
     })
   }
 
