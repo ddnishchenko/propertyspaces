@@ -1,6 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DraggableDirective } from '@propertyspaces/drag-resize';
 import { SubjxDirective } from '@propertyspaces/subjx';
 import { lastValueFrom } from 'rxjs';
