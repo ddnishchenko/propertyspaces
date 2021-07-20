@@ -751,7 +751,7 @@
           [style.width]="canvasAspect(sceneWrapper)"
         >
 
-          <ng-container *ngIf="activeEditProperty">
+          <ng-container *ngIf="!activeEditProperty">
             <button (click)="toggleFullscreen()" type="button" class="btn" id="fullscreen">
               <img src="assets/img/icons/expand.svg" alt="Fullscreen">
             </button>
