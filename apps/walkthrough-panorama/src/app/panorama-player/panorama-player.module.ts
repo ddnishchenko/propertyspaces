@@ -9,6 +9,7 @@ import { ResizableModule } from 'angular-resizable-element';
 
 import { VirtualTourModule } from '@propertyspaces/virtual-tour';
 import { DragResizeModule } from '@propertyspaces/drag-resize';
+import { SvgZoomPanModule } from '@propertyspaces/svgzoompan';
 import { SubjxModule } from '@propertyspaces/subjx';
 
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
@@ -30,7 +31,8 @@ import { SharedModule } from '../shared/shared.module';
     NgbButtonsModule,
     NgbAccordionModule,
     NgbTooltipModule,
-    SharedModule
+    SharedModule,
+    SvgZoomPanModule
   ]
 })
 export class PanoramaPlayerModule { }

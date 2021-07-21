@@ -147,6 +147,31 @@
         }
       }
     },
+    "svgzoompan": {
+      "projectType": "library",
+      "root": "libs/svgzoompan",
+      "sourceRoot": "libs/svgzoompan/src",
+      "prefix": "propertyspaces",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/svgzoompan"],
+          "options": {
+            "jestConfig": "libs/svgzoompan/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/svgzoompan/src/**/*.ts",
+              "libs/svgzoompan/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "virtual-tour": {
       "projectType": "library",
       "root": "libs/virtual-tour",

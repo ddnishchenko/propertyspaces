@@ -6,5 +6,6 @@ module.exports = {
     '<rootDir>/libs/virtual-tour',
     '<rootDir>/libs/drag-resize',
     '<rootDir>/libs/subjx',
+    '<rootDir>/libs/svgzoompan',
   ],
 };

@@ -101,6 +101,14 @@ mwlResizable {
   .card-header {
     padding: 0 0.75rem;
   }
+  .btn {
+    color: $white;
+  }
+}
+
+.sidebar-card.active > .card-header,
+.sidebar-card > .card-header:hover {
+  background-color: $danger !important;
 }
 
 .accordion > .card > .card-header {
@@ -108,27 +116,18 @@ mwlResizable {
   margin-bottom: 0;
   border-bottom-width: 3px;
 }
-.sidebar-accordion > .sidebar-card.active > .card-header,
-.sidebar-accordion.accordion > .card > .card-header:hover {
-  .btn {
-    color: #fff;
-  }
-  .sidebar-header-icon-fill svg path {
-    fill: #fff !important;
-  }
-  .sidebar-header-icon-stroke svg path {
-    stroke: #fff !important;
-  }
-}
-
-.sidebar-card.active > .card-header,
-.sidebar-card:hover > .card-header {
-  background: #231f20;
-  color: #fff;
-}
 
 .sidebar-card > .collapse {
   overflow: auto;
+}
+.sidebar-accordion .sidebar-card {
+  transition: height 0.3s ease-out;
+}
+.sidebar-accordion-active {
+  .sidebar-card:not(.active) {
+    height: 0;
+    overflow: hidden;
+  }
 }
 
 .inner-accordion {

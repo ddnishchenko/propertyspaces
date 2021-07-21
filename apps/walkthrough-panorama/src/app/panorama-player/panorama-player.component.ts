@@ -20,6 +20,7 @@ import { ConfirmationModalComponent } from '../shared/components/confirmation-mo
 import { ResizeEvent } from 'angular-resizable-element';
 import { Editor } from 'ngx-editor';
 import { Fullscreen } from '../utils/fullscreen';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 const aspectRations = [
   {
@@ -106,6 +107,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     tap(() => setTimeout(() =>this.resizeCanvas(), 100) ),
   );
   isCollapsed = true;
+  isOneAccActive = false;
   editor: Editor;
   isGalleryOpened = false;
   activePoint = 0;
@@ -186,7 +188,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private modalService: NgbModal,
     private store: Store,
-    private zone: NgZone
+    private zone: NgZone,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -291,6 +294,12 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.descriptionFrom = new FormGroup({
       description: new FormControl()
     })
+  }
+
+  downloadSvg(url) {
+    const headers = new HttpHeaders();
+    headers.set('Accept', 'image/svg+xml');
+    return this.http.get(url, {headers, responseType: 'text'});
   }
 
   calcRatio(ratio) {

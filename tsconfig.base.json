@@ -19,6 +19,7 @@
       "@propertyspaces/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@propertyspaces/drag-resize": ["libs/drag-resize/src/index.ts"],
       "@propertyspaces/subjx": ["libs/subjx/src/index.ts"],
+      "@propertyspaces/svgzoompan": ["libs/svgzoompan/src/index.ts"],
       "@propertyspaces/virtual-tour": ["libs/virtual-tour/src/index.ts"]
     }
   },

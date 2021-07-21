@@ -64,10 +64,14 @@
 
 .panorama-player {
   position: relative;
-  height: calc(100vh - 67px);
+  height: calc(100vh - 67px - 72px);
   &-fullscreen {
     height: 100vh !important;
   }
+}
+
+.footer {
+  background: #231f20;
 }
 .boxes {
   position: absolute;
@@ -116,7 +120,7 @@
 }
 
 .sidebar {
-  background-color: #fff;
+  background-color: #3a3536;
   box-sizing: border-box;
   &.sidebar-hidden {
     display: none !important;
@@ -147,11 +151,11 @@
   font-size: 0;
   &-left {
     right: 0;
-    transform: translate(50%, -50%);
+    transform: translate(calc(50% + 5px), -50%);
   }
   &-right {
     left: 0;
-    transform: translate(-50%, -50%);
+    transform: translate(calc(-50% - 5px), -50%);
   }
 }
 
@@ -164,7 +168,7 @@
 .stick-right {
   order: 1;
   border-right: none;
-  border-left: 4px solid #4e4e4e;
+  border-left: 10px solid #4e4e4e;
 }
 
 .content {
@@ -456,7 +460,7 @@ gallery {
 
 @media screen and (min-width: 992px) {
   .panorama-player {
-    height: calc(100vh - 112px);
+    height: calc(100vh - 112px - 72px);
   }
   .navbar {
     padding: 25px 35px;
@@ -467,7 +471,7 @@ gallery {
       flex-grow: initial;
     }
     position: relative;
-    border-right: 4px solid #4e4e4e;
+    border-right: 10px solid #4e4e4e;
     width: 400px;
     height: 100%;
     left: 0 !important;
