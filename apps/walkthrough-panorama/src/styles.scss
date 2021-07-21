@@ -124,6 +124,7 @@ mwlResizable {
   transition: height 0.3s ease-out;
 }
 .sidebar-accordion-active {
+  background-color: #fff;
   .sidebar-card:not(.active) {
     height: 0;
     overflow: hidden;
