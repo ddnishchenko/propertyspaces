@@ -339,16 +339,24 @@ export class VirtualTourService {
         (resolve, reject) => loader.load(path, resolve, progressHandler, reject)
       )
     );
+
+    const paths = this.panos.map(pano => `${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`);
+
+
     this.loadedTextures = this.panos.map(
       (pano, i) => {
         return {
-          texture: loader.load(`${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`,
-          (t) => {
-            if (!i) {
-              this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
-              this.events.emit({ type: VirtualTourService.EVENTS.INIT, data: t })
+          texture: loader.load(
+            `${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`,
+            (t) => {
+              this.panos[i].loaded = true;
+              this.currentPano.loaded = true;
+              if (!i) {
+                this.OrbitControls.rotateLeft(-this.transitionMesh.position.y * 2);
+                this.events.emit({ type: VirtualTourService.EVENTS.INIT, data: t })
+              }
             }
-          }),
+          ),
           index: pano.panoramas.index
         };
 

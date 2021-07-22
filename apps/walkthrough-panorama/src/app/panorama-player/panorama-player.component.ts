@@ -106,6 +106,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     map(active => ({active})),
     tap(() => setTimeout(() =>this.resizeCanvas(), 100) ),
   );
+  loading = true;
   isCollapsed = true;
   isOneAccActive = false;
   editor: Editor;
@@ -331,6 +332,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
     this.activePoint = this.virtualTour.virtualTourService.activeIndex;
     this.currentPanorama = this.virtualTour.virtualTourService.currentPano;
+    this.loading = false;
   }
 
   editModeSwitch(editMode) {
