@@ -252,6 +252,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       zoom: new FormControl(0),
       panoZoom: new FormControl(0),
       panoCameraStartAngle: new FormControl(''),
+      visibilityRadius: new FormControl(0),
+      panoVisibilityRadius: new FormControl(0),
     });
 
     this.mapForm = new FormGroup({
@@ -350,8 +352,19 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.virtualTour.virtualTourService.changeZoomForCurrentPano(+this.vrTourSettingsForm.value.panoZoom);
   }
 
+  visibilityRadiusChange() {
+    this.virtualTour.virtualTourService.changeVisibilityRadius(+this.vrTourSettingsForm.value.visibilityRadius);
+  }
+  panoVisibilityRadiusChange() {
+    this.virtualTour.virtualTourService.changeVisibilityRadius(+this.vrTourSettingsForm.value.panoVisibilityRadius, true);
+  }
+
   saveY(projectId) {
-    const data = { zoom: this.vrTourSettingsForm.value.zoom, rotation_y: this.vrTourSettingsForm.value.rotationY };
+    const data = {
+      zoom: this.vrTourSettingsForm.value.zoom,
+      rotation_y: this.vrTourSettingsForm.value.rotationY,
+      visibilityRadius: this.vrTourSettingsForm.value.visibilityRadius
+    };
     this.store.dispatch(updateProject({ projectId, data }))
   }
 
@@ -373,15 +386,21 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
         if (answer) {
           const data = {
             zoom: this.vrTourSettingsForm.value.zoom,
-            rotation_y: this.vrTourSettingsForm.value.rotationY
+            rotation_y: this.vrTourSettingsForm.value.rotationY,
+            visibilityRadius: this.vrTourSettingsForm.value.visibilityRadius
           };
           this.vrTourSettingsForm.patchValue({
             panoZoom: 0,
             panoCameraStartAngle: 0,
+            panoVisibilityRadius: 0
           });
 
           const changedPanos = this.virtualTour.virtualTourService.panos.filter(
-            p => !isNaN(parseInt(p.panoramas.zoom, 10))  || !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
+            p => !isNaN(parseInt(p.panoramas.zoom, 10))
+            ||
+            !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
+            ||
+            !isNaN(parseInt(p.panoramas.visibilityRadius, 10))
           );
           const resetPano = p => {
 
@@ -390,7 +409,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
               panoramas: {
                 ...p.panoramas,
                 zoom: undefined,
-                panoCameraStartAngle: undefined
+                panoCameraStartAngle: undefined,
+                visibilityRadius: undefined
               }
             }
 
@@ -400,6 +420,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
           this.virtualTour.virtualTourService.defaultY = data.rotation_y;
           this.virtualTour.virtualTourService.defaultZoom = data.zoom;
+          this.virtualTour.virtualTourService.visibilityRadius = data.visibilityRadius;
           this.store.dispatch(updateProject({projectId, data}));
           resetedPanos.forEach(panorama => {
             this.store.dispatch(updatePanorama({projectId, panorama}));
@@ -440,7 +461,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     });
     this.vrTourSettingsForm.patchValue({
       panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoramas.panoCameraStartAngle || 0,
-      panoZoom: this.virtualTour.virtualTourService.currentPano.panoramas.zoom || 0
+      panoZoom: this.virtualTour.virtualTourService.currentPano.panoramas.zoom || 0,
+      panoVisibilityRadius: this.virtualTour.virtualTourService.currentPano.panoramas.visibilityRadius || 0,
     });
   }
   zoomChange($event?) {

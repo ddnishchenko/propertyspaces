@@ -16,7 +16,8 @@ export interface VRScreenshot {
 
 
 function ringsShape(pano, font) {
-  const color = isNaN(pano?.transitionFrom) ? 0xffffff : 0xff00ff;
+  // const color = isNaN(pano?.transitionFrom) ? 0xffffff :0xff00ff;
+  const color = 0xffffff;
   const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 314, 1, 0);
   const outerRingMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, side: THREE.DoubleSide });
   const outerRingMesh = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
@@ -72,6 +73,7 @@ function ringsShape(pano, font) {
 export class VirtualTourService {
   private defaultY = 3.5;
   private defaultZoom = 60;
+  private defaultVisibilityRadius = 0.5;
   static EVENTS = {
     INIT: 'INIT',
     ROTATION_CHANGE: 'ROTATION_CHANGE',
@@ -268,20 +270,57 @@ export class VirtualTourService {
     return target
   }
 
+  changeVisibilityRadius(val, changeCurrent = false) {
+    if (changeCurrent) {
+      this.panos = this.panos.map(p => {
+        if (p.panoramas.index === this.currentPano.panoramas.index) {
+          return {...p, panoramas: {...p.panoramas, visibilityRadius: val}};
+        }
+        return p;
+      });
+      this.currentPano = {
+        ...this.currentPano,
+        panoramas: {
+          ...this.currentPano.panoramas,
+          visibilityRadius: val
+        }
+      }
+    } else {
+      this.defaultVisibilityRadius = val;
+    }
+    this.toggleNavPoints(true);
+    this.renderingUpdate();
+  }
+
   toggleNavPoints(toggle) {
+    const visibilityRadius = this.currentPano ? this.currentPano.panoramas.visibilityRadius || this.defaultVisibilityRadius : this.defaultVisibilityRadius;
+    this.panos.forEach((pano) => pano.object.visible = false);
     if (toggle) {
       this.panos.forEach((pano) => {
         if (this.currentPano.panoramas.neighbors) {
-          pano.object.visible = this.currentPano.panoramas.neighbors.includes(pano.name);
+          const nPanos = this.currentPano.panoramas.neighbors.map(n => this.panos.find(p => p.name === n))
+          .filter(p => p)
+          .filter(p => {
+            const diffY = 1 > Math.abs(Math.abs(this.currentPanorama.panoramas.y) - Math.abs(p.panoramas.y));
+            const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
+            const sameFloor = this.currentPanorama.panoramas.floor == p.panoramas.floor;
+            return diffY && isNeighborFloor;
+          });
+          const panoRadius = this.panos.filter(
+            p => {
+            const isX = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.panoramas.x) - Math.abs(p.panoramas.x));
+            const isZ = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.panoramas.z) - Math.abs(p.panoramas.z));
+            const isY = 1 > Math.abs(Math.abs(this.currentPanorama.panoramas.y) - Math.abs(p.panoramas.y));
+            const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
+            return (isX || isZ) && isY && isNeighborFloor;
+          });
+          console.log(nPanos);
+          pano.object.visible = nPanos.concat(panoRadius).map(p => p.name).includes(pano.name);
         } else {
           // TODO: Remove backword compatibility
-          pano.object.visible = pano.panoramas.floor === this.currentPano.panoramas.floor;
+          pano.object.visible = false; // pano.panoramas.floor === this.currentPano.panoramas.floor;
         }
 
-      })
-    } else {
-      this.panos.forEach((pano) => {
-        pano.object.visible = false;
       })
     }
 
@@ -451,6 +490,7 @@ export class VirtualTourService {
         pano.object.children.forEach(mesh => {
           if (!(mesh.geometry instanceof THREE.CircleGeometry)) {
             mesh.material.opacity = 0.4;
+            this.canvas.style.cursor = '';
           }
 
         });
@@ -462,6 +502,7 @@ export class VirtualTourService {
         this.panos[panoIndex].object.children.forEach(mesh => {
           if (!(mesh.geometry instanceof THREE.CircleGeometry)) {
             mesh.material.opacity = 1;
+            this.canvas.style.cursor = 'pointer';
           }
 
         });
@@ -479,8 +520,7 @@ export class VirtualTourService {
   takeScreenshot(options?: TakeScreenshotOptions): VRScreenshot {
 
     this.toggleNavPoints(false);
-    this.OrbitControls.update();
-    this.renderer.render(this.scene, this.camera);
+    this.renderingUpdate();
     const dataURL = this.renderer.domElement.toDataURL('image/jpeg');
     this.toggleNavPoints(true);
     const d = new Date();
@@ -524,18 +564,19 @@ export class VirtualTourService {
     this.renderer.setSize(width, height);
   }
 
+  renderingUpdate() {
+    // Rendering start
+    this.OrbitControls.update();
+    // end
+    this.renderer.render(this.scene, this.camera);
+  }
   /**
    * Rendering process
    */
   render(): void {
     this.renderCallback();
-    this.frameId = requestAnimationFrame(() => {
-      this.render();
-    });
-    // Rendering start
-    this.OrbitControls.update();
-    // end
-    this.renderer.render(this.scene, this.camera);
+    this.frameId = requestAnimationFrame(() => this.render());
+    this.renderingUpdate();
   }
 
   /**
@@ -552,6 +593,7 @@ export class VirtualTourService {
     if (config.additional_data) {
       this.defaultY = +config.additional_data.rotation_y || this.defaultY;
       this.defaultZoom = +config.additional_data.zoom || this.defaultZoom;
+      this.defaultVisibilityRadius = +config.additional_data.visibilityRadius || this.defaultVisibilityRadius;
     }
 
     // Create the renderer

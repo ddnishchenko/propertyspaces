@@ -776,6 +776,11 @@
                 class="position-absolute btn"><i class="fa fa-lg fa-share-alt"></i></button>
             </ng-container>
 
+            <button *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty"
+            (click)="activeEditProperty = ''" type="button" class="btn" id="fullscreen">
+              <img src="assets/img/icons/cross-white.svg" alt="Fullscreen">
+            </button>
+
 
             <button type="button"
             *ngIf="editProperties.createGallery === activeEditProperty"
@@ -820,17 +825,20 @@
 
                 <div class="form-group">
                   <label>Nav point rotation</label>
-
                   <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
                   <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
-
-
                 </div>
 
                 <div class="form-group">
                   <label>Zoom</label>
                   <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
                   <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+                </div>
+
+                <div class="form-group">
+                  <label>Nav points visibility radius</label>
+                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="visibilityRadiusChange()" formControlName="visibilityRadius" [step]="0.1" [min]="0.5" [max]="2"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoVisibilityRadiusChange()" formControlName="panoVisibilityRadius" [step]="0.1" [min]="0.5" [max]="2"></propertyspaces-slider>
                 </div>
 
                 <div class="text-center">
