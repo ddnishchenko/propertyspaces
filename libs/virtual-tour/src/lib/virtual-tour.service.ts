@@ -314,7 +314,7 @@ export class VirtualTourService {
             const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
             return (isX || isZ) && isY && isNeighborFloor;
           });
-          console.log(nPanos);
+
           pano.object.visible = nPanos.concat(panoRadius).map(p => p.name).includes(pano.name);
         } else {
           // TODO: Remove backword compatibility

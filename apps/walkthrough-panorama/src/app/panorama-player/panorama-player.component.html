@@ -837,8 +837,8 @@
 
                 <div class="form-group">
                   <label>Nav points visibility radius</label>
-                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="visibilityRadiusChange()" formControlName="visibilityRadius" [step]="0.1" [min]="0.5" [max]="2"></propertyspaces-slider>
-                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoVisibilityRadiusChange()" formControlName="panoVisibilityRadius" [step]="0.1" [min]="0.5" [max]="2"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="visibilityRadiusChange()" formControlName="visibilityRadius" [step]="0.1" [min]="0.1" [max]="2"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoVisibilityRadiusChange()" formControlName="panoVisibilityRadius" [step]="0.1" [min]="0.1" [max]="2"></propertyspaces-slider>
                 </div>
 
                 <div class="text-center">

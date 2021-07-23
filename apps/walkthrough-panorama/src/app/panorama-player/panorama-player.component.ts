@@ -487,9 +487,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
         const projectId = this.route.snapshot.params.id;
         this.store.dispatch(updateProject({ projectId, data }))
       }
-    }).catch(e => {
-      console.log('Dismissed');
-    })
+    });
   }
   scaleDots(data) {
     return {
@@ -518,7 +516,6 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     setTimeout(() => this.virtualTour.virtualTourService.resize())
   }
   navFloor($event, floors, panos) {
-    console.log(floors[$event.nextId]);
     const pano = floors[$event.nextId][0]
     this.navTo(pano.panoramas.index);
   }
@@ -589,11 +586,9 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
 
   imageNameChanged($event, projectId) {
-    console.log({ ...$event, projectId });
     this.store.dispatch(renamePhoto({ ...$event, projectId }));
   }
   sortChanged($event, projectId) {
-    console.log({ projectId, photos: $event });
     this.store.dispatch(changeOrderOfPhoto({ projectId, photos: $event.map(item => item.name) }))
   }
   deleteGalleryImage($event, projectId) {
