@@ -841,6 +841,15 @@
                   <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoVisibilityRadiusChange()" formControlName="panoVisibilityRadius" [step]="0.1" [min]="0.1" [max]="2"></propertyspaces-slider>
                 </div>
 
+                <div class="form-group form-check">
+                  <input type="checkbox"
+                  class="form-check-input"
+                  id="filterNeighbors"
+                  formControlName="neighborsFiltering"
+                  (change)="changeNeighborsFiltering()">
+                  <label class="form-check-label" for="filterNeighbors">Apply neighbors filtering</label>
+                </div>
+
                 <div class="text-center">
                   <button
                     type="button"

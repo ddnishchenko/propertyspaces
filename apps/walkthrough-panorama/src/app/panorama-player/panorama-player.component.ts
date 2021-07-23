@@ -254,6 +254,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       panoCameraStartAngle: new FormControl(''),
       visibilityRadius: new FormControl(0),
       panoVisibilityRadius: new FormControl(0),
+      neighborsFiltering: new FormControl(false)
     });
 
     this.mapForm = new FormGroup({
@@ -305,11 +306,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     return this.http.get(url, {headers, responseType: 'text'});
   }
 
-  calcRatio(ratio) {
-    if (ratio) {
-
-    }
-  }
+  calcRatio(ratio) {}
 
   vrInit(data) {
     this.mapForm.patchValue({
@@ -323,7 +320,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     })
     this.vrTourSettingsForm.patchValue({
       rotationY: +this.virtualTour.virtualTourService.defaultY,
-      zoom: this.virtualTour.virtualTourService.defaultZoom
+      zoom: this.virtualTour.virtualTourService.defaultZoom,
+      neighborsFiltering: this.virtualTour.virtualTourService.neighborsFiltering
     });
 
     this.profileForm.patchValue(data.additional_data.profile);
@@ -359,13 +357,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.virtualTour.virtualTourService.changeVisibilityRadius(+this.vrTourSettingsForm.value.panoVisibilityRadius, true);
   }
 
-  saveY(projectId) {
-    const data = {
-      zoom: this.vrTourSettingsForm.value.zoom,
-      rotation_y: this.vrTourSettingsForm.value.rotationY,
-      visibilityRadius: this.vrTourSettingsForm.value.visibilityRadius
-    };
-    this.store.dispatch(updateProject({ projectId, data }))
+  changeNeighborsFiltering() {
+    this.virtualTour.virtualTourService.changeNeighborsFiltering(this.vrTourSettingsForm.value.neighborsFiltering);
   }
 
   updatePanoSettings() {
@@ -387,7 +380,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
           const data = {
             zoom: this.vrTourSettingsForm.value.zoom,
             rotation_y: this.vrTourSettingsForm.value.rotationY,
-            visibilityRadius: this.vrTourSettingsForm.value.visibilityRadius
+            visibilityRadius: this.vrTourSettingsForm.value.visibilityRadius,
+            neighborsFiltering: this.vrTourSettingsForm.value.neighborsFiltering,
           };
           this.vrTourSettingsForm.patchValue({
             panoZoom: 0,
@@ -421,6 +415,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
           this.virtualTour.virtualTourService.defaultY = data.rotation_y;
           this.virtualTour.virtualTourService.defaultZoom = data.zoom;
           this.virtualTour.virtualTourService.visibilityRadius = data.visibilityRadius;
+          this.virtualTour.virtualTourService.neighborsFiltering = data.neighborsFiltering;
           this.store.dispatch(updateProject({projectId, data}));
           resetedPanos.forEach(panorama => {
             this.store.dispatch(updatePanorama({projectId, panorama}));

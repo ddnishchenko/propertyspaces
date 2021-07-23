@@ -74,6 +74,7 @@ export class VirtualTourService {
   private defaultY = 3.5;
   private defaultZoom = 60;
   private defaultVisibilityRadius = 0.5;
+  private neighborsFiltering = false;
   static EVENTS = {
     INIT: 'INIT',
     ROTATION_CHANGE: 'ROTATION_CHANGE',
@@ -292,30 +293,41 @@ export class VirtualTourService {
     this.renderingUpdate();
   }
 
+  changeNeighborsFiltering(val) {
+    this.neighborsFiltering = val;
+    this.toggleNavPoints(true);
+    this.renderingUpdate();
+  }
+
   toggleNavPoints(toggle) {
     const visibilityRadius = this.currentPano ? this.currentPano.panoramas.visibilityRadius || this.defaultVisibilityRadius : this.defaultVisibilityRadius;
     this.panos.forEach((pano) => pano.object.visible = false);
     if (toggle) {
       this.panos.forEach((pano) => {
         if (this.currentPano.panoramas.neighbors) {
-          const nPanos = this.currentPano.panoramas.neighbors.map(n => this.panos.find(p => p.name === n))
-          .filter(p => p)
-          .filter(p => {
-            const diffY = 1 > Math.abs(Math.abs(this.currentPanorama.panoramas.y) - Math.abs(p.panoramas.y));
-            const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
-            const sameFloor = this.currentPanorama.panoramas.floor == p.panoramas.floor;
-            return diffY && isNeighborFloor;
-          });
-          const panoRadius = this.panos.filter(
-            p => {
-            const isX = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.panoramas.x) - Math.abs(p.panoramas.x));
-            const isZ = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.panoramas.z) - Math.abs(p.panoramas.z));
-            const isY = 1 > Math.abs(Math.abs(this.currentPanorama.panoramas.y) - Math.abs(p.panoramas.y));
-            const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
-            return (isX || isZ) && isY && isNeighborFloor;
-          });
+          if (this.neighborsFiltering) {
+            const nPanos = this.currentPano.panoramas.neighbors.map(n => this.panos.find(p => p.name === n))
+            .filter(p => p)
+            .filter(p => {
+              const diffY = 1 > Math.abs(Math.abs(this.currentPanorama.panoramas.y) - Math.abs(p.panoramas.y));
+              const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
+              const sameFloor = this.currentPanorama.panoramas.floor == p.panoramas.floor;
+              return diffY && isNeighborFloor;
+            });
+            const panoRadius = this.panos.filter(
+              p => {
+              const isX = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.panoramas.x) - Math.abs(p.panoramas.x));
+              const isZ = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.panoramas.z) - Math.abs(p.panoramas.z));
+              const isY = 1 > Math.abs(Math.abs(this.currentPanorama.panoramas.y) - Math.abs(p.panoramas.y));
+              const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
+              return (isX || isZ) && isY && isNeighborFloor;
+            });
 
-          pano.object.visible = nPanos.concat(panoRadius).map(p => p.name).includes(pano.name);
+            pano.object.visible = nPanos.concat(panoRadius).map(p => p.name).includes(pano.name);
+          } else {
+            pano.object.visible = this.currentPano.panoramas.neighbors.includes(pano.name);
+          }
+
         } else {
           // TODO: Remove backword compatibility
           pano.object.visible = false; // pano.panoramas.floor === this.currentPano.panoramas.floor;
@@ -594,6 +606,7 @@ export class VirtualTourService {
       this.defaultY = +config.additional_data.rotation_y || this.defaultY;
       this.defaultZoom = +config.additional_data.zoom || this.defaultZoom;
       this.defaultVisibilityRadius = +config.additional_data.visibilityRadius || this.defaultVisibilityRadius;
+      this.neighborsFiltering = config.additional_data.neighborsFiltering || this.neighborsFiltering;
     }
 
     // Create the renderer
