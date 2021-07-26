@@ -2,7 +2,7 @@ import { AfterViewInit, Directive, ElementRef, HostListener, Input, NgZone, OnDe
 import * as SvgPanZoom from 'svg-pan-zoom';
 
 @Directive({
-  selector: 'object[propertyspacesSvgzoompan], embed[propertyspacesSvgzoompan]'
+  selector: 'svg[propertyspacesSvgzoompan], object[propertyspacesSvgzoompan], embed[propertyspacesSvgzoompan]'
 })
 export class SvgZoomPanDirective implements OnInit, AfterViewInit, OnDestroy {
   @Input() propertyspacesSvgzoompan: SvgPanZoom.Options = {};
@@ -13,13 +13,20 @@ export class SvgZoomPanDirective implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-
-    this.el.nativeElement.addEventListener('load', () => {
-      this.svg = SvgPanZoom(this.el.nativeElement, this.propertyspacesSvgzoompan);
-    })
+    
+    
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.svg = SvgPanZoom(this.el.nativeElement, this.propertyspacesSvgzoompan || {
+        zoomEnabled: true,
+        controlIconsEnabled: false,
+        fit: true,
+        center: true,
+      });
+    }, 1000);
+  }
 
   ngOnDestroy() {
     if (this.svg) {

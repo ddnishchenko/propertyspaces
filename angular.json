@@ -121,6 +121,56 @@
         }
       }
     },
+    "floorplan": {
+      "projectType": "library",
+      "root": "libs/floorplan",
+      "sourceRoot": "libs/floorplan/src",
+      "prefix": "propertyspaces",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/floorplan"],
+          "options": {
+            "jestConfig": "libs/floorplan/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/floorplan/src/**/*.ts",
+              "libs/floorplan/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "pipes": {
+      "projectType": "library",
+      "root": "libs/pipes",
+      "sourceRoot": "libs/pipes/src",
+      "prefix": "propertyspaces",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/pipes"],
+          "options": {
+            "jestConfig": "libs/pipes/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/pipes/src/**/*.ts",
+              "libs/pipes/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
     "subjx": {
       "projectType": "library",
       "root": "libs/subjx",

@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConnectFormDirective } from './directives/connect-form.directive';
-import { SafePipe } from './pipes/safe.pipe';
 
+import { PipesModule } from '@propertyspaces/pipes';
 
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
@@ -16,7 +16,6 @@ import { NgxEditorModule } from 'ngx-editor';
 import { GalleryEditorComponent } from './components/gallery-editor/gallery-editor.component';
 import { AgmCoreModule } from '@agm/core';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { GalleryPipe } from './pipes/gallery.pipe';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { GoogleStreetViewDirective } from './directives/google-street-view.directive';
 import { ImageGridComponent } from './components/image-grid/image-grid.component';
@@ -31,10 +30,8 @@ import { InputFileReaderDirective } from './directives/input-file-reader.directi
 @NgModule({
   declarations: [
     ConnectFormDirective,
-    SafePipe,
     GalleryEditorComponent,
     ConfirmationModalComponent,
-    GalleryPipe,
     GoogleStreetViewDirective,
     ImageGridComponent,
     SliderComponent,
@@ -47,8 +44,6 @@ import { InputFileReaderDirective } from './directives/input-file-reader.directi
   exports: [
     ConnectFormDirective,
     GoogleStreetViewDirective,
-    SafePipe,
-    GalleryPipe,
     GalleryModule,
     LightboxModule,
     AgmCoreModule,
@@ -66,7 +61,8 @@ import { InputFileReaderDirective } from './directives/input-file-reader.directi
     FormsModule,
     DownloadDirective,
     InputFileReaderDirective,
-    NgxEditorModule
+    NgxEditorModule,
+    PipesModule
   ],
   imports: [
     CommonModule,
@@ -78,7 +74,8 @@ import { InputFileReaderDirective } from './directives/input-file-reader.directi
     OrderModule,
     AngularSvgIconModule,
     NgScrollbarModule,
-    NgxEditorModule
+    NgxEditorModule,
+    PipesModule
   ]
 })
 export class SharedModule { }

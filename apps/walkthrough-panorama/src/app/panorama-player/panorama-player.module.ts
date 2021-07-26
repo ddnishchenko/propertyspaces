@@ -11,6 +11,7 @@ import { VirtualTourModule } from '@propertyspaces/virtual-tour';
 import { DragResizeModule } from '@propertyspaces/drag-resize';
 import { SvgZoomPanModule } from '@propertyspaces/svgzoompan';
 import { SubjxModule } from '@propertyspaces/subjx';
+import { FloorplanModule } from '@propertyspaces/floorplan';
 
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 
@@ -32,7 +33,8 @@ import { SharedModule } from '../shared/shared.module';
     NgbAccordionModule,
     NgbTooltipModule,
     SharedModule,
-    SvgZoomPanModule
+    SvgZoomPanModule,
+    FloorplanModule
   ]
 })
 export class PanoramaPlayerModule { }

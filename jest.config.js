@@ -7,5 +7,7 @@ module.exports = {
     '<rootDir>/libs/drag-resize',
     '<rootDir>/libs/subjx',
     '<rootDir>/libs/svgzoompan',
+    '<rootDir>/libs/floorplan',
+    '<rootDir>/libs/pipes',
   ],
 };

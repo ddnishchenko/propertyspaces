@@ -57,17 +57,21 @@
         >
           <a ngbNavLink>{{ f.floor }}</a>
           <ng-template ngbNavContent>
-            <div class="d-flex justify-content-center">
+            <propertyspaces-floorplan 
+            [url]="data.projectFolder + f['floorplan_f' + f.floor + '.svg'] + '?_t=' + data._t" 
+            [navs]="data.panoFloorsCoord[i]" 
+            [floor]="f" 
+            [activePoint]="activePoint" 
+            [rotationAngle]="rotationAngle" 
+            [showNavs]="navigation" 
+            (nav)="navTo($event)"></propertyspaces-floorplan>
+
+            <!-- <div class="d-flex justify-content-center">
               <div
                 #bound
                 class="vt-map-wrapper"
                 [style.transform]="'rotate(' + -f.nav_dots_rotation + 'deg)'"
               >
-                <!-- <embed
-                style="width: 300px; height: 300px"
-                type="image/svg+xml"
-                [src]="data.projectFolder + f['floorplan_f' + f.floor + '.svg'] + '?_t=' + data._t | safe:'resourceUrl'"
-                [propertyspacesSvgzoompan]="{zoomEnabled: true, controlIconsEnabled: true}"> -->
                 <img
                   class="vt-map-wrapper-floorplan img-fluid"
                   propertyspacesSvgzoompan
@@ -108,13 +112,12 @@
                           class="pointer"
                           [style.transform]="'rotate(' + rotationAngle + 'rad)'"
                         ></div>
-                        <!-- (lon + currentDot.rotation_angle) -->
                       </div>
                     </ng-template>
                   </ng-container>
                 </div>
               </div>
-            </div>
+            </div> -->
           </ng-template>
         </li>
       </ul>
@@ -496,7 +499,7 @@
           mwlResizable
           [style]="styleDeSidbar"
           (resizing)="onResizeEnd($event); resizeCanvas()"
-          (resizeEnd)="onResizeEnd($event); updateMasonty()"
+          (resizeEnd)="onResizeEnd($event)"
         >
 
           <ngb-accordion

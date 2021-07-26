@@ -1,6 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, skip, tap } from 'rxjs/operators';
+import { map, mergeMap, skip, tap } from 'rxjs/operators';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
@@ -229,7 +229,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([project, panoFloors]) => ({...project, ...panoFloors})),
       skip(1)
-    )
+    );
   }
 
   ngOnDestroy() {
