@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { SvgZoomPanDirective } from 'libs/svgzoompan/src/lib/svgzoompan.directive';
 
 @Component({
   selector: 'propertyspaces-floorplan',
@@ -6,6 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./floorplan.component.scss']
 })
 export class FloorplanComponent implements OnInit {
+  @ViewChild(SvgZoomPanDirective) svgZoomPan;
   @Input() url;
   @Input() floor: any;
   @Input() navs: any;
@@ -35,5 +37,17 @@ export class FloorplanComponent implements OnInit {
   }
   navTo(index) {
     this.nav.emit(index);
+  }
+  zoom(zoom?: string) {
+    switch(zoom) {
+      case '-':
+        this.svgZoomPan.svg.zoomOut();
+        break;
+      case '+':
+        this.svgZoomPan.svg.zoomIn();
+        break;
+      default:
+        this.svgZoomPan.svg.resetZoom();
+    }
   }
 }

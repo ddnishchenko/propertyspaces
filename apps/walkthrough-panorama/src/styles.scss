@@ -129,6 +129,9 @@ mwlResizable {
     height: 0;
     overflow: hidden;
   }
+  .sidebar-card.active {
+    height: 100%;
+  }
 }
 
 .inner-accordion {
