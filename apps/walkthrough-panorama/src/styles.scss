@@ -123,6 +123,7 @@ mwlResizable {
 .sidebar-accordion .sidebar-card {
   transition: height 0.3s ease-out;
   .fp-wrapper-floorplan-hidden {
+    height: calc(100vh - 112px - 72px - 65px - 42px - 60px);
     max-height: calc(100vh - 112px - 72px - 65px - 42px - 60px);
   }
 }
@@ -317,7 +318,12 @@ lightbox {
   max-height: 74vh;
 }
 .fullscreen-modal .fp-wrapper-floorplan-hidden {
-  max-height: calc(100vh - 69px - 71px - 42px - 36px);
+  height: calc(100vh - 69px - 71px - 42px - 3px);
+  max-height: calc(100vh - 69px - 71px - 42px - 3px);
+}
+
+.modal-body.fullscreen-map {
+  padding: 0;
 }
 
 .nav-tabs {
