@@ -4,8 +4,8 @@ import * as THREE from 'three';
  * @classdesc Orbit Controls
  * @constructor
  * @external OrbitControls
- * @param {THREE.Object} object 
- * @param {HTMLElement} domElement 
+ * @param {THREE.Object} object
+ * @param {HTMLElement} domElement
  */
 function OrbitControls ( object, domElement ) {
 
@@ -140,7 +140,7 @@ function OrbitControls ( object, domElement ) {
     // so camera.up is the orbit axis
 
     var quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
-    var quatInverse = quat.clone().inverse();
+    var quatInverse = quat.clone().invert();
 
     // events
 
@@ -246,12 +246,12 @@ function OrbitControls ( object, domElement ) {
     };
 
     this.momentum = function(){
-		
+
         if ( !momentumOn ) return;
 
-        if ( Math.abs( momentumLeft ) < MEPS && Math.abs( momentumUp ) < MEPS ) { 
+        if ( Math.abs( momentumLeft ) < MEPS && Math.abs( momentumUp ) < MEPS ) {
 
-            momentumOn = false; 
+            momentumOn = false;
             return;
         }
 
@@ -578,7 +578,7 @@ function OrbitControls ( object, domElement ) {
         if ( delta > 0 ) {
 
             // scope.dollyOut();
-            scope.object.fov = ( scope.object.fov < scope.maxFov ) 
+            scope.object.fov = ( scope.object.fov < scope.maxFov )
                 ? scope.object.fov + 1
                 : scope.maxFov;
             scope.object.updateProjectionMatrix();
@@ -586,7 +586,7 @@ function OrbitControls ( object, domElement ) {
         } else if ( delta < 0 ) {
 
             // scope.dollyIn();
-            scope.object.fov = ( scope.object.fov > scope.minFov ) 
+            scope.object.fov = ( scope.object.fov > scope.minFov )
                 ? scope.object.fov - 1
                 : scope.minFov;
             scope.object.updateProjectionMatrix();
@@ -766,14 +766,14 @@ function OrbitControls ( object, domElement ) {
 
             if ( dollyDelta.y < 0 ) {
 
-                scope.object.fov = ( scope.object.fov < scope.maxFov ) 
+                scope.object.fov = ( scope.object.fov < scope.maxFov )
                     ? scope.object.fov + 1
                     : scope.maxFov;
                 scope.object.updateProjectionMatrix();
 
             } else if ( dollyDelta.y > 0 ) {
 
-                scope.object.fov = ( scope.object.fov > scope.minFov ) 
+                scope.object.fov = ( scope.object.fov > scope.minFov )
                     ? scope.object.fov - 1
                     : scope.minFov;
                 scope.object.updateProjectionMatrix();
