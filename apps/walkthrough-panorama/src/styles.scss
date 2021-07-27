@@ -122,6 +122,9 @@ mwlResizable {
 }
 .sidebar-accordion .sidebar-card {
   transition: height 0.3s ease-out;
+  .fp-wrapper-floorplan-hidden {
+    max-height: calc(100vh - 112px - 72px - 65px - 42px - 60px);
+  }
 }
 .sidebar-accordion-active {
   background-color: #fff;
@@ -312,6 +315,9 @@ lightbox {
 
 .fullscreen-modal .vt-map-wrapper-floorplan {
   max-height: 74vh;
+}
+.fullscreen-modal .fp-wrapper-floorplan-hidden {
+  max-height: calc(100vh - 69px - 71px - 42px - 36px);
 }
 
 .nav-tabs {

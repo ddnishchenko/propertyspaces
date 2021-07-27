@@ -57,14 +57,16 @@
         >
           <a ngbNavLink>{{ f.floor }}</a>
           <ng-template ngbNavContent>
-            <propertyspaces-floorplan 
-            [url]="data.projectFolder + f['floorplan_f' + f.floor + '.svg'] + '?_t=' + data._t" 
-            [navs]="data.panoFloorsCoord[i]" 
-            [floor]="f" 
-            [activePoint]="activePoint" 
-            [rotationAngle]="rotationAngle" 
-            [showNavs]="navigation" 
-            (nav)="navTo($event)"></propertyspaces-floorplan>
+            <div class="d-flex w-100">
+              <propertyspaces-floorplan class="m-auto"
+              [url]="data.projectFolder + f['floorplan_f' + f.floor + '.svg'] + '?_t=' + data._t"
+              [navs]="data.panoFloorsCoord[i]"
+              [floor]="f"
+              [activePoint]="activePoint"
+              [rotationAngle]="rotationAngle"
+              [showNav]="navigation"
+              (nav)="navTo($event)"></propertyspaces-floorplan>
+            </div>
           </ng-template>
         </li>
       </ul>
@@ -409,26 +411,6 @@
             <span>Publish</span>
           </button>
         </ng-container>
-
-        <!-- <button *ngIf="isEdit; else loginBtn"
-            #tooltipView="ngbTooltip"
-            type="button"
-            class="btn btn-lg btn-dark rounded-pill btn-change-view btn-black ml-3"
-            [ngbTooltip]="changeViewTpl"
-            tooltipClass="tooltop-p-0"
-            triggers="click"
-            [autoClose]="'outside'"
-          >
-            <span>Change view</span>
-            <img
-              src="assets/img/icons/angle.svg"
-              class="angle"
-              [class.angle-flip]="tooltipView.isOpen()"
-              alt="angle"
-            />
-        </button> -->
-
-        <!-- <ng-container *ngTemplateOutlet="addFloorplanBtn"></ng-container> -->
       </div>
 
     </div>
