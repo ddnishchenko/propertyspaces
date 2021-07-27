@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { SvgZoomPanDirective } from 'libs/svgzoompan/src/lib/svgzoompan.directive';
+import { SvgZoomPanDirective } from '@propertyspaces/svgzoompan';
 
 @Component({
   selector: 'propertyspaces-floorplan',

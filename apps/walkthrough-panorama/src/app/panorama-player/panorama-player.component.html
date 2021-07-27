@@ -57,7 +57,7 @@
         >
           <a ngbNavLink>{{ f.floor }}</a>
           <ng-template ngbNavContent>
-            <div class="d-flex w-100">
+            <div class="d-flex w-100" *ngIf="f['floorplan_f' + f.floor + '.svg']">
               <propertyspaces-floorplan class="m-auto"
               [url]="data.projectFolder + f['floorplan_f' + f.floor + '.svg'] + '?_t=' + data._t"
               [navs]="data.panoFloorsCoord[i]"
