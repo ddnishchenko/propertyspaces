@@ -19,24 +19,20 @@ function ringsShape(pano, font) {
   // const color = isNaN(pano?.transitionFrom) ? 0xffffff :0xff00ff;
   const color = 0xffffff;
   const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 314, 1, 0);
-  const outerRingMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, side: THREE.DoubleSide });
+  const outerRingMaterial = new THREE.MeshBasicMaterial({color: color, transparent: true});
   const outerRingMesh = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
 
   const innerRingGeometry = new THREE.RingGeometry(1.5, 1.8, 314, 1, 0);
-  const innerRingMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, side: THREE.DoubleSide });
+  const innerRingMaterial = new THREE.MeshBasicMaterial({color: color, transparent: true});
   const innerRingMesh = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
 
   const circleGeometry = new THREE.CircleGeometry(2, 128);
-  const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 });
+  const circleMaterial = new THREE.MeshBasicMaterial({color: 0x000000, transparent: true, opacity: 0.3});
   const circleMesh = new THREE.Mesh(circleGeometry, circleMaterial);
 
   const index = pano?.order || 0;
 
-  const matLite = new THREE.MeshBasicMaterial( {
-    color: color,
-    transparent: true,
-    side: THREE.DoubleSide
-  } );
+  const matLite = new THREE.MeshBasicMaterial({color: color, transparent: true});
   const shapesText = font.generateShapes(`${index}`, 1.5);
   const shapesTextGeometry = new THREE.ShapeGeometry(shapesText);
   shapesTextGeometry.computeBoundingBox();
@@ -262,9 +258,11 @@ export class VirtualTourService {
       }
 
       for (let i = 0; i < this.panos.length; i++) {
-        const panoUuids = this.panos[i].object.children.map(m => m.uuid);
-        if (panoUuids.includes(item.object.uuid)) {
-          target = this.panos[i].panoramas.index;
+        if (this.panos[i].object.visible) {
+          const panoUuids = this.panos[i].object.children.map(m => m.uuid);
+          if (panoUuids.includes(item.object.uuid)) {
+            target = this.panos[i].panoramas.index;
+          }
         }
       }
     });
