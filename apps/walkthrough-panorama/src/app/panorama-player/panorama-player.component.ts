@@ -81,6 +81,7 @@ const titles = {
   allPoints: 'EDIT ALL NAV POINTS',
   activePoint: 'EDIT ACTIVE NAV POINT',
   floorplan: 'FLOOR PLAN OPTIONS',
+  dollhouse: 'EDIT DOLLHOUSE',
   createGallery: 'CREATE PHOTO GALLERY',
   editGallery: 'EDIT PHOTO GALLERY',
   editLocation: 'EDIT MAP & STREET VIEW',
@@ -124,6 +125,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   companyForm;
   panoForm;
   descriptionFrom;
+  dollhouseForm;
   isEdit = false;
   rotationAngle = 0;
   defaultZoom = 0;
@@ -137,6 +139,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     allPoints: 'allPoints',
     activePoint: 'activePoint',
     floorplan: 'floorplan',
+    dollhouse: 'dollhouse',
     createGallery: 'createGallery',
     editGallery: 'editGallery',
     editLocation: 'editLocation',
@@ -170,18 +173,18 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
   get modalEditing() {
     if (this.form) {
-      const { floorplan, editGallery, editContact, editLocation, editPano, changeMenu, description
+      const { floorplan, dollhouse, editGallery, editContact, editLocation, editPano, changeMenu, description
         } = this.editProperties;
-      const modalEdit = [floorplan, editGallery, editContact, editLocation, editPano, changeMenu, description];
+      const modalEdit = [floorplan, dollhouse, editGallery, editContact, editLocation, editPano, changeMenu, description];
       return modalEdit.includes(this.activeEditProperty);
     }
     return false;
   }
   get isSaveButton() {
     const {
-      editContact, editLocation, editPano, description, floorplan
+      editContact, editLocation, editPano, description, floorplan, dollhouse
     } = this.editProperties;
-    const modalEdit = [editContact, editLocation, editPano, description, floorplan];
+    const modalEdit = [editContact, editLocation, editPano, description, floorplan, dollhouse];
     return modalEdit.includes(this.activeEditProperty);
   }
   constructor(
@@ -298,7 +301,11 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
     this.descriptionFrom = new FormGroup({
       description: new FormControl()
-    })
+    });
+
+    this.dollhouseForm = new FormGroup({
+      dollhouse: new FormControl('')
+    });
   }
 
   downloadSvg(url) {
@@ -328,6 +335,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.profileForm.patchValue(data.additional_data.profile);
     this.companyForm.patchValue(data.additional_data.company);
     this.descriptionFrom.patchValue({description: data.additional_data.description});
+    this.dollhouseForm.patchValue({dollhouse: data.additional_data.dollhouse});
 
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
     this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
@@ -640,7 +648,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
-  filterPaste($event) {
+  filterPaste($event, form: FormGroup) {
     // @ts-ignore
     let paste = ($event.clipboardData || window.clipboardData).getData('text');
     let url;
@@ -659,7 +667,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       div.remove();
     }
     const field = $event.target.getAttribute('formcontrolname');
-    this.mapForm.patchValue({[field]: url});
+    form.patchValue({[field]: url});
     $event.preventDefault();
   }
 
@@ -690,14 +698,13 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
         this.updatePano(projectId);
         break;
       case this.editProperties.description:
-        const data = {
-          description: this.descriptionFrom.value.description
-        };
-        this.store.dispatch(updateProject({projectId, data}));
+        this.store.dispatch(updateProject({projectId, data: {description: this.descriptionFrom.value.description}}));
         break;
       case this.editProperties.floorplan:
-        const floorplanEditorData = this.floorplanEditor.form.value;
-        this.store.dispatch(updateProject({projectId, data: floorplanEditorData}));
+        this.store.dispatch(updateProject({projectId, data: this.floorplanEditor.form.value}));
+        break;
+      case this.editProperties.dollhouse:
+        this.store.dispatch(updateProject({projectId, data: this.dollhouseForm.value}));
         break;
     }
   }

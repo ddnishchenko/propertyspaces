@@ -94,6 +94,9 @@ mwlResizable {
   .modal-dialog-scrollable {
     min-height: 100vh !important;
   }
+  .modal-body .dollhouse-wrapper {
+    min-height: calc(85vh + 4px);
+  }
 }
 
 .sidebar-card {

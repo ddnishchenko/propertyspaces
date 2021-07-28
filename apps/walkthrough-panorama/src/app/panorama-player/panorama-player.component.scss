@@ -440,6 +440,10 @@ gallery {
   }
 }
 
+.dollhouse-wrapper {
+  min-height: calc(68vh + 5px);
+}
+
 @media screen and (min-height: 700px) {
   .canvas-modal {
     &-description {
