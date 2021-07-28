@@ -1,6 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, mergeMap, skip, tap } from 'rxjs/operators';
+import { map, skip, tap } from 'rxjs/operators';
 import { VirtualTourDirective } from '@propertyspaces/virtual-tour';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
@@ -18,7 +18,7 @@ import { slideInAnimation } from '../utils/animations';
 import { combineLatest } from 'rxjs';
 import { ConfirmationModalComponent } from '../shared/components/confirmation-modal/confirmation-modal.component';
 import { ResizeEvent } from 'angular-resizable-element';
-import { Editor } from 'ngx-editor';
+import { Editor, toHTML } from 'ngx-editor';
 import { Fullscreen } from '../utils/fullscreen';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -218,7 +218,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
               additional_data: {
                 ...data.additional_data,
                 profile,
-                company
+                company,
+                description: data.additional_data.description ? toHTML(data.additional_data.description) : data.additional_data.description
               }
             }
           }
@@ -258,8 +259,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     });
 
     this.mapForm = new FormGroup({
-      mapEnabled: new FormControl(false),
-      streetViewEnabled: new FormControl(false),
+      mapEnabled: new FormControl(true),
+      streetViewEnabled: new FormControl(true),
       map: new FormControl('', [Validators.pattern(urlRegEx)]),
       streetView: new FormControl('', [Validators.pattern(urlRegEx)]),
       address: new FormControl(''),

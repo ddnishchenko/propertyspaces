@@ -918,8 +918,8 @@
                               </label>
 
                               <div class="custom-control custom-checkbox">
-                                <input formControlName="showInBranded" type="checkbox" class="custom-control-input" id="isForBranded">
-                                <label class="custom-control-label" for="isForBranded">Display this info in all your branded walkthroughs</label>
+                                <input formControlName="showInBranded" type="checkbox" class="custom-control-input" id="isForBrandedCompany">
+                                <label class="custom-control-label" for="isForBrandedCompany">Display this info in all your branded walkthroughs</label>
                               </div>
                             </div>
 
@@ -937,6 +937,14 @@
                     <div class="text-center">
                       <h5>Property Address</h5>
                       <p>Please type in the address and verify that it is correct on the map and the street view</p>
+                      <div class="custom-control custom-checkbox">
+                        <input formControlName="mapEnabled" type="checkbox" class="custom-control-input" id="mapEnabled">
+                        <label class="custom-control-label" for="mapEnabled">Show map</label>
+                      </div>
+                      <div class="custom-control custom-checkbox">
+                        <input formControlName="streetViewEnabled" type="checkbox" class="custom-control-input" id="streetViewEnabled">
+                        <label class="custom-control-label" for="streetViewEnabled">Show street view</label>
+                      </div>
                     </div>
 
 
