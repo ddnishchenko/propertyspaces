@@ -59,10 +59,10 @@ export class SvgZoomPanDirective implements OnInit, AfterViewInit, OnDestroy {
           // On pinch start remember initial zoom
           if (ev.type === 'pinchstart') {
             initialScale = instance.getZoom();
-            instance.zoom(initialScale * ev.scale);
+            instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y});
           }
 
-          instance.zoomAtPoint(initialScale * ev.scale);
+          instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y});
         })
 
         // Prevent moving the page on some devices when panning over SVG
@@ -77,9 +77,10 @@ export class SvgZoomPanDirective implements OnInit, AfterViewInit, OnDestroy {
       this.svg = SvgPanZoom(this.el.nativeElement, this.propertyspacesSvgzoompan || {
         zoomEnabled: true,
         controlIconsEnabled: true,
-        fit: true,
-        center: true,
-        customEventsHandler: eventsHandler
+        fit: 1,
+        center: 1,
+        customEventsHandler: eventsHandler,
+        refreshRate: 30
       });
     }, 1000);
   }
