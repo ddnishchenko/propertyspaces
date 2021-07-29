@@ -77,8 +77,8 @@ export class SvgZoomPanDirective implements OnInit, AfterViewInit, OnDestroy {
       this.svg = SvgPanZoom(this.el.nativeElement, this.propertyspacesSvgzoompan || {
         zoomEnabled: true,
         controlIconsEnabled: true,
-        fit: 1,
-        center: 1,
+        fit: true,
+        center: true,
         customEventsHandler: eventsHandler,
         refreshRate: 30
       });
