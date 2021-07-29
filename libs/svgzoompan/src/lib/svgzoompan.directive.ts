@@ -58,11 +58,11 @@ export class SvgZoomPanDirective implements OnInit, AfterViewInit, OnDestroy {
         this.hammer.on('pinchstart pinchmove', function(ev){
           // On pinch start remember initial zoom
           if (ev.type === 'pinchstart') {
-            initialScale = instance.getZoom()
-            instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+            initialScale = instance.getZoom();
+            instance.zoom(initialScale * ev.scale);
           }
 
-          instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+          instance.zoomAtPoint(initialScale * ev.scale);
         })
 
         // Prevent moving the page on some devices when panning over SVG
