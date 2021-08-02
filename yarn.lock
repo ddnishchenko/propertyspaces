@@ -328,10 +328,26 @@
   dependencies:
     tslib "^2.2.0"
 
+"@angular/platform-server@^12.1.3":
+  version "12.1.4"
+  resolved "https://registry.yarnpkg.com/@angular/platform-server/-/platform-server-12.1.4.tgz#ec4b661f90e14275c4b1fe67134bde963f3129d9"
+  integrity sha512-pT2uDuhO7ZwG+lDIjND0bWVPQjw4P6ixVly8vgfKimFHvxzL2YJ702+G3q+2QNyybOSwtUiLpkT/bKSXoUyAzA==
+  dependencies:
+    domino "^2.1.2"
+    tslib "^2.2.0"
+    xhr2 "^0.2.0"
+
 "@angular/router@^12.1.3":
   version "12.1.3"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-12.1.3.tgz#1149c306d672ee33179e7a26df74d0f194850152"
   integrity sha512-pm0hpfuMrokpR/PK1CAKWY3FW09TNdqp9Ddk4ruTee+R1MMXHI3dudTv2TEzgBjnqMdHyLqNCrrIToieo5Uc/Q==
+  dependencies:
+    tslib "^2.2.0"
+
+"@angular/service-worker@^12.1.3":
+  version "12.1.4"
+  resolved "https://registry.yarnpkg.com/@angular/service-worker/-/service-worker-12.1.4.tgz#a68d82c54a4e0c0c488e23ba67bc7e9aa7d4e808"
+  integrity sha512-rOoCuSzT8GNgDQFssH09dOegkkRSLHMBCODTbZRNVahCu7oi5ixUJOntHkCshFBczx8qCxjA6jOrnJ2WasSD5w==
   dependencies:
     tslib "^2.2.0"
 
@@ -6277,6 +6293,11 @@ domhandler@^4.0.0, domhandler@^4.2.0:
   integrity sha512-zk7sgt970kzPks2Bf+dwT/PLzghLnsivb9CcxkvR8Mzr66Olr0Ofd8neSbglHJHaHa2MadfoSdNlKYAaafmWfA==
   dependencies:
     domelementtype "^2.2.0"
+
+domino@^2.1.2:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/domino/-/domino-2.1.6.tgz#fe4ace4310526e5e7b9d12c7de01b7f485a57ffe"
+  integrity sha512-3VdM/SXBZX2omc9JF9nOPCtDaYQ67BGp5CoLpIQlO2KCAPETs8TcDHacF26jXadGbvUteZzRTeos2fhID5+ucQ==
 
 domutils@^2.4.3:
   version "2.6.0"
@@ -14210,6 +14231,11 @@ ws@^7.4.5:
   version "7.5.3"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.3.tgz#160835b63c7d97bfab418fc1b8a9fced2ac01a74"
   integrity sha512-kQ/dHIzuLrS6Je9+uv81ueZomEwH0qVYstcAQ4/Z93K8zeko9gtAbttJWzoC5ukqXY1PpoouV3+VSOqEAFt5wg==
+
+xhr2@^0.2.0:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/xhr2/-/xhr2-0.2.1.tgz#4e73adc4f9cfec9cbd2157f73efdce3a5f108a93"
+  integrity sha512-sID0rrVCqkVNUn8t6xuv9+6FViXjUVXq8H5rWOH2rz9fDNQEd4g0EA2XlcEdJXRz5BMEn4O1pJFdT+z4YHhoWw==
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

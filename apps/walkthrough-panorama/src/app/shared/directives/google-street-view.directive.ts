@@ -1,9 +1,9 @@
 import { MapsAPILoader } from '@agm/core';
-import { AfterContentInit, Directive, ElementRef, Input, NgZone } from '@angular/core';
+import { AfterContentInit, Directive, ElementRef, Input } from '@angular/core';
 
 function removeAllChildNodes(parent) {
   while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
+    parent.removeChild(parent.firstChild);
   }
 }
 
@@ -11,7 +11,7 @@ function removeAllChildNodes(parent) {
   selector: '[propertyspacesGoogleStreetView]'
 })
 export class GoogleStreetViewDirective implements AfterContentInit {
-  @Input() coords: {lat: number; lng: number};
+  @Input() coords: { lat: number; lng: number };
   streetView: any;
   sv;
   constructor(
@@ -34,10 +34,10 @@ export class GoogleStreetViewDirective implements AfterContentInit {
     );
     // console.log(this.streetView)
   }
-  setView(coords: {lat: number; lng: number}) {
+  setView(coords: { lat: number; lng: number }) {
     // this.streetView.setPosition(coords);
     // this.streetView.setPov({heading: 0, pitch: 0});
-    const {lat, lng} = coords;
+    const { lat, lng } = coords;
     const position = {
       lat: +lat.toFixed(3),
       lng: +lng.toFixed(3)
