@@ -10,6 +10,8 @@
     "build": "ng build",
     "deploy:git": "ng build --prod --output-path docs --base-href https://ddnishchenko.github.io/propertyspaces/ && cp docs/index.html docs/404.html",
     "build:stg": "ng build --prod --output-path ../html && cp apps/walkthrough-panorama/src/.htaccess ../html",
+    "build:ssr": "nx run walkthrough-panorama:app-shell:production",
+    "build:ssr:dev": "nx run walkthrough-panorama:app-shell:development",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
     "e2e": "ng e2e",

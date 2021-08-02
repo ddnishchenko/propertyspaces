@@ -334,6 +334,7 @@
             "ngswConfigPath": "apps/walkthrough-panorama/ngsw-config.json"
           },
           "configurations": {
+            "development": {},
             "production": {
               "fileReplacements": [
                 {
@@ -373,6 +374,9 @@
             "proxyConfig": "apps/walkthrough-panorama/proxy.conf.json"
           },
           "configurations": {
+            "development": {
+              "browserTarget": "walkthrough-panorama:build:development"
+            },
             "production": {
               "browserTarget": "walkthrough-panorama:build:production"
             }
@@ -464,6 +468,9 @@
             "devServerTarget": "walkthrough-panorama:serve"
           },
           "configurations": {
+            "development": {
+              "devServerTarget": "walkthrough-panorama:serve:development"
+            },
             "production": {
               "devServerTarget": "walkthrough-panorama:serve:production"
             }
