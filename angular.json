@@ -411,7 +411,7 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist/walkthrough-panorama/server",
-            "main": "apps/walkthrough-panorama/src/main.server.ts",
+            "main": "apps/walkthrough-panorama/server.ts",
             "tsConfig": "apps/walkthrough-panorama/tsconfig.server.json",
             "optimization": false,
             "sourceMap": true,
@@ -439,6 +439,8 @@
         "app-shell": {
           "builder": "@angular-devkit/build-angular:app-shell",
           "options": {
+            "browserTarget": "walkthrough-panorama:build",
+            "serverTarget": "walkthrough-panorama:server",
             "route": "shell"
           },
           "configurations": {
@@ -449,6 +451,39 @@
             "production": {
               "browserTarget": "walkthrough-panorama:build:production",
               "serverTarget": "walkthrough-panorama:server:production"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "walkthrough-panorama:build:development",
+              "serverTarget": "walkthrough-panorama:server:development"
+            },
+            "production": {
+              "browserTarget": "walkthrough-panorama:build:production",
+              "serverTarget": "walkthrough-panorama:server:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "walkthrough-panorama:build:production",
+              "serverTarget": "walkthrough-panorama:server:production"
+            },
+            "development": {
+              "browserTarget": "walkthrough-panorama:build:development",
+              "serverTarget": "walkthrough-panorama:server:development"
             }
           },
           "defaultConfiguration": "production"

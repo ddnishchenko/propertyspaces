@@ -12,7 +12,9 @@ const routes: Routes = [ { path: 'shell', component: AppShellComponent }];
   imports: [
     AppModule,
     ServerModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, {
+    initialNavigation: 'enabled'
+}),
   ],
   bootstrap: [AppComponent],
   declarations: [
