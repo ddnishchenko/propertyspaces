@@ -51,8 +51,7 @@ const agmConfig: LazyMapsAPILoaderConfigLiteral = {
   exports: [
     NgProgressModule,
     NgbModule,
-    SnotifyModule,
-    AmplifyUIAngularModule
+    SnotifyModule
   ],
   providers: [
     {
