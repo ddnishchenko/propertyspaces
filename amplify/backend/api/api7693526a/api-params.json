@@ -1,7 +1,7 @@
 {
   "paths": [
     {
-      "name": "/items",
+      "name": "/",
       "lambdaFunction": "propertyspaces0c2443d3",
       "privacy": {
         "protected": true,
@@ -16,7 +16,7 @@
           "/GET"
         ]
       },
-      "policyResourceName": "/items"
+      "policyResourceName": "/"
     }
   ],
   "resourceName": "api7693526a",
