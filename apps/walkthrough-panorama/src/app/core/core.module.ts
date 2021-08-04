@@ -1,26 +1,31 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgProgressModule } from 'ngx-progressbar';
-import { NgProgressHttpModule } from 'ngx-progressbar/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AgmCoreModule, LazyMapsAPILoaderConfigLiteral } from '@agm/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from '../../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AgmCoreModule, LazyMapsAPILoaderConfigLiteral } from '@agm/core';
+import { NgProgressModule } from 'ngx-progressbar';
+import { NgProgressHttpModule } from 'ngx-progressbar/http';
 import { SnotifyModule, SnotifyPosition, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+
+/* import AmplifyUIAngularModule  */
+import { AmplifyUIAngularModule } from '@aws-amplify/ui-angular';
+
 import { ApiInterceptor } from './api.interceptor';
 import { reducers, metaReducers } from './state/core.reducer';
 import { ProjectsEffects } from '../projects/state/projects.effects';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-
+import { environment } from '../../environments/environment';
 
 const agmConfig: LazyMapsAPILoaderConfigLiteral = {
-  apiKey: 'AIzaSyAWkCS6AN5OnyB9BqcrfpOMlO25Fxvmrwc&amp',
+  apiKey: environment.googleMapsApiKey,
   libraries: ['places']
 }
 
@@ -39,6 +44,8 @@ const agmConfig: LazyMapsAPILoaderConfigLiteral = {
     StoreRouterConnectingModule.forRoot(),
     AngularSvgIconModule.forRoot(),
     AgmCoreModule.forRoot(agmConfig),
+    /* configure app with AmplifyUIAngularModule */
+    AmplifyUIAngularModule,
     BrowserAnimationsModule
   ],
   exports: [

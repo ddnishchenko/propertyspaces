@@ -1,0 +1,39 @@
+service: nx-nestjs-api
+
+custom:
+  prune:
+    automatic: true
+    number: 3
+  serverless-layers:
+    dependenciesPath: ./package.json
+
+plugins:
+ - serverless-plugin-optimize
+ - serverless-offline
+
+package:
+  individually: true
+  patterns:
+    - dist/apps/api/**
+    - '!**'
+ 
+provider:
+ name: aws
+ runtime: nodejs14.x
+ region: us-west-2
+ profile: lidarama
+ lambdaHashingVersion: 20201221
+
+functions:
+ main: # The name of the lambda function
+   # The module 'handler' is exported in the file 'src/lambda'
+   handler: dist/apps/api/main.handler
+   events:
+     - http:
+        cors: true
+        path: '/'
+        method: any
+     - http:
+         cors: true
+         method: any
+         path: /{any+}
