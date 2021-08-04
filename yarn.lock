@@ -6953,6 +6953,21 @@ aws-sdk@*, aws-sdk@^2.834.0, aws-sdk@^2.951.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
+aws-sdk@^2.960.0:
+  version "2.960.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.960.0.tgz#7f5fba5de9b284c0d7e77c11ae7e64a4bf085de7"
+  integrity sha512-e3KNZ5x0uzBNbVLbGUO2xrMRonUPpmXxgyZ/MaHx5yOQIv9G2a7dei/TvrMa9rl4MFCScGLw1LjbYb7CrdbMBQ==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
 aws-serverless-express@^3.3.6, aws-serverless-express@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/aws-serverless-express/-/aws-serverless-express-3.4.0.tgz#74153b8cc80dbd2c6a32a51e6d353a325c2710d7"

@@ -68,6 +68,7 @@
     "angular2-draggable": "^2.3.2",
     "aws-amplify": "^4.2.2",
     "aws-lambda": "^1.0.6",
+    "aws-sdk": "^2.960.0",
     "aws-serverless-express": "^3.4.0",
     "bootstrap": "^4.6.0",
     "caniuse-lite": "^1.0.30001214",
