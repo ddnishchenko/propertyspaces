@@ -7,6 +7,7 @@ import { ConfirmationModalComponent } from '../../../shared/components/confirmat
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
+import { ProjectsService } from '../../service/projects.service';
 import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../../state/gallery/project-gallery.actions';
 import { selectOrderedGallery } from '../../state/gallery/project-gallery.selectors';
 import { deletePanorama, deleteProjects, editProject, loadPanoramas, updateAddressData, updatePanorama } from '../../state/projects.actions';
@@ -30,7 +31,8 @@ export class ProjectDetailsComponent implements OnInit {
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store
+    private store: Store,
+    private ps: ProjectsService
   ) { }
 
   ngOnInit(): void {
@@ -40,6 +42,7 @@ export class ProjectDetailsComponent implements OnInit {
     this.project$ = this.store.pipe(select(selectVirtualTourParams));
     this.panoramas$ = this.store.pipe(select(selectHdrVirtualTourPanoramas));
     this.gallery$ = this.store.pipe(select(selectOrderedGallery));
+    this.ps.aws();
   }
 
   numbersComparator(itemA, itemB) {
@@ -134,7 +137,7 @@ export class ProjectDetailsComponent implements OnInit {
     modal.componentInstance.title = `Are you sure?`;
     modal.result.then((v) => {
       if (v) {
-        this.store.dispatch(deleteProjects({projectIds: [id]}));
+        this.store.dispatch(deleteProjects({ projectIds: [id] }));
         this.router.navigate(['/projects']);
       }
     })
@@ -155,7 +158,7 @@ export class ProjectDetailsComponent implements OnInit {
   uploadImage($event, projectId) {
     if ($event.target.files.length) {
       const file = $event.target.files[0];
-      this.store.dispatch(uploadProjectGalleryPhoto({projectId, file}));
+      this.store.dispatch(uploadProjectGalleryPhoto({ projectId, file }));
     }
   }
 
