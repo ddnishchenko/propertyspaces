@@ -590,7 +590,7 @@ export class VirtualTourService {
     this.canvas = canvas.nativeElement;
 
     if (config.settings) {
-      this.defaultY = +config.settings.rotation_y || this.defaultY;
+      this.defaultY = +config.settings.rotationY || this.defaultY;
       this.defaultZoom = +config.settings.zoom || this.defaultZoom;
       this.defaultVisibilityRadius = +config.settings.visibilityRadius || this.defaultVisibilityRadius;
       this.neighborsFiltering = config.settings.neighborsFiltering || this.neighborsFiltering;

@@ -107,7 +107,7 @@ export const createPanorama = createAction(
 
 export const createPanoramaSuccess = createAction(
   `${prefix} Create Panorama success`,
-  props<{ panorama: Panorama; }>()
+  props<{ panoramas: Panorama[]; }>()
 );
 
 export const createPanoramaFailed = createAction(
