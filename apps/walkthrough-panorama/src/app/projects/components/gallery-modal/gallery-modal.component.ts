@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
-import { loadProjectGallery, removeProjectGalleryPhoto, uploadProjectGalleryPhoto } from '../../state/gallery/project-gallery.actions';
-import { selectGallery } from '../../state/gallery/project-gallery.selectors';
 
 @Component({
   selector: 'propertyspaces-gallery-modal',
@@ -19,14 +17,13 @@ export class GalleryModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(loadProjectGallery({projectId: this.project_id}));
-    this.gallery$ = this.store.pipe(select(selectGallery));
+    // this.gallery$ = this.store.pipe(select(selectGallery));
   }
 
   uploadImage($event) {
     if ($event.target.files.length) {
       const file = $event.target.files[0];
-      this.store.dispatch(uploadProjectGalleryPhoto({projectId: this.project_id, file}));
+      // this.store.dispatch(uploadProjectGalleryPhoto({projectId: this.project_id, file}));
     }
 
   }
@@ -35,6 +32,6 @@ export class GalleryModalComponent implements OnInit {
     // this.store.dispatch(uploadProjectGalleryPhoto({form}));
   }
   removeImage(name) {
-    this.store.dispatch(removeProjectGalleryPhoto({projectId: this.project_id, image_id: [name]}));
+    // this.store.dispatch(removeProjectGalleryPhoto({projectId: this.project_id, image_id: [name]}));
   }
 }

@@ -1,5 +1,4 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { environment } from '../../../environments/environment';
 import * as fromProjects from './projects.reducer';
 
 export const selectProjectsState = createFeatureSelector<fromProjects.ProjectsState>(
@@ -7,59 +6,48 @@ export const selectProjectsState = createFeatureSelector<fromProjects.ProjectsSt
 );
 
 export const selectProjects = createSelector(selectProjectsState, state => state.projects);
-export const selectProjectById = (id: string) => createSelector(selectProjects, projects => projects.find(p => p.id === id));
-export const selectVirtualTourParams = createSelector(
-  selectProjectsState,
-  state => ({
-    ...state.virtualTourParameters,
-    hostname: environment.apiHost,
-    projectFolder: environment.apiHost + state.virtualTourParameters.path
-  })
-);
-export const selectVirtualTourPanoramas =
+export const selectProject = createSelector(selectProjectsState, state => state.project);
+export const selectProjectPanoramas =
   createSelector(
-    selectVirtualTourParams,
+    selectProject,
     state => {
-      if (state?.data?.length) {
-        const panoramas = state.data
+      if (state?.panoramas?.length) {
+        const panoramas = state.panoramas
           .slice()
-          .map((p, index) => ({ ...p, panoramas: { ...p.panoramas, order: +p.panoramas.order, floor: +p.panoramas.floor, index, transitionFrom: undefined } }));
+          .map((p, index) => ({ ...p, order: +p.order, floor: +p.floor, index, transitionFrom: undefined }));
 
         const sortedFloors =
           panoramas
-            .map(p => p.panoramas.floor)
+            .map(p => p.floor)
             .sort((a, b) => a - b);
 
         const floors = Array
-        .from(new Set(sortedFloors))
-        .map(
-          floor => panoramas
-            .filter(p => p.panoramas.floor === floor)
-            .sort((a,b) => +a.panoramas.order - +b.panoramas.order)
-        )
-        .reduce((prev, next) => prev.concat(next))
-        .sort((a,b) => +a.panoramas.index - +b.panoramas.index)
-        .map(
+          .from(new Set(sortedFloors))
+          .map(
+            floor => panoramas
+              .filter(p => p.floor === floor)
+              .sort((a, b) => +a.order - +b.order)
+          )
+          .reduce((prev, next) => prev.concat(next))
+          .sort((a, b) => +a.index - +b.index)
+          .map(
             (currentValue, index, arr) => {
               if (index > 0 && index < arr.length - 1) {
                 const next = arr[index + 1];
                 const prev = arr[index - 1];
-                if (next.panoramas.floor > currentValue.panoramas.floor) {
+                if (next.floor > currentValue.floor) {
                   return {
                     ...currentValue,
-                    panoramas: {
-                      ...currentValue.panoramas,
-                      transitionFrom: next.panoramas.floor
-                    }
+                    transitionFrom: next.floor
                   }
                 }
 
-                if (prev.panoramas.floor < currentValue.panoramas.floor) {
+                if (prev.floor < currentValue.floor) {
                   return {
                     ...currentValue,
                     panoramas: {
-                      ...currentValue.panoramas,
-                      transitionFrom: prev.panoramas.floor
+                      ...currentValue,
+                      transitionFrom: prev.floor
                     }
                   }
                 }
@@ -68,14 +56,14 @@ export const selectVirtualTourPanoramas =
               return currentValue;
             }
           )
-          .sort((a,b) => +a.panoramas.floor - +b.panoramas.floor);
+          .sort((a, b) => +a.floor - +b.floor);
 
         return floors;
       }
       return [];
     }
   );
-export const selectHdrVirtualTourPanoramas = createSelector(selectVirtualTourPanoramas, state => {
+export const selectProjectHdrPanoramas = createSelector(selectProjectPanoramas, state => {
   const panos = state.filter(t => !t.name.includes('_'));
   return panos.map(p => {
     return {
@@ -86,13 +74,13 @@ export const selectHdrVirtualTourPanoramas = createSelector(selectVirtualTourPan
     };
   });
 });
-export const selectHdrVirtualTourPanoramasDividerOnFloors = createSelector(selectHdrVirtualTourPanoramas, state => {
-  let floors = state.map(p => p.panoramas.floor);
+export const selectProjectHdrPanoramasFloors = createSelector(selectProjectHdrPanoramas, state => {
+  let floors = state.map(p => p.floor);
   floors = Array.from(new Set(floors));
-  const panoFloors = floors.map(f => state.filter(p => p.panoramas.floor === f));
+  const panoFloors = floors.map(f => state.filter(p => p.floor === f));
   const panoFloorsCoord = panoFloors.map(f => {
-    let xArray = f.map(p => +p.panoramas.x);
-    let zArray = f.map(p => +p.panoramas.z);
+    let xArray = f.map(p => +p.x);
+    let zArray = f.map(p => +p.z);
 
     let xMin = Math.min(...xArray);
     let xMax = Math.max(...xArray);
@@ -101,21 +89,21 @@ export const selectHdrVirtualTourPanoramasDividerOnFloors = createSelector(selec
     let zMax = Math.max(...zArray);
 
     if (xMin < 0) {
-      xArray = f.map(p => Math.abs(xMin) + +p.panoramas.x);
+      xArray = f.map(p => Math.abs(xMin) + +p.x);
       xMin = Math.min(...xArray);
       xMax = Math.max(...xArray);
     } else if (xMin > 0) {
-      xArray = f.map(p => +p.panoramas.x - Math.abs(xMin));
+      xArray = f.map(p => +p.x - Math.abs(xMin));
       xMin = Math.min(...xArray);
       xMax = Math.max(...xArray);
     }
 
     if (zMin < 0) {
-      zArray = f.map(p => Math.abs(zMin) + +p.panoramas.z);
+      zArray = f.map(p => Math.abs(zMin) + +p.z);
       zMin = Math.min(...zArray);
       zMax = Math.max(...zArray);
     } else if (zMin > 0) {
-      zArray = f.map(p => +p.panoramas.z - Math.abs(zMin));
+      zArray = f.map(p => +p.z - Math.abs(zMin));
       zMin = Math.min(...zArray);
       zMax = Math.max(...zArray);
     }
@@ -125,9 +113,9 @@ export const selectHdrVirtualTourPanoramasDividerOnFloors = createSelector(selec
 
     const floorplanMap = f.map((p, i) => ({
       name: p.name,
-      index: p.panoramas.index,
-      order: p.panoramas.order,
-      floor: p.panoramas.floor,
+      index: p.index,
+      order: p.order,
+      floor: p.floor,
       z: (zArray[i] / zSide) * 100,
       x: (xArray[i] / xSide) * 100
     }));
@@ -148,8 +136,5 @@ export const selectHdrVirtualTourPanoramasDividerOnFloors = createSelector(selec
     panos: state
   }
 })
-export const selectVirtualTourPanoramaByName = (name: string) =>
-  createSelector(selectHdrVirtualTourPanoramas, state => (state.find(p => p.name === name) || {}));
-
-export const selectPanoForm = createSelector(selectProjectsState, state => state.panoEditForm);
-export const selectPanoFormMode = createSelector(selectProjectsState, state => state.panoEditForm);
+export const selectProjectPanoramaByName = (name: string) =>
+  createSelector(selectProjectHdrPanoramas, state => (state.find(p => p.name === name) || {}));

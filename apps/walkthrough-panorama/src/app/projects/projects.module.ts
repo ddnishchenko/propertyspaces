@@ -34,10 +34,6 @@ import { GalleryModalComponent } from './components/gallery-modal/gallery-modal.
 // ngrx
 import * as fromProjects from './state/projects.reducer';
 import { ProjectsEffects } from './state/projects.effects';
-import * as fromProjectGallery from './state/gallery/project-gallery.reducer';
-import { ProjectGalleryEffects } from './state/gallery/project-gallery.effects';
-import * as fromProjectLocation from './state/project-location/project-location.reducer';
-import { ProjectLocationEffects } from './state/project-location/project-location.effects';
 
 @NgModule({
   declarations: [
@@ -56,10 +52,8 @@ import { ProjectLocationEffects } from './state/project-location/project-locatio
     SharedModule,
     ProjectsRoutingModule,
     StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
-    EffectsModule.forFeature([ProjectsEffects, ProjectGalleryEffects, ProjectLocationEffects]),
+    EffectsModule.forFeature([ProjectsEffects]),
     ...ngbs,
-    StoreModule.forFeature(fromProjectGallery.projectGalleryFeatureKey, fromProjectGallery.reducer),
-    StoreModule.forFeature(fromProjectLocation.projectLocationFeatureKey, fromProjectLocation.reducer)
   ],
   entryComponents: [
     ProjectFormComponent,

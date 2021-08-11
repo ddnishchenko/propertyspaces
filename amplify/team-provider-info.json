@@ -1,0 +1,27 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-propertyspaces-dev-132408-authRole",
+      "UnauthRoleArn": "arn:aws:iam::416845601415:role/amplify-propertyspaces-dev-132408-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::416845601415:role/amplify-propertyspaces-dev-132408-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-propertyspaces-dev-132408-deployment",
+      "UnauthRoleName": "amplify-propertyspaces-dev-132408-unauthRole",
+      "StackName": "amplify-propertyspaces-dev-132408",
+      "StackId": "arn:aws:cloudformation:us-west-2:416845601415:stack/amplify-propertyspaces-dev-132408/3fb29550-f527-11eb-9a22-024686c260c3",
+      "AmplifyAppId": "d35zdy24i9wv6l",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-propertyspaces-dev-132408-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "auth": {
+        "propertyspaces669c6b67": {}
+      },
+      "function": {
+        "S3Trigger5fc643a8": {
+          "deploymentBucketName": "amplify-propertyspaces-dev-132408-deployment",
+          "s3Key": "amplify-builds/S3Trigger5fc643a8-746b6256714449357655-build.zip"
+        }
+      }
+    }
+  }
+}

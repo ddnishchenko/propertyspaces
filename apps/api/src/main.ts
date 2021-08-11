@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { ServerlessNestjsApplicationFactory } from 'serverless-lambda-nestjs';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { AppModule } from './app/app.module';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,8 @@ async function bootstrap() {
     origin: '*',
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
   });
+  app.use(bodyParser.json({ limit: '2mb' }));
+  app.use(bodyParser.urlencoded({ limit: '2mb', extended: true }));
   const port = process.env.PORT || 3333;
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
@@ -33,6 +36,11 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
         origin: '*',
         allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
       },
+    },
+    app => {
+      app.use(bodyParser.json({ limit: '2mb' }));
+      app.use(bodyParser.urlencoded({ limit: '2mb', extended: true }));
+      return app;
     }
   );
   const result = await app.run(event, context);

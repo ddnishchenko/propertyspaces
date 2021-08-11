@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Panorama } from '../../interfaces/panorama';
 import { Project } from '../../interfaces/project';
-import { ProjectSite } from '../../interfaces/project-site';
 
 const prefix = '[Projects]';
 export const loadProjects = createAction(
@@ -10,21 +9,35 @@ export const loadProjects = createAction(
 
 export const loadProjectsSuccess = createAction(
   `${prefix} Load Projects Success`,
-  props<{projects: ProjectSite[]}>()
+  props<{ projects: Project[] }>()
 );
 
 export const loadProjectsFailed = createAction(
   `${prefix} Load Projects Failed`
 );
 
+export const loadProject = createAction(
+  `${prefix} Load Project`,
+  props<{ projectId: string }>()
+);
+
+export const loadProjectSuccess = createAction(
+  `${prefix} Load Project Success`,
+  props<{ project: Project }>()
+);
+
+export const loadProjectFailed = createAction(
+  `${prefix} Load Project Failed`,
+);
+
 export const createProject = createAction(
   `${prefix} Create Project`,
-  props<{name: string; address: string; latitude: number; longitude: number;}>()
+  props<{ project: Project }>()
 );
 
 export const createProjectSuccess = createAction(
   `${prefix} Create Project Success`,
-  props<{project: Project}>()
+  props<{ project: Project }>()
 );
 
 export const createProjectFailed = createAction(
@@ -33,12 +46,12 @@ export const createProjectFailed = createAction(
 
 export const deleteProjects = createAction(
   `${prefix} Delete Projects`,
-  props<{projectIds: string[]}>()
+  props<{ projectIds: string[] }>()
 );
 
 export const deleteProjectsSuccess = createAction(
   `${prefix} Delete Projects Success`,
-  props<{projectIds: string[]}>()
+  props<{ projectIds: string[] }>()
 );
 
 export const deleteProjectsFailed = createAction(
@@ -47,12 +60,12 @@ export const deleteProjectsFailed = createAction(
 
 export const copyProject = createAction(
   `${prefix} Copy Project`,
-  props<{projectId: string}>()
+  props<{ projectId: string }>()
 );
 
 export const copyProjectSuccess = createAction(
   `${prefix} Copy Project Success`,
-  props<{oldProjectId: string, newProjectId: string}>()
+  props<{ oldProjectId: string, newProjectId: string }>()
 );
 
 export const copyProjectFailed = createAction(
@@ -61,12 +74,12 @@ export const copyProjectFailed = createAction(
 
 export const editProject = createAction(
   `${prefix} Edit Project`,
-  props<{projectId: string; name: string}>()
+  props<{ projectId: string; project: Project }>()
 );
 
 export const editProjectSuccess = createAction(
   `${prefix} Edit Project Success`,
-  props<{projectId: string; name: string}>()
+  props<{ projectId: string; project: Project }>()
 );
 
 export const editProjectFailed = createAction(
@@ -75,46 +88,26 @@ export const editProjectFailed = createAction(
 
 export const updateProject = createAction(
   `${prefix} Update Project`,
-  props<{projectId: string, data: any}>()
+  props<{ projectId: string, project: Project }>()
 );
 
 export const updateProjectSuccess = createAction(
   `${prefix} Update Project Success`,
-  props<{project: Project}>()
+  props<{ project: Project }>()
 );
 
 export const updateProjectFailed = createAction(
   `${prefix} Update Project Failed`
 );
 
-export const setActiveProject = createAction(
-  `${prefix} Set active Project`,
-  props<{projectId: string;}>()
-);
-
-
-export const loadPanoramas = createAction(
-  `${prefix} Load Panoramas`,
-  props<{projectId: string}>()
-);
-
-export const loadPanoramasSuccess = createAction(
-  `${prefix} Load Panoramas success`,
-  props<{project: Project}>()
-);
-
-export const loadPanoramasFailed = createAction(
-  `${prefix} Load Panoramas failed`
-);
-
 export const createPanorama = createAction(
   `${prefix} Create Panorama`,
-  props<{panorama: Panorama; projectId: string;}>()
+  props<{ panorama: Panorama; projectId: string; }>()
 );
 
 export const createPanoramaSuccess = createAction(
   `${prefix} Create Panorama success`,
-  props<{project: Project;}>()
+  props<{ panorama: Panorama; }>()
 );
 
 export const createPanoramaFailed = createAction(
@@ -123,12 +116,12 @@ export const createPanoramaFailed = createAction(
 
 export const updatePanorama = createAction(
   `${prefix} Update Panorama`,
-  props<{panorama: Panorama; projectId: string;}>()
+  props<{ panorama: Panorama; projectId: string; }>()
 );
 
 export const updatePanoramaSuccess = createAction(
   `${prefix} Update Panorama success`,
-  props<{project: Project;}>()
+  props<{ panorama: Panorama; }>()
 );
 
 export const updatePanoramaFailed = createAction(
@@ -137,12 +130,12 @@ export const updatePanoramaFailed = createAction(
 
 export const deletePanorama = createAction(
   `${prefix} Delete Panorama`,
-  props<{names: string[]; projectId: string;}>()
+  props<{ names: string[]; projectId: string; }>()
 );
 
 export const deletePanoramaSuccess = createAction(
   `${prefix} Delete Panorama success`,
-  props<{names: string[]; projectId: string;}>()
+  props<{ names: string[]; projectId: string; }>()
 );
 
 export const deletePanoramaFailed = createAction(
@@ -151,17 +144,17 @@ export const deletePanoramaFailed = createAction(
 
 export const createHdrPanorama = createAction(
   `${prefix} Create HDR Panorama`,
-  props<{name: string; projectId: string;}>()
+  props<{ name: string; projectId: string; }>()
 );
 
 export const createHdrPanoramaSuccess = createAction(
   `${prefix} Create HDR Panorama success`,
-  props<{project: Project;}>()
+  props<{ panorama: Panorama; }>()
 );
 
 export const createHdrPanoramaFailed = createAction(
   `${prefix} Create HDR Panorama failed`,
-  props<{error: string}>()
+  props<{ error: string }>()
 );
 
 export const patchPanoForm = createAction(
@@ -171,15 +164,15 @@ export const patchPanoForm = createAction(
 
 export const panoFormMode = createAction(
   `${prefix} Pano form mode`,
-  props<{isEdit: boolean}>()
+  props<{ isEdit: boolean }>()
 );
 
 export const updateAddressData = createAction(
   `${prefix} Update Address`,
-  props<{projectId: string; data: any}>()
+  props<{ projectId: string; data: any }>()
 )
 
 export const updateContacts = createAction(
   `${prefix} Update Contacts`,
-  props<{projectId: string; data: any}>()
+  props<{ projectId: string; data: any }>()
 )

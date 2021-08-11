@@ -16,6 +16,6 @@ export class ModelDataResolver implements Resolve<Project> {
     state: RouterStateSnapshot,
   ): Observable<Project> {
     const projectId = route.paramMap.get('id');
-    return this.projectService.getPanoramas(projectId);
+    return this.projectService.read(projectId);
   }
 }

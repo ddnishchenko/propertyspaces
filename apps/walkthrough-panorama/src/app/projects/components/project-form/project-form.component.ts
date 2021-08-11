@@ -48,5 +48,13 @@ export class ProjectFormComponent implements OnInit, AfterViewInit {
       longitude: new FormControl(''),
     });
   }
-
+  submit() {
+    const { name, address, latitude, longitude } = this.form.value;
+    this.activeModal.close({
+      name: this.form.value.name,
+      location: {
+        name, address, latitude, longitude
+      }
+    })
+  }
 }

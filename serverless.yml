@@ -16,10 +16,11 @@ package:
   patterns:
     - dist/apps/api/**
     - '!**'
- 
+
 provider:
  name: aws
  runtime: nodejs14.x
+ stage: dev
  region: us-west-2
  profile: lidarama
  lambdaHashingVersion: 20201221
@@ -37,3 +38,20 @@ functions:
          cors: true
          method: any
          path: /{any+}
+
+resources:
+  Resources:
+    projectsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: projects
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+

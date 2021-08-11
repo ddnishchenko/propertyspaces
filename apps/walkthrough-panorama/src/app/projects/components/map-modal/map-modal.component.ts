@@ -30,10 +30,10 @@ export class MapModalComponent implements OnInit {
 
   createForm() {
     this.form = new FormGroup({
-      mapEnabled: new FormControl(!this.project.additional_data.hasOwnProperty('mapEnabled') ? true : this.project.additional_data.mapEnabled),
-      streetViewEnabled: new FormControl(!this.project.additional_data.hasOwnProperty('streetViewEnabled') ? true : this.project.additional_data.streetViewEnabled),
-      map: new FormControl(this.project.additional_data.map, [Validators.pattern(urlRegEx)]),
-      streetView: new FormControl(this.project.additional_data.streetView, [Validators.pattern(urlRegEx)]),
+      mapEnabled: new FormControl(!this.project.settings.hasOwnProperty('mapEnabled') ? true : this.project.settings.mapEnabled),
+      streetViewEnabled: new FormControl(!this.project.settings.hasOwnProperty('streetViewEnabled') ? true : this.project.settings.streetViewEnabled),
+      map: new FormControl(this.project.settings.map, [Validators.pattern(urlRegEx)]),
+      streetView: new FormControl(this.project.settings.streetView, [Validators.pattern(urlRegEx)]),
       address: new FormControl(this.project.project.address),
       latitude: new FormControl(+this.project.project.latitude),
       longitude: new FormControl(+this.project.project.longitude)

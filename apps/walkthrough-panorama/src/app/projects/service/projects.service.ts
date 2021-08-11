@@ -1,14 +1,15 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { ImageGallery } from '../../interfaces/image-gallery';
+import { Panorama } from '../../interfaces/panorama';
 import { Project } from '../../interfaces/project';
-import { ProjectSite } from '../../interfaces/project-site';
 
 const host = environment.apiHost;
+const endpoint = environment.apiHost + 'projects';
 
 @Injectable({
   providedIn: 'root'
@@ -19,80 +20,48 @@ export class ProjectsService {
     private http: HttpClient
   ) { }
 
-  createProject(project) {
-    return this.http.post(host + 'create-panoramas-project', { client_id: 1295, ...project });
+  list(): Observable<Project[]> {
+    return this.http.get<Project[]>(endpoint);
   }
 
-  deleteProject(project_id) {
-    return this.http.post(host + 'delete-panoramas-project', { client_id: 1295, project_id })
+  create(project) {
+    return this.http.post(endpoint, project);
+  }
+
+  read(id): Observable<any> {
+    return this.http.get(`${endpoint}/${id}`);
+  }
+
+  update(id, project) {
+    return this.http.put(`${endpoint}/${id}`, project);
+  }
+
+  delete(id) {
+    return this.http.delete(`${endpoint}/${id}`);
+  }
+
+  addPanorama(id, panorama: Panorama): Observable<Panorama> {
+    return this.http.post<Panorama>(`${endpoint}/${id}/panorama`, panorama);
+  }
+
+  updatePanorama(id, panorama: Panorama) {
+    return this.http.put(`${endpoint}/${id}`, panorama);
+  }
+
+  deletePanorama(project_id, name) {
+    return this.http.post(host + 'delete-panorama-project', { client_id: 1295, project_id, name });
   }
 
   copyProject(project_id): Observable<Project> {
     return this.http.post<Project>(host + 'copy-panoramas-project', { client_id: 1295, project_id });
   }
 
-  editProjectName(project_id, name) {
-    return this.http.post(host + 'update-name-project', { client_id: 1295, project_id, name });
-  }
-
-  getProjects(): Observable<ProjectSite[]> {
-    return this.http.post<ProjectSite[]>(host + 'get-panoramas-projects', { client_id: 1295 });
-  }
-
-  getProject(project_id): Observable<any> {
-    return this.http.post(host + 'get-panoramas-project', { client_id: 1295, project_id });
-  }
-
-  getPanoramas(project_id): Observable<Project> {
-    const params = new HttpParams({ fromObject: { project_id } });
-    return this.http.get(host + 'get-panoramas', { params }).pipe(
-      mergeMap(
-        panoData => this.getProject(project_id).pipe(
-          map(project => ({ ...panoData, name: project.name, address: project.address, project }))
-        )
-      )
-    );
-  }
-
-  createPanorama(project_id, panorama_data): Observable<Project> {
-    return this.http.post(host + 'create-panorama', { project_id, panorama_data }).pipe(
-      mergeMap(
-        panoData => this.getProject(project_id).pipe(
-          map(project => ({ ...panoData, name: project.name, address: project.address, project }))
-        )
-      )
-    );
-  }
-
-  updatePanorama(project_id, panorama_data): Observable<Project> {
-    return this.http.post(host + 'update-panorama', { client_id: 1295, project_id, panorama_data }).pipe(
-      mergeMap(
-        panoData => this.getProject(project_id).pipe(
-          map(project => ({ ...panoData, name: project.name, address: project.address, project }))
-        )
-      )
-    );
-  }
-
-  deletePanoramaProject(project_id, name) {
-    return this.http.post(host + 'delete-panorama-project', { client_id: 1295, project_id, name });
-  }
-
-  updateRotationProject(project_id, rotation_y) {
-    return this.http.post(host + 'update-rotation-project', { client_id: 1295, project_id, rotation_y })
-  }
-  updateDataProject(project_id, additional_data): Observable<Project> {
-    return this.http.post(host + 'update-data-project', { client_id: 1295, project_id, additional_data })
+  updateDataProject(project_id, settings): Observable<Project> {
+    return this.http.post(host + 'update-data-project', { client_id: 1295, project_id, settings })
   }
 
   makeHdr(project_id, name): Observable<Project> {
-    return this.http.post(host + 'create-hdr-panorama', { client_id: 1295, project_id, name }).pipe(
-      mergeMap(
-        panoData => this.getProject(project_id).pipe(
-          map(project => ({ ...panoData, name: project.name, address: project.address }))
-        )
-      )
-    );
+    return this.http.post(host + 'create-hdr-panorama', { client_id: 1295, project_id, name }).pipe();
   }
 
   uploadGalleryPhoto(project_id, file: File): Observable<ImageGallery> {
@@ -126,33 +95,13 @@ export class ProjectsService {
     );
   }
 
-  updateContact(project_id, additional_data): Observable<Project> {
-    return this.updateDataProject(project_id, {
-      ...additional_data,
-      profile: JSON.stringify(additional_data.profile),
-      company: JSON.stringify(additional_data.company),
-    }).pipe(
-      mergeMap(
-        () => this.getPanoramas(project_id).pipe(
-          map(data => {
-            return {
-              ...data,
-              additional_data: {
-                ...data.additional_data,
-                profile: JSON.parse(data.additional_data.profile),
-                company: JSON.parse(data.additional_data.company),
-              }
-            }
-          })
-        )
-      )
-
-    );
-  }
-
   aws() {
-    return this.http.get('https://u49p5qnypi.execute-api.us-west-2.amazonaws.com/staging/items').subscribe((r) => {
+    return this.http.get('https://lb5vs7eoog.execute-api.us-west-2.amazonaws.com/dev').subscribe((r) => {
       console.log(r);
     });
+  }
+
+  awsUploadFile(id, body) {
+    return this.http.post(`http://localhost:3000/dev/projects/${id}/panorama`, body);
   }
 }

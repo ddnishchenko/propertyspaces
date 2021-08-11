@@ -1,11 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">Create New Project</h4>
-  <button
-    type="button"
-    class="close"
-    aria-label="Close"
-    (click)="activeModal.dismiss('Cross')"
-  >
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -13,53 +8,24 @@
   <form [formGroup]="form" class="row g-3">
     <div class="col-12">
       <label for="ProjectName" class="visually-hidden">Name</label>
-      <input
-        type="text"
-        formControlName="name"
-        class="form-control"
-        id="ProjectName"
-        placeholder="Name"
-      />
+      <input type="text" formControlName="name" class="form-control" id="ProjectName" placeholder="Name" />
     </div>
     <div class="col-12">
       <label for="Address" class="visually-hidden">Address</label>
-      <input
-        type="text"
-        #search
-        formControlName="address"
-        class="form-control"
-        id="Address"
-        placeholder="Address"
-      />
+      <input type="text" #search formControlName="address" class="form-control" id="Address" placeholder="Address" />
     </div>
     <div class="col-12" *ngIf="form.value.latitude && form.value.longitude">
-      <agm-map
-        [latitude]="form.value.latitude"
-        [longitude]="form.value.longitude"
-        [zoom]="15"
-      >
-        <agm-marker
-          [latitude]="form.value.latitude"
-          [longitude]="form.value.longitude"
-        ></agm-marker>
+      <agm-map [latitude]="form.value.latitude" [longitude]="form.value.longitude" [zoom]="15">
+        <agm-marker [latitude]="form.value.latitude" [longitude]="form.value.longitude"></agm-marker>
       </agm-map>
     </div>
   </form>
 </div>
 <div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-outline-dark"
-    (click)="activeModal.close(false)"
-  >
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close(false)">
     Close
   </button>
-  <button
-    type="button"
-    [disabled]="form.invalid"
-    class="btn btn-primary"
-    (click)="activeModal.close(form.value)"
-  >
+  <button type="button" [disabled]="form.invalid" class="btn btn-primary" (click)="submit()">
     Create
   </button>
 </div>

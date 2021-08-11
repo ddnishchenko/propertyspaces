@@ -31,9 +31,9 @@ export class FloorplanEditorComponent implements OnInit {
   }
 
   createForm() {
-    const additional_data = this.data.additional_data || {};
+    const settings = this.data.settings || {};
     const floorObject = (floor, index) => {
-      const floors = additional_data?.floors || [];
+      const floors = settings?.floors || [];
       const floorData = floors[index] || {};
       return new FormGroup({
         floor: new FormControl(floor),
@@ -75,8 +75,8 @@ export class FloorplanEditorComponent implements OnInit {
     })
   }
   submit() {
-    const additional_data = {
-      ...this.data.additional_data,
+    const settings = {
+      ...this.data.settings,
       ...this.form.value
     }
   }

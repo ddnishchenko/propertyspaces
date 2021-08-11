@@ -1,202 +1,171 @@
 <ng-container *ngIf="project$ | async as project">
-  <ng-container *ngIf="panoramas$ | async as panoramas">
-    <ng-template #galleryEditorTpl let-modal>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form #form class="modal-body">
-          <div class="container-fluid">
-            <input type="file" name="files" id="photo" hidden (change)="uploadImage($event, project.project_id)" />
-            <label class="btn btn-primary" for="photo">Upload Image</label>
-          </div>
-        </form>
-        <ng-container *ngIf="gallery$ | async as orderedImages">
-          <propertyspaces-gallery-editor [items]="orderedImages"
-            (nameChange)="imageNameChanged($event, project.project_id)"
-            (sortChange)="sortChanged($event, project.project_id)"
-            (moveToTrash)="deleteGalleryImage($event, project.project_id)"></propertyspaces-gallery-editor>
-        </ng-container>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">
-          Close
-        </button>
-      </div>
-    </ng-template>
-    <!-- NAV MENU BEGIN -->
-    <nav class="navbar navbar-dark bg-dark sticky-top navbar-expand-lg">
-      <div class="container">
-        <a class="navbar-brand" routerLink="/projects" title="Propertyspaces"><img src="assets/img/logo.svg"
-            title="Lidarama" class="img-fluid" /></a>
+  <!-- NAV MENU BEGIN -->
+  <nav class="navbar navbar-dark bg-dark sticky-top navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" routerLink="/projects" title="Propertyspaces"><img src="assets/img/logo.svg"
+          title="Lidarama" class="img-fluid" /></a>
 
-        <button (click)="isMenuCollapsed = !isMenuCollapsed" class="navbar-toggler">
-          <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
-        </button>
-        <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
-          <ul class="navbar-nav ml-auto text-uppercase">
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/projects">My Projects</a>
-            </li>
-            <li class="nav-item">
-              <amplify-sign-out></amplify-sign-out>
-              <!-- <a class="nav-link" href="javascript:;">Log out</a> -->
-            </li>
-            <li class="nav-item"></li>
-          </ul>
-        </div>
+      <button (click)="isMenuCollapsed = !isMenuCollapsed" class="navbar-toggler">
+        <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+      </button>
+      <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto text-uppercase">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/projects">My Projects</a>
+          </li>
+          <li class="nav-item">
+            <amplify-sign-out></amplify-sign-out>
+            <!-- <a class="nav-link" href="javascript:;">Log out</a> -->
+          </li>
+          <li class="nav-item"></li>
+        </ul>
       </div>
-    </nav>
-    <!-- NAV MENU END -->
+    </div>
+  </nav>
+  <!-- NAV MENU END -->
 
-    <!-- PAGE TITLE BEGIN -->
-    <section class="page-cover d-flex justify-content-center align-items-center" [style.min-height]="'400px'"
-      [style.background]="panoramas.length ? 'url(' + host + project.path + panoramas[0].name + ') center / cover' : ''">
-      <div class="page-cover-title">
-        <h2 class="text-center">
-          <span>{{ project.name }}</span><i class="fa fa-edit" *ngIf="!isEditName" (click)="editName(project.name)"></i>
-        </h2>
-        <div class="input-group mb-3" *ngIf="isEditName">
-          <span class="input-group-text" (click)="saveName(project.project_id)">x</span>
-          <input class="form-control" [(ngModel)]="projectName" />
-        </div>
+  <!-- PAGE TITLE BEGIN -->
+  <section class="page-cover d-flex justify-content-center align-items-center" [style.min-height]="'400px'"
+    [style.background]="project.panoramas ? 'url(' + project.panoramas[0].url + ') center / cover' : ''">
+    <div class="page-cover-title">
+      <h2 class="text-center">
+        <span>{{ project.name }}</span><i class="fa fa-edit" *ngIf="!isEditName" (click)="editName(project.name)"></i>
+      </h2>
+      <div class="input-group mb-3" *ngIf="isEditName">
+        <span class="input-group-text" (click)="saveName(project)">x</span>
+        <input class="form-control" [(ngModel)]="projectName" />
       </div>
-    </section>
-    <!-- PAGE TITLE END -->
+    </div>
+  </section>
+  <!-- PAGE TITLE END -->
 
-    <!-- VISIT VR TOUR BEGIN -->
-    <div class="container mt-5">
-      <div class="row">
-        <div class="col-md-12">
-          <h3 class="text-center mb-3">
-            <i class="fa fa-link mr-3"></i> Visit Your Walkthrough
-          </h3>
-        </div>
+  <!-- VISIT VR TOUR BEGIN -->
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="text-center mb-3">
+          <i class="fa fa-link mr-3"></i> Visit Your Walkthrough
+        </h3>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="list-group">
-            <a [routerLink]="['/projects/vr-tour-embed', project.project_id]"
-              class="list-group-item list-group-item-action">
-              <i class="fa fa-link mr-3"></i> Unbranded
-            </a>
-            <a href="#" class="list-group-item list-group-item-action"><i class="fa fa-link mr-3"></i> Branded</a>
-          </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="list-group">
+          <a [routerLink]="['/projects/vr-tour-embed', project.id]" class="list-group-item list-group-item-action">
+            <i class="fa fa-link mr-3"></i> Unbranded
+          </a>
+          <a href="#" class="list-group-item list-group-item-action"><i class="fa fa-link mr-3"></i> Branded</a>
         </div>
       </div>
     </div>
-    <!-- VISIT VR TOUR END -->
+  </div>
+  <!-- VISIT VR TOUR END -->
 
-    <!-- EDIT VR TOUR BEGIN -->
-    <div class="container mt-5">
-      <div class="row">
-        <div class="col-md-12">
-          <h3 class="text-center mb-3">
-            <i class="fa fa-gear"></i> Edit Your Walkthrough
-          </h3>
-        </div>
+  <!-- EDIT VR TOUR BEGIN -->
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="text-center mb-3">
+          <i class="fa fa-gear"></i> Edit Your Walkthrough
+        </h3>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="list-group">
-            <div class="list-group-item list-group-item-action d-flex">
-              <button type="button" class="btn btn-link text-danger flex-fill text-left"
-                (click)="deleteProject(project.project_id)">
-                <i class="fa fa-trash"></i> Delete project
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="list-group">
+          <div class="list-group-item list-group-item-action d-flex">
+            <button type="button" class="btn btn-link text-danger flex-fill text-left"
+              (click)="deleteProject(project.id)">
+              <i class="fa fa-trash"></i> Delete project
+            </button>
+          </div>
+          <div class="list-group-item list-group-item-action d-flex">
+            <ng-template #tooltipTip>
+              <button type="button" (click)="openCreateForm(project)" class="btn btn-link text-dark flex-fill text-left"
+                placement="top" ngbTooltip="In order to edit virtual-tour it should have at least one Nav Point">
+                <i class="mr-2 fa fa-plus"></i>Add Navigation Points
               </button>
-            </div>
-            <div class="list-group-item list-group-item-action d-flex">
-              <ng-template #tooltipTip>
-                <button type="button" (click)="openCreateForm(project)"
-                  class="btn btn-link text-dark flex-fill text-left" placement="top"
-                  ngbTooltip="In order to edit virtual-tour it should have at least one Nav Point">
-                  <i class="mr-2 fa fa-plus"></i>Add Navigation Points
-                </button>
-              </ng-template>
-              <a *ngIf="panoramas.length; else tooltipTip" class="btn btn-link text-dark flex-fill text-left"
-                [routerLink]="['/projects/vr-tour-model', project.project_id]"><i class="mr-2 fa fa-gear"></i>Edit
-                virtual tour</a>
-              <button type="button" class="btn btn-info">Help Video</button>
-            </div>
+            </ng-template>
+            <a *ngIf="project.panoramas?.length; else tooltipTip" class="btn btn-link text-dark flex-fill text-left"
+              [routerLink]="['/projects/vr-tour-model', project.id]"><i class="mr-2 fa fa-gear"></i>Edit
+              virtual tour</a>
+            <button type="button" class="btn btn-info">Help Video</button>
+          </div>
 
-            <div class="list-group-item list-group-item-action d-flex">
-              <a (click)="openGalleryModal(galleryEditorTpl)" href="javascript:;"
-                class="btn btn-link text-dark flex-fill text-left"><i class="mr-2 fa fa-image"></i>Photo Gallery</a>
-              <button type="button" class="btn btn-info">Help Video</button>
-            </div>
+          <!-- <div class="list-group-item list-group-item-action d-flex">
+            <a (click)="openGalleryModal(galleryEditorTpl)" href="javascript:;"
+              class="btn btn-link text-dark flex-fill text-left"><i class="mr-2 fa fa-image"></i>Photo Gallery</a>
+            <button type="button" class="btn btn-info">Help Video</button>
+          </div> -->
 
-            <div class="list-group-item list-group-item-action d-flex">
-              <a (click)="openMapModal(project, panoramas)" href="javascript:;"
-                class="btn btn-link text-dark flex-fill text-left"><i class="mr-2 fa fa-map"></i>Add Map & Street
-                View</a>
-              <button type="button" class="btn btn-info">Help Video</button>
-            </div>
+          <div class="list-group-item list-group-item-action d-flex">
+            <a (click)="openMapModal(project)" href="javascript:;" class="btn btn-link text-dark flex-fill text-left"><i
+                class="mr-2 fa fa-map"></i>Add Map & Street
+              View</a>
+            <button type="button" class="btn btn-info">Help Video</button>
+          </div>
 
-            <div class="list-group-item list-group-item-action d-flex">
-              <a (click)="openContactModal(project.project_id)" href="javascript:;"
-                class="btn btn-link text-dark flex-fill text-left"><i class="mr-2 fa fa-phone"></i>Edit Contact Info</a>
-              <button type="button" class="btn btn-info">Help Video</button>
-            </div>
+          <div class="list-group-item list-group-item-action d-flex">
+            <a (click)="openContactModal(project.id)" href="javascript:;"
+              class="btn btn-link text-dark flex-fill text-left"><i class="mr-2 fa fa-phone"></i>Edit Contact Info</a>
+            <button type="button" class="btn btn-info">Help Video</button>
+          </div>
 
-            <div class="list-group-item list-group-item-action d-flex">
-              <a class="btn btn-link text-dark flex-fill text-left" (click)="openCreateForm(project)"><i
-                  class="mr-2 fa fa-plus"></i>Add Navigation Points</a>
-              <button type="button" class="btn btn-info">Help Video</button>
-            </div>
+          <div class="list-group-item list-group-item-action d-flex">
+            <a class="btn btn-link text-dark flex-fill text-left" (click)="openCreateForm(project)"><i
+                class="mr-2 fa fa-plus"></i>Add Navigation Points</a>
+            <button type="button" class="btn btn-info">Help Video</button>
+          </div>
 
-            <div class="list-group-item list-group-item-action d-flex">
-              <a class="btn btn-link text-dark flex-fill text-left"><i class="mr-2 fa fa-file-o"></i>Change Template</a>
-              <button type="button" class="btn btn-info">Help Video</button>
-            </div>
+          <div class="list-group-item list-group-item-action d-flex">
+            <a class="btn btn-link text-dark flex-fill text-left"><i class="mr-2 fa fa-file-o"></i>Change Template</a>
+            <button type="button" class="btn btn-info">Help Video</button>
           </div>
         </div>
       </div>
     </div>
-    <!-- EDIT VR TOUR END -->
+  </div>
+  <!-- EDIT VR TOUR END -->
 
-    <ng-template #addPano>
-      <div class="container py-5 text-center">
-        <div class="row">
-          <div class="col-12">
-            <div class="alert alert-danger" role="alert">
-              You don't have navigation points in your virtual tour. In order to
-              start edit your virtual tour please add some Navigation Points
-            </div>
-            <a class="btn btn-primary" (click)="openCreateForm(project)"><i class="mr-2 fa fa-plus"></i>Add Navigation
-              Points</a>
-          </div>
-        </div>
-      </div>
-    </ng-template>
-
-    <!-- EDIT PANORAMAS BEGIN -->
-    <div class="container py-5" *ngIf="panoramas.length; else addPano">
+  <ng-template #addPano>
+    <div class="container py-5 text-center">
       <div class="row">
-        <div class="col-md-12">
-          <h3 class="text-center mb-3">
-            <i class="fa fa-gears"></i> Edit Panoramas
-          </h3>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="list-group">
-            <li *ngFor="let panorama of panoramas | orderBy: 'panoramas.order'"
-              class="list-group-item list-group-item-action d-flex align-items-center">
-              <a href="javascript:;" (click)="openEditPanorama(panorama, project)">{{ panorama.panoramas.order }}) {{
-                panorama.name }}</a>
-              <div class="actions ml-auto">
-                <i (click)="openEditPanorama(panorama, project)" class="fa fa-gear fa-2x mx-2"></i>
-                <i (click)="deletePanoramas(panorama.name)" class="fa fa-trash-o fa-2x"></i>
-              </div>
-            </li>
+        <div class="col-12">
+          <div class="alert alert-danger" role="alert">
+            You don't have navigation points in your virtual tour. In order to
+            start edit your virtual tour please add some Navigation Points
           </div>
+          <a class="btn btn-primary" (click)="openCreateForm(project)"><i class="mr-2 fa fa-plus"></i>Add Navigation
+            Points</a>
         </div>
       </div>
     </div>
-    <!-- EDIT PANORAMAS END -->
-  </ng-container>
+  </ng-template>
+
+  <!-- EDIT PANORAMAS BEGIN -->
+  <div class="container py-5" *ngIf="project.panoramas?.length; else addPano">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="text-center mb-3">
+          <i class="fa fa-gears"></i> Edit Panoramas
+        </h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="list-group">
+          <li *ngFor="let panorama of project.panoramas | orderBy: 'panoramas.order'"
+            class="list-group-item list-group-item-action d-flex align-items-center">
+            <a href="javascript:;" (click)="openEditPanorama(project, panorama)">{{ panorama.order }}) {{
+              panorama.name }}</a>
+            <div class="actions ml-auto">
+              <i (click)="openEditPanorama(project, panorama)" class="fa fa-gear fa-2x mx-2"></i>
+              <i (click)="deletePanoramas(panorama.name)" class="fa fa-trash-o fa-2x"></i>
+            </div>
+          </li>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- EDIT PANORAMAS END -->
 </ng-container>

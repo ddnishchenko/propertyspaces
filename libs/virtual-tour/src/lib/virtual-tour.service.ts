@@ -19,20 +19,20 @@ function ringsShape(pano, font) {
   // const color = isNaN(pano?.transitionFrom) ? 0xffffff :0xff00ff;
   const color = 0xffffff;
   const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 314, 1, 0);
-  const outerRingMaterial = new THREE.MeshBasicMaterial({color: color, transparent: true});
+  const outerRingMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true });
   const outerRingMesh = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
 
   const innerRingGeometry = new THREE.RingGeometry(1.5, 1.8, 314, 1, 0);
-  const innerRingMaterial = new THREE.MeshBasicMaterial({color: color, transparent: true});
+  const innerRingMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true });
   const innerRingMesh = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
 
   const circleGeometry = new THREE.CircleGeometry(2, 128);
-  const circleMaterial = new THREE.MeshBasicMaterial({color: 0x000000, transparent: true, opacity: 0.3});
+  const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 });
   const circleMesh = new THREE.Mesh(circleGeometry, circleMaterial);
 
   const index = pano?.order || 0;
 
-  const matLite = new THREE.MeshBasicMaterial({color: color, transparent: true});
+  const matLite = new THREE.MeshBasicMaterial({ color: color, transparent: true });
   const shapesText = font.generateShapes(`${index}`, 1.5);
   const shapesTextGeometry = new THREE.ShapeGeometry(shapesText);
   shapesTextGeometry.computeBoundingBox();
@@ -60,7 +60,7 @@ function ringsShape(pano, font) {
   group.add(circleMesh);
   group.add(shapesTextMesh);
   group.rotation.set(11, 0, 0);
-  group.children[2].position.set(0,0,-0.001);
+  group.children[2].position.set(0, 0, -0.001);
 
   return group;
 }
@@ -236,7 +236,7 @@ export class VirtualTourService {
     // this.OrbitControls.noPan = true;
 
     // Observable
-    // this.currentPanoId = this.panos[0].panoramas.index;
+    // this.currentPanoId = this.panos[0].index;
     this.updateDotInfo(this.currentPanoId);
     this.moveMark(this.currentPanoId);
   }
@@ -261,7 +261,7 @@ export class VirtualTourService {
         if (this.panos[i].object.visible) {
           const panoUuids = this.panos[i].object.children.map(m => m.uuid);
           if (panoUuids.includes(item.object.uuid)) {
-            target = this.panos[i].panoramas.index;
+            target = this.panos[i].index;
           }
         }
       }
@@ -272,17 +272,14 @@ export class VirtualTourService {
   changeVisibilityRadius(val, changeCurrent = false) {
     if (changeCurrent) {
       this.panos = this.panos.map(p => {
-        if (p.panoramas.index === this.currentPano.panoramas.index) {
-          return {...p, panoramas: {...p.panoramas, visibilityRadius: val}};
+        if (p.index === this.currentPano.index) {
+          return { ...p, visibilityRadius: val };
         }
         return p;
       });
       this.currentPano = {
         ...this.currentPano,
-        panoramas: {
-          ...this.currentPano.panoramas,
-          visibilityRadius: val
-        }
+        visibilityRadius: val
       }
     } else {
       this.defaultVisibilityRadius = val;
@@ -298,37 +295,37 @@ export class VirtualTourService {
   }
 
   toggleNavPoints(toggle) {
-    const visibilityRadius = this.currentPano ? this.currentPano.panoramas.visibilityRadius || this.defaultVisibilityRadius : this.defaultVisibilityRadius;
+    const visibilityRadius = this.currentPano ? this.currentPano.visibilityRadius || this.defaultVisibilityRadius : this.defaultVisibilityRadius;
     this.panos.forEach((pano) => pano.object.visible = false);
     if (toggle) {
       this.panos.forEach((pano) => {
-        if (this.currentPano.panoramas.neighbors) {
+        if (this.currentPano.neighbors) {
           if (this.neighborsFiltering) {
-            const nPanos = this.currentPano.panoramas.neighbors.map(n => this.panos.find(p => p.name === n))
-            .filter(p => p)
-            .filter(p => {
-              const diffY = 1 > Math.abs(Math.abs(this.currentPanorama.panoramas.y) - Math.abs(p.panoramas.y));
-              const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
-              const sameFloor = this.currentPanorama.panoramas.floor == p.panoramas.floor;
-              return diffY && isNeighborFloor;
-            });
+            const nPanos = this.currentPano.neighbors.map(n => this.panos.find(p => p.name === n))
+              .filter(p => p)
+              .filter(p => {
+                const diffY = 1 > Math.abs(Math.abs(this.currentPanorama.y) - Math.abs(p.y));
+                const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.floor) - Math.abs(p.floor));
+                const sameFloor = this.currentPanorama.floor == p.floor;
+                return diffY && isNeighborFloor;
+              });
             const panoRadius = this.panos.filter(
               p => {
-              const isX = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.panoramas.x) - Math.abs(p.panoramas.x));
-              const isZ = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.panoramas.z) - Math.abs(p.panoramas.z));
-              const isY = 1 > Math.abs(Math.abs(this.currentPanorama.panoramas.y) - Math.abs(p.panoramas.y));
-              const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.panoramas.floor) - Math.abs(p.panoramas.floor));
-              return (isX || isZ) && isY && isNeighborFloor;
-            });
+                const isX = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.x) - Math.abs(p.x));
+                const isZ = visibilityRadius > Math.abs(Math.abs(this.currentPanorama.z) - Math.abs(p.z));
+                const isY = 1 > Math.abs(Math.abs(this.currentPanorama.y) - Math.abs(p.y));
+                const isNeighborFloor = 2 > Math.abs(Math.abs(this.currentPanorama.floor) - Math.abs(p.floor));
+                return (isX || isZ) && isY && isNeighborFloor;
+              });
 
             pano.object.visible = nPanos.concat(panoRadius).map(p => p.name).includes(pano.name);
           } else {
-            pano.object.visible = this.currentPano.panoramas.neighbors.includes(pano.name);
+            pano.object.visible = this.currentPano.neighbors.includes(pano.name);
           }
 
         } else {
           // TODO: Remove backword compatibility
-          pano.object.visible = false; // pano.panoramas.floor === this.currentPano.panoramas.floor;
+          pano.object.visible = false; // pano.floor === this.currentPano.floor;
         }
 
       })
@@ -339,11 +336,11 @@ export class VirtualTourService {
   moveMark(panoId) {
     this.toggleNavPoints(false);
 
-    let pano = this.panos.find(p => p.panoramas.index === panoId);
+    let pano = this.panos.find(p => p.index === panoId);
     this.activeIndex = panoId;
     this.currentPano = pano;
     this.currentPanoId
-    let cameraPos = this.scaleToModel(pano.position)
+    let cameraPos = this.scaleToModel(pano)
     this.transition.state = 0;
     let camPos = this.camera.position
 
@@ -357,16 +354,16 @@ export class VirtualTourService {
     this.transitionMesh.material.needsUpdate = true
     this.transitionMesh.visible = true;
 
-    if (isNaN(pano.panoramas.panoCameraStartAngle)) {
+    if (isNaN(pano.panoCameraStartAngle)) {
       this.meshModel.rotation.y = this.defaultY;
     } else {
-      this.meshModel.rotation.y = +pano.panoramas.panoCameraStartAngle;
+      this.meshModel.rotation.y = +pano.panoCameraStartAngle;
     }
 
-    if (isNaN(pano.panoramas.zoom)) {
+    if (isNaN(pano.zoom)) {
       this.changeZoom(this.defaultZoom);
     } else {
-      this.changeZoom(+pano.panoramas.zoom);
+      this.changeZoom(+pano.zoom);
 
     }
 
@@ -383,20 +380,12 @@ export class VirtualTourService {
 
   loadTextures(project) {
     const loader = new THREE.TextureLoader();
-    const asyncLoader = (path, progressHandler) => (
-      new Promise(
-        (resolve, reject) => loader.load(path, resolve, progressHandler, reject)
-      )
-    );
-
-    const paths = this.panos.map(pano => `${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`);
-
 
     this.loadedTextures = this.panos.map(
       (pano, i) => {
         return {
           texture: loader.load(
-            `${this.config.hostname}${project.path}${pano.hdr_pano ? pano.hdr_pano.name : pano.name}`,
+            `${pano.url}`,
             (t) => {
               this.panos[i].loaded = true;
               this.currentPano.loaded = true;
@@ -406,7 +395,7 @@ export class VirtualTourService {
               }
             }
           ),
-          index: pano.panoramas.index
+          index: pano.index
         };
 
       }
@@ -419,12 +408,12 @@ export class VirtualTourService {
   addPanosMarks() {
     this.panos.forEach((pano) => {
       if (!pano.object) {
-        const mesh = ringsShape(pano.panoramas, this.font);
+        const mesh = ringsShape(pano, this.font);
         pano.object = mesh;
         this.scene.add(mesh);
 
       }
-      const pos = this.scaleToModel(pano.position);
+      const pos = this.scaleToModel(pano);
       const yCef = 13.25; // this is for moving dot to floor
       pano.object.position.set(pos.x, pos.y - yCef, pos.z);
     });
@@ -434,7 +423,7 @@ export class VirtualTourService {
     const loader = new THREE.FontLoader();
     loader.load('assets/fonts/roboto-normal-400.json', (font) => {
       this.font = font;
-      this.panos = model.panos.filter(p => p.name).map(p => ({ ...p, position: p.panoramas }));
+      this.panos = model.panos.filter(p => p.name);
       this.loadTextures(model);
       this.addPanosMarks();
       this.setSettingsControls();
@@ -600,11 +589,11 @@ export class VirtualTourService {
     this.config = config;
     this.canvas = canvas.nativeElement;
 
-    if (config.additional_data) {
-      this.defaultY = +config.additional_data.rotation_y || this.defaultY;
-      this.defaultZoom = +config.additional_data.zoom || this.defaultZoom;
-      this.defaultVisibilityRadius = +config.additional_data.visibilityRadius || this.defaultVisibilityRadius;
-      this.neighborsFiltering = config.additional_data.neighborsFiltering || this.neighborsFiltering;
+    if (config.settings) {
+      this.defaultY = +config.settings.rotation_y || this.defaultY;
+      this.defaultZoom = +config.settings.zoom || this.defaultZoom;
+      this.defaultVisibilityRadius = +config.settings.visibilityRadius || this.defaultVisibilityRadius;
+      this.neighborsFiltering = config.settings.neighborsFiltering || this.neighborsFiltering;
     }
 
     // Create the renderer

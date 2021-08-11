@@ -1,11 +1,7 @@
-<div *ngIf="data$ | async as data">
+<div *ngIf="project$ | async as project">
+
   <ng-template #addFloorplanBtn>
-    <button
-      *ngIf="isEdit"
-      type="button"
-      class="btn btn-warning ml-3"
-      (click)="openFloorplanEditor(data)"
-    >
+    <button *ngIf="isEdit" type="button" class="btn btn-warning ml-3" (click)="openFloorplanEditor(project)">
       Add floorplan
     </button>
   </ng-template>
@@ -13,12 +9,7 @@
   <ng-template #modalWrapper let-modal>
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
-      <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        (click)="modal.dismiss('Cross click')"
-      >
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -26,46 +17,27 @@
       <ng-container *ngTemplateOutlet="modalContent"></ng-container>
     </div>
     <div class="modal-footer">
-      <button
-        type="button"
-        class="btn btn-outline-dark"
-        (click)="modal.close('Save click')"
-      >
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">
         Close
       </button>
     </div>
   </ng-template>
 
   <ng-template #floorplanTpl let-navigation="navigation">
-    <div
-      class="vt-map"
-      *ngIf="
-        data.additional_data && data.additional_data.floors;
+    <div class="vt-map" *ngIf="
+        project.settings && project.settings.floors;
         else addFloorplanBtn
-      "
-    >
-      <ul
-        ngbNav
-        (navChange)="navFloor($event, data.panoFloors, data.panos)"
-        #nav="ngbNav"
-        [activeId]="activeFloor"
-        class="nav-tabs"
-      >
-        <li
-          *ngFor="let f of data.additional_data.floors; index as i"
-          [ngbNavItem]="f.floor"
-        >
+      ">
+      <ul ngbNav (navChange)="navFloor($event, project.panoFloors, project.panos)" #nav="ngbNav"
+        [activeId]="activeFloor" class="nav-tabs">
+        <li *ngFor="let f of project.settings.floors; index as i" [ngbNavItem]="f.floor">
           <a ngbNavLink>{{ f.floor }}</a>
           <ng-template ngbNavContent>
             <div class="d-flex w-100" *ngIf="f['floorplan_f' + f.floor + '.svg']">
               <propertyspaces-floorplan class="m-auto"
-              [url]="data.projectFolder + f['floorplan_f' + f.floor + '.svg'] + '?_t=' + data._t"
-              [navs]="data.panoFloorsCoord[i]"
-              [floor]="f"
-              [activePoint]="activePoint"
-              [rotationAngle]="rotationAngle"
-              [showNav]="navigation"
-              (nav)="navTo($event)"></propertyspaces-floorplan>
+                [url]="project.projectFolder + f['floorplan_f' + f.floor + '.svg'] + '?_t=' + project._t"
+                [navs]="project.panoFloorsCoord[i]" [floor]="f" [activePoint]="activePoint"
+                [rotationAngle]="rotationAngle" [showNav]="navigation" (nav)="navTo($event)"></propertyspaces-floorplan>
             </div>
           </ng-template>
         </li>
@@ -76,80 +48,48 @@
 
   <ng-template #dollhouseTpl>
     <div class="embed-responsive embed-responsive-21by9 dollhouse-wrapper">
-      <iframe class="embed-responsive-item"
-      [src]="data.additional_data?.dollhouse | safe: 'resourceUrl'"
-      loading="lazy"
-      allowfullscreen></iframe>
+      <iframe class="embed-responsive-item" [src]="project?.dollhouse | safe: 'resourceUrl'" loading="lazy"
+        allowfullscreen></iframe>
     </div>
 
   </ng-template>
 
   <ng-template #mapTplAgm>
-    <agm-map class="google-map"
-      [latitude]="+data.project.latitude"
-      [longitude]="+data.project.longitude"
-      [zoom]="17"
-    >
-      <agm-marker
-        [latitude]="+data.project.latitude"
-        [longitude]="+data.project.longitude"
-      ></agm-marker>
+    <agm-map class="google-map" [latitude]="+project.location.latitude" [longitude]="+project.location.longitude"
+      [zoom]="17">
+      <agm-marker [latitude]="+project.location.latitude" [longitude]="+project.location.longitude"></agm-marker>
     </agm-map>
   </ng-template>
 
   <ng-template #mapTpl>
-    <ng-container *ngIf="data.additional_data.map; else mapTplAgm">
+    <ng-container *ngIf="project.location.mapUrl; else mapTplAgm">
       <div class="embed-responsive embed-responsive-21by9 map-wrapper">
-        <iframe
-          class="embed-responsive-item"
-          [src]="data.additional_data.map | safe: 'resourceUrl'"
-          loading="lazy"
-          allowfullscreen
-        ></iframe>
+        <iframe class="embed-responsive-item" [src]="project.location.mapUrl | safe: 'resourceUrl'" loading="lazy"
+          allowfullscreen></iframe>
       </div>
     </ng-container>
   </ng-template>
 
   <ng-template #streetViewTplNative>
-    <div class="google-map"
-      propertyspacesGoogleStreetView
-      [coords]="{ lat: +data.project.latitude, lng: +data.project.longitude }"
-      id="street-view"
-    ></div>
+    <div class="google-map" propertyspacesGoogleStreetView
+      [coords]="{ lat: +project.location.latitude, lng: +project.location.longitude }" id="street-view"></div>
   </ng-template>
 
   <ng-template #streetViewTpl>
-    <ng-container
-      *ngIf="data.additional_data.streetView; else streetViewTplNative"
-    >
+    <ng-container *ngIf="project.location.streetViewUrl; else streetViewTplNative">
       <div class="embed-responsive embed-responsive-21by9 map-wrapper">
-        <iframe
-          class="embed-responsive-item"
-          [src]="data.additional_data.streetView | safe: 'resourceUrl'"
-          loading="lazy"
-          allowfullscreen
-        ></iframe>
+        <iframe class="embed-responsive-item" [src]="project.location.streetViewUrl | safe: 'resourceUrl'"
+          loading="lazy" allowfullscreen></iframe>
       </div>
     </ng-container>
   </ng-template>
 
   <ng-template #galleryTpl let-closeModal>
-    <div
-      *ngIf="gallery$ | async as images"
-      class="masonry-grid"
-
-    >
-      <div
-        *ngFor="let img of images | gallery; index as i"
-        class="masonry-grid-item"
-        (click)="openImage(i, closeModal)"
-      >
+    <div *ngIf="gallery$ | async as images" class="masonry-grid">
+      <div *ngFor="let img of images | gallery; index as i" class="masonry-grid-item"
+        (click)="openImage(i, closeModal)">
         <figure class="gallery-image m-0">
-          <img
-            class="img-fluid gallery-img"
-            [src]="img.data.src"
-            [alt]="img.data.thumb"
-          />
+          <img class="img-fluid gallery-img" [src]="img.data.src" [alt]="img.data.thumb" />
           <figcaption>{{ img.data.name }}</figcaption>
         </figure>
       </div>
@@ -164,53 +104,60 @@
 
   <ng-template #contactTpl>
     <div class="p-4">
-      <table *ngIf="data.additional_data.profile && data.additional_data.profile !== 'profile'">
-        <tr *ngIf="data.additional_data.profile.firstName || data.additional_data.profile.lastName">
+      <table *ngIf="data.settings.profile && data.settings.profile !== 'profile'">
+        <tr *ngIf="data.settings.profile.firstName || data.settings.profile.lastName">
           <th>Contact person</th>
-          <td>{{ data.additional_data.profile.firstName }} {{ data.additional_data.profile.lastName }}</td>
+          <td>{{ data.settings.profile.firstName }} {{ data.settings.profile.lastName }}</td>
         </tr>
-        <tr *ngIf="data.additional_data.profile.email">
+        <tr *ngIf="data.settings.profile.email">
           <th>Email</th>
-          <td>{{ data.additional_data.profile.email }}</td>
+          <td>{{ data.settings.profile.email }}</td>
         </tr>
-        <tr *ngIf="data.additional_data.profile.phone">
+        <tr *ngIf="data.settings.profile.phone">
           <th>Phone</th>
-          <td>{{ data.additional_data.profile.phone }}</td>
+          <td>{{ data.settings.profile.phone }}</td>
         </tr>
       </table>
       <hr>
-      <div class="media" *ngIf="data.additional_data.company && data.additional_data.company !== 'company'">
+      <div class="media" *ngIf="data.settings.company && data.settings.company !== 'company'">
         <img *ngIf="!companyForm.value.companyLogo" src="assets/img/icons/camera.svg" alt="Upload photo">
-        <img *ngIf="data.additional_data.company.companyLogo" [src]="showCompanyLogo(data.projectFolder, companyForm.value.companyLogo, false)" class="mr-3 rounded-circle" [alt]="data.additional_data.company.name">
+        <img *ngIf="data.settings.company.companyLogo"
+          [src]="showCompanyLogo(data.projectFolder, companyForm.value.companyLogo, false)" class="mr-3 rounded-circle"
+          [alt]="data.settings.company.name">
         <div class="media-body">
-          <h5 class="mt-0">{{ data.additional_data.company.name }}</h5>
-          <p *ngIf="data.additional_data.company.address">Address: {{ data.additional_data.company.address }}</p>
-          <div *ngIf="data.additional_data.company.email">Email: {{ data.additional_data.company.email }}</div>
-          <div *ngIf="data.additional_data.company.phone">Phone: {{ data.additional_data.company.phone }}</div>
-          <div *ngIf="data.additional_data.company.fax">Fax: {{ data.additional_data.company.fax }}</div>
+          <h5 class="mt-0">{{ data.settings.company.name }}</h5>
+          <p *ngIf="data.settings.company.address">Address: {{ data.settings.company.address }}</p>
+          <div *ngIf="data.settings.company.email">Email: {{ data.settings.company.email }}</div>
+          <div *ngIf="data.settings.company.phone">Phone: {{ data.settings.company.phone }}</div>
+          <div *ngIf="data.settings.company.fax">Fax: {{ data.settings.company.fax }}</div>
         </div>
       </div>
     </div>
   </ng-template>
 
   <ng-template #editTpl>
-    <div class="btn-group btn-group-toggle d-flex flex-column edit-menu" ngbRadioGroup name="editingSection" [(ngModel)]="activeEditProperty">
+    <div class="btn-group btn-group-toggle d-flex flex-column edit-menu" ngbRadioGroup name="editingSection"
+      [(ngModel)]="activeEditProperty">
       <label ngbButtonLabel (click)="checkForReset(editProperties.allPoints)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.allPoints"> EDIT ALL NAV POINTS
       </label>
       <label ngbButtonLabel (click)="checkForReset(editProperties.activePoint)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.activePoint"> EDIT ACTIVE NAV POINT
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.floorplan)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.floorplan)"
+        class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.floorplan"> FLOOR PLAN OPTIONS
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.dollhouse)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.dollhouse)"
+        class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.dollhouse"> EDIT DOLLHOUSE
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.createGallery)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.createGallery)"
+        class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.createGallery"> CREATE PHOTO GALLERY
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.editGallery)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.editGallery)"
+        class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.editGallery"> EDIT PHOTO GALLERY
       </label>
       <label ngbButtonLabel (click)="checkForReset(editProperties.editLocation)" class="btn rounded-0 mt-1">
@@ -219,13 +166,16 @@
       <label ngbButtonLabel (click)="checkForReset(editProperties.editContact)" class="btn rounded-0 mt-1">
         <input ngbButton type="radio" [value]="editProperties.editContact"> EDIT CONTACT INFO
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.editPano)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.editPano)"
+        class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.editPano"> EDIT PANORAMA
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.changeMenu)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.changeMenu)"
+        class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.changeMenu"> CHANGE MENU VIEW
       </label>
-      <label ngbButtonLabel (click)="checkForReset(editProperties.description)" class="btn rounded-0 mt-1 d-none d-lg-inline-block">
+      <label ngbButtonLabel (click)="checkForReset(editProperties.description)"
+        class="btn rounded-0 mt-1 d-none d-lg-inline-block">
         <input ngbButton type="radio" [value]="editProperties.description"> ADD DESCRIPTION
       </label>
     </div>
@@ -241,8 +191,10 @@
             <p><strong class="text-dagnger">Click below</strong> to copy the link to this Lidarama tour:</p>
             <!-- <button type="button" class="btn btn-outline-dark d-block w-100" (click)="copyLink()">{{shareLink}}</button> -->
             <div class="form-group position-relative text-center">
-              <input type="text" class="form-control text-center" #f (click)="copyLink(f)" (blur)="textRecentlyCopied = false" [value]="shareLink">
-              <span class="text-primary position-relative copied-text bg-white" [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
+              <input type="text" class="form-control text-center" #f (click)="copyLink(f)"
+                (blur)="textRecentlyCopied = false" [value]="shareLink">
+              <span class="text-primary position-relative copied-text bg-white"
+                [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
             </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="defaultCheck1" [(ngModel)]="copyBrandedLink">
@@ -260,10 +212,13 @@
           <a class="border-0" ngbNavLink><i class="fa fa-code"></i></a>
           <ng-template ngbNavContent>
             <u class="text-underline text-uppercase">EMBED ON YOUR WEBSITE</u>
-            <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidarama tour in another website:</p>
+            <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidarama tour
+              in another website:</p>
             <div class="form-group position-relative text-center">
-              <textarea rows="3"  class="form-control" #ta (click)="copyLink(ta)" (blur)="textRecentlyCopied = false">{{embedCode}}</textarea>
-              <span class="text-primary position-relative copied-text bg-white" [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
+              <textarea rows="3" class="form-control" #ta (click)="copyLink(ta)"
+                (blur)="textRecentlyCopied = false">{{embedCode}}</textarea>
+              <span class="text-primary position-relative copied-text bg-white"
+                [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
             </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="defaultCheck1" [(ngModel)]="copyBrandedLink">
@@ -293,7 +248,8 @@
           <ng-template ngbNavContent>
             <u class="text-underline text-uppercase">Create a LinkedIn post</u>
             <p>
-              Post this Lidarama tour to LinkedIn to share with your professional network. You'll have a chance to enter your own message.
+              Post this Lidarama tour to LinkedIn to share with your professional network. You'll have a chance to enter
+              your own message.
             </p>
             <button (click)="postToLinkedIn()" type="type" class="btn btn-primary">Post to LinkedIn</button>
           </ng-template>
@@ -306,7 +262,8 @@
               Enter your tweet (we've included a link back to this Lidarama listing):
             </p>
             <div class="form-group position-relative text-center">
-              <textarea rows="3" class="form-control" (input)="$event" #tweet maxlength="280">Visit a 24/7 open house of {{data.project.address}} in Lidarama:</textarea>
+              <textarea rows="3" class="form-control" (input)="$event" #tweet
+                maxlength="280">Visit a 24/7 open house of {{project.location.address}} in Lidarama:</textarea>
               <span class="text-primary position-relative symbol-limiter bg-white">{{tweet.value.length}}/280</span>
             </div>
             <button (click)="postToTwiiter(tweet)" type="type" class="btn btn-primary">Tweet</button>
@@ -321,10 +278,13 @@
   <ng-template #shareFullscreen>
     <div class="modal-body">
       <u class="text-underline text-uppercase">EMBED ON YOUR WEBSITE</u>
-      <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidorama tour in another website:</p>
+      <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidorama tour in
+        another website:</p>
       <div class="form-group position-relative text-center">
-        <textarea rows="3"  class="form-control" #ta (click)="copyLink(ta)" (blur)="textRecentlyCopied = false">{{embedCodeFullscreen}}</textarea>
-        <span class="text-primary position-relative copied-text bg-white" [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
+        <textarea rows="3" class="form-control" #ta (click)="copyLink(ta)"
+          (blur)="textRecentlyCopied = false">{{embedCodeFullscreen}}</textarea>
+        <span class="text-primary position-relative copied-text bg-white"
+          [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
       </div>
       <div class="form-check">
         <input class="form-check-input" type="checkbox" id="defaultCheck1" [(ngModel)]="copyBrandedLink">
@@ -340,139 +300,100 @@
   </ng-template>
 
   <ng-template #changeViewTpl>
-    <div
-      class="btn-group btn-group-lg btn-group-toggle"
-      ngbRadioGroup
-      name="radioBasic"
-      [(ngModel)]="sidebarSide"
-    >
-      <label
-        ngbButtonLabel
-        [class.btn-dark]="sidebarSide !== 'l'"
-        [class.btn-danger]="sidebarSide === 'l'"
-      >
+    <div class="btn-group btn-group-lg btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="sidebarSide">
+      <label ngbButtonLabel [class.btn-dark]="sidebarSide !== 'l'" [class.btn-danger]="sidebarSide === 'l'">
         <input ngbButton type="radio" value="l" />
-        <img
-          src="assets/img/icons/sidebar-{{
+        <img src="assets/img/icons/sidebar-{{
             sidebarSide === 'l' ? 'left' : 'right'
-          }}.svg"
-          alt="sidebar-left"
-        />
+          }}.svg" alt="sidebar-left" />
         Left
       </label>
-      <label
-        ngbButtonLabel
-        [class.btn-dark]="sidebarSide !== 'r'"
-        [class.btn-danger]="sidebarSide === 'r'"
-      >
+      <label ngbButtonLabel [class.btn-dark]="sidebarSide !== 'r'" [class.btn-danger]="sidebarSide === 'r'">
         <input ngbButton type="radio" value="r" /> Right
-        <img
-          src="assets/img/icons/sidebar-{{
+        <img src="assets/img/icons/sidebar-{{
             sidebarSide !== 'l' ? 'left' : 'right'
-          }}.svg"
-          alt="sidebar-left"
-        />
+          }}.svg" alt="sidebar-left" />
       </label>
     </div>
   </ng-template>
 
   <ng-template #descriptionTpl>
-    <div class="p-4" [innerHTML]="data.additional_data.description"></div>
+    <div class="p-4" [innerHTML]="project.description"></div>
   </ng-template>
 
   <ng-container *ngIf="isFullscreenActive$ | async as isFullscreenActive">
-    <nav *ngIf="!isQueryFullscreen"
-    class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
-    [class.d-none]="isFullscreenActive.active"
-  >
-    <a class="navbar-brand" [routerLink]="this.isEdit ? '/projects/' + data.project_id : ''">
-      <img src="assets/img/logo.svg" alt="Lidarama" class="logo" />
-    </a>
-    <button
-      (click)="isCollapsed = !isCollapsed"
-      class="navbar-toggler border-0 p-0"
-      [class.opened]="!isCollapsed"
-      type="button"
-      aria-controls="navbarSupportedContent"
-      [attr.aria-expanded]="isCollapsed"
-      aria-label="Toggle navigation"
-    >
-      <svg width="40" height="40" viewBox="0 0 100 100">
-        <path class="line line1" d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058" />
-        <path class="line line2" d="M 20,50 H 80" />
-        <path class="line line3" d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942" />
-      </svg>
-    </button>
+    <nav *ngIf="!isQueryFullscreen" class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
+      [class.d-none]="isFullscreenActive.active">
+      <a class="navbar-brand" [routerLink]="this.isEdit ? '/projects/' + project.id : ''">
+        <img src="assets/img/logo.svg" alt="Lidarama" class="logo" />
+      </a>
+      <button (click)="isCollapsed = !isCollapsed" class="navbar-toggler border-0 p-0" [class.opened]="!isCollapsed"
+        type="button" aria-controls="navbarSupportedContent" [attr.aria-expanded]="isCollapsed"
+        aria-label="Toggle navigation">
+        <svg width="40" height="40" viewBox="0 0 100 100">
+          <path class="line line1"
+            d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058" />
+          <path class="line line2" d="M 20,50 H 80" />
+          <path class="line line3"
+            d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942" />
+        </svg>
+      </button>
 
-    <div class="collapse navbar-collapse">
+      <div class="collapse navbar-collapse">
 
-      <div class="d-flex flex-wrap ml-auto">
+        <div class="d-flex flex-wrap ml-auto">
 
-        <div>
-          <button type="button" class="btn btn-link text-white" (click)="openShareModal(shareModal)"><i class="fa fa-lg fa-share-alt"></i></button>
+          <div>
+            <button type="button" class="btn btn-link text-white" (click)="openShareModal(shareModal)"><i
+                class="fa fa-lg fa-share-alt"></i></button>
+          </div>
+          <ng-template #loginBtn>
+            <button type="button"
+              class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
+              <span>Log in</span>
+            </button>
+          </ng-template>
+
+          <ng-container *ngIf="isEdit; else loginBtn">
+            <button type="button"
+              class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
+              <span>Log out</span>
+            </button>
+            <button type="button" class="btn btn-danger rounded-pill text-uppercase border-1 border-white ml-3 px-5">
+              <span>Publish</span>
+            </button>
+          </ng-container>
         </div>
-        <ng-template #loginBtn>
-          <button
-          type="button"
-          class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5"
-        >
-          <span>Log in</span>
-        </button>
-        </ng-template>
 
-        <ng-container *ngIf="isEdit; else loginBtn">
-          <button type="button" class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
-            <span>Log out</span>
-          </button>
-          <button type="button" class="btn btn-danger rounded-pill text-uppercase border-1 border-white ml-3 px-5">
-            <span>Publish</span>
-          </button>
-        </ng-container>
       </div>
-
-    </div>
     </nav>
 
-    <main class="panorama-player d-block d-lg-flex" [class.panorama-player-fullscreen]="isFullscreenActive.active || isQueryFullscreen">
+    <main class="panorama-player d-block d-lg-flex"
+      [class.panorama-player-fullscreen]="isFullscreenActive.active || isQueryFullscreen">
       <!-- [rzHandles]="sidebarSide === 'r' ? 'w' : 'e'" -->
       <div class="boxes navbar-expand-lg d-block d-lg-flex flex-lg-row">
-        <div *ngIf="!isQueryFullscreen"
-          class="sidebar flex-column collapse navbar-collapse"
-          [ngbCollapse]="isCollapsed"
-          [class.sidebar-hidden]="isFullscreenActive.active"
-          #sidebar
-          [class.stick-right]="sidebarSide === 'r'"
-          mwlResizable
-          [style]="styleDeSidbar"
-          (resizing)="onResizeEnd($event); resizeCanvas()"
-          (resizeEnd)="onResizeEnd($event)"
-        >
+        <div *ngIf="!isQueryFullscreen" class="sidebar flex-column collapse navbar-collapse" [ngbCollapse]="isCollapsed"
+          [class.sidebar-hidden]="isFullscreenActive.active" #sidebar [class.stick-right]="sidebarSide === 'r'"
+          mwlResizable [style]="styleDeSidbar" (resizing)="onResizeEnd($event); resizeCanvas()"
+          (resizeEnd)="onResizeEnd($event)">
 
-          <ngb-accordion
-            type="dark"
-            [closeOthers]="true"
-            (panelChange)="isOneAccActive = !isOneAccActive"
-            class="sidebar-accordion w-100 h-100 flex-lg-fill"
-            [class.sidebar-accordion-active]="acc.activeIds.length"
-            #acc="ngbAccordion"
-          >
-            <ngb-panel *ngIf="data.additional_data && data.additional_data.floors"
-            [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
+          <ngb-accordion type="dark" [closeOthers]="true" (panelChange)="isOneAccActive = !isOneAccActive"
+            class="sidebar-accordion w-100 h-100 flex-lg-fill" [class.sidebar-accordion-active]="acc.activeIds.length"
+            #acc="ngbAccordion">
+            <ngb-panel *ngIf="project.settings && project.settings.floors"
+              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
               <ng-template ngbPanelHeader>
-                <div
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
+                <div class="d-flex justify-content-between align-items-center w-100">
                   <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/floorplan-white.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                    <svg-icon src="assets/img/icons/floorplan-white.svg" class="sidebar-header-icon-stroke mr-3">
+                    </svg-icon>
                     <span class="text-uppercase">Floor Plan</span>
                   </button>
-                  <button
-                    class="btn"
-                    (click)="
+                  <button class="btn" (click)="
                       openSectionModal(modalWrapper, floorplanTpl, 'Floor Plan')
-                    "
-                  >
-                  <svg-icon src="assets/img/icons/expand-white.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    ">
+                    <svg-icon src="assets/img/icons/expand-white.svg"
+                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                   </button>
                 </div>
               </ng-template>
@@ -481,23 +402,20 @@
               </ng-template>
             </ngb-panel>
 
-            <ngb-panel *ngIf="data.additional_data && data.additional_data.dollhouse"
-            [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-dollhouse')" id="panel-dollhouse">
+            <ngb-panel *ngIf="project.dollhouse"
+              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-dollhouse')" id="panel-dollhouse">
               <ng-template ngbPanelHeader>
-                <div
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
+                <div class="d-flex justify-content-between align-items-center w-100">
                   <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/floorplan-white.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                    <svg-icon src="assets/img/icons/floorplan-white.svg" class="sidebar-header-icon-stroke mr-3">
+                    </svg-icon>
                     <span class="text-uppercase">Dollhouse</span>
                   </button>
-                  <button
-                    class="btn"
-                    (click)="
+                  <button class="btn" (click)="
                       openSectionModal(modalWrapper, dollhouseTpl, 'Dollhouse')
-                    "
-                  >
-                  <svg-icon src="assets/img/icons/expand-white.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    ">
+                    <svg-icon src="assets/img/icons/expand-white.svg"
+                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                   </button>
                 </div>
               </ng-template>
@@ -506,25 +424,20 @@
               </ng-template>
             </ngb-panel>
 
-            <ngb-panel *ngIf="data.additional_data.mapEnabled && +data.project.latitude || data.additional_data.map"
-              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-map')"
-              id="panel-map"
-            >
+            <ngb-panel *ngIf="project.location.mapEnabled && +project.location.latitude || project.location.mapUrl"
+              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-map')" id="panel-map">
               <ng-template ngbPanelHeader>
-                <div
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
+                <div class="d-flex justify-content-between align-items-center w-100">
                   <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/map-marker-white.svg" class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
+                    <svg-icon src="assets/img/icons/map-marker-white.svg"
+                      class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
                     <span class="text-uppercase">Map</span>
                   </button>
-                  <button
-                    class="btn"
-                    (click)="
+                  <button class="btn" (click)="
                       openSectionModal(modalWrapper, mapTpl, 'Map')
-                    "
-                  >
-                    <svg-icon src="assets/img/icons/expand-white.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    ">
+                    <svg-icon src="assets/img/icons/expand-white.svg"
+                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                   </button>
                 </div>
               </ng-template>
@@ -533,25 +446,21 @@
               </ng-template>
             </ngb-panel>
 
-            <ngb-panel *ngIf="data.additional_data.streetViewEnabled && +data.project.latitude || data.additional_data.streetView"
-              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-sv')"
-              id="panel-sv"
-            >
+            <ngb-panel
+              *ngIf="project.location.streetViewEnabled && +project.location.latitude || project.location.streetViewUrl"
+              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-sv')" id="panel-sv">
               <ng-template ngbPanelHeader>
-                <div
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
+                <div class="d-flex justify-content-between align-items-center w-100">
                   <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/map-marker-white.svg" class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
+                    <svg-icon src="assets/img/icons/map-marker-white.svg"
+                      class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
                     <span class="text-uppercase">Street view</span>
                   </button>
-                  <button
-                    class="btn"
-                    (click)="
+                  <button class="btn" (click)="
                       openSectionModal(modalWrapper, streetViewTpl, 'Street View')
-                    "
-                  >
-                    <svg-icon src="assets/img/icons/expand-white.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    ">
+                    <svg-icon src="assets/img/icons/expand-white.svg"
+                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                   </button>
                 </div>
               </ng-template>
@@ -561,27 +470,24 @@
             </ngb-panel>
 
             <ng-container *ngIf="gallery$ | async as galleryPhotos">
-              <ngb-panel *ngIf="galleryPhotos.length" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')"
-              id="panel-gallery">
+              <ngb-panel *ngIf="galleryPhotos.length"
+                [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')" id="panel-gallery">
                 <ng-template ngbPanelHeader>
-                  <div
-                    class="d-flex justify-content-between align-items-center w-100"
-                  >
+                  <div class="d-flex justify-content-between align-items-center w-100">
                     <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                      <svg-icon src="assets/img/icons/picture-white.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                      <svg-icon src="assets/img/icons/picture-white.svg" class="sidebar-header-icon-stroke mr-3">
+                      </svg-icon>
                       <span class="text-uppercase">Photo Gallery</span>
                     </button>
-                    <button
-                      class="btn"
-                      (click)="
+                    <button class="btn" (click)="
                         openSectionModal(
                           modalWrapper,
                           galleryEditorTpl,
                           'Gallery'
                         )
-                      "
-                    >
-                      <svg-icon src="assets/img/icons/expand-white.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                      ">
+                      <svg-icon src="assets/img/icons/expand-white.svg"
+                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                     </button>
                   </div>
                 </ng-template>
@@ -595,20 +501,17 @@
             <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-contact')"
               id="panel-contact">
               <ng-template ngbPanelHeader>
-                <div
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
+                <div class="d-flex justify-content-between align-items-center w-100">
                   <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/contact-white.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                    <svg-icon src="assets/img/icons/contact-white.svg" class="sidebar-header-icon-stroke mr-3">
+                    </svg-icon>
                     <span class="text-uppercase">Contact</span>
                   </button>
-                  <button
-                    class="btn"
-                    (click)="
+                  <button class="btn" (click)="
                       openSectionModal(modalWrapper, contactTpl, 'Contact')
-                    "
-                  >
-                    <svg-icon src="assets/img/icons/expand-white.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    ">
+                    <svg-icon src="assets/img/icons/expand-white.svg"
+                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                   </button>
                 </div>
               </ng-template>
@@ -618,23 +521,21 @@
             </ngb-panel>
 
 
-            <ngb-panel *ngIf="data.additional_data.description" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-description')"
+            <ngb-panel *ngIf="project.description"
+              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-description')"
               id="panel-description">
               <ng-template ngbPanelHeader>
-                <div
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
+                <div class="d-flex justify-content-between align-items-center w-100">
                   <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/contact-white.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
+                    <svg-icon src="assets/img/icons/contact-white.svg" class="sidebar-header-icon-stroke mr-3">
+                    </svg-icon>
                     <span class="text-uppercase">Description</span>
                   </button>
-                  <button
-                    class="btn"
-                    (click)="
+                  <button class="btn" (click)="
                       openSectionModal(modalWrapper, descriptionTpl, 'Description')
-                    "
-                  >
-                    <svg-icon src="assets/img/icons/expand-white.svg" class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    ">
+                    <svg-icon src="assets/img/icons/expand-white.svg"
+                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
                   </button>
                 </div>
               </ng-template>
@@ -644,22 +545,18 @@
             </ngb-panel>
 
             <ngb-panel *ngIf="isEdit" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-edit')"
-            id="panel-edit">
+              id="panel-edit">
               <ng-template ngbPanelHeader>
-                <div
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
+                <div class="d-flex justify-content-between align-items-center w-100">
                   <button ngbPanelToggle class="btn flex-fill text-left p-0">
                     <svg-icon src="assets/img/icons/edit-white.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
                     <span class="text-uppercase">Edit</span>
                   </button>
-                  <button
-                    class="btn"
-                    (click)="
+                  <button class="btn" (click)="
                       openSectionModal(modalWrapper, editTpl, 'Edit')
-                    "
-                  >
-                    <svg-icon src="assets/img/icons/cog-white.svg" class="sidebar-header-icon-stroke sidebar-header-icon-fill"></svg-icon>
+                    ">
+                    <svg-icon src="assets/img/icons/cog-white.svg"
+                      class="sidebar-header-icon-stroke sidebar-header-icon-fill"></svg-icon>
                   </button>
                 </div>
               </ng-template>
@@ -670,108 +567,73 @@
 
           </ngb-accordion>
 
-          <button type="button" (click)="acc.collapseAll()" [ngbCollapse]="!acc.activeIds.length" class="collapse btn btn-danger w-100 text-uppercase rounded-0 p-3 h5 mb-0">
+          <button type="button" (click)="acc.collapseAll()" [ngbCollapse]="!acc.activeIds.length"
+            class="collapse btn btn-danger w-100 text-uppercase rounded-0 p-3 h5 mb-0">
             <span class="mr-3">Menu</span><img src="assets/img/icons/angle.svg" alt="Collapse active menu">
           </button>
 
-          <div
-            mwlResizeHandle
-            [resizeEdges]="{
+          <div mwlResizeHandle [resizeEdges]="{
               right: sidebarSide !== 'r',
               left: sidebarSide === 'r'
-            }"
-            class="resize-handle d-none d-lg-flex align-items-center justify-content-center"
-            [class.resize-handle-left]="sidebarSide !== 'r'"
-            [class.resize-handle-right]="sidebarSide === 'r'"
-          >
+            }" class="resize-handle d-none d-lg-flex align-items-center justify-content-center"
+            [class.resize-handle-left]="sidebarSide !== 'r'" [class.resize-handle-right]="sidebarSide === 'r'">
             <div><img src="assets/img/icons/resize.svg" alt="Resize" /></div>
           </div>
         </div>
         <div class="content">
           <div class="gallery-wrapper" *ngIf="gallery$ | async as galleryItems">
-            <div
-              class="close-gallery"
-              *ngIf="isGalleryOpened"
-              (click)="closeGallery()"
-            >
+            <div class="close-gallery" *ngIf="isGalleryOpened" (click)="closeGallery()">
               <span class="h1">&times;</span>
             </div>
-            <div
-              class="open-gallery-grid-modal"
-              *ngIf="isGalleryOpened"
-              (click)="openSectionModal(
+            <div class="open-gallery-grid-modal" *ngIf="isGalleryOpened" (click)="openSectionModal(
                 modalWrapper,
                 galleryEditorTpl,
                 'Gallery'
-              )"
-            >
+              )">
               <i class="fa fa-lg fa-th"></i>
             </div>
-            <gallery
-              id="project-gallery"
-              [class.d-none]="!isGalleryOpened"
-              [items]="galleryItems | gallery"
-              [itemTemplate]="itemTemplate"
-              [thumb]="false"
-            ></gallery>
-            <ng-template
-              #itemTemplate
-              let-index="index"
-              let-type="type"
-              let-data="data"
-              let-currIndex="currIndex"
-            >
-            <div *ngIf="type === 'image' && index === currIndex"
-            [@slideAnimation]
-            class="item-description-block">
-              <span class="gallery-item-name mb-2">{{ data.name }}</span>
-              <a class="btn btn-link" [href]="data.url" [download]="data.name">
-                <span class="mr-1">Download</span> <img src="assets/img/icons/download.svg" alt="Download" />
-              </a>
-            </div>
+            <gallery id="project-gallery" [class.d-none]="!isGalleryOpened" [items]="galleryItems | gallery"
+              [itemTemplate]="itemTemplate" [thumb]="false"></gallery>
+            <ng-template #itemTemplate let-index="index" let-type="type" let-data="data" let-currIndex="currIndex">
+              <div *ngIf="type === 'image' && index === currIndex" [@slideAnimation] class="item-description-block">
+                <span class="gallery-item-name mb-2">{{ data.name }}</span>
+                <a class="btn btn-link" [href]="data.url" [download]="data.name">
+                  <span class="mr-1">Download</span> <img src="assets/img/icons/download.svg" alt="Download" />
+                </a>
+              </div>
 
             </ng-template>
           </div>
 
-          <div
-            class="main-scene-wrapper"
-            #sceneWrapper
-            [style.width]="canvasAspect(sceneWrapper)"
-          >
+          <div class="main-scene-wrapper" #sceneWrapper [style.width]="canvasAspect(sceneWrapper)">
 
             <ng-container *ngIf="!activeEditProperty">
               <button (click)="toggleFullscreen()" type="button" class="btn" id="fullscreen">
                 <img src="assets/img/icons/expand.svg" alt="Fullscreen">
               </button>
-              <button *ngIf="!isQueryFullscreen"
-                (click)="openShareModal(shareFullscreen)"
-                type="button"
-                id="share-fullscreen-embed"
-                class="position-absolute btn"><i class="fa fa-lg fa-share-alt"></i></button>
+              <button *ngIf="!isQueryFullscreen" (click)="openShareModal(shareFullscreen)" type="button"
+                id="share-fullscreen-embed" class="position-absolute btn"><i class="fa fa-lg fa-share-alt"></i></button>
             </ng-container>
 
-            <button *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty"
-            (click)="activeEditProperty = ''" type="button" class="btn" id="fullscreen">
+            <button
+              *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty"
+              (click)="activeEditProperty = ''" type="button" class="btn" id="fullscreen">
               <img src="assets/img/icons/cross-white.svg" alt="Fullscreen">
             </button>
 
 
-            <button type="button"
-            *ngIf="editProperties.createGallery === activeEditProperty"
-            class="btn btn-danger"
-            id="take-tour-screenshot" (click)="takeScreenshot()"><img src="assets/img/icons/camera.svg" alt="Take a screeshot"></button>
+            <button type="button" *ngIf="editProperties.createGallery === activeEditProperty" class="btn btn-danger"
+              id="take-tour-screenshot" (click)="takeScreenshot()"><img src="assets/img/icons/camera.svg"
+                alt="Take a screeshot"></button>
 
             <div class="gallery-bar d-flex flex-column" *ngIf="editProperties.createGallery === activeEditProperty">
               <div class="gallery-bar-title">Thumbnails</div>
               <div class="gallery-bar-content flex-fill">
                 <ng-scrollbar *ngIf="gallery$ | async as galleryItems" class="scrollbar-danger content-padding">
-                  <div *ngFor="let img of galleryItems | gallery; index as i" class="gallery-bar-image mt-1" (click)="openImage(i)">
+                  <div *ngFor="let img of galleryItems | gallery; index as i" class="gallery-bar-image mt-1"
+                    (click)="openImage(i)">
                     <figure class="gallery-bar-image__figure m-0">
-                      <img
-                        class="img-fluid"
-                        [src]="img.data.src"
-                        [alt]="img.data.thumb"
-                      />
+                      <img class="img-fluid" [src]="img.data.src" [alt]="img.data.thumb" />
                       <div class="gallery-bar-image__shadow">
                         <img class="gallery-bar-image__view" src="assets/img/icons/eye.svg" alt="Eye">
                       </div>
@@ -783,7 +645,8 @@
             </div>
 
             <div class="gallery-create-zoom" *ngIf="editProperties.createGallery === activeEditProperty">
-              <propertyspaces-slider [customClass]="'white-slider'" [showValue]="false" (slide)="zoomChange($event)" [step]="1" [min]="30" [max]="120">
+              <propertyspaces-slider [customClass]="'white-slider'" [showValue]="false" (slide)="zoomChange($event)"
+                [step]="1" [min]="30" [max]="120">
                 <ng-template propertyspacesSliderMinus>
                   <img src="assets/img/icons/minus-white.svg" alt="-">
                 </ng-template>
@@ -794,42 +657,47 @@
             </div>
 
 
-            <div class="card p-2 py-lg-3 px-lg-5 edit-nav-points-form" *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty">
+            <div class="card p-2 py-lg-3 px-lg-5 edit-nav-points-form"
+              *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty">
               <form [formGroup]="vrTourSettingsForm">
 
                 <div class="form-group">
                   <label>Nav point rotation</label>
-                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
-                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0" [max]="6.3"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
+                    (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3">
+                  </propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
+                    (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1" [min]="0"
+                    [max]="6.3"></propertyspaces-slider>
                 </div>
 
                 <div class="form-group">
                   <label>Zoom</label>
-                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="zoomChange()" formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
-                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="zoomChange()"
+                    formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
+                    (slide)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120">
+                  </propertyspaces-slider>
                 </div>
 
                 <div class="form-group">
                   <label>Nav points visibility radius</label>
-                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="visibilityRadiusChange()" formControlName="visibilityRadius" [step]="0.1" [min]="0.1" [max]="2"></propertyspaces-slider>
-                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty" (slide)="panoVisibilityRadiusChange()" formControlName="panoVisibilityRadius" [step]="0.1" [min]="0.1" [max]="2"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
+                    (slide)="visibilityRadiusChange()" formControlName="visibilityRadius" [step]="0.1" [min]="0.1"
+                    [max]="2"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
+                    (slide)="panoVisibilityRadiusChange()" formControlName="panoVisibilityRadius" [step]="0.1"
+                    [min]="0.1" [max]="2"></propertyspaces-slider>
                 </div>
 
                 <div class="form-group form-check">
-                  <input type="checkbox"
-                  class="form-check-input"
-                  id="filterNeighbors"
-                  formControlName="neighborsFiltering"
-                  (change)="changeNeighborsFiltering()">
+                  <input type="checkbox" class="form-check-input" id="filterNeighbors"
+                    formControlName="neighborsFiltering" (change)="changeNeighborsFiltering()">
                   <label class="form-check-label" for="filterNeighbors">Apply neighbors filtering</label>
                 </div>
 
                 <div class="text-center">
-                  <button
-                    type="button"
-                    (click)="saveSettings(data.project_id)"
-                    class="btn btn-dark rounded-pill px-5"
-                  >
+                  <button type="button" (click)="saveSettings(project.id)" class="btn btn-dark rounded-pill px-5">
                     Save
                   </button>
                 </div>
@@ -837,11 +705,13 @@
               </form>
             </div>
 
-            <ng-scrollbar *ngIf="modalEditing" [ngClass]="'canvas-modal-'+activeEditProperty" class="modal-content canvas-modal scrollbar-danger m-1 m-md-4">
+            <ng-scrollbar *ngIf="modalEditing" [ngClass]="'canvas-modal-'+activeEditProperty"
+              class="modal-content canvas-modal scrollbar-danger m-1 m-md-4">
               <div class="modal-header align-items-center">
                 <h5 class="modal-title text-uppercase h4 text-danger">
                   {{ activeEditTitle }}
-                  <ng-container *ngIf="activeEditProperty === editProperties.editPano">#{{this.currentPanorama.panoramas.order}}</ng-container>
+                  <ng-container *ngIf="activeEditProperty === editProperties.editPano">
+                    #{{this.currentPanorama.panoramas.order}}</ng-container>
                 </h5>
                 <button type="button" (click)="closeModal()" class="close" data-bs-dismiss="modal" aria-label="Close">
                   <div class="rounded-circle close-inner"><img src="assets/img/icons/cross.svg" alt="Close"></div>
@@ -851,39 +721,26 @@
 
                 <ng-container *ngSwitchCase="editProperties.editGallery">
                   <ng-container *ngIf="gallery$ | async as orderedImages">
-                    <propertyspaces-gallery-editor
-                      [isEditable]="isEdit"
-                      [items]="orderedImages"
-                      (nameChange)="imageNameChanged($event, data.project_id)"
-                      (sortChange)="sortChanged($event, data.project_id)"
-                      (moveToTrash)="deleteGalleryImage($event, data.project_id)"
-                    ></propertyspaces-gallery-editor>
+                    <propertyspaces-gallery-editor [isEditable]="isEdit" [items]="orderedImages"
+                      (nameChange)="imageNameChanged($event, project.id)" (sortChange)="sortChanged($event, project.id)"
+                      (moveToTrash)="deleteGalleryImage($event, project.id)"></propertyspaces-gallery-editor>
                   </ng-container>
                 </ng-container>
 
-                <ng-container  *ngSwitchCase="editProperties.floorplan">
-                  <propertyspaces-floorplan-editor [data]="data"></propertyspaces-floorplan-editor>
+                <ng-container *ngSwitchCase="editProperties.floorplan">
+                  <propertyspaces-floorplan-editor [data]="project"></propertyspaces-floorplan-editor>
                 </ng-container>
 
                 <ng-container *ngSwitchCase="editProperties.dollhouse">
                   <form [formGroup]="dollhouseForm">
                     <label class="input mb-4">
-                      <textarea
-                        (paste)="filterPaste($event, dollhouseForm)"
-                        formControlName="dollhouse"
-                        class="input__field input__field_gray"
-                        id="dollhouseEmbedCode"
-                        rows="3"
-                        placeholder=" "
-                      ></textarea>
+                      <textarea (paste)="filterPaste($event, dollhouseForm)" formControlName="dollhouse"
+                        class="input__field input__field_gray" id="dollhouseEmbedCode" rows="3"
+                        placeholder=" "></textarea>
                       <span class="input__label">Dollhouse Embeded Code</span>
                     </label>
 
-                    <div
-                      *ngIf="mapForm.get('map').invalid"
-                      class="alert alert-danger"
-                      role="alert"
-                    >
+                    <div *ngIf="mapForm.get('dollhouse').invalid" class="alert alert-danger" role="alert">
                       Invalid url
                     </div>
                   </form>
@@ -893,10 +750,12 @@
                   <div class="d-flex flex-column align-items-between">
                     <ngb-accordion class="contact-accordion" #contactAccordion="ngbAccordion" activeIds="ngb-panel-0">
                       <ngb-panel>
-                        <ng-template ngbPanelHeader  let-opened="opened">
-                          <button ngbPanelToggle class="contact-accordion-title btn w-100 d-flex align-items-center justify-content-between">
-                            <span><img src="assets/img/icons/accessability.svg" alt="accessability">  Your Profile</span>
-                            <img src="assets/img/icons/caret.svg" class="caret" [class.caret-flipped]="opened" [alt]="opened ? 'close' : 'open'">
+                        <ng-template ngbPanelHeader let-opened="opened">
+                          <button ngbPanelToggle
+                            class="contact-accordion-title btn w-100 d-flex align-items-center justify-content-between">
+                            <span><img src="assets/img/icons/accessability.svg" alt="accessability"> Your Profile</span>
+                            <img src="assets/img/icons/caret.svg" class="caret" [class.caret-flipped]="opened"
+                              [alt]="opened ? 'close' : 'open'">
                           </button>
                         </ng-template>
                         <ng-template ngbPanelContent>
@@ -923,18 +782,22 @@
                             </label>
 
                             <div class="custom-control custom-checkbox">
-                              <input formControlName="showInBranded" type="checkbox" class="custom-control-input" id="isForBranded">
-                              <label class="custom-control-label" for="isForBranded">Display this info in all your branded walkthroughs</label>
+                              <input formControlName="showInBranded" type="checkbox" class="custom-control-input"
+                                id="isForBranded">
+                              <label class="custom-control-label" for="isForBranded">Display this info in all your
+                                branded walkthroughs</label>
                             </div>
 
                           </form>
                         </ng-template>
                       </ngb-panel>
                       <ngb-panel>
-                        <ng-template ngbPanelHeader  let-opened="opened">
-                          <button ngbPanelToggle class="contact-accordion-title btn w-100 d-flex align-items-center justify-content-between">
+                        <ng-template ngbPanelHeader let-opened="opened">
+                          <button ngbPanelToggle
+                            class="contact-accordion-title btn w-100 d-flex align-items-center justify-content-between">
                             <span><img src="assets/img/icons/bank.svg" alt="Profile"> Your Organization Profile</span>
-                            <img src="assets/img/icons/caret.svg" class="caret" [class.caret-flipped]="opened" [alt]="opened ? 'close' : 'open'">
+                            <img src="assets/img/icons/caret.svg" class="caret" [class.caret-flipped]="opened"
+                              [alt]="opened ? 'close' : 'open'">
                           </button>
                         </ng-template>
                         <ng-template ngbPanelContent>
@@ -948,8 +811,8 @@
 
                             <label class="input">
                               <input propertyspacesGoogleAutocomplete
-                              (placeChanged)="companyForm.get('address').patchValue($event.formatted_address)"
-                              formControlName="address" class="input__field" type="text" placeholder=" " />
+                                (placeChanged)="companyForm.get('address').patchValue($event.formatted_address)"
+                                formControlName="address" class="input__field" type="text" placeholder=" " />
                               <span class="input__label">Company Address<sup>*</sup> </span>
                             </label>
 
@@ -969,13 +832,16 @@
                             </label>
 
                             <div class="d-flex justify-content-between mt-3">
-                              <label class="d-flex btn align-items-between justify-content-center cursor-p" for="uploadLogoOrganization">
-                                <input formControlName="companyLogo" propertyspacesInputFileReader type="file" accept="image/*" id="uploadLogoOrganization" class="d-none">
+                              <label class="d-flex btn align-items-between justify-content-center cursor-p"
+                                for="uploadLogoOrganization">
+                                <input formControlName="companyLogo" propertyspacesInputFileReader type="file"
+                                  accept="image/*" id="uploadLogoOrganization" class="d-none">
 
                                 <div
-                                  [style.background-image]="showCompanyLogo(data.projectFolder, companyForm.value.companyLogo)"
+                                  [style.background-image]="showCompanyLogo(project.projectFolder, companyForm.value.companyLogo)"
                                   class="change-logo d-flex btn btn-secondary rounded-circle mr-2">
-                                  <img *ngIf="!companyForm.value.companyLogo" src="assets/img/icons/camera.svg" alt="Upload photo">
+                                  <img *ngIf="!companyForm.value.companyLogo" src="assets/img/icons/camera.svg"
+                                    alt="Upload photo">
                                 </div>
                                 <div class="d-flex align-items-center">
                                   <img src="assets/img/icons/paperclip.svg" alt="upload">
@@ -984,8 +850,10 @@
                               </label>
 
                               <div class="custom-control custom-checkbox">
-                                <input formControlName="showInBranded" type="checkbox" class="custom-control-input" id="isForBrandedCompany">
-                                <label class="custom-control-label" for="isForBrandedCompany">Display this info in all your branded walkthroughs</label>
+                                <input formControlName="showInBranded" type="checkbox" class="custom-control-input"
+                                  id="isForBrandedCompany">
+                                <label class="custom-control-label" for="isForBrandedCompany">Display this info in all
+                                  your branded walkthroughs</label>
                               </div>
                             </div>
 
@@ -1004,68 +872,54 @@
                       <h5>Property Address</h5>
                       <p>Please type in the address and verify that it is correct on the map and the street view</p>
                       <div class="custom-control custom-checkbox">
-                        <input formControlName="mapEnabled" type="checkbox" class="custom-control-input" id="mapEnabled">
+                        <input formControlName="mapEnabled" type="checkbox" class="custom-control-input"
+                          id="mapEnabled">
                         <label class="custom-control-label" for="mapEnabled">Show map</label>
                       </div>
                       <div class="custom-control custom-checkbox">
-                        <input formControlName="streetViewEnabled" type="checkbox" class="custom-control-input" id="streetViewEnabled">
+                        <input formControlName="streetViewEnabled" type="checkbox" class="custom-control-input"
+                          id="streetViewEnabled">
                         <label class="custom-control-label" for="streetViewEnabled">Show street view</label>
                       </div>
                     </div>
 
 
                     <label class="input mb-5">
-                      <input class="input__field input__field_gray"
-                      formControlName="address"
-                      propertyspacesGoogleAutocomplete
-                      (placeChanged)="onAutocomplete($event)"
-                      type="text" placeholder=" " />
+                      <input class="input__field input__field_gray" formControlName="address"
+                        propertyspacesGoogleAutocomplete (placeChanged)="onAutocomplete($event)" type="text"
+                        placeholder=" " />
                       <span class="input__label">Type property address</span>
                     </label>
 
                     <ng-template #editMapTpl>
-                      <agm-map class="google-map"
-                        [latitude]="mapForm.value.latitude"
-                        [longitude]="mapForm.value.longitude"
-                        [zoom]="17"
-                      >
-                        <agm-marker
-                          [latitude]="mapForm.value.latitude"
-                          [longitude]="mapForm.value.longitude"
-                        ></agm-marker>
+                      <agm-map class="google-map" [latitude]="mapForm.value.latitude"
+                        [longitude]="mapForm.value.longitude" [zoom]="17">
+                        <agm-marker [latitude]="mapForm.value.latitude" [longitude]="mapForm.value.longitude">
+                        </agm-marker>
                       </agm-map>
                     </ng-template>
 
-                    <ng-container *ngIf="mapForm.value.map && mapForm.get('map').valid; else editMapTpl">
+                    <ng-container *ngIf="mapForm.value.mapUrl && mapForm.get('mapUrl').valid; else editMapTpl">
                       <div class="embed-responsive embed-responsive-16by9 map-wrapper">
-                        <iframe
-                          class="embed-responsive-item"
-                          [src]="mapForm.value.map | safe: 'resourceUrl'"
-                        ></iframe>
+                        <iframe class="embed-responsive-item"
+                          [src]="mapForm.value.mapUrl | safe: 'resourceUrl'"></iframe>
                       </div>
                     </ng-container>
 
                     <div class="my-4"></div>
 
                     <ng-template #editStreetViewTpl>
-                      <div class="google-map"
-                        *ngIf="isStreetViewVisible"
-                        propertyspacesGoogleStreetView
-                        [coords]="{ lat: mapForm.value.latitude, lng: mapForm.value.longitude }"
-                      ></div>
+                      <div class="google-map" *ngIf="isStreetViewVisible" propertyspacesGoogleStreetView
+                        [coords]="{ lat: mapForm.value.latitude, lng: mapForm.value.longitude }"></div>
                     </ng-template>
 
-                    <ng-container
-                      *ngIf="
-                      mapForm.value.streetView && mapForm.get('streetView').valid;
+                    <ng-container *ngIf="
+                      mapForm.value.streetViewUrl && mapForm.get('streetViewUrl').valid;
                         else editStreetViewTpl
-                      "
-                    >
+                      ">
                       <div class="embed-responsive embed-responsive-16by9 map-wrapper">
-                        <iframe
-                          class="embed-responsive-item"
-                          [src]="mapForm.value.streetView | safe: 'resourceUrl'"
-                        ></iframe>
+                        <iframe class="embed-responsive-item"
+                          [src]="mapForm.value.streetViewUrl | safe: 'resourceUrl'"></iframe>
                       </div>
                     </ng-container>
 
@@ -1075,42 +929,23 @@
                     </p>
 
                     <label class="input mb-4">
-                      <textarea
-                        (paste)="filterPaste($event, mapForm)"
-                        formControlName="map"
-                        class="input__field input__field_gray"
-                        id="mapEmbedCode"
-                        rows="3"
-                        placeholder=" "
-                      ></textarea>
+                      <textarea (paste)="filterPaste($event, mapForm)" formControlName="mapUrl"
+                        class="input__field input__field_gray" id="mapEmbedCode" rows="3" placeholder=" "></textarea>
                       <span class="input__label">Google Maps Embeded Code</span>
                     </label>
 
-                    <div
-                      *ngIf="mapForm.get('map').invalid"
-                      class="alert alert-danger"
-                      role="alert"
-                    >
+                    <div *ngIf="mapForm.get('mapUrl').invalid" class="alert alert-danger" role="alert">
                       Invalid url
                     </div>
 
                     <label class="input">
-                      <textarea
-                        (paste)="filterPaste($event, mapForm)"
-                        formControlName="streetView"
-                        class="input__field input__field_gray"
-                        id="streetViewEmbedCode"
-                        rows="3"
-                        placeholder=" "
-                      ></textarea>
+                      <textarea (paste)="filterPaste($event, mapForm)" formControlName="streetViewUrl"
+                        class="input__field input__field_gray" id="streetViewEmbedCode" rows="3"
+                        placeholder=" "></textarea>
                       <span class="input__label">Google Street View Embeded Code</span>
                     </label>
 
-                    <div
-                      *ngIf="mapForm.get('streetView').invalid"
-                      class="alert alert-danger"
-                      role="alert"
-                    >
+                    <div *ngIf="mapForm.get('streetViewUrl').invalid" class="alert alert-danger" role="alert">
                       Invalid url
                     </div>
 
@@ -1122,32 +957,42 @@
                   <form class="p-4" [formGroup]="panoForm">
                     <b>Select Floor Number:</b>
 
-                    <div class="btn-group btn-group-toggle nav nav-tabs mb-5" ngbRadioGroup name="panoFloor" formControlName="floor">
+                    <div class="btn-group btn-group-toggle nav nav-tabs mb-5" ngbRadioGroup name="panoFloor"
+                      formControlName="floor">
                       <label ngbButtonLabel class="nav-link flex-grow-0" *ngFor="let f of [1,2,3]">
                         <input ngbButton type="radio" [value]="f"> {{f}}
                       </label>
                     </div>
 
-                    <div *ngIf="!panoForm.value.name" class="d-flex align-items-center justify-content-center panorama-image-placeholder p-5 mb-5">
+                    <div *ngIf="!panoForm.value.name"
+                      class="d-flex align-items-center justify-content-center panorama-image-placeholder p-5 mb-5">
                       <div class="d-flex flex-column mt-5">
                         <img class="mb-5" src="assets/img/icons/picture-big.svg" alt="Picture alt">
                         <button type="button" class="btn btn-link">
-                          <span class="mr-2 text-secondary">Upload</span> <img src="assets/img/icons/upload-alt.svg" alt="Upload">
+                          <span class="mr-2 text-secondary">Upload</span> <img src="assets/img/icons/upload-alt.svg"
+                            alt="Upload">
                         </button>
                       </div>
                     </div>
 
                     <div class="position-relative">
-                      <img class="img-fluid" [src]="panoForm.value.panorama ? panoForm.value.panorama : data.projectFolder + currentPanorama.name + '?_t=' + data._t" [alt]="currentPanorama.name">
-                      <div class="position-absolute d-flex justify-content-between align-items-center w-100 p-3 image-header">
+                      <img class="img-fluid"
+                        [src]="panoForm.value.panorama ? panoForm.value.panorama : project.projectFolder + currentPanorama.name + '?_t=' + data._t"
+                        [alt]="currentPanorama.name">
+                      <div
+                        class="position-absolute d-flex justify-content-between align-items-center w-100 p-3 image-header">
                         <b class="text-white">Single shot</b>
                         <div>
                           <label for="replaceImage" class="btn btn-light rounded-pill px-3 mr-3 mb-0">
-                            <input formControlName="panorama" propertyspacesInputFileReader type="file" id="replaceImage" class="d-none">
+                            <input formControlName="panorama" propertyspacesInputFileReader type="file"
+                              id="replaceImage" class="d-none">
                             <span class="mr-2">Replace</span> <img src="assets/img/icons/refresh.svg" alt="Uplaod New">
                           </label>
                           <a class="btn btn-light rounded-pill px-3"
-                          [href]="data.projectFolder + currentPanorama.name" [download]="currentPanorama.name + (currentPanorama.name.includes('.jp') ? '' : '.jpg')"><span class="mr-2">Download</span> <img src="assets/img/icons/download-red.svg" alt="Download"></a>
+                            [href]="project.projectFolder + currentPanorama.name"
+                            [download]="currentPanorama.name + (currentPanorama.name.includes('.jp') ? '' : '.jpg')"><span
+                              class="mr-2">Download</span> <img src="assets/img/icons/download-red.svg"
+                              alt="Download"></a>
                         </div>
                       </div>
                     </div>
@@ -1165,12 +1010,8 @@
 
                     <div class="NgxEditor__Wrapper h-100">
                       <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
-                      <ngx-editor
-                        [editor]="editor"
-                        formControlName="description"
-                        [disabled]="false"
-                        [placeholder]="'Add your description*'"
-                      ></ngx-editor>
+                      <ngx-editor [editor]="editor" formControlName="description" [disabled]="false"
+                        [placeholder]="'Add your description*'"></ngx-editor>
                     </div>
                   </form>
 
@@ -1178,7 +1019,8 @@
 
               </div>
               <div class="modal-footer justify-content-center border-top-0" *ngIf="isSaveButton">
-                <button type="button" class="btn btn-danger rounded-pill px-5" (click)="saveModal(data.project_id)">Save</button>
+                <button type="button" class="btn btn-danger rounded-pill px-5"
+                  (click)="saveModal(project.id)">Save</button>
               </div>
             </ng-scrollbar>
 
@@ -1186,20 +1028,15 @@
               <span class="sr-only">Loading...</span>
             </div>
 
-            <canvas
-              #virtualTour
-              id="virtualTour"
-              [propertyspacesVirtualTour]="data"
-              (init)="vrInit(data)"
-              (navigationChange)="changeActive($event, data)"
-              (change)="viewChange($event)"
-            ></canvas>
+            <canvas #virtualTour id="virtualTour" [propertyspacesVirtualTour]="project" (init)="vrInit(project)"
+              (navigationChange)="changeActive($event, project)" (change)="viewChange($event)"></canvas>
           </div>
         </div>
       </div>
     </main>
 
-    <footer *ngIf="!isQueryFullscreen" [class.d-none]="isFullscreenActive.active || isQueryFullscreen" class="footer text-white text-center p-4">
+    <footer *ngIf="!isQueryFullscreen" [class.d-none]="isFullscreenActive.active || isQueryFullscreen"
+      class="footer text-white text-center p-4">
       © 2021 Copyright Lidarama
     </footer>
   </ng-container>

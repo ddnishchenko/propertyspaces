@@ -1,20 +1,25 @@
-import { Panorama } from "./panorama";
-import { ProjectSite } from "./project-site";
+import { ImageGallery } from './image-gallery';
+import { Panorama } from './panorama';
+
+interface ProjectLocation {
+  lat?: number;
+  lng?: number;
+  address?: string;
+  mapUrl?: string;
+  streetViewUrl?: string;
+  mapEnabled?: boolean;
+  streetViewEnabled?: boolean;
+}
+
+
 
 export interface Project {
-  name?: string;
-  address?: string;
-  additional_data?: any;
-  client_id?: string;
   id?: string;
-  path?: string;
-  project_id?: string;
-  rowid?: string;
-  __permissions?: {
-    canUpdate?: boolean;
-    canRemove?: boolean;
-  }
-  data?: Panorama[];
-  project?: ProjectSite;
-  error?: string;
+  name?: string;
+  location?: ProjectLocation;
+  dollhouse?: string;
+  description?: string;
+  settings?: any;
+  panoramas?: Panorama[];
+  gallery?: ImageGallery[];
 }

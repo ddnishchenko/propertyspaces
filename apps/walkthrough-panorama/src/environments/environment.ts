@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiHost: 'http://brochures.propertyspaces.itera-research.com/',
-  googleMapsApiKey: 'AIzaSyAWkCS6AN5OnyB9BqcrfpOMlO25Fxvmrwc&amp'
+  googleMapsApiKey: 'AIzaSyAWkCS6AN5OnyB9BqcrfpOMlO25Fxvmrwc&amp',
+  apiHost: 'http://localhost:3000/dev/'
 };
 
 /*

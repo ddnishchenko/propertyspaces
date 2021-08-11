@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
-import { environment } from 'apps/walkthrough-panorama/src/environments/environment';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { Project } from '../../../interfaces/project';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
 import { ProjectsService } from '../../service/projects.service';
-import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../../state/gallery/project-gallery.actions';
-import { selectOrderedGallery } from '../../state/gallery/project-gallery.selectors';
-import { deletePanorama, deleteProjects, editProject, loadPanoramas, updateAddressData, updatePanorama } from '../../state/projects.actions';
-import { selectHdrVirtualTourPanoramas, selectVirtualTourParams } from '../../state/projects.selectors';
+import { deletePanorama, deleteProjects, editProject, loadProject, updateAddressData, updatePanorama } from '../../state/projects.actions';
+import { selectProject } from '../../state/projects.selectors';
 
 @Component({
   selector: 'propertyspaces-project-details',
@@ -21,41 +22,46 @@ import { selectHdrVirtualTourPanoramas, selectVirtualTourParams } from '../../st
 export class ProjectDetailsComponent implements OnInit {
   host = environment.apiHost;
   isMenuCollapsed = true;
-  project$;
-  panoramas$;
-  gallery$;
+  project$: Observable<Project>;
   panoNames = [];
   isEditName = false;
   projectName;
+  loadImageForm: FormGroup;
+  compressedImage
   constructor(
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store,
-    private ps: ProjectsService
+    private store: Store
   ) { }
 
   ngOnInit(): void {
     const projectId = this.route.snapshot.params.id;
-    this.store.dispatch(loadPanoramas({ projectId }));
-    this.store.dispatch(loadProjectGallery({ projectId }));
-    this.project$ = this.store.pipe(select(selectVirtualTourParams));
-    this.panoramas$ = this.store.pipe(select(selectHdrVirtualTourPanoramas));
-    this.gallery$ = this.store.pipe(select(selectOrderedGallery));
-    this.ps.aws();
+    this.store.dispatch(loadProject({ projectId }));
+    this.project$ = this.store.pipe(select(selectProject));
+    this.loadImageForm = new FormGroup({
+      src: new FormControl(''),
+      filename: new FormControl('')
+    });
+  }
+
+  fileInputChanged($event) {
+    this.loadImageForm.patchValue({
+      filename: $event.file.name
+    })
   }
 
   numbersComparator(itemA, itemB) {
     return parseInt(itemA, 10) > parseInt(itemB, 10) ? 1 : -1;
   }
 
-  openCreateForm(panoramas) {
+  openCreateForm(project) {
     const modalRef = this.modalService.open(PanoramaFormComponent, {
       size: 'lg'
     });
     modalRef.componentInstance.title = 'Create Panorama';
     modalRef.componentInstance.pano = {};
-    modalRef.componentInstance.panoData = panoramas;
+    modalRef.componentInstance.project = project;
     modalRef.result.then(value => {
       if (value) {
         // Edit Pano
@@ -64,13 +70,13 @@ export class ProjectDetailsComponent implements OnInit {
     });
   }
 
-  openEditPanorama(panorama, panoData) {
+  openEditPanorama(project, panorama) {
     const modalRef = this.modalService.open(PanoramaFormComponent, {
       size: 'lg'
     });
     modalRef.componentInstance.title = 'Edit Panorama';
     modalRef.componentInstance.pano = panorama;
-    modalRef.componentInstance.panoData = panoData;
+    modalRef.componentInstance.project = project;
     modalRef.componentInstance.isEdit = true;
     modalRef.result.then(value => {
       if (value) {
@@ -109,17 +115,15 @@ export class ProjectDetailsComponent implements OnInit {
     this.projectName = projectName;
   }
 
-  saveName(projectId) {
-    this.store.dispatch(editProject({ projectId, name: this.projectName }))
+  saveName(project: Project) {
+    this.store.dispatch(editProject({ projectId: project.id, project: { ...project, name: this.projectName } }));
   }
 
-  openMapModal(project, panoramas) {
+  openMapModal(project) {
     const modal = this.modalService.open(MapModalComponent, { size: 'lg' });
-    modal.componentInstance.project_id = project.project_id;
     modal.componentInstance.project = project;
     modal.result.then(
-      reslove => this.store.dispatch(updateAddressData({ projectId: project.project_id, data: reslove })),
-      reject => { }
+      reslove => this.store.dispatch(updateAddressData({ projectId: project.id, data: reslove })),
     );
   }
 
@@ -145,20 +149,20 @@ export class ProjectDetailsComponent implements OnInit {
 
   imageNameChanged($event, projectId) {
     console.log({ ...$event, projectId });
-    this.store.dispatch(renamePhoto({ ...$event, projectId }));
+    // this.store.dispatch(renamePhoto({ ...$event, projectId }));
   }
   sortChanged($event, projectId) {
     console.log({ projectId, photos: $event });
-    this.store.dispatch(changeOrderOfPhoto({ projectId, photos: $event.map(item => item.name) }))
+    // this.store.dispatch(changeOrderOfPhoto({ projectId, photos: $event.map(item => item.name) }))
   }
   deleteGalleryImage($event, projectId) {
-    this.store.dispatch(removeProjectGalleryPhoto({ projectId, image_id: [$event.item.name] }));
+    // this.store.dispatch(removeProjectGalleryPhoto({ projectId, image_id: [$event.item.name] }));
   }
 
   uploadImage($event, projectId) {
     if ($event.target.files.length) {
       const file = $event.target.files[0];
-      this.store.dispatch(uploadProjectGalleryPhoto({ projectId, file }));
+      // this.store.dispatch(uploadProjectGalleryPhoto({ projectId, file }));
     }
   }
 

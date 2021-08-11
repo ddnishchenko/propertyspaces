@@ -1,14 +1,14 @@
 export interface Panorama {
-  name: string;
-  panoramas: {
-    panorama?: string | ArrayBuffer | null;
-    url?: string;
-    x?: number;
-    y?: number;
-    z?: number
-    floor?: number;
-    panoCameraStartAngle?: number;
-    order?: string;
-    index?: number;
-  }
+  id?: string;
+  name?: string;
+  url?: string | ArrayBuffer | null;
+  x?: number;
+  y?: number;
+  z?: number
+  floor?: number;
+  panoCameraStartAngle?: number;
+  visibilityRadius?: number;
+  order?: string;
+  index?: number;
+  neighbors?: string[]
 }

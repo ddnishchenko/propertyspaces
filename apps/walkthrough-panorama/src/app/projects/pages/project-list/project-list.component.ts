@@ -3,7 +3,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
-import { ProjectsService } from '../../service/projects.service';
 import { copyProject, createProject, deleteProjects, loadProjects } from '../../state/projects.actions';
 import { selectProjects } from '../../state/projects.selectors';
 
@@ -15,12 +14,9 @@ import { selectProjects } from '../../state/projects.selectors';
 export class ProjectListComponent implements OnInit {
 
   projectIds = [];
-  projects$ = this.store.pipe(
-    select(selectProjects)
-  );
+  projects$ = this.store.pipe(select(selectProjects));
   constructor(
     private modalService: NgbModal,
-    private projectsService: ProjectsService,
     private store: Store
   ) { }
 
@@ -34,7 +30,7 @@ export class ProjectListComponent implements OnInit {
     });
     modalRef.result.then(value => {
       if (value) {
-        this.store.dispatch(createProject(value))
+        this.store.dispatch(createProject({ project: value }))
       }
     })
   }
@@ -45,14 +41,14 @@ export class ProjectListComponent implements OnInit {
     modalRef.result.then(value => {
       if (value) {
         const projectIds = projectId ? [projectId] : this.projectIds;
-        this.store.dispatch(deleteProjects({projectIds}));
+        this.store.dispatch(deleteProjects({ projectIds }));
       }
     });
   }
 
   onCheckChange($event) {
     const v = $event.target.value;
-    if (this.projectIds.includes(v) ) {
+    if (this.projectIds.includes(v)) {
       this.projectIds = this.projectIds.filter(id => id !== v);
     } else {
       this.projectIds = [
@@ -63,7 +59,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   copyProject(id) {
-    this.store.dispatch(copyProject({projectId: id}));
+    this.store.dispatch(copyProject({ projectId: id }));
   }
 
 }
