@@ -42,13 +42,13 @@
                   <a [routerLink]="[project.id]">{{ project.name }}</a>
                 </th>
                 <td>
-                  {{ project.location.address }}
+                  {{ project.addr.address }}
                 </td>
                 <td class="text-right">
                   <div class="btn-group">
-                    <button (click)="copyProject(project.id)" type="button" class="btn btn-warning">
+                    <!-- <button (click)="copyProject(project.id)" type="button" class="btn btn-warning">
                       <i class="fa fa-2x fa-clone"></i>
-                    </button>
+                    </button> -->
                     <button (click)="deleteProjects(project.id)" type="button" class="btn btn-danger">
                       <i class="fa fa-2x fa-trash"></i>
                     </button>

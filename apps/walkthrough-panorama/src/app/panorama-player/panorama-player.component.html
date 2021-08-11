@@ -55,16 +55,15 @@
   </ng-template>
 
   <ng-template #mapTplAgm>
-    <agm-map class="google-map" [latitude]="+project.location.latitude" [longitude]="+project.location.longitude"
-      [zoom]="17">
-      <agm-marker [latitude]="+project.location.latitude" [longitude]="+project.location.longitude"></agm-marker>
+    <agm-map class="google-map" [latitude]="+project.addr.latitude" [longitude]="+project.addr.longitude" [zoom]="17">
+      <agm-marker [latitude]="+project.addr.latitude" [longitude]="+project.addr.longitude"></agm-marker>
     </agm-map>
   </ng-template>
 
   <ng-template #mapTpl>
-    <ng-container *ngIf="project.location.mapUrl; else mapTplAgm">
+    <ng-container *ngIf="project.addr.mapUrl; else mapTplAgm">
       <div class="embed-responsive embed-responsive-21by9 map-wrapper">
-        <iframe class="embed-responsive-item" [src]="project.location.mapUrl | safe: 'resourceUrl'" loading="lazy"
+        <iframe class="embed-responsive-item" [src]="project.addr.mapUrl | safe: 'resourceUrl'" loading="lazy"
           allowfullscreen></iframe>
       </div>
     </ng-container>
@@ -72,14 +71,14 @@
 
   <ng-template #streetViewTplNative>
     <div class="google-map" propertyspacesGoogleStreetView
-      [coords]="{ lat: +project.location.latitude, lng: +project.location.longitude }" id="street-view"></div>
+      [coords]="{ lat: +project.addr.latitude, lng: +project.addr.longitude }" id="street-view"></div>
   </ng-template>
 
   <ng-template #streetViewTpl>
-    <ng-container *ngIf="project.location.streetViewUrl; else streetViewTplNative">
+    <ng-container *ngIf="project.addr.streetViewUrl; else streetViewTplNative">
       <div class="embed-responsive embed-responsive-21by9 map-wrapper">
-        <iframe class="embed-responsive-item" [src]="project.location.streetViewUrl | safe: 'resourceUrl'"
-          loading="lazy" allowfullscreen></iframe>
+        <iframe class="embed-responsive-item" [src]="project.addr.streetViewUrl | safe: 'resourceUrl'" loading="lazy"
+          allowfullscreen></iframe>
       </div>
     </ng-container>
   </ng-template>
@@ -104,32 +103,32 @@
 
   <ng-template #contactTpl>
     <div class="p-4">
-      <table *ngIf="data.settings.profile && data.settings.profile !== 'profile'">
-        <tr *ngIf="data.settings.profile.firstName || data.settings.profile.lastName">
+      <table *ngIf="project.profile">
+        <tr *ngIf="project.profile.firstName || project.profile.lastName">
           <th>Contact person</th>
-          <td>{{ data.settings.profile.firstName }} {{ data.settings.profile.lastName }}</td>
+          <td>{{ project.profile.firstName }} {{ project.profile.lastName }}</td>
         </tr>
-        <tr *ngIf="data.settings.profile.email">
+        <tr *ngIf="project.profile.email">
           <th>Email</th>
-          <td>{{ data.settings.profile.email }}</td>
+          <td>{{ project.profile.email }}</td>
         </tr>
-        <tr *ngIf="data.settings.profile.phone">
+        <tr *ngIf="project.profile.phone">
           <th>Phone</th>
-          <td>{{ data.settings.profile.phone }}</td>
+          <td>{{ project.profile.phone }}</td>
         </tr>
       </table>
       <hr>
-      <div class="media" *ngIf="data.settings.company && data.settings.company !== 'company'">
+      <div class="media" *ngIf="project.company && project.company !== 'company'">
         <img *ngIf="!companyForm.value.companyLogo" src="assets/img/icons/camera.svg" alt="Upload photo">
-        <img *ngIf="data.settings.company.companyLogo"
-          [src]="showCompanyLogo(data.projectFolder, companyForm.value.companyLogo, false)" class="mr-3 rounded-circle"
-          [alt]="data.settings.company.name">
+        <img *ngIf="project.company.companyLogo"
+          [src]="showCompanyLogo(project.projectFolder, companyForm.value.companyLogo, false)"
+          class="mr-3 rounded-circle" [alt]="project.company.name">
         <div class="media-body">
-          <h5 class="mt-0">{{ data.settings.company.name }}</h5>
-          <p *ngIf="data.settings.company.address">Address: {{ data.settings.company.address }}</p>
-          <div *ngIf="data.settings.company.email">Email: {{ data.settings.company.email }}</div>
-          <div *ngIf="data.settings.company.phone">Phone: {{ data.settings.company.phone }}</div>
-          <div *ngIf="data.settings.company.fax">Fax: {{ data.settings.company.fax }}</div>
+          <h5 class="mt-0">{{ project.company.name }}</h5>
+          <p *ngIf="project.company.address">Address: {{ project.company.address }}</p>
+          <div *ngIf="project.company.email">Email: {{ project.company.email }}</div>
+          <div *ngIf="project.company.phone">Phone: {{ project.company.phone }}</div>
+          <div *ngIf="project.company.fax">Fax: {{ project.company.fax }}</div>
         </div>
       </div>
     </div>
@@ -263,7 +262,7 @@
             </p>
             <div class="form-group position-relative text-center">
               <textarea rows="3" class="form-control" (input)="$event" #tweet
-                maxlength="280">Visit a 24/7 open house of {{project.location.address}} in Lidarama:</textarea>
+                maxlength="280">Visit a 24/7 open house of {{project.addr.address}} in Lidarama:</textarea>
               <span class="text-primary position-relative symbol-limiter bg-white">{{tweet.value.length}}/280</span>
             </div>
             <button (click)="postToTwiiter(tweet)" type="type" class="btn btn-primary">Tweet</button>
@@ -424,7 +423,7 @@
               </ng-template>
             </ngb-panel>
 
-            <ngb-panel *ngIf="project.location.mapEnabled && +project.location.latitude || project.location.mapUrl"
+            <ngb-panel *ngIf="project.addr?.mapEnabled && +project.addr?.latitude || project.addr?.mapUrl"
               [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-map')" id="panel-map">
               <ng-template ngbPanelHeader>
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -446,8 +445,7 @@
               </ng-template>
             </ngb-panel>
 
-            <ngb-panel
-              *ngIf="project.location.streetViewEnabled && +project.location.latitude || project.location.streetViewUrl"
+            <ngb-panel *ngIf="project.addr?.streetViewEnabled && +project.addr?.latitude || project.addr?.streetViewUrl"
               [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-sv')" id="panel-sv">
               <ng-template ngbPanelHeader>
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -740,7 +738,7 @@
                       <span class="input__label">Dollhouse Embeded Code</span>
                     </label>
 
-                    <div *ngIf="mapForm.get('dollhouse').invalid" class="alert alert-danger" role="alert">
+                    <div *ngIf="dollhouseForm.get('dollhouse').invalid" class="alert alert-danger" role="alert">
                       Invalid url
                     </div>
                   </form>
@@ -977,7 +975,7 @@
 
                     <div class="position-relative">
                       <img class="img-fluid"
-                        [src]="panoForm.value.panorama ? panoForm.value.panorama : project.projectFolder + currentPanorama.name + '?_t=' + data._t"
+                        [src]="panoForm.value.panorama ? panoForm.value.panorama : project.projectFolder + currentPanorama.name + '?_t=' + project._t"
                         [alt]="currentPanorama.name">
                       <div
                         class="position-absolute d-flex justify-content-between align-items-center w-100 p-3 image-header">

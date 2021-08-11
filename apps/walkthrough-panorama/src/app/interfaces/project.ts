@@ -16,10 +16,12 @@ interface ProjectLocation {
 export interface Project {
   id?: string;
   name?: string;
-  location?: ProjectLocation;
+  addr?: ProjectLocation;
   dollhouse?: string;
-  description?: string;
+  description?: string | any;
   settings?: any;
   panoramas?: Panorama[];
   gallery?: ImageGallery[];
+  profile?: any;
+  company?: any;
 }

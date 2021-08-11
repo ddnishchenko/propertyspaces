@@ -39,7 +39,7 @@ export class ProjectsController {
   @Post(':id/panorama')
   async createPanorama(@Param('id') id: string, @Body() body, @Res() res) {
     const result = await this.projectService.createPanorama(id, body);
-    return res.status(201).json(result.Attributes);
+    return res.status(201).json(result.Attributes.panoramas);
   }
 
   @Put(':id/panorama/:key')

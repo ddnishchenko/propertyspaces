@@ -7,7 +7,7 @@ import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
 import { selectProject, selectProjectHdrPanoramasFloors } from '../projects/state/projects.selectors';
-import { loadProject, updateAddressData, updateContacts, updatePanorama, updateProject } from '../projects/state/projects.actions';
+import { loadProject, updateContacts, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
 // import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 
@@ -209,7 +209,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       this.store.pipe(select(selectProjectHdrPanoramasFloors))
     ]).pipe(
       map(
-        ([project, floors]) => ({ ...project, ...floors })
+        ([project, floors]) => ({ ...floors, ...project, description: project.description ? toHTML(project.description) : project.description })
       ),
       skip(1)
     );
@@ -243,8 +243,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.mapForm = new FormGroup({
       mapEnabled: new FormControl(true),
       streetViewEnabled: new FormControl(true),
-      map: new FormControl('', [Validators.pattern(urlRegEx)]),
-      streetView: new FormControl('', [Validators.pattern(urlRegEx)]),
+      mapUrl: new FormControl('', [Validators.pattern(urlRegEx)]),
+      streetViewUrl: new FormControl('', [Validators.pattern(urlRegEx)]),
       address: new FormControl(''),
       latitude: new FormControl(0),
       longitude: new FormControl()
@@ -296,22 +296,22 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   calcRatio(ratio) { }
 
   vrInit(data) {
-    const { location, description, dollhouse, settings } = data;
-    this.mapForm.patchValue({
-      ...location,
-      mapEnabled: location.hasOwnProperty('mapEnabled') ? true : location.mapEnabled,
-      streetViewEnabled: !location.hasOwnProperty('streetViewEnabled') ? true : location.streetViewEnabled,
-    })
+    const { addr, description, dollhouse, settings, profile, company } = data;
+    if (addr) {
+      this.mapForm.patchValue({
+        ...addr,
+        mapEnabled: addr.hasOwnProperty('mapEnabled') ? true : addr.mapEnabled,
+        streetViewEnabled: !addr.hasOwnProperty('streetViewEnabled') ? true : addr.streetViewEnabled,
+      })
+    }
+
     this.vrTourSettingsForm.patchValue({
       rotationY: +this.virtualTour.virtualTourService.defaultY,
       zoom: this.virtualTour.virtualTourService.defaultZoom,
       neighborsFiltering: this.virtualTour.virtualTourService.neighborsFiltering
     });
-
-    if (settings) {
-      this.profileForm.patchValue(data.settings.profile);
-      this.companyForm.patchValue(data.settings.company);
-    }
+    this.profileForm.patchValue(profile);
+    this.companyForm.patchValue(company);
 
     this.descriptionFrom.patchValue({ description });
     this.dollhouseForm.patchValue({ dollhouse });
@@ -366,7 +366,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
         if (answer) {
           const data = {
             zoom: this.vrTourSettingsForm.value.zoom,
-            rotation_y: this.vrTourSettingsForm.value.rotationY,
+            rotationY: this.vrTourSettingsForm.value.rotationY,
             visibilityRadius: this.vrTourSettingsForm.value.visibilityRadius,
             neighborsFiltering: this.vrTourSettingsForm.value.neighborsFiltering,
           };
@@ -377,33 +377,29 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
           });
 
           const changedPanos = this.virtualTour.virtualTourService.panos.filter(
-            p => !isNaN(parseInt(p.panoramas.zoom, 10))
+            p => !isNaN(parseInt(p.zoom, 10))
               ||
-              !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
+              !isNaN(parseInt(p.panoCameraStartAngle, 10))
               ||
-              !isNaN(parseInt(p.panoramas.visibilityRadius, 10))
+              !isNaN(parseInt(p.visibilityRadius, 10))
           );
           const resetPano = p => {
-
             return {
               ...p,
-              panoramas: {
-                ...p.panoramas,
-                zoom: undefined,
-                panoCameraStartAngle: undefined,
-                visibilityRadius: undefined
-              }
+              zoom: undefined,
+              panoCameraStartAngle: undefined,
+              visibilityRadius: undefined
             }
 
           };
           this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos.map(resetPano);
-          const resetedPanos = changedPanos.map(resetPano).map(({ name, panoramas }) => ({ name, panoramas }));
+          const resetedPanos = changedPanos.map(resetPano);
 
-          this.virtualTour.virtualTourService.defaultY = data.rotation_y;
+          this.virtualTour.virtualTourService.defaultY = data.rotationY;
           this.virtualTour.virtualTourService.defaultZoom = data.zoom;
           this.virtualTour.virtualTourService.visibilityRadius = data.visibilityRadius;
           this.virtualTour.virtualTourService.neighborsFiltering = data.neighborsFiltering;
-          // this.store.dispatch(updateProject({ projectId, project: data }));
+          this.store.dispatch(updateProject({ projectId, project: { settings: data } }));
           resetedPanos.forEach(panorama => {
             this.store.dispatch(updatePanorama({ projectId, panorama }));
           })
@@ -664,7 +660,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   saveModal(projectId) {
     switch (this.activeEditProperty) {
       case this.editProperties.editLocation:
-        this.store.dispatch(updateAddressData({ projectId, data: this.mapForm.value }));
+        this.store.dispatch(updateProject({ projectId, project: { addr: this.mapForm.value } }));
         break;
       case this.editProperties.editContact:
         this.saveContacts(projectId);

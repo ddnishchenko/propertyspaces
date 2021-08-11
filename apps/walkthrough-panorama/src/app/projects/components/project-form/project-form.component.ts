@@ -51,9 +51,9 @@ export class ProjectFormComponent implements OnInit, AfterViewInit {
   submit() {
     const { name, address, latitude, longitude } = this.form.value;
     this.activeModal.close({
-      name: this.form.value.name,
-      location: {
-        name, address, latitude, longitude
+      name,
+      addr: {
+        address, latitude, longitude
       }
     })
   }
