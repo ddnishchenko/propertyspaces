@@ -39,6 +39,7 @@ export class PanoramaFormComponent implements OnInit {
       Validators.required
     ];
     return new FormGroup({
+      id: new FormControl(data?.id),
       name: new FormControl(data?.name || '', [Validators.required]),
       x: new FormControl(data?.x, validators),
       y: new FormControl(data?.y, validators),
@@ -47,18 +48,6 @@ export class PanoramaFormComponent implements OnInit {
       order: new FormControl(data?.order),
       url: new FormControl(data?.url)
     });
-  }
-
-  panoForm(data) {
-    return {
-      name: data?.name,
-      x: data?.x,
-      y: data?.y,
-      z: data?.z,
-      floor: data?.floor,
-      order: data?.order,
-      url: data?.url
-    }
   }
 
   updateName() {
@@ -81,7 +70,7 @@ export class PanoramaFormComponent implements OnInit {
     let rawPano: Panorama;
     if (this.isEdit || panoName) {
       rawPano = {
-        name: panoName,
+        ...this.form.value,
         url
       };
       this.store.dispatch(updatePanorama({ projectId: this.project.id, panorama: rawPano }));

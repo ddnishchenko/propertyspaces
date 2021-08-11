@@ -93,22 +93,30 @@ export class ProjectsService {
 
   }
 
-  updatePanorama(projectId, key, data) {
+  async updatePanorama(projectId, key, data) {
     if (data.url.includes('base64')) {
-      const file = Buffer.from(data.src.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.src.split(';')[0].split('/')[1];
+      const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+      const fileType = data.url.split(';')[0].split('/')[1];
 
-      const s3Object = s3.upload({
+      const s3Object = await s3.upload({
         Bucket: 'lidarama1media',
         Key: `${projectId}/${key}`,
         Body: file,
         ContentEncoding: 'base64',
         ContentType: `image/${fileType}`
       }).promise();
-      return s3Object;
+
     }
 
+    const project = await db.get({
+      TableName: 'projects',
+      Key: { id: projectId },
+      ProjectionExpression: 'panoramas'
+    }).promise();
 
+    const panoramas = project.Item.panoramas.map(p => p.id === key ? { ...p, ...data } : p);
+
+    return this.update(projectId, { panoramas });
 
   }
 

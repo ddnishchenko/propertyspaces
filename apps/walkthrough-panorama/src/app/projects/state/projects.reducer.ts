@@ -34,11 +34,11 @@ export const reducer = createReducer(
       panoramas
     }
   })),
-  on(ProjectsActions.updatePanoramaSuccess, (state, { panorama }) => ({
+  on(ProjectsActions.updatePanoramaSuccess, (state, { panoramas }) => ({
     ...state,
     project: {
       ...state.project,
-      panoramas: state.project.panoramas.map(p => p.name === panorama.name ? panorama : p)
+      panoramas
     }
 
   })),

@@ -44,8 +44,8 @@ export class ProjectsService {
     return this.http.post<Panorama[]>(`${endpoint}/${id}/panorama`, panorama);
   }
 
-  updatePanorama(id, panorama: Panorama) {
-    return this.http.put(`${endpoint}/${id}`, panorama);
+  updatePanorama(id, panorama: Panorama): Observable<Panorama[]> {
+    return this.http.put<Panorama[]>(`${endpoint}/${id}/panorama/${panorama.id}`, panorama);
   }
 
   deletePanorama(project_id, name) {

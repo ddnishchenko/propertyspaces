@@ -84,7 +84,7 @@ export class ProjectsEffects {
     ofType(ProjectsActions.updatePanorama),
     mergeMap(
       payload => this.projectsService.updatePanorama(payload.projectId, payload.panorama).pipe(
-        map(project => ProjectsActions.updatePanoramaSuccess({ panorama: payload.panorama }))
+        map(panoramas => ProjectsActions.updatePanoramaSuccess({ panoramas }))
       )
     )
   )

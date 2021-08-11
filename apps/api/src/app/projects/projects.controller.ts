@@ -43,8 +43,9 @@ export class ProjectsController {
   }
 
   @Put(':id/panorama/:key')
-  async updatePanorama(@Param('id') id: string, @Param('key') key, @Body() body) {
-    return true;
+  async updatePanorama(@Param('id') id: string, @Param('key') key, @Body() body, @Res() res) {
+    const result = await this.projectService.updatePanorama(id, key, body);
+    return res.json(result.Attributes.panoramas);
   }
 
   @Delete(':id/panorama/:key')
