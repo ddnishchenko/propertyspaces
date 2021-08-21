@@ -48,8 +48,8 @@ export class ProjectsService {
     return this.http.put<Panorama[]>(`${endpoint}/${id}/panorama/${panorama.id}`, panorama);
   }
 
-  deletePanorama(project_id, name) {
-    return this.http.post(host + 'delete-panorama-project', { client_id: 1295, project_id, name });
+  deletePanorama(id, panorama: Panorama) {
+    return this.http.delete(`${endpoint}/${id}/panorama/${panorama.id}`, { body: panorama });
   }
 
   copyProject(project_id): Observable<Project> {

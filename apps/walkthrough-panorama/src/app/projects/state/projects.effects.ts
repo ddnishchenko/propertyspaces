@@ -93,7 +93,7 @@ export class ProjectsEffects {
   deletePanorama$ = createEffect(() => this.actions$.pipe(
     ofType(ProjectsActions.deletePanorama),
     mergeMap(
-      payload => forkJoin(payload.names.map(name => this.projectsService.deletePanorama(payload.projectId, name))).pipe(
+      payload => forkJoin(payload.panoramas.map(name => this.projectsService.deletePanorama(payload.projectId, name))).pipe(
         map(res => ProjectsActions.deletePanoramaSuccess(payload))
       )
     )

@@ -63,18 +63,8 @@ export const selectProjectPanoramas =
       return [];
     }
   );
-export const selectProjectHdrPanoramas = createSelector(selectProjectPanoramas, state => {
-  const panos = state.filter(t => !t.name.includes('_'));
-  return panos.map(p => {
-    return {
-      ...p,
-      dark_pano: state.find(t => t.name.includes(`${p.name}_dark`)),
-      light_pano: state.find(t => t.name.includes(`${p.name}_light`)),
-      hdr_pano: state.find(t => t.name.includes(`${p.name}_hdr`)),
-    };
-  });
-});
-export const selectProjectHdrPanoramasFloors = createSelector(selectProjectHdrPanoramas, state => {
+
+export const selectProjectHdrPanoramasFloors = createSelector(selectProjectPanoramas, state => {
   let floors = state.map(p => p.floor);
   floors = Array.from(new Set(floors));
   const panoFloors = floors.map(f => state.filter(p => p.floor === f));
@@ -137,4 +127,4 @@ export const selectProjectHdrPanoramasFloors = createSelector(selectProjectHdrPa
   }
 })
 export const selectProjectPanoramaByName = (name: string) =>
-  createSelector(selectProjectHdrPanoramas, state => (state.find(p => p.name === name) || {}));
+  createSelector(selectProjectPanoramas, state => (state.find(p => p.name === name) || {}));
