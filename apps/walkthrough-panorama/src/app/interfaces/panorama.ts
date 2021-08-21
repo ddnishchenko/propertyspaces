@@ -1,6 +1,7 @@
 export interface Panorama {
   id?: string;
   name?: string;
+  fileName?: string;
   url?: string | ArrayBuffer | null;
   x?: number;
   y?: number;

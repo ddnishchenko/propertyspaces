@@ -130,12 +130,12 @@ export const updatePanoramaFailed = createAction(
 
 export const deletePanorama = createAction(
   `${prefix} Delete Panorama`,
-  props<{ names: string[]; projectId: string; }>()
+  props<{ projectId: string; panoramas: Panorama[] }>()
 );
 
 export const deletePanoramaSuccess = createAction(
   `${prefix} Delete Panorama success`,
-  props<{ names: string[]; projectId: string; }>()
+  props<{ projectId: string; panoramas: Panorama[] }>()
 );
 
 export const deletePanoramaFailed = createAction(

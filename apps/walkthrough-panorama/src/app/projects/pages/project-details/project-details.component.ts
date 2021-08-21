@@ -86,28 +86,16 @@ export class ProjectDetailsComponent implements OnInit {
     });
   }
 
-  deletePanoramas(name?) {
+  deletePanoramas(pano) {
     const modalRef = this.modalService.open(ConfirmationModalComponent);
     modalRef.componentInstance.msg = 'Are you sure you want to delete these projects?';
     modalRef.result.then(value => {
       if (value) {
         // Delete projects
-        const names = name ? [name] : this.panoNames;
-        this.store.dispatch(deletePanorama({ names, projectId: this.route.snapshot.params.id }));
+        const panoramas = [pano];
+        this.store.dispatch(deletePanorama({ panoramas, projectId: this.route.snapshot.params.id }));
       }
     });
-  }
-
-  onCheckChange($event) {
-    const v = $event.target.value;
-    if (this.panoNames.includes(v)) {
-      this.panoNames = this.panoNames.filter(n => n !== v);
-    } else {
-      this.panoNames = [
-        ...this.panoNames,
-        v
-      ];
-    }
   }
 
   editName(projectName) {

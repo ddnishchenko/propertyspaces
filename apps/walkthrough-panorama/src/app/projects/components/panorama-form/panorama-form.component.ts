@@ -100,39 +100,26 @@ export class PanoramaFormComponent implements OnInit {
     }
   }
 
-  async uploadPano($event, panorama, type, posfix) {
-    if ($event.target.files.length) {
-      const files: File[] = Array.from($event.target.files);
-      const url = this.form.value.url;
-      let rawPano: Panorama;
-      if (panorama[type]) {
-        rawPano = {
-          name: panorama[type].name,
-          url
-        };
-        this.store.dispatch(updatePanorama({ projectId: this.project.id, panorama: rawPano }));
-      } else {
-        const { x, y, z, name, floor, order } = this.form.value;
-        const n = `${name}_${posfix}`;
-        rawPano = {
-          name: n,
-          url,
-          x, y, z, floor, order
-        };
-        this.store.dispatch(createPanorama({ projectId: this.project.id, panorama: rawPano }));
+  async uploadPano($event, panorama, type) {
+    const rawPano = {
+      ...this.form.value,
+      [type]: {
+        ...panorama[type],
+        url: $event.base64File
       }
+    };
 
-    }
+    this.store.dispatch(updatePanorama({ projectId: this.project.id, panorama: rawPano }));
   }
 
-  submit() {
-    this.activeModal.close(this.form.value);
+  submit(id) {
+    this.activeModal.close({ ...this.pano, ...this.form.value, id });
   }
 
   async makeHdr(name) {
     this.store.dispatch(createHdrPanorama({ projectId: this.project.id, name: name }));
   }
-  remove(name) {
-    this.store.dispatch(deletePanorama({ projectId: this.project.id, names: [name] }));
+  remove(pano) {
+    this.store.dispatch(deletePanorama({ projectId: this.project.id, panoramas: [pano] }));
   }
 }

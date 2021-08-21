@@ -73,21 +73,20 @@
       </div>
 
       <ng-container *ngIf="panorama$ | async as panorama">
-        <div class="col-12" *ngIf="panorama.dark_pano || panorama.light_pano">
-          <button (click)="makeHdr(panorama.name)" class="btn btn-success" type="button">
+        <div class="col-12" *ngIf="panorama.dark_pano && panorama.light_pano">
+          <button (click)="makeHdr(panorama.id)" class="btn btn-success" type="button">
             Make HDR photo <i *ngIf="loading" class="fa fa-spin fa-spinner"></i>
           </button>
         </div>
         <div *ngIf="panorama.hdr_pano" class="col-12">
           <h3>
             HDR
-            <button (click)="remove(panorama.hdr_pano.name)" class="btn btn-danger" type="button">
+            <button (click)="remove(panorama)" class="btn btn-danger" type="button">
               <i class="fa fa-trash"></i> Delete HDR
             </button>
           </h3>
-          <img *ngIf="panorama.hdr_pano" class="img-fluid" [src]="
-              mediaPath + panorama.hdr_pano.name + (panorama.hdr_pano?._t || '')
-            " [alt]="panorama.hdr_pano.name" />
+          <img *ngIf="panorama.hdr_pano" class="img-fluid"
+            [src]="panorama.hdr_pano.url + '?_t=' + panorama.hdr_pano?.updatedAt" [alt]="panorama.hdr_pano.name" />
         </div>
 
         <div class="col-12">
@@ -96,46 +95,41 @@
             <i class="fa fa-upload"></i> Upload
           </button>
           <input type="file" accept="images/*" #fileInput1 hidden formControlName="url" propertyspacesInputFileReader
-            (changed)="uploadImage($event, panorama.name)" />
-          <img *ngIf="panorama?.name" [src]="panorama.url + (panorama?._t || '')" class="img-fluid"
-            [alt]="panorama.name + (panorama?._t || '')" />
+            (changed)="uploadImage($event, panorama.id)" />
+          <img *ngIf="panorama?.id" class="img-fluid" [src]="panorama.url + '?_t=' + panorama.updatedAt"
+            [alt]="panorama.name" />
         </div>
 
-        <div class="col-12" *ngIf="panorama?.name">
+        <div class="col-12" *ngIf="panorama?.id">
           <h3>Dark</h3>
           <button class="btn btn-primary" type="button" (click)="fileInputDarkPano.click()">
             <i class="fa fa-upload"></i> Upload
           </button>
-          <input hidden type="file" accept="images/*" multiple #fileInputDarkPano
-            (change)="uploadPano($event, panorama, 'dark_pano', 'dark')" />
-          <img *ngIf="panorama.dark_pano?.name" class="img-fluid" [src]="
-              mediaPath +
-              panorama.dark_pano.name +
-              (panorama.dark_pano?._t || '')
-            " [alt]="panorama.dark_pano.name" />
+          <input hidden type="file" accept="images/jpeg" multiple #fileInputDarkPano propertyspacesInputFileReader
+            (changed)="uploadPano($event, panorama, 'dark_pano', 'dark')" />
+          <img *ngIf="panorama.dark_pano?.id" class="img-fluid"
+            [src]="panorama.dark_pano.url + '?_t=' + panorama.dark_pano?.updatedAt" [alt]="panorama.dark_pano.name" />
         </div>
-        <div class="col-12" *ngIf="panorama?.name">
+        <div class="col-12" *ngIf="panorama?.id">
           <h3>Light</h3>
           <button class="btn btn-primary" type="button" (click)="fileInputLightPano.click()">
             <i class="fa fa-upload"></i> Upload
           </button>
-          <input hidden type="file" accept="images/*" multiple #fileInputLightPano
-            (change)="uploadPano($event, panorama, 'light_pano', 'light')" />
-          <img *ngIf="panorama.light_pano?.name" class="img-fluid" [src]="
-              mediaPath +
-              panorama.light_pano?.name +
-              (panorama.light_pano?._t || '')
-            " [alt]="panorama.light_pano?.name" />
+          <input hidden type="file" accept="images/jpeg" multiple #fileInputLightPano propertyspacesInputFileReader
+            (changed)="uploadPano($event, panorama, 'light_pano', 'light')" />
+          <img *ngIf="panorama.light_pano?.id" class="img-fluid"
+            [src]="panorama.light_pano?.url + '?_t=' + panorama.light_pano?.updatedAt"
+            [alt]="panorama.light_pano?.name" />
         </div>
       </ng-container>
     </div>
   </div>
 </form>
-<div class="modal-footer">
+<div *ngIf="panorama$ | async as p" class="modal-footer">
   <button type="button" class="btn btn-secondary" (click)="activeModal.close(false)">
     Close
   </button>
-  <button type="button" class="btn btn-primary" (click)="submit()">
+  <button type="button" class="btn btn-primary" (click)="submit(p.id)" [disabled]="!p.id">
     Save changes
   </button>
 </div>
