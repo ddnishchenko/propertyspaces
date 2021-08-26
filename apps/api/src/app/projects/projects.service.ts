@@ -30,10 +30,11 @@ export class ProjectsService {
       if (k === 'floors') {
         for (let i = 0; i < data[k].length; i++) {
           if (data[k][i].url) {
-            console.log(k, i, data[k][i].url.substr(0, 4));
-            /* if (data[k][i].url.includes('base64')) {
+            if (data[k][i].url.includes(';base64')) {
               const file = Buffer.from(data[k][i].url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-              let mimeType = data[k][i].url.split(';')[0].split('/')[1];
+              let mimeType = data[k][i].url
+                .split(';')[0]
+                .replace('data:', '');
               let ext = mimeType.split('/')[1];
               if (ext.includes('+')) {
                 ext = ext.split('+')[0];
@@ -52,7 +53,7 @@ export class ProjectsService {
               console.log(s3Object.Location);
               data[k][i].url = s3Object.Location;
               data[k][i].key = s3Object.Key;
-            } */
+            }
           }
         }
 
@@ -97,7 +98,7 @@ export class ProjectsService {
     const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
     const fileType = data.url.split(';')[0].split('/')[1];
 
-    const panoId = randomUUID();
+    const panoId = data.id || randomUUID();
     const panoName = `${panoId}.${fileType}`;
     const s3Object = await s3.upload({
       Bucket: 'lidarama1media',
@@ -138,7 +139,7 @@ export class ProjectsService {
 
     let panorama = { ...data, updatedAt: Date.now() };
 
-    if (data.url.includes('base64')) {
+    if (data.url.includes(';base64')) {
       const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
       const fileType = data.url.split(';')[0].split('/')[1];
 
@@ -156,7 +157,7 @@ export class ProjectsService {
 
     }
 
-    if (data.dark_pano?.url.includes('base64')) {
+    if (data.dark_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.dark_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
       const fileType = data.dark_pano.url.split(';')[0].split('/')[1];
 
@@ -179,7 +180,7 @@ export class ProjectsService {
         updatedAt: Date.now()
       };
     }
-    if (data.light_pano?.url.includes('base64')) {
+    if (data.light_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.light_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
       const fileType = data.light_pano.url.split(';')[0].split('/')[1];
 
@@ -284,7 +285,7 @@ export class ProjectsService {
 
     let photo = { ...data, updatedAt: Date.now() };
 
-    if (data.url.includes('base64')) {
+    if (data.url.includes(';base64')) {
       const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
       const fileType = data.url.split(';')[0].split('/')[1];
 

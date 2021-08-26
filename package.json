@@ -90,7 +90,7 @@
     "ngx-scrollbar": "^7.5.6",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~7.2.0",
-    "serverless": "^2.52.1",
+    "serverless": "^2.56.0",
     "serverless-lambda-nestjs": "^0.0.2",
     "subjx": "^0.3.9",
     "svg-pan-zoom": "^3.6.1",
