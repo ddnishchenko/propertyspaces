@@ -22,6 +22,7 @@ export interface Project {
   settings?: any;
   panoramas?: Panorama[];
   gallery?: ImageGallery[];
+  gallerySort?: string[];
   profile?: any;
   company?: any;
 }

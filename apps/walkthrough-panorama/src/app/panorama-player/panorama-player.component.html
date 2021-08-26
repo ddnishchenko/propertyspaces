@@ -25,17 +25,16 @@
 
   <ng-template #floorplanTpl let-navigation="navigation">
     <div class="vt-map" *ngIf="
-        project.settings && project.settings.floors;
+        project.floors;
         else addFloorplanBtn
       ">
       <ul ngbNav (navChange)="navFloor($event, project.panoFloors, project.panos)" #nav="ngbNav"
         [activeId]="activeFloor" class="nav-tabs">
-        <li *ngFor="let f of project.settings.floors; index as i" [ngbNavItem]="f.floor">
+        <li *ngFor="let f of project.floors; index as i" [ngbNavItem]="f.floor">
           <a ngbNavLink>{{ f.floor }}</a>
           <ng-template ngbNavContent>
-            <div class="d-flex w-100" *ngIf="f['floorplan_f' + f.floor + '.svg']">
-              <propertyspaces-floorplan class="m-auto"
-                [url]="project.projectFolder + f['floorplan_f' + f.floor + '.svg'] + '?_t=' + project._t"
+            <div class="d-flex w-100" *ngIf="f.url">
+              <propertyspaces-floorplan class="m-auto" [url]="f.url + '?_t=' + project.updatedAt"
                 [navs]="project.panoFloorsCoord[i]" [floor]="f" [activePoint]="activePoint"
                 [rotationAngle]="rotationAngle" [showNav]="navigation" (nav)="navTo($event)"></propertyspaces-floorplan>
             </div>
@@ -84,8 +83,8 @@
   </ng-template>
 
   <ng-template #galleryTpl let-closeModal>
-    <div *ngIf="gallery$ | async as images" class="masonry-grid">
-      <div *ngFor="let img of images | gallery; index as i" class="masonry-grid-item"
+    <div *ngIf="project.gallery.length" class="masonry-grid">
+      <div *ngFor="let img of project.gallery | gallery; index as i" class="masonry-grid-item"
         (click)="openImage(i, closeModal)">
         <figure class="gallery-image m-0">
           <img class="img-fluid gallery-img" [src]="img.data.src" [alt]="img.data.thumb" />
@@ -317,7 +316,7 @@
   </ng-template>
 
   <ng-template #descriptionTpl>
-    <div class="p-4" [innerHTML]="project.description"></div>
+    <div class="p-4" [innerHTML]="description"></div>
   </ng-template>
 
   <ng-container *ngIf="isFullscreenActive$ | async as isFullscreenActive">
@@ -379,7 +378,7 @@
           <ngb-accordion type="dark" [closeOthers]="true" (panelChange)="isOneAccActive = !isOneAccActive"
             class="sidebar-accordion w-100 h-100 flex-lg-fill" [class.sidebar-accordion-active]="acc.activeIds.length"
             #acc="ngbAccordion">
-            <ngb-panel *ngIf="project.settings && project.settings.floors"
+            <ngb-panel *ngIf="project.floors"
               [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
               <ng-template ngbPanelHeader>
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -467,33 +466,33 @@
               </ng-template>
             </ngb-panel>
 
-            <ng-container *ngIf="gallery$ | async as galleryPhotos">
-              <ngb-panel *ngIf="galleryPhotos.length"
-                [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')" id="panel-gallery">
-                <ng-template ngbPanelHeader>
-                  <div class="d-flex justify-content-between align-items-center w-100">
-                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                      <svg-icon src="assets/img/icons/picture-white.svg" class="sidebar-header-icon-stroke mr-3">
-                      </svg-icon>
-                      <span class="text-uppercase">Photo Gallery</span>
-                    </button>
-                    <button class="btn" (click)="
-                        openSectionModal(
-                          modalWrapper,
-                          galleryEditorTpl,
-                          'Gallery'
-                        )
-                      ">
-                      <svg-icon src="assets/img/icons/expand-white.svg"
-                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                    </button>
-                  </div>
-                </ng-template>
-                <ng-template ngbPanelContent>
-                  <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
-                </ng-template>
-              </ngb-panel>
-            </ng-container>
+
+            <ngb-panel *ngIf="project.gallery.length"
+              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')" id="panel-gallery">
+              <ng-template ngbPanelHeader>
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                    <svg-icon src="assets/img/icons/picture-white.svg" class="sidebar-header-icon-stroke mr-3">
+                    </svg-icon>
+                    <span class="text-uppercase">Photo Gallery</span>
+                  </button>
+                  <button class="btn" (click)="
+                      openSectionModal(
+                        modalWrapper,
+                        galleryEditorTpl,
+                        'Gallery'
+                      )
+                    ">
+                    <svg-icon src="assets/img/icons/expand-white.svg"
+                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                  </button>
+                </div>
+              </ng-template>
+              <ng-template ngbPanelContent>
+                <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
+              </ng-template>
+            </ngb-panel>
+
 
 
             <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-contact')"
@@ -579,7 +578,7 @@
           </div>
         </div>
         <div class="content">
-          <div class="gallery-wrapper" *ngIf="gallery$ | async as galleryItems">
+          <div class="gallery-wrapper" *ngIf="project.gallery">
             <div class="close-gallery" *ngIf="isGalleryOpened" (click)="closeGallery()">
               <span class="h1">&times;</span>
             </div>
@@ -590,7 +589,7 @@
               )">
               <i class="fa fa-lg fa-th"></i>
             </div>
-            <gallery id="project-gallery" [class.d-none]="!isGalleryOpened" [items]="galleryItems | gallery"
+            <gallery id="project-gallery" [class.d-none]="!isGalleryOpened" [items]="project.gallery | gallery"
               [itemTemplate]="itemTemplate" [thumb]="false"></gallery>
             <ng-template #itemTemplate let-index="index" let-type="type" let-data="data" let-currIndex="currIndex">
               <div *ngIf="type === 'image' && index === currIndex" [@slideAnimation] class="item-description-block">
@@ -627,8 +626,8 @@
             <div class="gallery-bar d-flex flex-column" *ngIf="editProperties.createGallery === activeEditProperty">
               <div class="gallery-bar-title">Thumbnails</div>
               <div class="gallery-bar-content flex-fill">
-                <ng-scrollbar *ngIf="gallery$ | async as galleryItems" class="scrollbar-danger content-padding">
-                  <div *ngFor="let img of galleryItems | gallery; index as i" class="gallery-bar-image mt-1"
+                <ng-scrollbar *ngIf="project.gallery.length" class="scrollbar-danger content-padding">
+                  <div *ngFor="let img of project.gallery | gallery; index as i" class="gallery-bar-image mt-1"
                     (click)="openImage(i)">
                     <figure class="gallery-bar-image__figure m-0">
                       <img class="img-fluid" [src]="img.data.src" [alt]="img.data.thumb" />
@@ -671,10 +670,11 @@
 
                 <div class="form-group">
                   <label>Zoom</label>
-                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty" (slide)="zoomChange()"
-                    formControlName="zoom" [step]="1" [min]="30" [max]="120"></propertyspaces-slider>
+                  <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
+                    (slide)="zoomChange($event)" formControlName="zoom" [step]="1" [min]="30" [max]="120">
+                  </propertyspaces-slider>
                   <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
-                    (slide)="panoZoomChange()" formControlName="panoZoom" [step]="1" [min]="30" [max]="120">
+                    (slide)="panoZoomChange($event)" formControlName="panoZoom" [step]="1" [min]="30" [max]="120">
                   </propertyspaces-slider>
                 </div>
 
@@ -709,7 +709,7 @@
                 <h5 class="modal-title text-uppercase h4 text-danger">
                   {{ activeEditTitle }}
                   <ng-container *ngIf="activeEditProperty === editProperties.editPano">
-                    #{{this.currentPanorama.panoramas.order}}</ng-container>
+                    #{{this.currentPanorama.order}}</ng-container>
                 </h5>
                 <button type="button" (click)="closeModal()" class="close" data-bs-dismiss="modal" aria-label="Close">
                   <div class="rounded-circle close-inner"><img src="assets/img/icons/cross.svg" alt="Close"></div>
@@ -718,8 +718,8 @@
               <div class="modal-body" [ngSwitch]="activeEditProperty">
 
                 <ng-container *ngSwitchCase="editProperties.editGallery">
-                  <ng-container *ngIf="gallery$ | async as orderedImages">
-                    <propertyspaces-gallery-editor [isEditable]="isEdit" [items]="orderedImages"
+                  <ng-container *ngIf="project.gallery.length">
+                    <propertyspaces-gallery-editor [isEditable]="isEdit" [items]="project.gallery"
                       (nameChange)="imageNameChanged($event, project.id)" (sortChange)="sortChanged($event, project.id)"
                       (moveToTrash)="deleteGalleryImage($event, project.id)"></propertyspaces-gallery-editor>
                   </ng-container>
@@ -975,22 +975,20 @@
 
                     <div class="position-relative">
                       <img class="img-fluid"
-                        [src]="panoForm.value.panorama ? panoForm.value.panorama : project.projectFolder + currentPanorama.name + '?_t=' + project._t"
+                        [src]="panoForm.value.url ? panoForm.value.url : currentPanorama.url + '?_t=' + currentPanorama.updatedAt"
                         [alt]="currentPanorama.name">
                       <div
                         class="position-absolute d-flex justify-content-between align-items-center w-100 p-3 image-header">
                         <b class="text-white">Single shot</b>
                         <div>
                           <label for="replaceImage" class="btn btn-light rounded-pill px-3 mr-3 mb-0">
-                            <input formControlName="panorama" propertyspacesInputFileReader type="file"
-                              id="replaceImage" class="d-none">
+                            <input formControlName="url" propertyspacesInputFileReader type="file" id="replaceImage"
+                              class="d-none">
                             <span class="mr-2">Replace</span> <img src="assets/img/icons/refresh.svg" alt="Uplaod New">
                           </label>
-                          <a class="btn btn-light rounded-pill px-3"
-                            [href]="project.projectFolder + currentPanorama.name"
-                            [download]="currentPanorama.name + (currentPanorama.name.includes('.jp') ? '' : '.jpg')"><span
-                              class="mr-2">Download</span> <img src="assets/img/icons/download-red.svg"
-                              alt="Download"></a>
+                          <a class="btn btn-light rounded-pill px-3" [href]="currentPanorama.url"
+                            [download]="currentPanorama.fileName"><span class="mr-2">Download</span> <img
+                              src="assets/img/icons/download-red.svg" alt="Download"></a>
                         </div>
                       </div>
                     </div>

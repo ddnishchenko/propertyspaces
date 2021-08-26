@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
-import { copyProject, createProject, deleteProjects, loadProjects } from '../../state/projects.actions';
+import { createProject, deleteProjects, loadProjects } from '../../state/projects.actions';
 import { selectProjects } from '../../state/projects.selectors';
 
 @Component({
@@ -56,10 +56,6 @@ export class ProjectListComponent implements OnInit {
         v
       ];
     }
-  }
-
-  copyProject(id) {
-    this.store.dispatch(copyProject({ projectId: id }));
   }
 
 }

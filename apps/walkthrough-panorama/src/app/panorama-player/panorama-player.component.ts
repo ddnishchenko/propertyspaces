@@ -7,20 +7,29 @@ import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
 import { selectProject, selectProjectHdrPanoramasFloors } from '../projects/state/projects.selectors';
-import { loadProject, updateContacts, updatePanorama, updateProject } from '../projects/state/projects.actions';
+import { addGalleryItem, deleteGalleryItem, loadProject, updateContacts, updateGalleryItem, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
 // import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 
-import { dataURLtoFile, urlRegEx } from '../utils';
+import { urlRegEx } from '../utils';
 import { GalleryComponent } from 'ng-gallery';
 import { GalleryEditorComponent } from '../shared/components/gallery-editor/gallery-editor.component';
 import { slideInAnimation } from '../utils/animations';
 import { ConfirmationModalComponent } from '../shared/components/confirmation-modal/confirmation-modal.component';
 import { ResizeEvent } from 'angular-resizable-element';
-import { Editor, toHTML } from 'ngx-editor';
+import { Editor, toHTML, toDoc } from 'ngx-editor';
 import { Fullscreen } from '../utils/fullscreen';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { combineLatest } from 'rxjs';
+
+function sanitazePanorama(pano) {
+  const exclude = ['index', 'loaded', 'object', 'transitionFrom', 'updatedAt'];
+  const panorama: Panorama = {};
+  Object
+    .keys(pano)
+    .filter(k => !exclude.includes(k))
+    .forEach(k => panorama[k] = pano[k]);
+  return pano;
+}
 
 const aspectRations = [
   {
@@ -129,10 +138,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   isEdit = false;
   rotationAngle = 0;
   defaultZoom = 0;
-  floors$;
   modalContent = null;
   modalTitle = null;
-  gallery$;
   styleDeSidbar = {};
   editTitles = titles;
   editProperties = {
@@ -152,6 +159,9 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   isStreetViewVisible = true;
   sidebarSide = 'l';
   textRecentlyCopied;
+  get description() {
+    return this.descriptionFrom?.value ? toHTML(this.descriptionFrom?.value.description) : this.descriptionFrom?.value.description;
+  }
   get embedCode() {
     return `<iframe src="${this.shareLink}" width="100%" height="720px" frameborder="0" allowfullscreen></iframe>`;
   };
@@ -192,8 +202,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private modalService: NgbModal,
     private store: Store,
-    private zone: NgZone,
-    private http: HttpClient
+    private zone: NgZone
   ) { }
 
   ngOnInit(): void {
@@ -209,7 +218,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       this.store.pipe(select(selectProjectHdrPanoramasFloors))
     ]).pipe(
       map(
-        ([project, floors]) => ({ ...floors, ...project, description: project.description ? toHTML(project.description) : project.description })
+        ([project, floors]) => ({
+          ...floors,
+          ...project
+        })
       ),
       skip(1)
     );
@@ -287,28 +299,21 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     });
   }
 
-  downloadSvg(url) {
-    const headers = new HttpHeaders();
-    headers.set('Accept', 'image/svg+xml');
-    return this.http.get(url, { headers, responseType: 'text' });
-  }
-
-  calcRatio(ratio) { }
-
   vrInit(data) {
-    const { addr, description, dollhouse, settings, profile, company } = data;
+    const { addr, description, dollhouse, profile, company } = data;
     if (addr) {
       this.mapForm.patchValue({
         ...addr,
-        mapEnabled: addr.hasOwnProperty('mapEnabled') ? true : addr.mapEnabled,
-        streetViewEnabled: !addr.hasOwnProperty('streetViewEnabled') ? true : addr.streetViewEnabled,
+        mapEnabled: addr.mapEnabled,
+        streetViewEnabled: addr.streetViewEnabled,
       })
     }
 
     this.vrTourSettingsForm.patchValue({
       rotationY: +this.virtualTour.virtualTourService.defaultY,
       zoom: this.virtualTour.virtualTourService.defaultZoom,
-      neighborsFiltering: this.virtualTour.virtualTourService.neighborsFiltering
+      neighborsFiltering: this.virtualTour.virtualTourService.neighborsFiltering,
+      visibilityRadius: this.virtualTour.virtualTourService.defaultVisibilityRadius
     });
     this.profileForm.patchValue(profile);
     this.companyForm.patchValue(company);
@@ -334,8 +339,15 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   panoCameraStartAngleChange() {
     this.virtualTour.virtualTourService.changeMeshRotationForCurrentPano(this.vrTourSettingsForm.value.panoCameraStartAngle);
   }
-  panoZoomChange() {
-    this.virtualTour.virtualTourService.changeZoomForCurrentPano(+this.vrTourSettingsForm.value.panoZoom);
+
+  zoomChange($event?) {
+    const val = $event || +this.vrTourSettingsForm.value.zoom;
+    this.virtualTour.virtualTourService.changeZoom(val);
+  }
+
+  panoZoomChange($event?) {
+    const val = $event || +this.vrTourSettingsForm.value.panoZoom;
+    this.virtualTour.virtualTourService.changeZoomForCurrentPano(val);
   }
 
   visibilityRadiusChange() {
@@ -350,10 +362,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
 
   updatePanoSettings() {
-    const panorama: Panorama = this.virtualTour.virtualTourService.currentPanorama;
+    const { currentPanorama } = this.virtualTour.virtualTourService;
     this.store.dispatch(updatePanorama({
       projectId: this.route.snapshot.params.id,
-      panorama
+      panorama: sanitazePanorama(currentPanorama)
     }))
   }
 
@@ -401,7 +413,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
           this.virtualTour.virtualTourService.neighborsFiltering = data.neighborsFiltering;
           this.store.dispatch(updateProject({ projectId, project: { settings: data } }));
           resetedPanos.forEach(panorama => {
-            this.store.dispatch(updatePanorama({ projectId, panorama }));
+            this.store.dispatch(updatePanorama({ projectId, panorama: sanitazePanorama(panorama) }));
           })
 
         }
@@ -438,12 +450,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoCameraStartAngle || 0,
       panoZoom: this.virtualTour.virtualTourService.currentPano.zoom || 0,
       panoVisibilityRadius: this.virtualTour.virtualTourService.currentPano.visibilityRadius || 0,
+      // neighborsFiltering: this.virtualTour.virtualTourService.currentPano.neighborsFiltering || false
     });
   }
-  zoomChange($event?) {
-    const val = $event || +this.vrTourSettingsForm.value.zoom;
-    this.virtualTour.virtualTourService.changeZoom(val);
-  }
+
 
   viewChange($event) {
     // this.vrTourSettingsForm.get('zoom').patchValue($event.object.fov);
@@ -482,9 +492,11 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
   takeScreenshot() {
     const screenshot = this.virtualTour.virtualTourService.takeScreenshot();
-    ;
-    const file = dataURLtoFile(screenshot.dataUrl, screenshot.name);
-    // this.store.dispatch(uploadProjectGalleryPhoto({ projectId: this.route.snapshot.params.id, file }));
+    const photo = {
+      url: screenshot.dataUrl,
+      name: screenshot.name
+    };
+    this.store.dispatch(addGalleryItem({ projectId: this.route.snapshot.params.id, photo }));
   }
 
   updateCanvasSize() {
@@ -492,7 +504,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
   navFloor($event, floors, panos) {
     const pano = floors[$event.nextId][0]
-    this.navTo(pano.panoramas.index);
+    this.navTo(pano.index);
   }
   resizeCanvas() {
     // this.virtualTour.virtualTourService.resize();
@@ -561,13 +573,14 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
 
   imageNameChanged($event, projectId) {
-    // this.store.dispatch(renamePhoto({ ...$event, projectId }));
+    this.store.dispatch(updateGalleryItem({ projectId, photo: $event }));
   }
   sortChanged($event, projectId) {
-    // this.store.dispatch(changeOrderOfPhoto({ projectId, photos: $event.map(item => item.name) }))
+    const gallerySort: string[] = $event.map(item => item.id);
+    this.store.dispatch(updateProject({ projectId, project: { gallerySort } }))
   }
   deleteGalleryImage($event, projectId) {
-    // this.store.dispatch(removeProjectGalleryPhoto({ projectId, image_id: [$event.item.name] }));
+    this.store.dispatch(deleteGalleryItem({ projectId, photos: [$event.item] }));
   }
 
   panelActiveClass(ids, id) {
@@ -643,18 +656,11 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
 
   updatePano(projectId) {
-    const { name, panorama, floor, order, x, y, z } = this.panoForm.value;
-    const p: any = {
-      name,
-      panoramas: {
-        floor, order, x, y, z
-      }
+    const p = {
+      ...this.currentPanorama,
+      ...this.panoForm.value
     };
-    if (panorama) {
-      p.panoramas.panorama = panorama;
-    }
-
-    this.store.dispatch(updatePanorama({ projectId, panorama: p }))
+    this.store.dispatch(updatePanorama({ projectId, panorama: sanitazePanorama(p) }))
   }
 
   saveModal(projectId) {
@@ -669,7 +675,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
         this.updatePano(projectId);
         break;
       case this.editProperties.description:
-        this.store.dispatch(updateProject({ projectId, project: { description: this.descriptionFrom.value.description } }));
+        this.store.dispatch(updateProject({ projectId, project: this.descriptionFrom.value }));
         break;
       case this.editProperties.floorplan:
         this.store.dispatch(updateProject({ projectId, project: this.floorplanEditor.form.value }));

@@ -133,7 +133,7 @@ export class VirtualTourService {
   config;
 
   get currentPanorama() {
-    return this.panos.find(p => p.name === this.currentPano.name);
+    return this.panos.find(p => p.id === this.currentPano.id);
   }
 
   events = new EventEmitter();
@@ -407,7 +407,7 @@ export class VirtualTourService {
 
   addPanosMarks() {
     this.panos.forEach((pano) => {
-      if (!pano.object) {
+      if (!pano.object && !(pano.object instanceof THREE.Group)) {
         const mesh = ringsShape(pano, this.font);
         pano.object = mesh;
         this.scene.add(mesh);
@@ -446,10 +446,7 @@ export class VirtualTourService {
       if (p.name === this.currentPano.name) {
         return {
           ...p,
-          panoramas: {
-            ...p.panoramas,
-            panoCameraStartAngle: y
-          }
+          panoCameraStartAngle: y
         }
       }
       return p;
@@ -462,10 +459,7 @@ export class VirtualTourService {
       if (p.name === this.currentPano.name) {
         return {
           ...p,
-          panoramas: {
-            ...p.panoramas,
-            zoom
-          }
+          zoom
         }
       }
       return p;
@@ -496,7 +490,7 @@ export class VirtualTourService {
       })
       let panoId = this.getPanoId(event)
       if (panoId !== null) {
-        const panoIndex = this.panos.findIndex(p => p.panoramas.index === panoId)
+        const panoIndex = this.panos.findIndex(p => p.index === panoId)
         // this.panos[panoId].object.material.opacity = 0.5
         this.panos[panoIndex].object.children.forEach(mesh => {
           if (!(mesh.geometry instanceof THREE.CircleGeometry)) {

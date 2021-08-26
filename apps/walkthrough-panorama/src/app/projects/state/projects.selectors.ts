@@ -45,10 +45,7 @@ export const selectProjectPanoramas =
                 if (prev.floor < currentValue.floor) {
                   return {
                     ...currentValue,
-                    panoramas: {
-                      ...currentValue,
-                      transitionFrom: prev.floor
-                    }
+                    transitionFrom: prev.floor
                   }
                 }
 
@@ -65,9 +62,9 @@ export const selectProjectPanoramas =
   );
 
 export const selectProjectHdrPanoramasFloors = createSelector(selectProjectPanoramas, state => {
-  let floors = state.map(p => p.floor);
-  floors = Array.from(new Set(floors));
-  const panoFloors = floors.map(f => state.filter(p => p.floor === f));
+  let floorNames = state.map(p => p.floor);
+  floorNames = Array.from(new Set(floorNames));
+  const panoFloors = floorNames.map(f => state.filter(p => p.floor === f));
   const panoFloorsCoord = panoFloors.map(f => {
     let xArray = f.map(p => +p.x);
     let zArray = f.map(p => +p.z);
@@ -122,7 +119,7 @@ export const selectProjectHdrPanoramasFloors = createSelector(selectProjectPanor
     _t: Date.now(),
     panoFloorsCoord,
     panoFloors,
-    floors,
+    floorNames,
     panos: state
   }
 })

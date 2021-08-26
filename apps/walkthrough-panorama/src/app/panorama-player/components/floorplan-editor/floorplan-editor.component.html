@@ -1,78 +1,48 @@
 <form [formGroup]="form" class="d-flex flex-column">
   <ul ngbNav #nav="ngbNav" class="nav-tabs" formArrayName="floors">
-    <li
-      *ngFor="let c of formArray?.controls; index as i"
-      [formGroupName]="i"
-      ngbNavItem
-    >
+    <li *ngFor="let c of formArray?.controls; index as i" [formGroupName]="i" ngbNavItem>
       <a ngbNavLink>{{ c.value.floor }} floor</a>
       <ng-template ngbNavContent>
-        <div
-          class="z-10"
-          [style.margin-bottom]="
+        <div class="z-10" [style.margin-bottom]="
             c.value.nav_dots_rotation > 0
               ? c.value.nav_dots_rotation + 'px'
               : -c.value.nav_dots_rotation + 'px'
-          "
-        >
+          ">
           <div class="form-row">
             <div class="col-auto">
               <div class="custom-file">
-                <input
-                  type="file"
-                  class="custom-file-input"
-                  id="customFile"
-                  (change)="uploadFloorplan($event, c.value.floor, i)"
-                />
-                <label class="custom-file-label" for="customFile"
-                  >Upload floorplan</label
-                >
+                <input type="file" class="custom-file-input" id="customFile" accept=".svg"
+                  [propertyspacesInputFileReader]="{compress: false, readAs: 'DataURL'}" formControlName="url" />
+                <label class="custom-file-label" for="customFile">Upload floorplan</label>
               </div>
             </div>
             <div class="col-auto">
-              <div
-                class="btn-group"
-                role="group"
-                aria-label="Basic example"
-              >
-                <button
-                  (click)="rotate('r', i)"
-                  type="button"
-                  class="btn btn-secondary"
-                >
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button (click)="rotate('r', i)" type="button" class="btn btn-secondary">
                   <i class="fa fa-rotate-right"></i>
                 </button>
-                <button
-                  (click)="rotate('l', i)"
-                  type="button"
-                  class="btn btn-secondary"
-                >
+                <button (click)="rotate('l', i)" type="button" class="btn btn-secondary">
                   <i class="fa fa-rotate-left"></i>
                 </button>
-                <button
-                  (click)="mirror('h', i)"
-                  type="button"
-                  class="btn btn-secondary"
-                >
+                <button (click)="mirror('h', i)" type="button" class="btn btn-secondary">
                   <i class="fa fa-arrows-h" aria-hidden="true"></i>
                 </button>
-                <button
-                  (click)="mirror('v', i)"
-                  type="button"
-                  class="btn btn-secondary"
-                >
+                <button (click)="mirror('v', i)" type="button" class="btn btn-secondary">
                   <i class="fa fa-arrows-v" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
             <div class="col-auto">
-              <propertyspaces-slider (slide)="floorplanHeightChange()" formControlName="dots_size" [step]="0.1" [min]="0.1" [max]="1"></propertyspaces-slider>
+              <propertyspaces-slider (slide)="floorplanHeightChange()" formControlName="dots_size" [step]="0.1"
+                [min]="0.1" [max]="1"></propertyspaces-slider>
             </div>
             <div class="col-auto">
-              <propertyspaces-slider (slide)="floorplanHeightChange()" formControlName="floorplan_max_height" [step]="1" [min]="300" [max]="1920"></propertyspaces-slider>
+              <propertyspaces-slider (slide)="floorplanHeightChange()" formControlName="floorplan_max_height" [step]="1"
+                [min]="300" [max]="1920"></propertyspaces-slider>
             </div>
             <div class="col-auto">
-              <propertyspaces-slider (slide)="rotationChange($event, i)" formControlName="nav_dots_rotation" [step]="1" [min]="-180" [max]="180"></propertyspaces-slider>
+              <propertyspaces-slider (slide)="rotationChange($event, i)" formControlName="nav_dots_rotation" [step]="1"
+                [min]="-180" [max]="180"></propertyspaces-slider>
             </div>
           </div>
         </div>
@@ -80,66 +50,29 @@
         <ng-template #tplUploadFloorplan>
           <p>Upload floorplan in svg</p>
           <div class="custom-file">
-            <input
-              type="file"
-              class="custom-file-input"
-              id="customFile"
-              (change)="uploadFloorplan($event, c.value.floor, i)"
-            />
-            <label class="custom-file-label" for="customFile"
-              >Upload floorplan</label
-            >
+            <input type="file" class="custom-file-input" id="customFile1" accept=".svg"
+              [propertyspacesInputFileReader]="{compress: false, readAs: 'Text'}" formControlName="url" />
+            <label class="custom-file-label" for="customFile1">Upload floorplan</label>
           </div>
         </ng-template>
-        <div
-          *ngIf="
-            c.value['floorplan_f' + c.value.floor + '.svg'];
+        <div *ngIf="
+            c.value.url;
             else tplUploadFloorplan
-          "
-          class="floorplan align-items-center justify-content-center d-flex"
-        >
+          " class="floorplan align-items-center justify-content-center d-flex">
           <div #bound class="floorplan__navigation">
-            <img
-              #floorPlan
-              [src]="
-                data.projectFolder +
-                c.value['floorplan_f' + c.value.floor + '.svg'] +
-                '?_t=' +
-                data._t
-              "
-              [style.max-height]="c.value.floorplan_max_height + 'px'"
-              [style.transform]="
-                'rotate(' + c.value.nav_dots_rotation + 'deg)'
-              "
-              class="img-fluid"
-              alt="Floorplan"
-            />
+            <img #floorPlan [src]="c.value.url | safe: 'url'" [style.max-height]="c.value.floorplan_max_height + 'px'"
+              [style.transform]="'rotate(' + c.value.nav_dots_rotation + 'deg)'" class="img-fluid" alt="Floorplan" />
             <!-- [customTransformations]="'rotate('+ form.value.nav_dots_rotation +'deg)'" -->
-            <div
-              class="floorplan__point-wrapper"
-              #flw
-              ngResizable
-              ngDraggable
-              [style.width]="c.value.nav_dots_width + 'px'"
-              [style.height]="c.value.nav_dots_height + 'px'"
-              [position]="{
+            <div class="floorplan__point-wrapper" #flw ngResizable ngDraggable
+              [style.width]="c.value.nav_dots_width + 'px'" [style.height]="c.value.nav_dots_height + 'px'" [position]="{
                 x: c.value.nav_dots_left,
                 y: c.value.nav_dots_top
-              }"
-              (stopped)="dragEnd($event, floorPlan, i)"
-              (rzStop)="resizeEnd($event, floorPlan, i)"
-              [rzHandels]="'all'"
-              [bounds]="bound"
-              [inBounds]="false"
-              [checkBoundsAfterInit]="false"
-            >
+              }" (stopped)="dragEnd($event, floorPlan, i)" (rzStop)="resizeEnd($event, floorPlan, i)"
+              [rzHandels]="'all'" [bounds]="bound" [inBounds]="false" [checkBoundsAfterInit]="false">
               <!-- [ngStyle]="getStyleForDotsWrapper(flw, i)" -->
               <div class="floorplan__point-holder" #dotsWrapper>
-                <div
-                  class="floorplan__point"
-                  *ngFor="let p of data.panoFloorsCoord[i]; index as index"
-                  [ngStyle]="getStyleForDot(p, i)"
-                >
+                <div class="floorplan__point" *ngFor="let p of data.panoFloorsCoord[i]; index as index"
+                  [ngStyle]="getStyleForDot(p, i)">
                   {{ p.order }}
                 </div>
               </div>
@@ -155,66 +88,29 @@
             <!-- {{ form.value.nd_deg }}deg | {{ form.value.nd_delta }}rad -->
           </h3>
           <div class="btn-group" role="group" aria-label="Basic example">
-            <button
-              class="btn btn-primary"
-              type="button"
-              (click)="rotateCub(-1, i)"
-            >
+            <button class="btn btn-primary" type="button" (click)="rotateCub(-1, i)">
               <i class="fa fa-arrow-left"></i>
             </button>
-            <button
-              class="btn btn-primary"
-              type="button"
-              (click)="rotateCub(1, i)"
-            >
+            <button class="btn btn-primary" type="button" (click)="rotateCub(1, i)">
               <i class="fa fa-arrow-right"></i>
             </button>
           </div>
         </div>
 
-        <div
-          *ngIf="false"
-          class="floorplan d-none align-items-center justify-content-center"
-        >
-          <div
-            class="floorplan__navigation floorplan__navigation_new"
-            *ngIf="data"
-          >
-            <img
-              #floorPlan1
-              [src]="
-                data.projectFolder +
-                c.value['floorplan_f' + c.value.floor + '.svg'] +
-                '?_t=' +
-                data._t
-              "
-              [style.max-height]="c.value.floorplan_max_height + 'px'"
-              class="img-fluid"
-              alt="Floorplan"
-            />
-            <div
-              class="floorplan__point-wrapper floorplan__point-wrapper_new"
-            >
-              <div
-                class="floorplan__points"
-                [style.width]="c.value.nd_width + 'px'"
-                [style.height]="c.value.nd_height + 'px'"
-                propertyspacesSubjx
-                [initMove]="{
+        <div *ngIf="false" class="floorplan d-none align-items-center justify-content-center">
+          <div class="floorplan__navigation floorplan__navigation_new" *ngIf="data">
+            <img #floorPlan1 [src]="c.value.url + '?_t=' +data._t"
+              [style.max-height]="c.value.floorplan_max_height + 'px'" class="img-fluid" alt="Floorplan" />
+            <div class="floorplan__point-wrapper floorplan__point-wrapper_new">
+              <div class="floorplan__points" [style.width]="c.value.nd_width + 'px'"
+                [style.height]="c.value.nd_height + 'px'" propertyspacesSubjx [initMove]="{
                   dx: c.value.nd_move_dx,
                   dy: c.value.nd_move_dy
-                }"
-                [initRotate]="{ delta: c.value.nav_dots_rotation }"
-                (move)="fpMove($event, i)"
-                (dropEvent)="fpDrop($event, floorPlan1, i)"
-                (resizeEvent)="fpResize($event, floorPlan1, i)"
-                (rotate)="fpRotate($event, i)"
-              >
-                <div
-                  class="floorplan__point"
-                  *ngFor="let p of data.floorplanMap; index as i"
-                  [ngStyle]="getStyleForDot(p, i)"
-                >
+                }" [initRotate]="{ delta: c.value.nav_dots_rotation }" (move)="fpMove($event, i)"
+                (dropEvent)="fpDrop($event, floorPlan1, i)" (resizeEvent)="fpResize($event, floorPlan1, i)"
+                (rotate)="fpRotate($event, i)">
+                <div class="floorplan__point" *ngFor="let p of data.floorplanMap; index as i"
+                  [ngStyle]="getStyleForDot(p, i)">
                   {{ i + 1 }}
                 </div>
               </div>
@@ -226,4 +122,3 @@
   </ul>
   <div [ngbNavOutlet]="nav"></div>
 </form>
-

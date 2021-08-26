@@ -1,6 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { Project } from '../../interfaces/project';
-import { ProjectsService } from '../service/projects.service';
 import * as ProjectsActions from './projects.actions';
 
 export const projectsFeatureKey = 'projects';
@@ -53,6 +52,35 @@ export const reducer = createReducer(
       project: {
         ...state.project,
         panoramas: state.project.panoramas.filter(p => !panoIds.includes(p.id))
+      }
+    };
+  }),
+  //
+  on(ProjectsActions.addGalleryItemSuccess, (state, { photos }) => ({
+    ...state,
+    project: {
+      ...state.project,
+      gallery: [
+        ...state.project.gallery,
+        ...photos
+      ]
+    }
+  })),
+  on(ProjectsActions.updateGalleryItemSuccess, (state, { photos }) => ({
+    ...state,
+    project: {
+      ...state.project,
+      gallery: state.project.gallery.map(p => p.id === photos[0].id ? photos[0] : p)
+    }
+
+  })),
+  on(ProjectsActions.deleteGalleryItemSuccess, (state, { photos }) => {
+    const photoIds = photos.map(p => p.id);
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        gallery: state.project.gallery.filter(p => !photoIds.includes(p.id))
       }
     };
   })

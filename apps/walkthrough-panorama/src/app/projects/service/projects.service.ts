@@ -52,8 +52,16 @@ export class ProjectsService {
     return this.http.delete(`${endpoint}/${id}/panorama/${panorama.id}`, { body: panorama });
   }
 
-  copyProject(project_id): Observable<Project> {
-    return this.http.post<Project>(host + 'copy-panoramas-project', { client_id: 1295, project_id });
+  addGalleryItem(id, photo: any): Observable<any[]> {
+    return this.http.post<any[]>(`${endpoint}/${id}/gallery`, photo);
+  }
+
+  updateGalleryItem(id, photo: any): Observable<any[]> {
+    return this.http.put<any[]>(`${endpoint}/${id}/gallery/${photo.id}`, photo);
+  }
+
+  deleteGalleryItem(id, photo: any) {
+    return this.http.delete(`${endpoint}/${id}/gallery/${photo.id}`, { body: photo });
   }
 
   updateDataProject(project_id, settings): Observable<Project> {

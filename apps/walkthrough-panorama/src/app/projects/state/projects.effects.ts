@@ -6,6 +6,8 @@ import { forkJoin } from 'rxjs';
 
 import * as ProjectsActions from './projects.actions';
 import { ProjectsService } from '../service/projects.service';
+import { Panorama } from '../../interfaces/panorama';
+import { SnotifyService } from 'ng-snotify';
 
 
 @Injectable()
@@ -35,7 +37,12 @@ export class ProjectsEffects {
   createProject$ = createEffect(() => this.actions$.pipe(
     ofType(ProjectsActions.createProject),
     mergeMap(
-      (payload) => this.projectsService.create(payload.project).pipe(map((project) => ProjectsActions.createProjectSuccess({ project })))
+      (payload) => this.projectsService.create(payload.project).pipe(
+        map((project) => {
+          this.snotifyService.success('Project has been created');
+          return ProjectsActions.createProjectSuccess({ project });
+        })
+      )
     )
   )
   );
@@ -44,7 +51,10 @@ export class ProjectsEffects {
     ofType(ProjectsActions.updateProject),
     mergeMap(
       payload => this.projectsService.update(payload.projectId, payload.project).pipe(
-        map(project => ProjectsActions.updateProjectSuccess({ project: payload.project }))
+        map(project => {
+          this.snotifyService.success('Project has been updated.');
+          return ProjectsActions.updateProjectSuccess({ project: payload.project });
+        })
       )
     )
   )
@@ -54,17 +64,10 @@ export class ProjectsEffects {
     ofType(ProjectsActions.deleteProjects),
     mergeMap(
       payload => forkJoin(payload.projectIds.map(id => this.projectsService.delete(id))).pipe(
-        map(() => ProjectsActions.deleteProjectsSuccess({ projectIds: payload.projectIds }))
-      )
-    )
-  )
-  );
-
-  copyProject$ = createEffect(() => this.actions$.pipe(
-    ofType(ProjectsActions.copyProject),
-    mergeMap(
-      payload => this.projectsService.copyProject(payload.projectId).pipe(
-        map((project) => ProjectsActions.copyProjectSuccess({ oldProjectId: payload.projectId, newProjectId: project.id }))
+        map(() => {
+          this.snotifyService.warning('Project has been deleted.');
+          return ProjectsActions.deleteProjectsSuccess({ projectIds: payload.projectIds });
+        })
       )
     )
   )
@@ -74,7 +77,10 @@ export class ProjectsEffects {
     ofType(ProjectsActions.createPanorama),
     mergeMap(
       payload => this.projectsService.addPanorama(payload.projectId, payload.panorama).pipe(
-        map(panoramas => ProjectsActions.createPanoramaSuccess({ panoramas }))
+        map(panoramas => {
+          this.snotifyService.success('Panorama has been created.');
+          return ProjectsActions.createPanoramaSuccess({ panoramas });
+        })
       )
     )
   )
@@ -83,9 +89,20 @@ export class ProjectsEffects {
   updatePanorama$ = createEffect(() => this.actions$.pipe(
     ofType(ProjectsActions.updatePanorama),
     mergeMap(
-      payload => this.projectsService.updatePanorama(payload.projectId, payload.panorama).pipe(
-        map(panoramas => ProjectsActions.updatePanoramaSuccess({ panoramas }))
-      )
+      payload => {
+        const exclude = ['index', 'loaded', 'object', 'transitionFrom', 'updatedAt'];
+        const panorama: Panorama = {};
+        Object
+          .keys(payload.panorama)
+          .filter(k => !exclude.includes(k))
+          .forEach(k => panorama[k] = payload.panorama[k]);
+        return this.projectsService.updatePanorama(payload.projectId, panorama).pipe(
+          map(panoramas => {
+            this.snotifyService.success('Panorama has been updated.');
+            return ProjectsActions.updatePanoramaSuccess({ panoramas });
+          })
+        );
+      }
     )
   )
   );
@@ -94,7 +111,58 @@ export class ProjectsEffects {
     ofType(ProjectsActions.deletePanorama),
     mergeMap(
       payload => forkJoin(payload.panoramas.map(name => this.projectsService.deletePanorama(payload.projectId, name))).pipe(
-        map(res => ProjectsActions.deletePanoramaSuccess(payload))
+        map(res => {
+          this.snotifyService.success('Project has been deleted.');
+          return ProjectsActions.deletePanoramaSuccess(payload);
+        })
+      )
+    )
+  )
+  );
+
+  // -----
+  addGalleryItem$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.addGalleryItem),
+    mergeMap(
+      payload => this.projectsService.addGalleryItem(payload.projectId, payload.photo).pipe(
+        map(photos => {
+          this.snotifyService.success('Photo has been added to the project gallery.');
+          return ProjectsActions.addGalleryItemSuccess({ photos });
+        })
+      )
+    )
+  )
+  );
+
+  updateGalleryItem$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.updateGalleryItem),
+    mergeMap(
+      payload => {
+        const exclude = ['index', 'loaded', 'object', 'transitionFrom', 'updatedAt'];
+        const photo: any = {};
+        Object
+          .keys(payload.photo)
+          .filter(k => !exclude.includes(k))
+          .forEach(k => photo[k] = payload.photo[k]);
+        return this.projectsService.updateGalleryItem(payload.projectId, photo).pipe(
+          map(photos => {
+            this.snotifyService.success('Photo has been updated.');
+            return ProjectsActions.updateGalleryItemSuccess({ photos });
+          })
+        );
+      }
+    )
+  )
+  );
+
+  deleteGalleryItem$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.deleteGalleryItem),
+    mergeMap(
+      payload => forkJoin(payload.photos.map(name => this.projectsService.deleteGalleryItem(payload.projectId, name))).pipe(
+        map(res => {
+          this.snotifyService.success('Photo has been deleted from the project gallery.');
+          return ProjectsActions.deleteGalleryItemSuccess(payload);
+        })
       )
     )
   )
@@ -104,6 +172,7 @@ export class ProjectsEffects {
   constructor(
     private actions$: Actions,
     private projectsService: ProjectsService,
+    private snotifyService: SnotifyService
   ) { }
 
 }

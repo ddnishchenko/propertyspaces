@@ -58,20 +58,6 @@ export const deleteProjectsFailed = createAction(
   `${prefix} Delete Projects Failed`
 );
 
-export const copyProject = createAction(
-  `${prefix} Copy Project`,
-  props<{ projectId: string }>()
-);
-
-export const copyProjectSuccess = createAction(
-  `${prefix} Copy Project Success`,
-  props<{ oldProjectId: string, newProjectId: string }>()
-);
-
-export const copyProjectFailed = createAction(
-  `${prefix} Copy Project Failed`
-);
-
 export const editProject = createAction(
   `${prefix} Edit Project`,
   props<{ projectId: string; project: Project }>()
@@ -170,9 +156,52 @@ export const panoFormMode = createAction(
 export const updateAddressData = createAction(
   `${prefix} Update Address`,
   props<{ projectId: string; data: any }>()
-)
+);
 
 export const updateContacts = createAction(
   `${prefix} Update Contacts`,
   props<{ projectId: string; data: any }>()
-)
+);
+
+export const addGalleryItem = createAction(
+  `${prefix} Add Gallery Item`,
+  props<{ projectId: string; photo: any }>()
+);
+
+export const addGalleryItemSuccess = createAction(
+  `${prefix} Add Gallery Item Success`,
+  props<{ photos: any[] }>()
+);
+
+export const addGalleryItemFailute = createAction(
+  `${prefix} Add Gallery Item Failure`
+);
+
+export const updateGalleryItem = createAction(
+  `${prefix} Update Gallery Item`,
+  props<{ projectId: string; photo: any }>()
+);
+
+export const updateGalleryItemSuccess = createAction(
+  `${prefix} Update Gallery Item Success`,
+  props<{ photos: any[] }>()
+);
+
+export const updateGalleryItemFailute = createAction(
+  `${prefix} Update Gallery Item Failure`
+);
+
+
+export const deleteGalleryItem = createAction(
+  `${prefix} Delete Gallery Item`,
+  props<{ projectId: string; photos: any[] }>()
+);
+
+export const deleteGalleryItemSuccess = createAction(
+  `${prefix} Delete Gallery Item Success`,
+  props<{ photos: any[] }>()
+);
+
+export const deleteGalleryItemFailute = createAction(
+  `${prefix} Delete Gallery Item Failure`
+);

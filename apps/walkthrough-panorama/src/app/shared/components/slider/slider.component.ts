@@ -15,8 +15,8 @@ import { SliderMinusDirective, SliderPlusDirective } from './slider.directives';
   ]
 })
 export class SliderComponent implements ControlValueAccessor {
-  @ContentChild(SliderPlusDirective, {read: TemplateRef}) plusTpl: TemplateRef<any>;
-  @ContentChild(SliderMinusDirective, {read: TemplateRef}) minusTpl: TemplateRef<any>;
+  @ContentChild(SliderPlusDirective, { read: TemplateRef }) plusTpl: TemplateRef<any>;
+  @ContentChild(SliderMinusDirective, { read: TemplateRef }) minusTpl: TemplateRef<any>;
   @Input() customClass = '';
   @Input() showCrement = true;
   @Input() showValue = true;
@@ -40,8 +40,8 @@ export class SliderComponent implements ControlValueAccessor {
   }
   value;
 
-  onChange = (value) => {};
-  onTouched = (value) => {};
+  onChange = (value) => { };
+  onTouched = (value) => { };
 
   registerOnChange(onChange: any) {
     this.onChange = onChange;
@@ -57,8 +57,8 @@ export class SliderComponent implements ControlValueAccessor {
 
   changing($event) {
     this.value = +$event.target.value;
-    this.slide.emit(this.value);
     this.onChange(this.value);
+    this.slide.emit(this.value);
   }
 
   crementControl(step) {

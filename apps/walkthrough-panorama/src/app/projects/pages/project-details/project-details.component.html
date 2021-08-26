@@ -154,7 +154,7 @@
     <div class="row">
       <div class="col">
         <div class="list-group">
-          <li *ngFor="let panorama of project.panoramas | orderBy: 'panoramas.order'"
+          <li *ngFor="let panorama of project.panoramas | orderBy: 'order'"
             class="list-group-item list-group-item-action d-flex align-items-center">
             <a href="javascript:;" (click)="openEditPanorama(project, panorama)">{{ panorama.order }}) {{
               panorama.name }}</a>

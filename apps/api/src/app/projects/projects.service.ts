@@ -21,12 +21,47 @@ export class ProjectsService {
     const Item = { id: id ? id : randomUUID(), ...data };
     return db.put({ TableName: 'projects', Item }).promise().then(() => Item);
   }
-  update(id, body) {
+  async update(id, body) {
     const ExpressionAttributeValues = {};
-    const keys = Object.keys({ ...body, updatedAt: Date.now() }).filter(k => k !== 'id');
-    keys.forEach(k => {
-      ExpressionAttributeValues[`:${k}`] = body[k];
-    });
+    const data = { ...body, updatedAt: Date.now() };
+    const keys = Object.keys(data).filter(k => k !== 'id');
+
+    for (let k of keys) {
+      if (k === 'floors') {
+        for (let i = 0; i < data[k].length; i++) {
+          if (data[k][i].url) {
+            console.log(k, i, data[k][i].url.substr(0, 4));
+            /* if (data[k][i].url.includes('base64')) {
+              const file = Buffer.from(data[k][i].url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+              let mimeType = data[k][i].url.split(';')[0].split('/')[1];
+              let ext = mimeType.split('/')[1];
+              if (ext.includes('+')) {
+                ext = ext.split('+')[0];
+              }
+
+              const panoName = `${data[k][i].floor}.${ext}`;
+              console.log(panoName);
+              const s3Object = await s3.upload({
+                Bucket: 'lidarama1media',
+                Key: `${id}/${panoName}`,
+                Body: file,
+                ContentEncoding: 'base64',
+                ACL: 'public-read',
+                ContentType: mimeType
+              }).promise();
+              console.log(s3Object.Location);
+              data[k][i].url = s3Object.Location;
+              data[k][i].key = s3Object.Key;
+            } */
+          }
+        }
+
+        ExpressionAttributeValues[`:${k}`] = data[k];
+      } else {
+        ExpressionAttributeValues[`:${k}`] = data[k];
+      }
+    }
+
     const UpdateExpression = `set ` + keys.map(k => `${k} = :${k}`).join(', ');
     return db.update({
       TableName: 'projects',
@@ -36,6 +71,7 @@ export class ProjectsService {
       ReturnValues: 'UPDATED_NEW'
     }).promise();
   }
+
   delete(id: string) {
     return db.delete({
       TableName: 'projects',
@@ -56,6 +92,7 @@ export class ProjectsService {
       return r;
     });
   }
+
   async createPanorama(projectId, data) {
     const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
     const fileType = data.url.split(';')[0].split('/')[1];
@@ -199,6 +236,102 @@ export class ProjectsService {
       s3.deleteObject({
         Bucket: 'lidarama1media',
         Key: panorama.fileName
+      }).promise();
+    });
+  }
+
+  async addGalleryItem(projectId, data) {
+    const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+    const fileType = data.url.split(';')[0].split('/')[1];
+
+    const photoId = randomUUID();
+    const photoName = `${photoId}.${fileType}`;
+    const s3Object = await s3.upload({
+      Bucket: 'lidarama1media',
+      Key: `${projectId}/${photoName}`,
+      Body: file,
+      ContentEncoding: 'base64',
+      ACL: 'public-read',
+      ContentType: `image/${fileType}`
+    }).promise();
+
+    const photo = {
+      ...data,
+      id: photoId,
+      fileName: photoName,
+      url: s3Object.Location,
+      createdAt: Date.now()
+    };
+
+    return db.update({
+      TableName: 'projects',
+      Key: { id: projectId },
+      // UpdateExpression: 'set #gallery = list_append(if_not_exists(#gallery, :empty_list), :panorama)',
+      UpdateExpression: `set #gallery.#id = :photo`,
+      ExpressionAttributeNames: {
+        '#gallery': 'gallery',
+        '#id': photo.id
+      },
+      ExpressionAttributeValues: {
+        ':photo': photo
+      },
+      ReturnValues: 'UPDATED_NEW'
+    }).promise();
+
+  }
+
+  async updateGalleryItem(projectId, photoId, data) {
+
+    let photo = { ...data, updatedAt: Date.now() };
+
+    if (data.url.includes('base64')) {
+      const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+      const fileType = data.url.split(';')[0].split('/')[1];
+
+      const panoName = `${photoId}.${fileType}`;
+
+      const s3Object = await s3.upload({
+        Bucket: 'lidarama1media',
+        Key: `${projectId}/${panoName}`,
+        Body: file,
+        ContentEncoding: 'base64',
+        ContentType: `image/${fileType}`
+      }).promise();
+
+      photo.url = s3Object.Location;
+
+    }
+
+    return db.update({
+      TableName: 'projects',
+      Key: { id: projectId },
+      UpdateExpression: `set #gallery.#id = :photo`,
+      ExpressionAttributeNames: {
+        '#gallery': 'gallery',
+        '#id': photoId
+      },
+      ExpressionAttributeValues: {
+        ':photo': photo
+      },
+      ReturnValues: 'UPDATED_NEW'
+    }).promise();
+  }
+
+  deleteGalleryItem(projectId, photoId, photo) {
+
+    return db.update({
+      TableName: 'projects',
+      Key: { id: projectId },
+      UpdateExpression: 'remove #gallery.#key',
+      ExpressionAttributeNames: {
+        '#gallery': 'gallery',
+        '#key': photoId
+      },
+      ReturnValues: 'UPDATED_NEW'
+    }).promise().then(() => {
+      s3.deleteObject({
+        Bucket: 'lidarama1media',
+        Key: photo.fileName
       }).promise();
     });
   }
