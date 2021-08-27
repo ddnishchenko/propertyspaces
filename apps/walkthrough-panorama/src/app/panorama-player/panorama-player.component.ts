@@ -104,8 +104,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
   isFullscreenAvailable = Fullscreen.isAvailable;
   isFullscreenActive$ = Fullscreen.change$.pipe(
-    map(active => ({active})),
-    tap(() => setTimeout(() =>this.resizeCanvas(), 100) ),
+    map(active => ({ active })),
+    tap(() => setTimeout(() => this.resizeCanvas(), 100)),
   );
   loading = true;
   isCollapsed = true;
@@ -174,7 +174,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   get modalEditing() {
     if (this.form) {
       const { floorplan, dollhouse, editGallery, editContact, editLocation, editPano, changeMenu, description
-        } = this.editProperties;
+      } = this.editProperties;
       const modalEdit = [floorplan, dollhouse, editGallery, editContact, editLocation, editPano, changeMenu, description];
       return modalEdit.includes(this.activeEditProperty);
     }
@@ -222,7 +222,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
                 ...data.additional_data,
                 profile,
                 company,
-                description: data.additional_data.description ? toHTML(data.additional_data.description) : data.additional_data.description
+                description: typeof data.additional_data.description === 'object' ? toHTML(data.additional_data.description) : data.additional_data.description
               }
             }
           }
@@ -231,7 +231,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       ),
       this.store.pipe(select(selectHdrVirtualTourPanoramasDividerOnFloors))
     ]).pipe(
-      map(([project, panoFloors]) => ({...project, ...panoFloors})),
+      map(([project, panoFloors]) => ({ ...project, ...panoFloors })),
       skip(1)
     );
   }
@@ -311,10 +311,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   downloadSvg(url) {
     const headers = new HttpHeaders();
     headers.set('Accept', 'image/svg+xml');
-    return this.http.get(url, {headers, responseType: 'text'});
+    return this.http.get(url, { headers, responseType: 'text' });
   }
 
-  calcRatio(ratio) {}
+  calcRatio(ratio) { }
 
   vrInit(data) {
     this.mapForm.patchValue({
@@ -334,8 +334,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
     this.profileForm.patchValue(data.additional_data.profile);
     this.companyForm.patchValue(data.additional_data.company);
-    this.descriptionFrom.patchValue({description: data.additional_data.description});
-    this.dollhouseForm.patchValue({dollhouse: data.additional_data.dollhouse});
+    this.descriptionFrom.patchValue({ description: data.additional_data.description });
+    this.dollhouseForm.patchValue({ dollhouse: data.additional_data.dollhouse });
 
     this.rotationAngle = this.virtualTour.virtualTourService.OrbitControls.getPolarAngle() - +this.virtualTour.virtualTourService.mesh.rotation.y;
     this.defaultZoom = this.virtualTour.virtualTourService.OrbitControls.object.fov;
@@ -371,8 +371,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
 
   updatePanoSettings() {
-    const {panoramas, name}: Panorama = this.virtualTour.virtualTourService.currentPanorama;
-    const panorama = {panoramas, name};
+    const { panoramas, name }: Panorama = this.virtualTour.virtualTourService.currentPanorama;
+    const panorama = { panoramas, name };
     this.store.dispatch(updatePanorama({
       projectId: this.route.snapshot.params.id,
       panorama
@@ -400,10 +400,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
           const changedPanos = this.virtualTour.virtualTourService.panos.filter(
             p => !isNaN(parseInt(p.panoramas.zoom, 10))
-            ||
-            !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
-            ||
-            !isNaN(parseInt(p.panoramas.visibilityRadius, 10))
+              ||
+              !isNaN(parseInt(p.panoramas.panoCameraStartAngle, 10))
+              ||
+              !isNaN(parseInt(p.panoramas.visibilityRadius, 10))
           );
           const resetPano = p => {
 
@@ -419,15 +419,15 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
           };
           this.virtualTour.virtualTourService.panos = this.virtualTour.virtualTourService.panos.map(resetPano);
-          const resetedPanos = changedPanos.map(resetPano).map(({name, panoramas}) => ({name, panoramas}));
+          const resetedPanos = changedPanos.map(resetPano).map(({ name, panoramas }) => ({ name, panoramas }));
 
           this.virtualTour.virtualTourService.defaultY = data.rotation_y;
           this.virtualTour.virtualTourService.defaultZoom = data.zoom;
           this.virtualTour.virtualTourService.visibilityRadius = data.visibilityRadius;
           this.virtualTour.virtualTourService.neighborsFiltering = data.neighborsFiltering;
-          this.store.dispatch(updateProject({projectId, data}));
+          this.store.dispatch(updateProject({ projectId, data }));
           resetedPanos.forEach(panorama => {
-            this.store.dispatch(updatePanorama({projectId, panorama}));
+            this.store.dispatch(updatePanorama({ projectId, panorama }));
           })
 
         }
@@ -441,10 +441,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   saveContacts(projectId) {
     const data = {
       profile: this.profileForm.value,
-      company: {...this.companyForm.value, companyLogo: undefined},
+      company: { ...this.companyForm.value, companyLogo: undefined },
       companyLogo: this.companyForm.value.companyLogo
     };
-    this.store.dispatch(updateContacts({projectId, data}));
+    this.store.dispatch(updateContacts({ projectId, data }));
   }
 
   navTo(index) {
@@ -624,10 +624,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       // TODO: Refactor
       setTimeout(() => this.activeEditProperty = '')
     } else {
-      switch(this.activeEditProperty) {
+      switch (this.activeEditProperty) {
         case this.editProperties.editPano:
 
-        break;
+          break;
       }
     }
   }
@@ -667,7 +667,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       div.remove();
     }
     const field = $event.target.getAttribute('formcontrolname');
-    form.patchValue({[field]: url});
+    form.patchValue({ [field]: url });
     $event.preventDefault();
   }
 
@@ -683,11 +683,11 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       p.panoramas.panorama = panorama;
     }
 
-    this.store.dispatch(updatePanorama({projectId, panorama: p}))
+    this.store.dispatch(updatePanorama({ projectId, panorama: p }))
   }
 
   saveModal(projectId) {
-    switch(this.activeEditProperty) {
+    switch (this.activeEditProperty) {
       case this.editProperties.editLocation:
         this.store.dispatch(updateAddressData({ projectId, data: this.mapForm.value }));
         break;
@@ -698,13 +698,13 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
         this.updatePano(projectId);
         break;
       case this.editProperties.description:
-        this.store.dispatch(updateProject({projectId, data: {description: this.descriptionFrom.value.description}}));
+        this.store.dispatch(updateProject({ projectId, data: { description: this.descriptionFrom.value.description } }));
         break;
       case this.editProperties.floorplan:
-        this.store.dispatch(updateProject({projectId, data: this.floorplanEditor.form.value}));
+        this.store.dispatch(updateProject({ projectId, data: this.floorplanEditor.form.value }));
         break;
       case this.editProperties.dollhouse:
-        this.store.dispatch(updateProject({projectId, data: this.dollhouseForm.value}));
+        this.store.dispatch(updateProject({ projectId, data: this.dollhouseForm.value }));
         break;
     }
   }
@@ -713,7 +713,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
 
   openShareModal(content) {
-    this.modalService.open(content, {centered: true});
+    this.modalService.open(content, { centered: true });
   }
   copyLink(f) {
     f.select();
@@ -739,7 +739,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
   postToTwiiter(input) {
     const tweet = encodeURIComponent(input.value + '\n' + this.shareLink);
-    const url =  `http://twitter.com/intent/tweet?text=${tweet}`;
+    const url = `http://twitter.com/intent/tweet?text=${tweet}`;
     this.openSocialMedia(url);
   }
   openSocialMedia(url) {
