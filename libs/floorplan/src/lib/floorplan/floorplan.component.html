@@ -1,74 +1,51 @@
 <div class="position-relative floorplan-sticher">
 
-    <img
-    class="fp-wrapper-floorplan-hidden img-fluid"
-    [src]="url"
-    [style.transform]="'rotate(' + floor.nav_dots_rotation + 'deg)'"
-    [style.opacity]="'0'"
-    />
-    <svg class="position-absolute strach" propertyspacesSvgzoompan xmlns="http://www.w3.org/2000/svg">
-      <foreignObject width="100%" height="100%">
-        <div class="d-flex justify-content-center">
-              <div
-              class="fp-wrapper"
-              [style.transform]="'rotate(' + -floor.nav_dots_rotation + 'deg)'"
-              >
+  <img class="fp-wrapper-floorplan-hidden img-fluid" [src]="url"
+    [style.transform]="'rotate(' + floor.nav_dots_rotation + 'deg)'" [style.opacity]="'0'" />
+  <svg class="position-absolute strach" propertyspacesSvgzoompan xmlns="http://www.w3.org/2000/svg">
+    <foreignObject width="100%" height="100%">
+      <div class="d-flex justify-content-center">
+        <div class="fp-wrapper" [style.transform]="'rotate(' + -floor.nav_dots_rotation + 'deg)'">
 
-              <img
-                  class="fp-wrapper-floorplan img-fluid"
-                  [src]="url"
-                  [style.transform]="'rotate(' + floor.nav_dots_rotation + 'deg)'"
-              />
-              <div *ngIf="showNav" class="fp-ponits-wrapper" [ngStyle]="scaleDots(floor)">
-                  <ng-container
-                  *ngFor="let p of navs; index as n"
-                  >
-                  <div
-                      class="fp-point"
-                      (click)="activePoint === p.index ? false : navTo(p.index)"
-                      [class.active]="activePoint === p.index"
-                      [ngStyle]="getStyleForDot(floor, p)"
-                  >
-                      <div class="fp-point-order">{{ p.order }}</div>
-                      <div
-                      *ngIf="activePoint === p.index"
-                      class="pointer"
-                      [style.transform]="'rotate(' + rotationAngle + 'rad)'"
-                      ></div>
-                  </div>
+          <img class="fp-wrapper-floorplan img-fluid" [src]="url"
+            [style.transform]="'rotate(' + floor.nav_dots_rotation + 'deg)'" />
+          <div *ngIf="showNav" class="fp-ponits-wrapper" [ngStyle]="scaleDots(floor)">
+            <ng-container *ngFor="let p of navs; index as n">
+              <div class="fp-point" (click)="activePoint === p.index ? false : navTo(p.index)"
+                [class.active]="activePoint === p.index" [ngStyle]="getStyleForDot(floor, p)">
+                <div class="fp-point-order">{{ p.order }}</div>
+                <div *ngIf="activePoint === p.index" class="pointer"
+                  [style.transform]="'rotate(' + rotationAngle + 'rad)'"></div>
+              </div>
 
-                  <ng-template #activePointTpl>
-                      <div
-                      [className]="'fp-point active'"
-                      [ngStyle]="getStyleForDot(floor, p)"
-                      >
-                      <div class="fp-point-order">{{ p.order }}</div>
-                      <div
-                          class="pointer"
-                          [style.transform]="'rotate(' + rotationAngle + 'rad)'"
-                      ></div>
-                      <!-- (lon + currentDot.rotation_angle) -->
-                      </div>
-                  </ng-template>
-                  </ng-container>
-              </div>
-              </div>
+              <ng-template #activePointTpl>
+                <div [className]="'fp-point active'" [ngStyle]="getStyleForDot(floor, p)">
+                  <div class="fp-point-order">{{ p.order }}</div>
+                  <div class="pointer" [style.transform]="'rotate(' + rotationAngle + 'rad)'"></div>
+                  <!-- (lon + currentDot.rotation_angle) -->
+                </div>
+              </ng-template>
+            </ng-container>
           </div>
-      </foreignObject>
-    </svg>
+        </div>
+      </div>
+    </foreignObject>
+  </svg>
 
-    <div *ngIf="url" class="fp-controls btn-group position-absolute w-100 rounded-0 border border-bottom border-white">
-        <button (click)="zoom('-')" type="button" class="btn btn-secondary rounded-0">
-            <svg width="17" height="4" viewBox="0 0 17 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect y="0.851318" width="16.0933" height="2.41399" rx="1.207" fill="#ffffff"/>
-            </svg>
-        </button>
-        <button (click)="zoom()" type="button" class="btn btn-danger">Reset</button>
-        <button (click)="zoom('+')" type="button" class="btn btn-secondary rounded-0">
-            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.69704 0.609375C8.9638 0.609375 9.21964 0.715346 9.40827 0.903976C9.5969 1.09261 9.70287 1.34844 9.70287 1.61521V7.65019H15.7379C16.0046 7.65019 16.2605 7.75616 16.4491 7.94479C16.6377 8.13342 16.7437 8.38926 16.7437 8.65602C16.7437 8.92278 16.6377 9.17862 16.4491 9.36725C16.2605 9.55588 16.0046 9.66185 15.7379 9.66185H9.70287V15.6968C9.70287 15.9636 9.5969 16.2194 9.40827 16.4081C9.21964 16.5967 8.9638 16.7027 8.69704 16.7027C8.43027 16.7027 8.17444 16.5967 7.98581 16.4081C7.79718 16.2194 7.69121 15.9636 7.69121 15.6968V9.66185H1.65622C1.38946 9.66185 1.13362 9.55588 0.944992 9.36725C0.756362 9.17862 0.650391 8.92278 0.650391 8.65602C0.650391 8.38926 0.756362 8.13342 0.944992 7.94479C1.13362 7.75616 1.38946 7.65019 1.65622 7.65019H7.69121V1.61521C7.69121 1.34844 7.79718 1.09261 7.98581 0.903976C8.17444 0.715346 8.43027 0.609375 8.69704 0.609375V0.609375Z" fill="#ffffff"/>
-            </svg>
-        </button>
-    </div>
+  <div *ngIf="url" class="fp-controls btn-group position-absolute w-100 rounded-0 border border-bottom border-white">
+    <button (click)="zoom('-')" type="button" class="btn btn-secondary rounded-0">
+      <svg width="17" height="4" viewBox="0 0 17 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect y="0.851318" width="16.0933" height="2.41399" rx="1.207" fill="#ffffff" />
+      </svg>
+    </button>
+    <button (click)="zoom()" type="button" class="btn btn-danger">Reset</button>
+    <button (click)="zoom('+')" type="button" class="btn btn-secondary rounded-0">
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M8.69704 0.609375C8.9638 0.609375 9.21964 0.715346 9.40827 0.903976C9.5969 1.09261 9.70287 1.34844 9.70287 1.61521V7.65019H15.7379C16.0046 7.65019 16.2605 7.75616 16.4491 7.94479C16.6377 8.13342 16.7437 8.38926 16.7437 8.65602C16.7437 8.92278 16.6377 9.17862 16.4491 9.36725C16.2605 9.55588 16.0046 9.66185 15.7379 9.66185H9.70287V15.6968C9.70287 15.9636 9.5969 16.2194 9.40827 16.4081C9.21964 16.5967 8.9638 16.7027 8.69704 16.7027C8.43027 16.7027 8.17444 16.5967 7.98581 16.4081C7.79718 16.2194 7.69121 15.9636 7.69121 15.6968V9.66185H1.65622C1.38946 9.66185 1.13362 9.55588 0.944992 9.36725C0.756362 9.17862 0.650391 8.92278 0.650391 8.65602C0.650391 8.38926 0.756362 8.13342 0.944992 7.94479C1.13362 7.75616 1.38946 7.65019 1.65622 7.65019H7.69121V1.61521C7.69121 1.34844 7.79718 1.09261 7.98581 0.903976C8.17444 0.715346 8.43027 0.609375 8.69704 0.609375V0.609375Z"
+          fill="#ffffff" />
+      </svg>
+    </button>
+  </div>
 
 </div>

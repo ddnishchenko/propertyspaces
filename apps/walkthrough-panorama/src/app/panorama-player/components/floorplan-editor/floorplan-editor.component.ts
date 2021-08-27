@@ -40,6 +40,7 @@ export class FloorplanEditorComponent implements OnInit {
       const floor = this.data.floors ? this.data.floors[index] : {};
       return new FormGroup({
         floor: new FormControl(floorName),
+        svg: new FormControl(''),
         url: new FormControl(floor.url),
         key: new FormControl(floor.key),
         dots_size: new FormControl(floor.dots_size || 1),
@@ -78,6 +79,16 @@ export class FloorplanEditorComponent implements OnInit {
       floors: formArray
     })
   }
+
+  setSvgContent($event, index) {
+    const fr = new FileReader();
+    fr.onload = ev => {
+      this.formArray.at(index).patchValue({ svg: ev.target.result });
+    };
+    fr.readAsText($event.file);
+
+  }
+
   rotate(d, i) {
     const form = this.formArray.at(i)?.value;
     // const transformState = this.floorplanWrapper.nativeElement.style.transform.split(' (');

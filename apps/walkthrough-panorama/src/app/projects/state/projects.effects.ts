@@ -53,7 +53,7 @@ export class ProjectsEffects {
       payload => this.projectsService.update(payload.projectId, payload.project).pipe(
         map(project => {
           this.snotifyService.success('Project has been updated.');
-          return ProjectsActions.updateProjectSuccess({ project: payload.project });
+          return ProjectsActions.updateProjectSuccess({ project });
         })
       )
     )

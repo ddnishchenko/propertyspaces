@@ -46,7 +46,7 @@ export class InputFileReaderDirective implements OnInit, ControlValueAccessor {
         const fileReader = new FileReader();
         fileReader.onload = ev => {
           this.value = ev.target.result;
-          this.changed.emit({ file: $event.target.files[0], textFile: this.value });
+          this.changed.emit({ file: $event.target.files[0], result: this.value });
           this.onChange(this.value);
         }
         fileReader[`readAs${this.propertyspacesInputFileReader.readAs}`]($event.target.files[0]);

@@ -19,7 +19,7 @@ export class ProjectsService {
   }
   put(data, id?) {
     const Item = { id: id ? id : randomUUID(), ...data };
-    return db.put({ TableName: 'projects', Item }).promise().then(() => Item);
+    return db.put({ TableName: 'projects', Item, ReturnValues: 'UPDATED_NEW' }).promise().then(() => Item);
   }
   async update(id, body) {
     const ExpressionAttributeValues = {};
@@ -29,31 +29,22 @@ export class ProjectsService {
     for (let k of keys) {
       if (k === 'floors') {
         for (let i = 0; i < data[k].length; i++) {
-          if (data[k][i].url) {
-            if (data[k][i].url.includes(';base64')) {
-              const file = Buffer.from(data[k][i].url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-              let mimeType = data[k][i].url
-                .split(';')[0]
-                .replace('data:', '');
-              let ext = mimeType.split('/')[1];
-              if (ext.includes('+')) {
-                ext = ext.split('+')[0];
-              }
+          if (data[k][i].svg) {
+            const file = Buffer.from(data[k][i].svg, 'utf-8');
 
-              const panoName = `${data[k][i].floor}.${ext}`;
-              console.log(panoName);
-              const s3Object = await s3.upload({
-                Bucket: 'lidarama1media',
-                Key: `${id}/${panoName}`,
-                Body: file,
-                ContentEncoding: 'base64',
-                ACL: 'public-read',
-                ContentType: mimeType
-              }).promise();
-              console.log(s3Object.Location);
-              data[k][i].url = s3Object.Location;
-              data[k][i].key = s3Object.Key;
-            }
+            const panoName = `${data[k][i].floor}.svg`;
+            console.log(panoName);
+            const s3Object = await s3.upload({
+              Bucket: 'lidarama1media',
+              Key: `${id}/${panoName}`,
+              Body: file,
+              ACL: 'public-read',
+              ContentType: 'image/svg+xml'
+            }).promise();
+            console.log(s3Object.Location);
+            data[k][i].url = s3Object.Location;
+            data[k][i].key = s3Object.Key;
+            data[k][i].svg = undefined;
           }
         }
 

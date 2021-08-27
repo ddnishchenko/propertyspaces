@@ -12,6 +12,7 @@
             <div class="col-auto">
               <div class="custom-file">
                 <input type="file" class="custom-file-input" id="customFile" accept=".svg"
+                  (changed)="setSvgContent($event, i)"
                   [propertyspacesInputFileReader]="{compress: false, readAs: 'DataURL'}" formControlName="url" />
                 <label class="custom-file-label" for="customFile">Upload floorplan</label>
               </div>
@@ -51,7 +52,8 @@
           <p>Upload floorplan in svg</p>
           <div class="custom-file">
             <input type="file" class="custom-file-input" id="customFile1" accept=".svg"
-              [propertyspacesInputFileReader]="{compress: false, readAs: 'Text'}" formControlName="url" />
+              (changed)="setSvgContent($event, i)"
+              [propertyspacesInputFileReader]="{compress: false, readAs: 'DataURL'}" formControlName="url" />
             <label class="custom-file-label" for="customFile1">Upload floorplan</label>
           </div>
         </ng-template>

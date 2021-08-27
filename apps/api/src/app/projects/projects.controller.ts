@@ -53,8 +53,8 @@ export class ProjectsController {
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() body, @Res() res) {
-    await this.projectService.update(id, body);
-    return res.status(204).end();
+    const result = await this.projectService.update(id, body);
+    return res.json(result.Attributes);
   }
 
   @Delete(':id')
