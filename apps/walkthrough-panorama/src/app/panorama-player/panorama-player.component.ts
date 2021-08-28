@@ -160,11 +160,11 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
   isQueryFullscreen;
   get shareLink() {
-    const link = location.origin + '/projects/vr-tour-embed/1422';
+    const link = `${location.origin}/projects/vr-tour-embed/${this.route.snapshot.params.id}`;
     return this.copyBrandedLink ? link + '?b=1' : link;
   }
   get shareFullscreen() {
-    const link = location.origin + '/projects/vr-tour-embed/1422?fullscreen=true';
+    const link = `${location.origin}/projects/vr-tour-embed/${this.route.snapshot.params.id}?fullscreen=true`;
     return this.copyBrandedLink ? link + '&b=1' : link;
   }
   copyBrandedLink = false;
