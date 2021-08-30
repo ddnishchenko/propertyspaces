@@ -108,6 +108,54 @@ export class ProjectsService {
       createdAt: Date.now()
     };
 
+    if (data.dark_pano?.url.includes(';base64')) {
+      const file = Buffer.from(data.dark_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+      const fileType = data.dark_pano.url.split(';')[0].split('/')[1];
+
+      const panoFileName = `${panoId}_dark`
+      const panoName = `${panoFileName}.${fileType}`;
+
+      const s3Object = await s3.upload({
+        Bucket: 'lidarama1media',
+        Key: `${projectId}/${panoName}`,
+        Body: file,
+        ContentEncoding: 'base64',
+        ContentType: `image/${fileType}`
+      }).promise();
+
+      panorama.dark_pano = {
+        ...panorama.dark_pano,
+        url: s3Object.Location,
+        id: panoFileName,
+        fileName: panoName,
+        updatedAt: Date.now()
+      };
+    }
+    if (data.light_pano?.url.includes(';base64')) {
+      const file = Buffer.from(data.light_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+      const fileType = data.light_pano.url.split(';')[0].split('/')[1];
+
+      const panoFileName = `${panoId}_light`
+      const panoName = `${panoFileName}.${fileType}`;
+
+      const s3Object = await s3.upload({
+        Bucket: 'lidarama1media',
+        Key: `${projectId}/${panoName}`,
+        Body: file,
+        ContentEncoding: 'base64',
+        ContentType: `image/${fileType}`
+      }).promise();
+
+      panorama.light_pano = {
+        ...panorama.dark_light,
+        url: s3Object.Location,
+        id: panoFileName,
+        fileName: panoName,
+        updatedAt: Date.now()
+      };
+    }
+    // if (data.hdr_pano.url.includes('base64')) {}
+
     return db.update({
       TableName: 'projects',
       Key: { id: projectId },
