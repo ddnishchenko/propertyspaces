@@ -19,7 +19,7 @@ export class ProjectsService {
   }
   put(data, id?) {
     const Item = { id: id ? id : randomUUID(), ...data };
-    return db.put({ TableName: 'projects', Item, ReturnValues: 'UPDATED_NEW' }).promise().then(() => Item);
+    return db.put({ TableName: 'projects', Item }).promise().then(() => Item);
   }
   async update(id, body) {
     const ExpressionAttributeValues = {};
