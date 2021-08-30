@@ -14,7 +14,7 @@ export class ProjectsController {
     const result = await this.projectService.put({ ...project, panoramas: {}, gallery: {}, createdAt: Date.now() });
     return res
       .status(201)
-      .json(result);
+      .json({ ...result, panoramas: [], gallery: [] });
   }
 
   @Get()

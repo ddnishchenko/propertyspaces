@@ -26,7 +26,7 @@
 
   <!-- PAGE TITLE BEGIN -->
   <section class="page-cover d-flex justify-content-center align-items-center" [style.min-height]="'400px'"
-    [style.background]="project.panoramas ? 'url(' + project.panoramas[0].url + ') center / cover' : ''">
+    [style.background]="project.panoramas.length ? 'url(' + project.panoramas[0].url + ') center / cover' : ''">
     <div class="page-cover-title">
       <h2 class="text-center">
         <span>{{ project.name }}</span><i class="fa fa-edit" *ngIf="!isEditName" (click)="editName(project.name)"></i>

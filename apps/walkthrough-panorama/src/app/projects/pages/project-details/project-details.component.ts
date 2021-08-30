@@ -3,14 +3,13 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, skip } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Project } from '../../../interfaces/project';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
-import { ProjectsService } from '../../service/projects.service';
 import { deletePanorama, deleteProjects, editProject, loadProject, updateAddressData, updatePanorama } from '../../state/projects.actions';
 import { selectProject } from '../../state/projects.selectors';
 
@@ -38,7 +37,7 @@ export class ProjectDetailsComponent implements OnInit {
   ngOnInit(): void {
     const projectId = this.route.snapshot.params.id;
     this.store.dispatch(loadProject({ projectId }));
-    this.project$ = this.store.pipe(select(selectProject));
+    this.project$ = this.store.pipe(select(selectProject), skip(1));
     this.loadImageForm = new FormGroup({
       src: new FormControl(''),
       filename: new FormControl('')
