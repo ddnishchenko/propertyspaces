@@ -2,43 +2,21 @@
   <h5 class="modal-title text-white">
     Add Google Map & Street View to Your Virtual Tour
   </h5>
-  <button
-    type="button"
-    (click)="activeModal.dismiss()"
-    class="close"
-    data-bs-dismiss="modal"
-    aria-label="Close"
-  >
+  <button type="button" (click)="activeModal.dismiss()" class="close" data-bs-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
-<form
-  class="modal-body"
-  [class.needs-validation]="form.invalid"
-  [formGroup]="form"
->
+<form class="modal-body" [class.needs-validation]="form.invalid" [formGroup]="form">
   <div class="text-center">
     <div class="form-check">
-      <input
-        formControlName="mapEnabled"
-        class="form-check-input"
-        type="checkbox"
-        id="enable-google-map"
-      /><label class="form-check-label" for="enable-google-map"
-        >Enable Google Map</label
-      >
+      <input formControlName="mapEnabled" class="form-check-input" type="checkbox" id="enable-google-map" /><label
+        class="form-check-label" for="enable-google-map">Enable Google Map</label>
     </div>
 
     <div class="form-check">
-      <input
-        formControlName="streetViewEnabled"
-        class="form-check-input"
-        type="checkbox"
-        id="enable-street-view"
-      /><label class="form-check-label" for="enable-street-view"
-        >Enable Street View</label
-      >
+      <input formControlName="streetViewEnabled" class="form-check-input" type="checkbox"
+        id="enable-street-view" /><label class="form-check-label" for="enable-street-view">Enable Street View</label>
     </div>
     <h2>Property Address</h2>
     <p>
@@ -47,63 +25,35 @@
     </p>
     <div class="form-group">
       <label class="sr-only" for="address">Adderss</label>
-      <input
-        #search
-        propertyspacesGoogleAutocomplete
-        (placeChanged)="onAutocomplete($event)"
-        type="search"
-        class="form-control"
-        id="address"
-        formControlName="address"
-        placeholder="Type property address"
-      />
+      <input #search propertyspacesGoogleAutocomplete (placeChanged)="onAutocomplete($event)" type="search"
+        class="form-control" id="address" formControlName="address" placeholder="Type property address" />
     </div>
 
     <ng-template #mapTpl>
-      <agm-map
-        [latitude]="form.value.latitude"
-        [longitude]="form.value.longitude"
-        [zoom]="17"
-      >
-        <agm-marker
-          [latitude]="form.value.latitude"
-          [longitude]="form.value.longitude"
-        ></agm-marker>
+      <agm-map [latitude]="form.value.latitude" [longitude]="form.value.longitude" [zoom]="17">
+        <agm-marker [latitude]="form.value.latitude" [longitude]="form.value.longitude"></agm-marker>
       </agm-map>
     </ng-template>
 
-    <ng-container *ngIf="form.value.map && form.get('map').valid; else mapTpl">
+    <ng-container *ngIf="form.value.mapUrl && form.get('mapUrl').valid; else mapTpl">
       <div class="embed-responsive embed-responsive-16by9 map-wrapper">
-        <iframe
-          class="embed-responsive-item"
-          [src]="form.value.map | safe: 'resourceUrl'"
-        ></iframe>
+        <iframe class="embed-responsive-item" [src]="form.value.mapUrl | safe: 'resourceUrl'"></iframe>
       </div>
     </ng-container>
 
     <div class="my-5"></div>
 
     <ng-template #streetViewTpl>
-      <div
-        #streetView
-        *ngIf="isStreetViewVisible"
-        propertyspacesGoogleStreetView
-        [coords]="{ lat: form.value.latitude, lng: form.value.longitude }"
-        id="street-view"
-      ></div>
+      <div #streetView *ngIf="isStreetViewVisible" propertyspacesGoogleStreetView
+        [coords]="{ lat: form.value.latitude, lng: form.value.longitude }" id="street-view"></div>
     </ng-template>
 
-    <ng-container
-      *ngIf="
-        form.value.streetView && form.get('streetView').valid;
+    <ng-container *ngIf="
+        form.value.streetViewUrl && form.get('streetViewUrl').valid;
         else streetViewTpl
-      "
-    >
+      ">
       <div class="embed-responsive embed-responsive-16by9 map-wrapper">
-        <iframe
-          class="embed-responsive-item"
-          [src]="form.value.streetView | safe: 'resourceUrl'"
-        ></iframe>
+        <iframe class="embed-responsive-item" [src]="form.value.streetViewUrl | safe: 'resourceUrl'"></iframe>
       </div>
     </ng-container>
 
@@ -113,22 +63,10 @@
     </p>
 
     <div class="form-group">
-      <label class="sr-only" for="exampleFormControlTextarea1"
-        >Google Maps Embeded Code</label
-      >
-      <textarea
-        (paste)="filterPaste($event)"
-        formControlName="map"
-        class="form-control"
-        id="exampleFormControlTextarea1"
-        rows="3"
-        placeholder="Google Maps Embeded Code"
-      ></textarea>
-      <div
-        *ngIf="form.get('map').invalid"
-        class="alert alert-danger"
-        role="alert"
-      >
+      <label class="sr-only" for="exampleFormControlTextarea1">Google Maps Embeded Code</label>
+      <textarea (paste)="filterPaste($event)" formControlName="mapUrl" class="form-control"
+        id="exampleFormControlTextarea1" rows="3" placeholder="Google Maps Embeded Code"></textarea>
+      <div *ngIf="form.get('mapUrl').invalid" class="alert alert-danger" role="alert">
         Invalid url
       </div>
     </div>
@@ -138,22 +76,10 @@
     <!-- <button type="button" class="btn btn-primary">Submit</button> -->
 
     <div class="form-group mt-5">
-      <label class="sr-only" for="exampleFormControlTextarea1"
-        >Google Street View Embeded Code</label
-      >
-      <textarea
-        (paste)="filterPaste($event)"
-        formControlName="streetView"
-        class="form-control"
-        id="exampleFormControlTextarea1"
-        rows="3"
-        placeholder="Google Street View Embeded Code"
-      ></textarea>
-      <div
-        *ngIf="form.get('streetView').invalid"
-        class="alert alert-danger"
-        role="alert"
-      >
+      <label class="sr-only" for="exampleFormControlTextarea1">Google Street View Embeded Code</label>
+      <textarea (paste)="filterPaste($event)" formControlName="streetViewUrl" class="form-control"
+        id="exampleFormControlTextarea1" rows="3" placeholder="Google Street View Embeded Code"></textarea>
+      <div *ngIf="form.get('streetViewUrl').invalid" class="alert alert-danger" role="alert">
         Invalid url
       </div>
     </div>
@@ -162,11 +88,7 @@
 </form>
 
 <div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-secondary"
-    (click)="activeModal.dismiss(false)"
-  >
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss(false)">
     Close
   </button>
   <button type="button" class="btn btn-primary" (click)="submit()">

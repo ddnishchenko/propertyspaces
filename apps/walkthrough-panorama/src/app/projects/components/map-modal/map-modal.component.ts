@@ -12,11 +12,8 @@ const urlRegEx = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127
 export class MapModalComponent implements OnInit {
   @ViewChild(AgmMap) agmMap: AgmMap;
   form;
-  latitude = 51.678418;
-  longitude = 7.809007;
   searching = false;
-  project_id;
-  project;
+  data
   isStreetViewVisible = true;
   constructor(
     public activeModal: NgbActiveModal,
@@ -30,22 +27,20 @@ export class MapModalComponent implements OnInit {
 
   createForm() {
     this.form = new FormGroup({
-      mapEnabled: new FormControl(!this.project.settings.hasOwnProperty('mapEnabled') ? true : this.project.settings.mapEnabled),
-      streetViewEnabled: new FormControl(!this.project.settings.hasOwnProperty('streetViewEnabled') ? true : this.project.settings.streetViewEnabled),
-      map: new FormControl(this.project.settings.map, [Validators.pattern(urlRegEx)]),
-      streetView: new FormControl(this.project.settings.streetView, [Validators.pattern(urlRegEx)]),
-      address: new FormControl(this.project.project.address),
-      latitude: new FormControl(+this.project.project.latitude),
-      longitude: new FormControl(+this.project.project.longitude)
+      mapEnabled: new FormControl(this.data.mapEnabled),
+      streetViewEnabled: new FormControl(this.data.streetViewEnabled),
+      mapUrl: new FormControl(this.data.mapUrl, [Validators.pattern(urlRegEx)]),
+      streetViewUrl: new FormControl(this.data.streetViewEnabled, [Validators.pattern(urlRegEx)]),
+      address: new FormControl(this.data.address),
+      latitude: new FormControl(this.data.latitude),
+      longitude: new FormControl(this.data.longitude)
     });
   }
 
-  
+
 
   onAutocomplete($event) {
     this.isStreetViewVisible = false;
-    this.latitude = $event.geometry.location.lat();
-    this.longitude = $event.geometry.location.lng();
     this.form.patchValue({
       address: $event.formatted_address,
       latitude: $event.geometry.location.lat(),
@@ -80,7 +75,7 @@ export class MapModalComponent implements OnInit {
       div.remove();
     }
     const field = $event.target.getAttribute('formcontrolname');
-    this.form.patchValue({[field]: url});
+    this.form.patchValue({ [field]: url });
     $event.preventDefault();
   }
 }
