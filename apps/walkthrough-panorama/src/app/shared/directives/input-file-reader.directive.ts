@@ -38,7 +38,7 @@ export class InputFileReaderDirective implements OnInit, ControlValueAccessor {
           maxHeight: 1600,
           async success(file) {
             $this.value = await fileToBase64(file);
-            $this.changed.emit({ file, base64File: $this.value });
+            $this.changed.emit({ file, result: $this.value });
             $this.onChange($this.value);
           }
         });
@@ -58,7 +58,7 @@ export class InputFileReaderDirective implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
     const defaultOptions: InputFileReaderOptions = {
-      compress: true,
+      compress: false,
       readAs: 'DataURL'
     };
     this.propertyspacesInputFileReader = {

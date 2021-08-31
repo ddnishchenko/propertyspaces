@@ -65,7 +65,7 @@ export class PanoramaFormComponent implements OnInit {
     const fileName = $event.file.name.split('.').slice(0, -1).join('.');
     const fileNameParts = fileName.split('_');
     const [name, x, y, z, floor] = fileNameParts;
-    const url = $event.base64File;
+    const url = $event.result;
 
     let rawPano: Panorama;
     if (this.isEdit || panoName) {
@@ -105,7 +105,7 @@ export class PanoramaFormComponent implements OnInit {
       ...this.form.value,
       [type]: {
         ...panorama[type],
-        url: $event.base64File
+        url: $event.result
       }
     };
 
