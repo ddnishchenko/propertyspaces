@@ -832,13 +832,13 @@
                             <div class="d-flex justify-content-between mt-3">
                               <label class="d-flex btn align-items-between justify-content-center cursor-p"
                                 for="uploadLogoOrganization">
-                                <input formControlName="companyLogo" propertyspacesInputFileReader type="file"
+                                <input formControlName="logoUrl" propertyspacesInputFileReader type="file"
                                   accept="image/*" id="uploadLogoOrganization" class="d-none">
 
                                 <div
-                                  [style.background-image]="showCompanyLogo(project.projectFolder, companyForm.value.companyLogo)"
+                                  [style.background-image]="companyForm.value.logoUrl ? 'url(' + companyForm.value.logoUrl +')' : companyForm.value.logoUrl"
                                   class="change-logo d-flex btn btn-secondary rounded-circle mr-2">
-                                  <img *ngIf="!companyForm.value.companyLogo" src="assets/img/icons/camera.svg"
+                                  <img *ngIf="!companyForm.value.logoUrl" src="assets/img/icons/camera.svg"
                                     alt="Upload photo">
                                 </div>
                                 <div class="d-flex align-items-center">

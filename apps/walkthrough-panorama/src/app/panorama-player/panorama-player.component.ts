@@ -170,11 +170,12 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
   isQueryFullscreen;
   get shareLink() {
-    const link = location.origin + '/projects/vr-tour-embed/1422';
+    const link = location.origin + '/projects/vr-tour-embed/' + this.route.snapshot.params.id;;
     return this.copyBrandedLink ? link + '?b=1' : link;
   }
   get shareFullscreen() {
-    const link = location.origin + '/projects/vr-tour-embed/1422?fullscreen=true';
+    const projectId = this.route.snapshot.params.id;
+    const link = location.origin + `/projects/vr-tour-embed/${projectId}?fullscreen=true`;
     return this.copyBrandedLink ? link + '&b=1' : link;
   }
   copyBrandedLink = false;
@@ -276,7 +277,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       email: new FormControl(''),
       phone: new FormControl(''),
       fax: new FormControl(''),
-      companyLogo: new FormControl(''),
+      logoUrl: new FormControl(''),
+      logoKey: new FormControl(''),
       showInBranded: new FormControl(false)
     });
 
@@ -427,10 +429,9 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   saveContacts(projectId) {
     const data = {
       profile: this.profileForm.value,
-      company: { ...this.companyForm.value, companyLogo: undefined },
-      companyLogo: this.companyForm.value.companyLogo
+      company: this.companyForm.value
     };
-    this.store.dispatch(updateContacts({ projectId, data }));
+    this.store.dispatch(updateProject({ projectId, project: data }));
   }
 
   navTo(index) {
@@ -696,14 +697,6 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     f.select();
     document.execCommand('copy');
     this.textRecentlyCopied = true;
-  }
-  showCompanyLogo(root, logo, wrapUrl = true) {
-    if (logo && logo.includes('companyLogo')) {
-      return wrapUrl ? `url(${root}${logo})` : `${root}${logo}`;
-    } else if (logo) {
-      return wrapUrl ? `url(${logo})` : logo;
-    }
-    return '';
   }
   postToFacebook() {
     const app_id = 1973653629466963;
