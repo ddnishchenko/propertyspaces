@@ -3,6 +3,9 @@ import sys, getopt
 import cv2 as cv
 import numpy as np
 
+def mergeHdr():
+
+
 def main(argv):
 	rootFolder = ''
 	imageNames = ''

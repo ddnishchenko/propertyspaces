@@ -20,19 +20,7 @@ export class ProjectsController {
   @Get()
   async findAll(@Res() res) {
     const result = await this.projectService.list();
-    return res.json(result.Items.map(item => {
-      let gallery = objToArr(item.gallery);
-      if (item.gallerySort) {
-        const unsorted = gallery.filter(o => !item.gallerySort.includes(o.id));
-        const sorted = item.gallerySort.map(id => item.gallery[id]);
-        gallery = sorted.concat(unsorted);
-      }
-      return {
-        ...item,
-        panoramas: objToArr(item.panoramas),
-        gallery
-      }
-    }));
+    return res.json(result.Items);
   }
 
   @Get(':id')
@@ -67,6 +55,12 @@ export class ProjectsController {
   async createPanorama(@Param('id') id: string, @Body() body, @Res() res) {
     const result = await this.projectService.createPanorama(id, body);
     return res.status(201).json(objToArr(result.Attributes.panoramas));
+  }
+
+  @Get(':id/panorama/:key')
+  async getPanorama(@Param('id') id: string, @Param('key') key, @Res() res) {
+    const result = await this.projectService.getPanorama(id, key);
+    return res.json(result);
   }
 
   @Put(':id/panorama/:key')

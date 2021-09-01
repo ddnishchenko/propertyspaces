@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 
-import { DynamoDB, S3 } from 'aws-sdk';
+import { DynamoDB, S3, Lambda } from 'aws-sdk';
 import { randomUUID } from 'crypto';
 
 const db = new DynamoDB.DocumentClient({});
-const s3 = new S3({})
+const s3 = new S3({});
+const lambda = new Lambda({});
 
 @Injectable()
 export class ProjectsService {
@@ -27,31 +28,54 @@ export class ProjectsService {
     const keys = Object.keys(data).filter(k => k !== 'id');
 
     for (let k of keys) {
-      if (k === 'floors') {
-        for (let i = 0; i < data[k].length; i++) {
-          if (data[k][i].svg) {
-            const file = Buffer.from(data[k][i].svg, 'utf-8');
+      switch (k) {
+        case 'floors':
+          for (let i = 0; i < data[k].length; i++) {
+            if (data[k][i].svg) {
+              const file = Buffer.from(data[k][i].svg, 'utf-8');
 
-            const panoName = `${data[k][i].floor}.svg`;
-            console.log(panoName);
+              const panoName = `${data[k][i].floor}.svg`;
+              console.log(panoName);
+              const s3Object = await s3.upload({
+                Bucket: 'lidarama1media',
+                Key: `${id}/${panoName}`,
+                Body: file,
+                ACL: 'public-read',
+                ContentType: 'image/svg+xml'
+              }).promise();
+              console.log(s3Object.Location);
+              data[k][i].url = s3Object.Location;
+              data[k][i].key = s3Object.Key;
+              data[k][i].svg = undefined;
+            }
+          }
+
+          break;
+        case 'company':
+          if (data[k].logoUrl.includes(';base64')) {
+            const file = Buffer.from(data[k].logoUrl.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+            const fileType = data[k].logoUrl.split(';')[0].split('/')[1];
+
+            const panoName = `company_logo.${fileType}`;
             const s3Object = await s3.upload({
               Bucket: 'lidarama1media',
               Key: `${id}/${panoName}`,
               Body: file,
+              ContentEncoding: 'base64',
               ACL: 'public-read',
-              ContentType: 'image/svg+xml'
+              ContentType: `image/${fileType}`
             }).promise();
-            console.log(s3Object.Location);
-            data[k][i].url = s3Object.Location;
-            data[k][i].key = s3Object.Key;
-            data[k][i].svg = undefined;
-          }
-        }
 
-        ExpressionAttributeValues[`:${k}`] = data[k];
-      } else {
-        ExpressionAttributeValues[`:${k}`] = data[k];
+            data[k].logoUrl = s3Object.Location;
+            data[k].logoKey = s3Object.Key;
+
+          }
+          break;
+        default:
+          ExpressionAttributeValues[`:${k}`] = data[k];
       }
+      ExpressionAttributeValues[`:${k}`] = data[k];
+
     }
 
     const UpdateExpression = `set ` + keys.map(k => `${k} = :${k}`).join(', ');
@@ -171,7 +195,17 @@ export class ProjectsService {
       ReturnValues: 'UPDATED_NEW'
     }).promise();
 
+  }
 
+  async getPanorama(projectId, key) {
+    return db.get({
+      TableName: 'projects',
+      Key: { id: projectId },
+      ProjectionExpression: `panoramas.#key`,
+      ExpressionAttributeNames: {
+        '#key': key
+      }
+    }).promise().then(result => result.Item.panoramas[key]);
   }
 
   async updatePanorama(projectId, key, data) {
@@ -259,6 +293,25 @@ export class ProjectsService {
       ReturnValues: 'UPDATED_NEW'
     }).promise();
 
+  }
+
+  async createHDRPanorama(projectId, panoramaId) {
+    const panorama = await this.getPanorama(projectId, panoramaId);
+    if (panorama.url && panorama.dark_pano && panorama.light_pano) {
+      // Merge HDR process. Create HDR panorama on S3
+
+      // Save url of HDR panorama into panorama object
+      panorama.hdr_pano = {
+        id: '',
+        url: '',
+        fileName: ''
+      };
+      this.updatePanorama(projectId, panoramaId, panorama);
+
+    } else {
+
+      return false;
+    }
   }
 
   deletePanorama(projectId, panoId, panorama) {

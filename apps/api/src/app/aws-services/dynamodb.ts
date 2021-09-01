@@ -1,4 +1,4 @@
-import { DynamoDBClient, PutItemCommand, GetItemCommand, DeleteItemCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, PutItemCommand, GetItemCommand, UpdateItemCommand, DeleteItemCommand } from '@aws-sdk/client-dynamodb';
 import { randomUUID } from 'crypto';
 
 const region = 'us-west-2';
@@ -14,20 +14,28 @@ export class DB {
       TableName: this.tableName,
       Item
     });
-    client.send(command);
+    return client.send(command);
   }
   read(id) {
     const command = new GetItemCommand({
       TableName: this.tableName,
       Key: { id }
     });
-    client.send(command);
+    return client.send(command);
   }
-  update(id: string) { }
+  update(id: string, options) {
+    const command = new UpdateItemCommand({
+      TableName: this.tableName,
+      Key: { id },
+      ...options
+    });
+    return client.send(command)
+  }
   delete(id) {
     const command = new DeleteItemCommand({
       TableName: this.tableName,
       Key: { id }
     });
+    return client.send(command);
   }
 }
