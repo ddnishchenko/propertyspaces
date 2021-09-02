@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-const api = environment.awsApi;
+const api = environment.apiHost;
 
 @Injectable({
   providedIn: 'root'

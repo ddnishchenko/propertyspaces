@@ -65,6 +65,7 @@
     "@ngrx/store": "^12.2.0",
     "@ngrx/store-devtools": "^12.2.0",
     "@nguniversal/express-engine": "12.1.0",
+    "@ngx-pwa/local-storage": "^12.1.0",
     "@nrwl/angular": "^12.6.2",
     "@types/hammerjs": "^2.0.40",
     "angular-resizable-element": "^3.3.5",

@@ -67,4 +67,17 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+    uniquesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: uniques
+        AttributeDefinitions:
+          - AttributeName: value
+            AttributeType: S
+        KeySchema:
+          - AttributeName: value
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
 
