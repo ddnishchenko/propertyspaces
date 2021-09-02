@@ -31,7 +31,7 @@ export class AuthService {
     // const isPasswordMatching = await bcrypt.compare(pass, user.password);
     const isPasswordMatching = this.validatePassword(pass, user.hash, user.salt);
     if (isPasswordMatching) {
-      const { password, ...result } = user;
+      const { hash, salt, ...result } = user;
       return result;
     }
     return null;
@@ -45,6 +45,8 @@ export class AuthService {
     // user.hash = await bcrypt.hash(user.password, 10);
     const createdUser = await this.usersService.create(user);
     createdUser.password = undefined;
+    createdUser.hash = undefined;
+    createdUser.salt = undefined;
     return createdUser;
   }
 
