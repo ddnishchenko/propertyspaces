@@ -66,4 +66,20 @@ export class UsersService {
       }
     }).promise().then(r => r.Item);
   }
+
+  update(id, body) {
+    const ExpressionAttributeValues = {};
+    const data = { ...body, updatedAt: Date.now() };
+    const forbiddenKeys = ['id', 'email', 'hash', 'salt']
+    const keys = Object.keys(data).filter(k => !forbiddenKeys.includes(k));
+    for (let k of keys) ExpressionAttributeValues[`:${k}`] = data[k];
+    const UpdateExpression = `set ` + keys.map(k => `${k} = :${k}`).join(', ');
+    return db.update({
+      TableName: 'users',
+      Key: { id },
+      UpdateExpression,
+      ExpressionAttributeValues,
+      ReturnValues: 'UPDATED_NEW'
+    }).promise();
+  }
 }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 const api = environment.apiHost;
@@ -32,18 +32,23 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   register(user) {
-    return this.http.post(`${api}/auth/register`, user);
+    return this.http.post(`${api}auth/register`, user);
   }
 
   login(creds) {
-    return this.http.post(`${api}/auth/login`, creds).pipe(
-      map((data: { accessToken: string }) => this.accessToken = data.accessToken)
+    return this.http.post(`${api}auth/login`, creds).pipe(
+      tap((data: { accessToken: string }) => this.accessToken = data.accessToken)
     );
   }
 
   logout() {
-    localStorage.removeItem(tokenKey);
-    localStorage.removeItem(userKey);
+    return this.http.get(`${api}auth/logout`).pipe(
+      tap(() => {
+        localStorage.removeItem(tokenKey);
+        localStorage.removeItem(userKey);
+      })
+    );
+
   }
 
 }

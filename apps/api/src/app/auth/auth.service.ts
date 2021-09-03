@@ -16,9 +16,7 @@ export class AuthService {
     const salt = crypto.randomBytes(16).toString('hex');
 
     // Hashing user's salt and password with 1000 iterations,
-
-    const hash = crypto.pbkdf2Sync(password, salt,
-      1000, 64, `sha512`).toString(`hex`);
+    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
     return { salt, hash };
   }
 
@@ -40,6 +38,8 @@ export class AuthService {
   async register(user: any) {
     const { hash, salt } = this.hashPassword(user.password);
     user.password = undefined;
+    user.passwordConfirmation = undefined;
+    user.termsCheck = undefined;
     user.hash = hash;
     user.salt = salt;
     // user.hash = await bcrypt.hash(user.password, 10);

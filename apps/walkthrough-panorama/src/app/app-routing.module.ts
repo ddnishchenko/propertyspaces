@@ -8,6 +8,8 @@ const routes: Routes = [
     pathMatch: 'full',
     redirectTo: 'projects'
   },
+  { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
+  { path: 'account', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
   {
     path: 'model/:id',
     loadChildren: () => import('./panorama-player/panorama-player.module').then(m => m.PanoramaPlayerModule),

@@ -1,0 +1,16 @@
+<form [formGroup]="form" (ngSubmit)="login()">
+
+  <a [routerLink]="'register'">Don't have an account?</a>
+
+  <label class="input">
+    <input formControlName="email" type="email" class="input__field" maxlength="60" placeholder=" " />
+    <span class="input__label">Email<sup>*</sup> </span>
+  </label>
+
+  <label class="input">
+    <input formControlName="password" type="password" class="input__field" maxlength="16" placeholder=" " />
+    <span class="input__label">Password<sup>*</sup> </span>
+  </label>
+
+  <button [disabled]="form.invalid" class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+</form>

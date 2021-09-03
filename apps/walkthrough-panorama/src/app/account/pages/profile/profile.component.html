@@ -1,0 +1,41 @@
+<div class="container">
+  <main>
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src="" alt="Avatar" width="72" height="57">
+      <h2>Profile</h2>
+      <p class="lead">Fill up data about yourselft.</p>
+      <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
+    </div>
+
+    <div class="row g-5">
+      <div class="col-12">
+        <form class="needs-validation" (ngSubmit)="save()" [formGroup]="form">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label class="input">
+                <input formControlName="firstName" type="text" class="input__field" maxlength="60" placeholder=" " />
+                <span class="input__label">First Name<sup>*</sup> </span>
+              </label>
+            </div>
+
+            <div class="col-sm-6">
+              <label class="input">
+                <input formControlName="lastName" type="text" class="input__field" maxlength="60" placeholder=" " />
+                <span class="input__label">Last Name<sup>*</sup> </span>
+              </label>
+            </div>
+
+            <div class="col-12">
+              <label class="input">
+                <input formControlName="phone" type="phone" class="input__field" maxlength="12" placeholder=" " />
+                <span class="input__label">Phone<sup>*</sup> </span>
+              </label>
+            </div>
+          </div>
+
+          <button class="w-100 btn btn-primary btn-lg" [disabled]="form.invalid" type="submit">Save</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

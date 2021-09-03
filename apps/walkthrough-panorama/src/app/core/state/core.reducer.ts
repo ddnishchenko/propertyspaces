@@ -1,7 +1,6 @@
 import {
   ActionReducer,
   ActionReducerMap,
-  createFeatureSelector,
   createSelector,
   MetaReducer
 } from '@ngrx/store';
@@ -32,7 +31,7 @@ export const getRouteData = createSelector(getRouterState, state => state.data);
 
 // console.log all actions
 export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
-  return function(state: State, action: any): State {
+  return function (state: State, action: any): State {
     console.log('state', state);
     console.log('action', action);
 
