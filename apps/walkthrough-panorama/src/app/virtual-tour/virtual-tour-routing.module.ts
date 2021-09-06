@@ -5,7 +5,13 @@ import { VirtualTourComponent } from './virtual-tour.component';
 const routes: Routes = [
   {
     path: '',
-    component: VirtualTourComponent
+    component: VirtualTourComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('../panorama-player/panorama-player.module').then(m => m.PanoramaPlayerModule),
+      }
+    ]
   }
 ];
 

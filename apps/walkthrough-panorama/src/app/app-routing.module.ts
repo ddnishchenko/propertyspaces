@@ -1,33 +1,31 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ModelDataResolver } from './model-data.resolver';
+import { AuthGuard } from './core/guards/auth.guard';
+import { LoggedInGuard } from './core/guards/logged-in.guard';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'projects'
-  },
-  { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
-  { path: 'account', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
-  {
-    path: 'model/:id',
-    loadChildren: () => import('./panorama-player/panorama-player.module').then(m => m.PanoramaPlayerModule),
-    resolve: {
-      model: ModelDataResolver
-    }
+    redirectTo: 'auth'
   },
   {
-    path: 'embed/:id',
-    loadChildren: () => import('./panorama-player/panorama-player.module').then(m => m.PanoramaPlayerModule),
-    resolve: {
-      model: ModelDataResolver
-    },
-    data: {}
+    path: 'auth',
+    canActivate: [LoggedInGuard],
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   },
-  { path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule) },
   {
-    path: 'virtual-tour',
+    path: 'account',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
+  },
+  {
+    path: 'projects',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)
+  },
+  {
+    path: 'virtual-tour/:id',
     loadChildren: () => import('./virtual-tour/virtual-tour.module').then(m => m.VirtualTourModule)
   }
 ];

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { logout } from '../../../core/state/core.actions';
 import { AuthService } from '../../../services/auth.service';
 import { UsersService } from '../../../services/users.service';
 
@@ -17,8 +19,7 @@ export class ProfileComponent implements OnInit {
   });
   constructor(
     private usersService: UsersService,
-    private authService: AuthService,
-    private router: Router
+    private store: Store
   ) { }
 
   ngOnInit(): void {
@@ -32,8 +33,6 @@ export class ProfileComponent implements OnInit {
     })
   }
   logout() {
-    this.authService.logout().subscribe(() => {
-      this.router.navigate(['/auth'])
-    })
+    this.store.dispatch(logout());
   }
 }

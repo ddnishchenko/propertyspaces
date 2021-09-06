@@ -345,22 +345,22 @@
             <button type="button" class="btn btn-link text-white" (click)="openShareModal(shareModal)"><i
                 class="fa fa-lg fa-share-alt"></i></button>
           </div>
-          <ng-template #loginBtn>
-            <button type="button"
-              class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
-              <span>Log in</span>
-            </button>
-          </ng-template>
 
-          <ng-container *ngIf="isEdit; else loginBtn">
-            <button type="button"
-              class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
-              <span>Log out</span>
-            </button>
-            <button type="button" class="btn btn-danger rounded-pill text-uppercase border-1 border-white ml-3 px-5">
-              <span>Publish</span>
-            </button>
-          </ng-container>
+
+          <button *ngIf="!isAuthenticated" type="button" routerLink="/auth"
+            class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
+            <span>Log in</span>
+          </button>
+          <button type="button" *ngIf="isAuthenticated" (click)="logout()"
+            class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
+            <span>Log out</span>
+          </button>
+          <button *ngIf="isEdit && isAuthenticated" type="button"
+            class="btn btn-danger rounded-pill text-uppercase border-1 border-white ml-3 px-5">
+            <span>Publish</span>
+          </button>
+
+
         </div>
 
       </div>

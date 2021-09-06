@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { Store } from '@ngrx/store';
+import { login } from '../../../core/state/core.actions';
 import { REQUIRED_EMAIL_VALIDATOR, VALIDATORS_OF_PASSWORD } from '../../../utils/validators';
 
 @Component({
@@ -16,14 +16,10 @@ export class LoginComponent {
     password: new FormControl('', VALIDATORS_OF_PASSWORD),
   });
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) { }
+  constructor(private store: Store) { }
 
   login() {
-    this.authService.login(this.form.value)
-      .subscribe(() => this.router.navigate(['/account']))
+    this.store.dispatch(login({ credentials: this.form.value }));
   }
 
 }

@@ -14,8 +14,7 @@
             <a class="nav-link" routerLink="/projects">My Projects</a>
           </li>
           <li class="nav-item">
-            <amplify-sign-out></amplify-sign-out>
-            <!-- <a class="nav-link" href="javascript:;">Log out</a> -->
+            <button type="button" class="btn btn-danger" (click)="logout()">Log out</button>
           </li>
           <li class="nav-item"></li>
         </ul>
@@ -32,7 +31,7 @@
         <span>{{ project.name }}</span><i class="fa fa-edit" *ngIf="!isEditName" (click)="editName(project.name)"></i>
       </h2>
       <div class="input-group mb-3" *ngIf="isEditName">
-        <span class="input-group-text" (click)="saveName(project)">x</span>
+        <button type="button" class="input-group-text" (click)="saveName(project)">x</button>
         <input class="form-control" [(ngModel)]="projectName" />
       </div>
     </div>

@@ -15,9 +15,6 @@ import { NgProgressHttpModule } from 'ngx-progressbar/http';
 import { SnotifyModule, SnotifyPosition, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 
-/* import AmplifyUIAngularModule  */
-import { AmplifyUIAngularModule } from '@aws-amplify/ui-angular';
-
 import { ApiInterceptor } from './api.interceptor';
 import { reducers, metaReducers } from './state/core.reducer';
 import { ProjectsEffects } from '../projects/state/projects.effects';
@@ -44,15 +41,12 @@ const agmConfig: LazyMapsAPILoaderConfigLiteral = {
     StoreRouterConnectingModule.forRoot(),
     AngularSvgIconModule.forRoot(),
     AgmCoreModule.forRoot(agmConfig),
-    /* configure app with AmplifyUIAngularModule */
-    AmplifyUIAngularModule,
     BrowserAnimationsModule
   ],
   exports: [
     NgProgressModule,
     NgbModule,
-    SnotifyModule,
-    AmplifyUIAngularModule
+    SnotifyModule
   ],
   providers: [
     {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { DynamoDB, S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
+import { Role } from '../roles/role.enum';
 const db = new DynamoDB.DocumentClient({});
 
 // This should be a real class/interface representing a user entity
@@ -25,6 +26,7 @@ export class UsersService {
             },
             Item: {
               id: userId,
+              roles: [Role.User],
               createdAt: Date.now(),
               ...user
             }
@@ -80,6 +82,25 @@ export class UsersService {
       UpdateExpression,
       ExpressionAttributeValues,
       ReturnValues: 'UPDATED_NEW'
+    }).promise();
+  }
+
+  delete(user) {
+    return db.transactWrite({
+      TransactItems: [
+        {
+          Delete: {
+            TableName: 'users',
+            Key: { id: user.id }
+          }
+        },
+        {
+          Delete: {
+            TableName: 'uniques',
+            Key: { value: user.email }
+          }
+        }
+      ]
     }).promise();
   }
 }

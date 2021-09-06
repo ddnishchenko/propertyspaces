@@ -9,7 +9,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class ConfirmationModalComponent implements OnInit {
   title = '';
   msg = '';
-
+  no = 'Cancel';
+  yes = 'Save Changes';
   constructor(
     public activeModal: NgbActiveModal
   ) { }

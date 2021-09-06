@@ -15,17 +15,29 @@ export class ProjectsService {
       Key: { id }
     }).promise();
   }
-  list() {
-    return db.scan({ TableName: 'projects', ExpressionAttributeNames: { '#name': 'name' }, ProjectionExpression: 'id,#name,addr' }).promise();
+  list(userId?) {
+    const FilterExpression = userId ? 'userId = :userId' : undefined;
+    return db.scan({
+      TableName: 'projects',
+      ExpressionAttributeValues: {
+        ':userId': userId,
+      },
+      ExpressionAttributeNames: { '#name': 'name' },
+      ProjectionExpression: 'id,#name,addr',
+      FilterExpression
+    }).promise();
   }
   put(data, id?) {
     const Item = { id: id ? id : randomUUID(), ...data };
     return db.put({ TableName: 'projects', Item }).promise().then(() => Item);
   }
-  async update(id, body) {
-    const ExpressionAttributeValues = {};
+  async update(id, body, userId) {
+    const ExpressionAttributeValues = {
+      [`:userId`]: userId
+    };
     const data = { ...body, updatedAt: Date.now() };
-    const keys = Object.keys(data).filter(k => k !== 'id');
+    const excludedKeys = ['id', 'panoramas', 'gallery'];
+    const keys = Object.keys(data).filter(k => !excludedKeys.includes(k));
 
     for (let k of keys) {
       switch (k) {
@@ -77,21 +89,32 @@ export class ProjectsService {
       ExpressionAttributeValues[`:${k}`] = data[k];
 
     }
+    const ExpressionAttributeNames = {};
+    const UpdateExpression = `set ` + keys.map(k => {
+      ExpressionAttributeNames[`#${k}`] = k;
+      return `#${k} = :${k}`;
+    }).join(', ');
 
-    const UpdateExpression = `set ` + keys.map(k => `${k} = :${k}`).join(', ');
     return db.update({
       TableName: 'projects',
       Key: { id },
       UpdateExpression,
+      ExpressionAttributeNames,
       ExpressionAttributeValues,
-      ReturnValues: 'UPDATED_NEW'
+      ReturnValues: 'UPDATED_NEW',
+      ConditionExpression: 'userId = :userId'
     }).promise();
   }
 
-  delete(id: string) {
+  delete(id: string, userId) {
+    const ExpressionAttributeValues = {
+      [`:userId`]: userId
+    };
     return db.delete({
       TableName: 'projects',
-      Key: { id }
+      Key: { id },
+      ConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues
     }).promise().then((r) => {
       s3.listObjects({
         Bucket: 'lidarama1media',
@@ -110,6 +133,8 @@ export class ProjectsService {
   }
 
   async createPanorama(projectId, data) {
+    // TODO: prevent other users from creating panoramas to project
+
     const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
     const fileType = data.url.split(';')[0].split('/')[1];
 
@@ -209,7 +234,7 @@ export class ProjectsService {
   }
 
   async updatePanorama(projectId, key, data) {
-
+    // TODO: prevent other users from creating panoramas to project
     let panorama = { ...data, updatedAt: Date.now() };
 
     if (data.url.includes(';base64')) {
@@ -296,6 +321,7 @@ export class ProjectsService {
   }
 
   async createHDRPanorama(projectId, panoramaId) {
+    // TODO: prevent other users from creating panoramas to project
     const panorama = await this.getPanorama(projectId, panoramaId);
     if (panorama.url && panorama.dark_pano && panorama.light_pano) {
       // Merge HDR process. Create HDR panorama on S3
@@ -314,8 +340,8 @@ export class ProjectsService {
     }
   }
 
-  deletePanorama(projectId, panoId, panorama) {
-
+  deletePanorama(projectId, panoId, panorama, userId) {
+    // TODO: prevent other users from creating panoramas to project
     return db.update({
       TableName: 'projects',
       Key: { id: projectId },
@@ -324,6 +350,10 @@ export class ProjectsService {
         '#panoramas': 'panoramas',
         '#key': panoId
       },
+      ExpressionAttributeValues: {
+        ':userId': userId
+      },
+      ConditionExpression: 'userId = :userId',
       ReturnValues: 'UPDATED_NEW'
     }).promise().then(() => {
       s3.deleteObject({

@@ -5,12 +5,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { Observable, skip } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { logout } from '../../../core/state/core.actions';
 import { Project } from '../../../interfaces/project';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
-import { deletePanorama, deleteProjects, editProject, loadProject, updateAddressData, updatePanorama } from '../../state/projects.actions';
+import { deletePanorama, deleteProjects, loadProject, updateAddressData, updatePanorama, updateProject } from '../../state/projects.actions';
 import { selectProject } from '../../state/projects.selectors';
 
 @Component({
@@ -103,7 +104,8 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   saveName(project: Project) {
-    this.store.dispatch(editProject({ projectId: project.id, project: { ...project, name: this.projectName } }));
+    this.store.dispatch(updateProject({ projectId: project.id, project: { name: this.projectName } }));
+    this.isEditName = false;
   }
 
   openMapModal(project) {
@@ -146,11 +148,14 @@ export class ProjectDetailsComponent implements OnInit {
     // this.store.dispatch(removeProjectGalleryPhoto({ projectId, image_id: [$event.item.name] }));
   }
 
-  uploadImage($event, projectId) {
-    if ($event.target.files.length) {
-      const file = $event.target.files[0];
-      // this.store.dispatch(uploadProjectGalleryPhoto({ projectId, file }));
-    }
+  logout() {
+    const modal = this.modalService.open(ConfirmationModalComponent);
+    modal.componentInstance.title = 'Are you sure?';
+    modal.result.then(res => {
+      if (res) {
+        this.store.dispatch(logout())
+      }
+    })
   }
 
 }

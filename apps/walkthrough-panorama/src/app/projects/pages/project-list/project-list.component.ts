@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
+import { logout } from '../../../core/state/core.actions';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
 import { createProject, deleteProjects, loadProjects } from '../../state/projects.actions';
@@ -12,7 +13,7 @@ import { selectProjects } from '../../state/projects.selectors';
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent implements OnInit {
-
+  isMenuCollapsed = true;
   projectIds = [];
   projects$ = this.store.pipe(select(selectProjects));
   constructor(
@@ -56,6 +57,16 @@ export class ProjectListComponent implements OnInit {
         v
       ];
     }
+  }
+
+  logout() {
+    const modal = this.modalService.open(ConfirmationModalComponent);
+    modal.componentInstance.title = 'Are you sure?';
+    modal.result.then(res => {
+      if (res) {
+        this.store.dispatch(logout())
+      }
+    })
   }
 
 }

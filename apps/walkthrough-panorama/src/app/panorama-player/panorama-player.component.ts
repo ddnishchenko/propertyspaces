@@ -20,6 +20,8 @@ import { ResizeEvent } from 'angular-resizable-element';
 import { Editor, toHTML, toDoc } from 'ngx-editor';
 import { Fullscreen } from '../utils/fullscreen';
 import { combineLatest } from 'rxjs';
+import { AuthService } from '../services/auth.service';
+import { logout } from '../core/state/core.actions';
 
 function sanitazePanorama(pano) {
   const exclude = ['index', 'loaded', 'object', 'transitionFrom', 'updatedAt'];
@@ -162,6 +164,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   get description() {
     return this.descriptionFrom?.value ? toHTML(this.descriptionFrom?.value.description) : this.descriptionFrom?.value.description;
   }
+  get shareLink() {
+    const link = `${location.origin}/virtual-tour/${this.route.snapshot.params.id}`;
+    return this.copyBrandedLink ? link + '?b=1' : link;
+  }
   get embedCode() {
     return `<iframe src="${this.shareLink}" width="100%" height="720px" frameborder="0" allowfullscreen></iframe>`;
   };
@@ -169,13 +175,10 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     return `<iframe src="${this.shareFullscreen}" width="100%" height="720px" frameborder="0" allowfullscreen></iframe>`;
   }
   isQueryFullscreen;
-  get shareLink() {
-    const link = location.origin + '/projects/vr-tour-embed/' + this.route.snapshot.params.id;;
-    return this.copyBrandedLink ? link + '?b=1' : link;
-  }
+
   get shareFullscreen() {
     const projectId = this.route.snapshot.params.id;
-    const link = location.origin + `/projects/vr-tour-embed/${projectId}?fullscreen=true`;
+    const link = location.origin + `/virtual-tour/${projectId}?fullscreen=true`;
     return this.copyBrandedLink ? link + '&b=1' : link;
   }
   copyBrandedLink = false;
@@ -198,10 +201,16 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     const modalEdit = [editContact, editLocation, editPano, description, floorplan, dollhouse];
     return modalEdit.includes(this.activeEditProperty);
   }
+
+  get isAuthenticated() {
+    return this.authService.accessToken;
+  }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private modalService: NgbModal,
+    private authService: AuthService,
     private store: Store,
     private zone: NgZone
   ) { }
@@ -210,8 +219,9 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.editor = new Editor();
     const projectId = this.route.snapshot.params.id;
     this.isQueryFullscreen = this.route.snapshot.queryParams.fullscreen == 'true';
-    this.isEdit = this.router.url.includes('model');
+    this.isEdit = this.router.url.includes('/projects/vr-tour-model');
     this.createForm();
+
     this.store.dispatch(loadProject({ projectId }));
 
     this.project$ = combineLatest([
@@ -226,10 +236,23 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       ),
       skip(1)
     );
+
   }
 
   ngOnDestroy() {
     this.editor.destroy();
+  }
+  logout() {
+    const modal = this.modalService.open(ConfirmationModalComponent);
+    modal.componentInstance.title = 'Are you sure?';
+    modal.componentInstance.no = 'No';
+    modal.componentInstance.yes = 'Yes';
+    modal.result.then(r => {
+      if (r) {
+        this.store.dispatch(logout());
+      }
+    })
+
   }
 
   createForm() {

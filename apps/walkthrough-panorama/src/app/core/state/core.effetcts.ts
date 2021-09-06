@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { Actions, ofType } from "@ngrx/effects";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Router } from "@angular/router";
 import { SnotifyService } from "ng-snotify";
-import { map, mergeMap } from "rxjs/operators";
+import { map, mergeMap, tap } from "rxjs/operators";
 import { AuthService } from "../../services/auth.service";
 import * as CoreActions from './core.actions';
 
@@ -26,12 +26,25 @@ export class ProjectsEffects {
     mergeMap(
       payload => this.authService.login(payload.credentials).pipe(
         map(res => {
-          this.router.navigate(['/projects'])
+          this.router.navigate(['/account'])
           return CoreActions.loginSuccess({ accessToken: res.accessToken })
         })
       )
     )
   );
+
+  logout$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(CoreActions.logout),
+      tap(
+        () => {
+          this.authService.logout()
+          this.router.navigate(['/auth'])
+        }
+      )
+    ),
+    { dispatch: false }
+  )
 
   constructor(
     private actions$: Actions,

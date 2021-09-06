@@ -33,3 +33,16 @@ export const loginFailure = createAction(
 export const logout = createAction(
   `${prefix} Logout`
 );
+
+
+export const loadProfile = createAction(
+  `${prefix} Load Profile`
+);
+
+export const loadProfileSuccess = createAction(
+  `${prefix} Load Profile`
+);
+
+export const loadProfileFailure = createAction(
+  `${prefix} Load Profile`
+);

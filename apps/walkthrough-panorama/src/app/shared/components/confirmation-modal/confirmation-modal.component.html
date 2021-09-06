@@ -1,12 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title">{{ title }}</h5>
-  <button
-    type="button"
-    (click)="activeModal.close()"
-    class="close"
-    data-bs-dismiss="modal"
-    aria-label="Close"
-  >
+  <button type="button" (click)="activeModal.close()" class="close" data-bs-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -14,18 +8,10 @@
   <p>{{ msg }}</p>
 </div>
 <div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-secondary"
-    (click)="activeModal.close(false)"
-  >
-    Close
+  <button type="button" class="btn btn-secondary" (click)="activeModal.close(false)">
+    {{no}}
   </button>
-  <button
-    type="button"
-    class="btn btn-primary"
-    (click)="activeModal.close(true)"
-  >
-    Save changes
+  <button type="button" class="btn btn-primary" (click)="activeModal.close(true)">
+    {{yes}}
   </button>
 </div>

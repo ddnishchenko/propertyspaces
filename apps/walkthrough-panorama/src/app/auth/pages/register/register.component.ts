@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { Store } from '@ngrx/store';
+import { register } from '../../../core/state/core.actions';
 import { equalityValidator, REQUIRED_EMAIL_VALIDATOR, VALIDATORS_OF_PASSWORD } from '../../../utils/validators';
 
 @Component({
@@ -37,10 +37,7 @@ export class RegisterComponent {
     return this.emailIsInvalid || this.passwordIsInvalid || this.passwordConfirmationIsInvalid || this.termsCheckIsInvalid;
   }
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) { }
+  constructor(private store: Store) { }
 
   private fieldIsInvalid(name: string) {
     const f = this.form.get(name);
@@ -48,7 +45,6 @@ export class RegisterComponent {
   }
 
   register() {
-    this.authService.register(this.form.value)
-      .subscribe(() => this.router.navigate(['/auth']));
+    this.store.dispatch(register({ user: this.form.value }));
   }
 }

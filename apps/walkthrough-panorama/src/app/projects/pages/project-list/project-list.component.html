@@ -1,3 +1,24 @@
+<nav class="navbar navbar-dark bg-dark sticky-top navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="javascript:;" title="Propertyspaces"><img src="assets/img/logo.svg" title="Lidarama"
+        class="img-fluid" /></a>
+
+    <button (click)="isMenuCollapsed = !isMenuCollapsed" class="navbar-toggler">
+      <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+    </button>
+    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto text-uppercase">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/account">My Account</a>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-danger" (click)="logout()">Log out</button>
+        </li>
+        <li class="nav-item"></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <main class="container d-flex flex-column align-items-center justify-content-center">
   <div class="row col-12">
     <div class="col">

@@ -2,8 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 // import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
-import * as crypto from 'crypto';
+import { randomBytes, pbkdf2Sync } from 'crypto';
 
+function saltPassword(password, salt) {
+  const iterations = parseInt(process.env.SALT_ITRATION) || 1000;
+  return pbkdf2Sync(password, salt, iterations, 64, `sha512`).toString(`hex`);
+}
+
+process.env.SALT_ITRATION
 
 @Injectable()
 export class AuthService {
@@ -13,15 +19,15 @@ export class AuthService {
   ) { }
 
   private hashPassword(password) {
-    const salt = crypto.randomBytes(16).toString('hex');
+    const salt = randomBytes(16).toString('hex');
 
     // Hashing user's salt and password with 1000 iterations,
-    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+    const hash = saltPassword(password, salt);
     return { salt, hash };
   }
 
   private validatePassword(password, hash, salt) {
-    return hash === crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+    return hash === saltPassword(password, salt);
   }
 
   async validateUser(email: string, pass: string): Promise<any> {
