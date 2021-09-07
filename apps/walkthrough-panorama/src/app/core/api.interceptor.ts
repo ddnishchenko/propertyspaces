@@ -29,9 +29,9 @@ export class ApiInterceptor implements HttpInterceptor {
       })
     }
     return next.handle(req).pipe(
-      catchError(err => {
-        this.snotifyService.error(err.message);
-        return throwError(() => err);
+      catchError(e => {
+        this.snotifyService.error(e.error.message);
+        return throwError(() => e);
       })
     );
   }

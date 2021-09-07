@@ -7,9 +7,9 @@ import { AuthService } from "../../services/auth.service";
 import * as CoreActions from './core.actions';
 
 @Injectable()
-export class ProjectsEffects {
+export class CoreEffects {
 
-  register$ = this.actions$.pipe(
+  register$ = createEffect(() => this.actions$.pipe(
     ofType(CoreActions.register),
     mergeMap(
       payload => this.authService.register(payload.user).pipe(
@@ -19,9 +19,11 @@ export class ProjectsEffects {
         })
       )
     )
+  ),
+    { dispatch: false }
   );
 
-  login$ = this.actions$.pipe(
+  login$ = createEffect(() => this.actions$.pipe(
     ofType(CoreActions.login),
     mergeMap(
       payload => this.authService.login(payload.credentials).pipe(
@@ -31,16 +33,17 @@ export class ProjectsEffects {
         })
       )
     )
+  ),
+    { dispatch: false }
   );
 
   logout$ = createEffect(
     () => this.actions$.pipe(
       ofType(CoreActions.logout),
-      tap(
-        () => {
-          this.authService.logout()
-          this.router.navigate(['/auth'])
-        }
+      mergeMap(
+        () => this.authService.logout().pipe(
+          tap(() => this.router.navigate(['/auth']))
+        )
       )
     ),
     { dispatch: false }
@@ -49,7 +52,6 @@ export class ProjectsEffects {
   constructor(
     private actions$: Actions,
     private authService: AuthService,
-    private snotifyService: SnotifyService,
     private router: Router
   ) { }
 }

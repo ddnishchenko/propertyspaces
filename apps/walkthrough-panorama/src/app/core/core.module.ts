@@ -17,8 +17,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { ApiInterceptor } from './api.interceptor';
 import { reducers, metaReducers } from './state/core.reducer';
-import { ProjectsEffects } from '../projects/state/projects.effects';
-
+import { CoreEffects } from './state/core.effetcts';
 import { environment } from '../../environments/environment';
 
 const agmConfig: LazyMapsAPILoaderConfigLiteral = {
@@ -37,7 +36,7 @@ const agmConfig: LazyMapsAPILoaderConfigLiteral = {
     SnotifyModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-    EffectsModule.forRoot([ProjectsEffects]),
+    EffectsModule.forRoot([CoreEffects]),
     StoreRouterConnectingModule.forRoot(),
     AngularSvgIconModule.forRoot(),
     AgmCoreModule.forRoot(agmConfig),

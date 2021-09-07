@@ -1,9 +1,10 @@
 import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { ServerlessNestjsApplicationFactory } from 'serverless-lambda-nestjs';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { AppModule } from './app/app.module';
 import { json, urlencoded } from 'body-parser';
+import { AllExceptionsFilter } from './app/exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -38,6 +39,8 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
       },
     },
     app => {
+      const { httpAdapter } = app.get(HttpAdapterHost);
+      app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
       app.use(json({ limit: '30mb' }));
       app.use(urlencoded({ limit: '30mb', extended: true }));
       return app;
