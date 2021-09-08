@@ -21,8 +21,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('profile')
-  async deleteProfile(@Req() req, @Req() res) {
+  async deleteProfile(@Req() req) {
     await this.usersService.delete(req.user);
-    return res.status(204);
+    req.logout();
   }
 }
