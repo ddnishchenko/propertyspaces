@@ -35,7 +35,7 @@ export class AccountEffects {
 
   deleteAccount$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AccountActions.updateAccount),
+      ofType(AccountActions.deleteAccount),
       mergeMap(
         () => this.accountService.deleteProfile().pipe(
           map(() => AccountActions.deleteAccountSuccess())

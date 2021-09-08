@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Router } from "@angular/router";
-import { SnotifyService } from "ng-snotify";
 import { map, mergeMap, tap } from "rxjs/operators";
 import { AuthService } from "../../services/auth.service";
 import * as CoreActions from './core.actions';
@@ -14,7 +13,7 @@ export class CoreEffects {
     mergeMap(
       payload => this.authService.register(payload.user).pipe(
         map(() => {
-          this.router.navigate(['/auth/login'])
+          this.router.navigate(['/auth'])
           return CoreActions.registerSuccess()
         })
       )
