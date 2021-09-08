@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { DynamoDB, S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
+import { ProjectsService } from '../projects/projects.service';
 import { Role } from '../roles/role.enum';
 const db = new DynamoDB.DocumentClient({});
+const s3 = new S3({});
 
 // This should be a real class/interface representing a user entity
 export type User = any;
 
 @Injectable()
 export class UsersService {
-
+  constructor(private projectService: ProjectsService) { }
   async create(user) {
     const userId = randomUUID();
 
@@ -57,7 +59,7 @@ export class UsersService {
       Key: { value: email }
     }).promise();
 
-    return this.findById(uniqueEmail.Item.userId);
+    return uniqueEmail.Item ? this.findById(uniqueEmail.Item.userId) : null
   }
 
   async findById(id: string): Promise<User | undefined> {
@@ -69,12 +71,37 @@ export class UsersService {
     }).promise().then(r => r.Item);
   }
 
-  update(id, body) {
+  async update(id, body) {
     const ExpressionAttributeValues = {};
     const data = { ...body, updatedAt: Date.now() };
     const forbiddenKeys = ['id', 'email', 'hash', 'salt']
     const keys = Object.keys(data).filter(k => !forbiddenKeys.includes(k));
-    for (let k of keys) ExpressionAttributeValues[`:${k}`] = data[k];
+
+    for (let k of keys) {
+      switch (k) {
+        case 'avatar':
+          if (data[k].includes(';base64')) {
+            const file = Buffer.from(data[k].replace(/^data:image\/\w+;base64,/, ''), 'base64');
+            const fileType = data[k].split(';')[0].split('/')[1];
+
+            const panoName = `avatar.${fileType}`;
+            const s3Object = await s3.upload({
+              Bucket: 'lidarama1media',
+              Key: `${id}/${panoName}`,
+              Body: file,
+              ContentEncoding: 'base64',
+              ACL: 'public-read',
+              ContentType: `image/${fileType}`
+            }).promise();
+
+            data[k] = s3Object.Location;
+            data[k + 'Key'] = s3Object.Key;
+          }
+          break;
+      }
+      ExpressionAttributeValues[`:${k}`] = data[k]
+    };
+
     const UpdateExpression = `set ` + keys.map(k => `${k} = :${k}`).join(', ');
     return db.update({
       TableName: 'users',
@@ -85,7 +112,15 @@ export class UsersService {
     }).promise();
   }
 
-  delete(user) {
+  async delete(user) {
+    await this.projectService.deleteUser(user.id);
+    const User = await this.findById(user.id);
+    if (User.avatarKey) {
+      await s3.deleteObject({
+        Bucket: 'lidarama1media',
+        Key: User.avatarKey
+      }).promise();
+    }
     return db.transactWrite({
       TransactItems: [
         {

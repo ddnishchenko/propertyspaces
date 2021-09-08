@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 // import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -32,16 +32,22 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-    // const isPasswordMatching = await bcrypt.compare(pass, user.password);
-    const isPasswordMatching = this.validatePassword(pass, user.hash, user.salt);
-    if (isPasswordMatching) {
-      const { hash, salt, ...result } = user;
-      return result;
+    if (user) {
+      // const isPasswordMatching = await bcrypt.compare(pass, user.password);
+      const isPasswordMatching = this.validatePassword(pass, user.hash, user.salt);
+      if (isPasswordMatching) {
+        const { hash, salt, ...result } = user;
+        return result;
+      }
     }
+
     return null;
   }
 
   async register(user: any) {
+    if (user.password.length < 8 || user.password.length > 16) {
+      throw new BadRequestException({ statusCode: 400, message: 'Password length must be from 8 to 16 symbols.' })
+    }
     const { hash, salt } = this.hashPassword(user.password);
     user.password = undefined;
     user.passwordConfirmation = undefined;
@@ -49,11 +55,17 @@ export class AuthService {
     user.hash = hash;
     user.salt = salt;
     // user.hash = await bcrypt.hash(user.password, 10);
-    const createdUser = await this.usersService.create(user);
-    createdUser.password = undefined;
-    createdUser.hash = undefined;
-    createdUser.salt = undefined;
-    return createdUser;
+    try {
+      const createdUser = await this.usersService.create(user);
+      createdUser.password = undefined;
+      createdUser.hash = undefined;
+      createdUser.salt = undefined;
+      return createdUser;
+    } catch (e) {
+      e.message = 'This email already registered.';
+      throw new ForbiddenException(e, 'This email already taken.')
+    }
+
   }
 
   async login(user: any) {
@@ -61,9 +73,5 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload),
     };
-  }
-
-  async logout() {
-
   }
 }

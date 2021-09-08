@@ -22,11 +22,9 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(LocalAuthGuard)
   @Get('logout')
-  logout(@Req() req, @Res() res) {
+  logout(@Req() req) {
     req.logout();
-    res.status(200).end();
   }
 
 }

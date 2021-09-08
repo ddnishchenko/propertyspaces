@@ -1,11 +1,10 @@
-import { Injectable, Res } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { DynamoDB, S3, Lambda } from 'aws-sdk';
+import { DynamoDB, S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
 
 const db = new DynamoDB.DocumentClient({});
 const s3 = new S3({});
-const lambda = new Lambda({});
 
 @Injectable()
 export class ProjectsService {
@@ -130,6 +129,13 @@ export class ProjectsService {
       });
       return r;
     });
+  }
+
+  async deleteUser(userId) {
+    const projects = await this.list(userId);
+    const deleteProjects = projects.Items.map(p => this.delete(p.id, userId))
+    return Promise.all(deleteProjects);
+
   }
 
   async createPanorama(projectId, data) {

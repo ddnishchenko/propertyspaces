@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { select, Store } from '@ngrx/store';
+import { skip } from 'rxjs';
 import { logout } from '../../../core/state/core.actions';
-import { AuthService } from '../../../services/auth.service';
-import { UsersService } from '../../../services/users.service';
+import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
+import { deleteAccount, loadAccount, updateAccount } from '../../state/account.actions';
+import { selectAccount } from '../../state/account.selectors';
 
 @Component({
   selector: 'propertyspaces-profile',
@@ -12,25 +14,37 @@ import { UsersService } from '../../../services/users.service';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  profile$;
   form = new FormGroup({
+    avatar: new FormControl(),
     firstName: new FormControl(''),
     lastName: new FormControl(''),
     phone: new FormControl(''),
   });
   constructor(
-    private usersService: UsersService,
-    private store: Store
+    private store: Store,
+    private modalService: NgbModal,
   ) { }
 
   ngOnInit(): void {
-    this.usersService.getProfile().subscribe(user => {
-      this.form.patchValue(user);
-    })
+    this.store.dispatch(loadAccount());
+    this.profile$ = this.store.pipe(
+      select(selectAccount),
+      skip(1)
+    );
   }
   save() {
-    this.usersService.updateProfile(this.form.value).subscribe(user => {
-      console.log(user);
-    })
+    this.store.dispatch(updateAccount({ data: this.form.value }));
+  }
+  deleteProfile() {
+    const modalRef = this.modalService.open(ConfirmationModalComponent);
+    modalRef.componentInstance.title = 'Are you sure you want to delete your account?';
+    modalRef.componentInstance.msg = 'All of your projects will be deleted without the ability to restore them.';
+    modalRef.result.then(value => {
+      if (value) {
+        this.store.dispatch(deleteAccount());
+      }
+    });
   }
   logout() {
     this.store.dispatch(logout());

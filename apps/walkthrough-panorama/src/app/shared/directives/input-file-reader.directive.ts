@@ -9,6 +9,8 @@ export interface InputFileReaderOptions {
    * Does not work with compress: true
    */
   readAs?: 'Text' | 'DataURL' | 'BinaryString' | 'ArrayBuffer';
+  maxWidth?: number;
+  maxHeight?: number;
 }
 
 @Directive({
@@ -34,8 +36,8 @@ export class InputFileReaderDirective implements OnInit, ControlValueAccessor {
       if (this.propertyspacesInputFileReader.compress) {
         new Compressor($event.target.files[0], {
           quality: 0.8,
-          maxWidth: 2560,
-          maxHeight: 1600,
+          maxWidth: this.propertyspacesInputFileReader.maxWidth || 2560,
+          maxHeight: this.propertyspacesInputFileReader.maxHeight || 1600,
           async success(file) {
             $this.value = await fileToBase64(file);
             $this.changed.emit({ file, result: $this.value });

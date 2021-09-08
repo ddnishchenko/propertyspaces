@@ -1,18 +1,26 @@
-<div class="container">
+<div class="container" *ngIf="profile$ | async as profile">
   <main>
     <div class="py-5 text-center">
-      <img class="d-block mx-auto mb-4" src="" alt="Avatar" width="72" height="57">
+      <label for="avatarField" style="cursor: pointer;">
+        <img class="d-block rounded-circle mx-auto mb-4"
+          [src]="form.value.avatar ? 'url(' + form.value.avatar + ')' : './assets/img/avatar-placeholder.jpg'"
+          alt="Avatar" width="128" height="128">
+      </label>
       <h2>Profile</h2>
       <p class="lead">Fill up data about yourselft.</p>
       <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
+      <button type="button" class="btn btn-danger" (click)="deleteProfile()">Delete account</button>
       <a routerLink="/projects" class="btn btn-primary">My projects</a>
     </div>
 
     <div class="row g-5">
       <div class="col-12">
-        <form class="needs-validation" (ngSubmit)="save()" [formGroup]="form">
+        <form class="needs-validation" (ngSubmit)="save()" [formGroup]="form" [propertyspacesConnectForm]="profile">
           <div class="row g-3">
             <div class="col-sm-6">
+              <input type="file" formControlName="avatar"
+                [propertyspacesInputFileReader]="{compress: true, maxWidth: 128, maxHeight: 128}" class="d-none"
+                name="avatarField" id="avatarField">
               <label class="input">
                 <input formControlName="firstName" type="text" class="input__field" maxlength="60" placeholder=" " />
                 <span class="input__label">First Name<sup>*</sup> </span>

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,7 +11,13 @@ import { RolesGuard } from './roles/roles.guard';
 import { CaslModule } from './casl/casl.module';
 
 @Module({
-  imports: [ProjectsModule, AuthModule, UsersModule, CaslModule],
+  imports: [
+    ProjectsModule,
+    AuthModule,
+    UsersModule,
+    CaslModule,
+    ConfigModule.forRoot()
+  ],
   controllers: [AppController],
   providers: [
     AppService,

@@ -31,6 +31,9 @@ export class ApiInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError(e => {
         this.snotifyService.error(e.error.message);
+        if (e.error.message === 'jwt expired') {
+          this.authService.logout();
+        }
         return throwError(() => e);
       })
     );
