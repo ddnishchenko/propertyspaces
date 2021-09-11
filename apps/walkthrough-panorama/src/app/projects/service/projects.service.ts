@@ -33,7 +33,7 @@ export class ProjectsService {
   }
 
   update(id, project) {
-    return this.http.put(`${endpoint}/${id}`, project);
+    return this.http.patch(`${endpoint}/${id}`, project);
   }
 
   delete(id) {

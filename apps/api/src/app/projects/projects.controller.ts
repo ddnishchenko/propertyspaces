@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Role } from '../roles/role.enum';
 import { ProjectsService } from './projects.service';
 
 const objToArr = (obj) => {
@@ -9,24 +10,28 @@ const objToArr = (obj) => {
 
 @Controller('projects')
 export class ProjectsController {
-  constructor(private projectService: ProjectsService) { }
+
+  constructor(
+    private projectService: ProjectsService
+  ) { }
+
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Req() req, @Res() res, @Body() project) {
-    const result = await this.projectService.put({ userId: req.user.id, ...project, panoramas: {}, gallery: {}, createdAt: Date.now() });
-    return res
-      .json({ ...result, panoramas: [], gallery: [] });
+  async create(@Req() req, @Body() body) {
+    const result = await this.projectService.put({ userId: req.user.id, ...body, panoramas: {}, gallery: {}, createdAt: Date.now() });
+    return { ...result, panoramas: [], gallery: [] };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Req() req, @Res() res) {
-    const result = await this.projectService.list(req.user.id);
-    return res.json(result.Items);
+  async findAll(@Req() req) {
+    const userId = req.user.roles.includes(Role.Admin) ? undefined : req.user.id;
+    const result = await this.projectService.list(userId);
+    return result.Items;
   }
 
   @Get(':id')
-  async findOne(@Req() req, @Res() res, @Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     const result = await this.projectService.read(id);
     let gallery = objToArr(result.Item.gallery);
     if (result.Item.gallerySort) {
@@ -34,73 +39,70 @@ export class ProjectsController {
       const sorted = result.Item.gallerySort.map(id => result.Item.gallery[id]);
       gallery = sorted.concat(unsorted);
     }
-    return res.json({
+    return {
       ...result.Item,
       panoramas: objToArr(result.Item.panoramas),
       gallery
-    });
+    };
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(':id')
-  async update(@Req() req, @Res() res, @Param('id') id: string, @Body() body) {
-    const result = await this.projectService.update(id, body, req.user.id);
-    return res.json(result.Attributes);
+  @Patch(':id')
+  async update(@Req() req, @Param('id') id: string, @Body() body) {
+    const result = await this.projectService.update(id, body, req.user);
+    return result.Attributes;
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async remove(@Req() req, @Res() res, @Param('id') id: string) {
-    await this.projectService.delete(id, req.user.id);
-    return res.status(204).end();
+  async remove(@Req() req, @Param('id') id: string) {
+    await this.projectService.delete(id, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/panorama')
   async createPanorama(@Req() req, @Res() res, @Param('id') id: string, @Body() body) {
-    const result = await this.projectService.createPanorama(id, body);
-    return res.status(201).json(objToArr(result.Attributes.panoramas));
+    const result = await this.projectService.createPanorama(id, body, req.user);
+    return objToArr(result.Attributes.panoramas);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/panorama/:key')
-  async getPanorama(@Param('id') id: string, @Param('key') key, @Res() res) {
+  async getPanorama(@Param('id') id: string, @Param('key') key) {
     const result = await this.projectService.getPanorama(id, key);
-    return res.json(result);
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/panorama/:key')
-  async updatePanorama(@Param('id') id: string, @Param('key') key, @Body() body, @Res() res) {
-    const result = await this.projectService.updatePanorama(id, key, body);
-    return res.json(objToArr(result.Attributes.panoramas));
+  async updatePanorama(@Req() req, @Param('id') id: string, @Param('key') key, @Body() body) {
+    const result = await this.projectService.updatePanorama(id, key, body, req.user);
+    return objToArr(result.Attributes.panoramas);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id/panorama/:key')
-  async deletePanorama(@Res() res, @Req() req, @Param('id') id: string, @Param('key') key: string, @Body() body) {
-    await this.projectService.deletePanorama(id, key, body, req.user.id);
-    return res.status(204).end();
+  async deletePanorama(@Req() req, @Param('id') id: string, @Param('key') key: string, @Body() body) {
+    await this.projectService.deletePanorama(id, key, body, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/gallery')
-  async createGalleryItem(@Param('id') id: string, @Body() body, @Res() res) {
-    const result = await this.projectService.addGalleryItem(id, body);
-    return res.status(201).json(objToArr(result.Attributes.gallery));
+  async createGalleryItem(@Req() req, @Param('id') id: string, @Body() body) {
+    const result = await this.projectService.addGalleryItem(id, body, req.user);
+    return objToArr(result.Attributes.gallery);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/gallery/:key')
-  async updateGalleryItem(@Param('id') id: string, @Param('key') key: string, @Body() body, @Res() res) {
-    const result = await this.projectService.updateGalleryItem(id, key, body);
-    return res.json(objToArr(result.Attributes.gallery));
+  async updateGalleryItem(@Req() req, @Param('id') id: string, @Param('key') key: string, @Body() body) {
+    const result = await this.projectService.updateGalleryItem(id, key, body, req.user);
+    return objToArr(result.Attributes.gallery);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id/gallery/:key')
-  async deleteGalleryItem(@Param('id') id: string, @Param('key') key: string, @Body() body, @Res() res) {
-    await this.projectService.deleteGalleryItem(id, key, body);
-    return res.status(204).end();
+  async deleteGalleryItem(@Req() req, @Param('id') id: string, @Param('key') key: string, @Body() body) {
+    await this.projectService.deleteGalleryItem(id, key, body, req.user);
   }
 }

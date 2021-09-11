@@ -80,7 +80,7 @@ export class UsersService {
     for (let k of keys) {
       switch (k) {
         case 'avatar':
-          if (data[k].includes(';base64')) {
+          if (data[k] && data[k].includes(';base64')) {
             const file = Buffer.from(data[k].replace(/^data:image\/\w+;base64,/, ''), 'base64');
             const fileType = data[k].split(';')[0].split('/')[1];
 

@@ -5,6 +5,7 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import { AppModule } from './app/app.module';
 import { json, urlencoded } from 'body-parser';
 import { AllExceptionsFilter } from './app/exception.filter';
+import * as helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -40,6 +41,7 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
     },
     app => {
       const { httpAdapter } = app.get(HttpAdapterHost);
+      app.use(helmet());
       app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
       app.use(json({ limit: '30mb' }));
       app.use(urlencoded({ limit: '30mb', extended: true }));

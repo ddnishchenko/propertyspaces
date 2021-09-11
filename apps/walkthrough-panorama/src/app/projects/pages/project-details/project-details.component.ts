@@ -110,9 +110,9 @@ export class ProjectDetailsComponent implements OnInit {
 
   openMapModal(project) {
     const modal = this.modalService.open(MapModalComponent, { size: 'lg' });
-    modal.componentInstance.project = project;
+    modal.componentInstance.data = project.addr || {};
     modal.result.then(
-      reslove => this.store.dispatch(updateAddressData({ projectId: project.id, data: reslove })),
+      res => this.store.dispatch(updateProject({ projectId: project.id, project: { addr: res } })),
     );
   }
 

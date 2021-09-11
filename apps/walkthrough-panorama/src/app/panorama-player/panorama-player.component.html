@@ -102,26 +102,24 @@
 
   <ng-template #contactTpl>
     <div class="p-4">
-      <table *ngIf="project.profile">
-        <tr *ngIf="project.profile.firstName || project.profile.lastName">
+      <table *ngIf="project.contact">
+        <tr *ngIf="project.contact.firstName || project.contact.lastName">
           <th>Contact person</th>
-          <td>{{ project.profile.firstName }} {{ project.profile.lastName }}</td>
+          <td>{{ project.contact.firstName }} {{ project.contact.lastName }}</td>
         </tr>
-        <tr *ngIf="project.profile.email">
+        <tr *ngIf="project.contact.email">
           <th>Email</th>
-          <td>{{ project.profile.email }}</td>
+          <td>{{ project.contact.email }}</td>
         </tr>
-        <tr *ngIf="project.profile.phone">
+        <tr *ngIf="project.contact.phone">
           <th>Phone</th>
-          <td>{{ project.profile.phone }}</td>
+          <td>{{ project.contact.phone }}</td>
         </tr>
       </table>
       <hr>
-      <div class="media" *ngIf="project.company && project.company !== 'company'">
-        <img *ngIf="!companyForm.value.companyLogo" src="assets/img/icons/camera.svg" alt="Upload photo">
-        <img *ngIf="project.company.companyLogo"
-          [src]="showCompanyLogo(project.projectFolder, companyForm.value.companyLogo, false)"
-          class="mr-3 rounded-circle" [alt]="project.company.name">
+      <div class="media" *ngIf="project.company">
+        <img *ngIf="project.company.logoUrl" [src]="project.company.logoUrl" class="mr-3 rounded-circle"
+          [alt]="project.company.name">
         <div class="media-body">
           <h5 class="mt-0">{{ project.company.name }}</h5>
           <p *ngIf="project.company.address">Address: {{ project.company.address }}</p>
@@ -757,7 +755,7 @@
                           </button>
                         </ng-template>
                         <ng-template ngbPanelContent>
-                          <form [formGroup]="profileForm">
+                          <form [formGroup]="contactForm">
 
                             <label class="input">
                               <input formControlName="firstName" class="input__field" type="text" placeholder=" " />

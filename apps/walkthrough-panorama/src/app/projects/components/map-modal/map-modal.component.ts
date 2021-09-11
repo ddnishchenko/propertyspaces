@@ -30,7 +30,7 @@ export class MapModalComponent implements OnInit {
       mapEnabled: new FormControl(this.data.mapEnabled),
       streetViewEnabled: new FormControl(this.data.streetViewEnabled),
       mapUrl: new FormControl(this.data.mapUrl, [Validators.pattern(urlRegEx)]),
-      streetViewUrl: new FormControl(this.data.streetViewEnabled, [Validators.pattern(urlRegEx)]),
+      streetViewUrl: new FormControl(this.data.streetViewUrl, [Validators.pattern(urlRegEx)]),
       address: new FormControl(this.data.address),
       latitude: new FormControl(this.data.latitude),
       longitude: new FormControl(this.data.longitude)

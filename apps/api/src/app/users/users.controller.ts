@@ -8,15 +8,14 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Request() req) {
-    console.log(req.user);
     const { hash, salt, ...user } = await this.usersService.findById(req.user.id)
     return user;
   }
   @UseGuards(JwtAuthGuard)
   @Patch('profile')
-  async updateProfile(@Req() req, @Res() res, @Body() body) {
+  async updateProfile(@Req() req, @Body() body) {
     const result = await this.usersService.update(req.user.id, body);
-    return res.json(result.Attributes);
+    return result.Attributes;
   }
 
   @UseGuards(JwtAuthGuard)

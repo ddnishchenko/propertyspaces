@@ -132,7 +132,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   form;
   mapForm;
   vrTourSettingsForm;
-  profileForm;
+  contactForm;
   companyForm;
   panoForm;
   descriptionFrom;
@@ -286,7 +286,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       longitude: new FormControl()
     });
 
-    this.profileForm = new FormGroup({
+    this.contactForm = new FormGroup({
       firstName: new FormControl(''),
       lastName: new FormControl(''),
       email: new FormControl(''),
@@ -325,7 +325,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
 
   vrInit(data) {
-    const { addr, description, dollhouse, profile, company } = data;
+    const { addr, description, dollhouse, contact, company } = data;
     if (addr) {
       this.mapForm.patchValue({
         ...addr,
@@ -340,7 +340,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       neighborsFiltering: this.virtualTour.virtualTourService.neighborsFiltering,
       visibilityRadius: this.virtualTour.virtualTourService.defaultVisibilityRadius
     });
-    this.profileForm.patchValue(profile);
+    this.contactForm.patchValue(contact);
     this.companyForm.patchValue(company);
 
     this.descriptionFrom.patchValue({ description });
@@ -451,7 +451,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
   saveContacts(projectId) {
     const data = {
-      profile: this.profileForm.value,
+      contact: this.contactForm.value,
       company: this.companyForm.value
     };
     this.store.dispatch(updateProject({ projectId, project: data }));

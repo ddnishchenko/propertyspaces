@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { DynamoDB, S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
 
+import { Role } from '../roles/role.enum';
 const db = new DynamoDB.DocumentClient({});
 const s3 = new S3({});
 
@@ -16,11 +17,10 @@ export class ProjectsService {
   }
   list(userId?) {
     const FilterExpression = userId ? 'userId = :userId' : undefined;
+    const ExpressionAttributeValues = userId ? { ':userId': userId } : undefined;
     return db.scan({
       TableName: 'projects',
-      ExpressionAttributeValues: {
-        ':userId': userId,
-      },
+      ExpressionAttributeValues,
       ExpressionAttributeNames: { '#name': 'name' },
       ProjectionExpression: 'id,#name,addr',
       FilterExpression
@@ -30,10 +30,10 @@ export class ProjectsService {
     const Item = { id: id ? id : randomUUID(), ...data };
     return db.put({ TableName: 'projects', Item }).promise().then(() => Item);
   }
-  async update(id, body, userId) {
-    const ExpressionAttributeValues = {
-      [`:userId`]: userId
-    };
+  async update(id, body, user) {
+    const isAdmin = user.roles.includes(Role.Admin);
+    const ExpressionAttributeValues = isAdmin ? {} : { [`:userId`]: user.id };
+    const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
     const data = { ...body, updatedAt: Date.now() };
     const excludedKeys = ['id', 'panoramas', 'gallery'];
     const keys = Object.keys(data).filter(k => !excludedKeys.includes(k));
@@ -101,18 +101,19 @@ export class ProjectsService {
       ExpressionAttributeNames,
       ExpressionAttributeValues,
       ReturnValues: 'UPDATED_NEW',
-      ConditionExpression: 'userId = :userId'
+      ConditionExpression
     }).promise();
   }
 
-  delete(id: string, userId) {
-    const ExpressionAttributeValues = {
-      [`:userId`]: userId
-    };
+  delete(id: string, user) {
+    const isAdmin = user.roles.includes(Role.Admin);
+    const ExpressionAttributeValues = isAdmin ? undefined : { [`:userId`]: user.id };
+    const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
+
     return db.delete({
       TableName: 'projects',
       Key: { id },
-      ConditionExpression: 'userId = :userId',
+      ConditionExpression,
       ExpressionAttributeValues
     }).promise().then((r) => {
       s3.listObjects({
@@ -138,11 +139,13 @@ export class ProjectsService {
 
   }
 
-  async createPanorama(projectId, data) {
-    // TODO: prevent other users from creating panoramas to project
+  async createPanorama(projectId, data, user) {
+    const isAdmin = user.roles.includes(Role.Admin);
+    const ExpressionAttributeValues = isAdmin ? {} : { [`:userId`]: user.id };
+    const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
 
     const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    const fileType = data.url.split(';')[0].split('/')[1];
+    const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
 
     const panoId = data.id || randomUUID();
     const panoName = `${panoId}.${fileType}`;
@@ -165,7 +168,7 @@ export class ProjectsService {
 
     if (data.dark_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.dark_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.dark_pano.url.split(';')[0].split('/')[1];
+      const fileType = data.dark_pano.url.split(';')[0].split('/')[1] || 'jpeg';
 
       const panoFileName = `${panoId}_dark`
       const panoName = `${panoFileName}.${fileType}`;
@@ -188,7 +191,7 @@ export class ProjectsService {
     }
     if (data.light_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.light_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.light_pano.url.split(';')[0].split('/')[1];
+      const fileType = data.light_pano.url.split(';')[0].split('/')[1] || 'jpeg';
 
       const panoFileName = `${panoId}_light`
       const panoName = `${panoFileName}.${fileType}`;
@@ -221,8 +224,10 @@ export class ProjectsService {
         '#id': panorama.id
       },
       ExpressionAttributeValues: {
-        ':panorama': panorama
+        ':panorama': panorama,
+        ...ExpressionAttributeValues
       },
+      ConditionExpression,
       ReturnValues: 'UPDATED_NEW'
     }).promise();
 
@@ -239,13 +244,14 @@ export class ProjectsService {
     }).promise().then(result => result.Item.panoramas[key]);
   }
 
-  async updatePanorama(projectId, key, data) {
-    // TODO: prevent other users from creating panoramas to project
-    let panorama = { ...data, updatedAt: Date.now() };
+  async updatePanorama(projectId, key, data, user) {
+
+
+    const panorama = { ...data, updatedAt: Date.now() };
 
     if (data.url.includes(';base64')) {
       const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.url.split(';')[0].split('/')[1];
+      const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
 
       const panoName = `${key}.${fileType}`;
 
@@ -263,7 +269,7 @@ export class ProjectsService {
 
     if (data.dark_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.dark_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.dark_pano.url.split(';')[0].split('/')[1];
+      const fileType = data.dark_pano.url.split(';')[0].split('/')[1] || 'jpeg';
 
       const panoFileName = `${key}_dark`
       const panoName = `${panoFileName}.${fileType}`;
@@ -286,7 +292,7 @@ export class ProjectsService {
     }
     if (data.light_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.light_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.light_pano.url.split(';')[0].split('/')[1];
+      const fileType = data.light_pano.url.split(';')[0].split('/')[1] || 'jpeg';
 
       const panoFileName = `${key}_light`
       const panoName = `${panoFileName}.${fileType}`;
@@ -308,25 +314,30 @@ export class ProjectsService {
       };
     }
     // if (data.hdr_pano.url.includes('base64')) {}
+    const isAdmin = user.roles.includes(Role.Admin);
+    const ExpressionAttributeValues = isAdmin ? {} : { [`:userId`]: user.id };
+    const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
+
 
     return db.update({
       TableName: 'projects',
       Key: { id: projectId },
-      // UpdateExpression: 'set #panoramas = list_append(if_not_exists(#panoramas, :empty_list), :panorama)',
       UpdateExpression: `set #panoramas.#id = :panorama`,
       ExpressionAttributeNames: {
         '#panoramas': 'panoramas',
         '#id': key
       },
       ExpressionAttributeValues: {
-        ':panorama': panorama
+        ':panorama': panorama,
+        ...ExpressionAttributeValues
       },
+      ConditionExpression,
       ReturnValues: 'UPDATED_NEW'
     }).promise();
 
   }
 
-  async createHDRPanorama(projectId, panoramaId) {
+  async createHDRPanorama(projectId, panoramaId, user) {
     // TODO: prevent other users from creating panoramas to project
     const panorama = await this.getPanorama(projectId, panoramaId);
     if (panorama.url && panorama.dark_pano && panorama.light_pano) {
@@ -338,7 +349,7 @@ export class ProjectsService {
         url: '',
         fileName: ''
       };
-      this.updatePanorama(projectId, panoramaId, panorama);
+      this.updatePanorama(projectId, panoramaId, panorama, user);
 
     } else {
 
@@ -346,8 +357,12 @@ export class ProjectsService {
     }
   }
 
-  deletePanorama(projectId, panoId, panorama, userId) {
-    // TODO: prevent other users from creating panoramas to project
+  deletePanorama(projectId, panoId, panorama, user) {
+
+    const isAdmin = user.roles.includes(Role.Admin);
+    const ExpressionAttributeValues = isAdmin ? undefined : { [`:userId`]: user.id };
+    const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
+
     return db.update({
       TableName: 'projects',
       Key: { id: projectId },
@@ -356,10 +371,8 @@ export class ProjectsService {
         '#panoramas': 'panoramas',
         '#key': panoId
       },
-      ExpressionAttributeValues: {
-        ':userId': userId
-      },
-      ConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues,
+      ConditionExpression,
       ReturnValues: 'UPDATED_NEW'
     }).promise().then(() => {
       s3.deleteObject({
@@ -369,9 +382,9 @@ export class ProjectsService {
     });
   }
 
-  async addGalleryItem(projectId, data) {
+  async addGalleryItem(projectId, data, user) {
     const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    const fileType = data.url.split(';')[0].split('/')[1];
+    const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
 
     const photoId = randomUUID();
     const photoName = `${photoId}.${fileType}`;
@@ -392,30 +405,35 @@ export class ProjectsService {
       createdAt: Date.now()
     };
 
+    const isAdmin = user.roles.includes(Role.Admin);
+    const ExpressionAttributeValues = isAdmin ? {} : { [`:userId`]: user.id };
+    const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
+
     return db.update({
       TableName: 'projects',
       Key: { id: projectId },
-      // UpdateExpression: 'set #gallery = list_append(if_not_exists(#gallery, :empty_list), :panorama)',
       UpdateExpression: `set #gallery.#id = :photo`,
       ExpressionAttributeNames: {
         '#gallery': 'gallery',
         '#id': photo.id
       },
       ExpressionAttributeValues: {
-        ':photo': photo
+        ':photo': photo,
+        ...ExpressionAttributeValues
       },
+      ConditionExpression,
       ReturnValues: 'UPDATED_NEW'
     }).promise();
 
   }
 
-  async updateGalleryItem(projectId, photoId, data) {
+  async updateGalleryItem(projectId, photoId, data, user) {
 
-    let photo = { ...data, updatedAt: Date.now() };
+    const photo = { ...data, updatedAt: Date.now() };
 
     if (data.url.includes(';base64')) {
       const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.url.split(';')[0].split('/')[1];
+      const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
 
       const panoName = `${photoId}.${fileType}`;
 
@@ -431,6 +449,10 @@ export class ProjectsService {
 
     }
 
+    const isAdmin = user.roles.includes(Role.Admin);
+    const ExpressionAttributeValues = isAdmin ? {} : { [`:userId`]: user.id };
+    const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
+
     return db.update({
       TableName: 'projects',
       Key: { id: projectId },
@@ -440,13 +462,18 @@ export class ProjectsService {
         '#id': photoId
       },
       ExpressionAttributeValues: {
-        ':photo': photo
+        ':photo': photo,
+        ...ExpressionAttributeValues
       },
+      ConditionExpression,
       ReturnValues: 'UPDATED_NEW'
     }).promise();
   }
 
-  deleteGalleryItem(projectId, photoId, photo) {
+  deleteGalleryItem(projectId, photoId, photo, user) {
+    const isAdmin = user.roles.includes(Role.Admin);
+    const ExpressionAttributeValues = isAdmin ? undefined : { [`:userId`]: user.id };
+    const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
 
     return db.update({
       TableName: 'projects',
@@ -456,6 +483,8 @@ export class ProjectsService {
         '#gallery': 'gallery',
         '#key': photoId
       },
+      ExpressionAttributeValues,
+      ConditionExpression,
       ReturnValues: 'UPDATED_NEW'
     }).promise().then(() => {
       s3.deleteObject({

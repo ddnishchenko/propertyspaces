@@ -9,8 +9,6 @@ function saltPassword(password, salt) {
   return pbkdf2Sync(password, salt, iterations, 64, `sha512`).toString(`hex`);
 }
 
-process.env.SALT_ITRATION
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -54,7 +52,7 @@ export class AuthService {
     user.termsCheck = undefined;
     user.hash = hash;
     user.salt = salt;
-    // user.hash = await bcrypt.hash(user.password, 10);
+
     try {
       const createdUser = await this.usersService.create(user);
       createdUser.password = undefined;
@@ -69,7 +67,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id, roles: user.roles };
     return {
       accessToken: this.jwtService.sign(payload),
     };

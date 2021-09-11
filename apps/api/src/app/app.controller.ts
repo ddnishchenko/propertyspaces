@@ -1,13 +1,12 @@
-import { Controller, Get, Res, UseGuards } from '@nestjs/common';
-
-import { AppService } from './app.service';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { Role } from './roles/role.enum';
 
 @Controller()
 export class AppController {
-  constructor(private appService: AppService) { }
+  constructor() { }
   @UseGuards(JwtAuthGuard)
-  @Get('') index(@Res() res) {
-    return res.status(401).json({ statusCode: 401, message: 'Unauthorized' })
+  @Get('') index(@Req() req) {
+    return req.user.roles.includes(Role.Admin) ? { ...process.env } : {};
   }
 }
