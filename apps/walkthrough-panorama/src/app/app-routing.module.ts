@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AdminGuard } from './core/guards/admin.guard';
 import { AuthGuard } from './core/guards/auth.guard';
 import { LoggedInGuard } from './core/guards/logged-in.guard';
 
@@ -18,6 +19,11 @@ const routes: Routes = [
     path: 'account',
     canActivate: [AuthGuard],
     loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
+  },
+  {
+    path: 'users',
+    canActivate: [AuthGuard, AdminGuard],
+    loadChildren: () => import('./users/users.module').then(m => m.UsersModule)
   },
   {
     path: 'projects',

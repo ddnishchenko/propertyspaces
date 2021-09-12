@@ -1,13 +1,24 @@
-import { Body, Controller, Delete, Get, Patch, Req, Request, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Role } from '../roles/role.enum';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) { }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getUsers(@Req() req) {
+    if (req.user.roles.includes(Role.Admin)) {
+      return this.usersService.list();
+    }
+    throw new ForbiddenException();
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async getProfile(@Request() req) {
+  async getProfile(@Req() req) {
     const { hash, salt, ...user } = await this.usersService.findById(req.user.id)
     return user;
   }
@@ -24,4 +35,34 @@ export class UsersController {
     await this.usersService.delete(req.user);
     req.logout();
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async getUser(@Req() req, @Param('id') id) {
+    if (req.user.roles.includes(Role.Admin)) {
+      const { hash, salt, ...user } = await this.usersService.findById(id);
+      return user;
+    }
+    throw new ForbiddenException();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async updateUser(@Req() req, @Param('id') id, @Body() body) {
+    if (req.user.roles.includes(Role.Admin)) {
+      return this.usersService.update(id, body);
+    }
+    throw new ForbiddenException();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteUser(@Req() req, @Param('id') id, @Body() body) {
+    if (req.user.roles.includes(Role.Admin)) {
+      return this.usersService.delete(id);
+    }
+    throw new ForbiddenException();
+  }
+
+
 }

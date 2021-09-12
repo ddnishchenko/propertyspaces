@@ -37,7 +37,10 @@ export class AuthService {
 
   login(creds) {
     return this.http.post(`${api}auth/login`, creds).pipe(
-      tap((data: { accessToken: string }) => this.accessToken = data.accessToken)
+      tap((data: { accessToken: string; user: any; }) => {
+        this.accessToken = data.accessToken;
+        this.currentUser = data.user;
+      })
     );
   }
 

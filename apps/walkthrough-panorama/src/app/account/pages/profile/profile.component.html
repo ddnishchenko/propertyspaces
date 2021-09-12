@@ -11,6 +11,7 @@
       <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
       <button type="button" class="btn btn-danger" (click)="deleteProfile()">Delete account</button>
       <a routerLink="/projects" class="btn btn-primary">My projects</a>
+      <a *ngIf="profile?.roles?.includes('admin')" routerLink="/users" class="btn btn-primary">Users</a>
     </div>
 
     <div class="row g-5">

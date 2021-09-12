@@ -13,6 +13,17 @@ export type User = any;
 @Injectable()
 export class UsersService {
   constructor(private projectService: ProjectsService) { }
+
+  list() {
+    return db.scan({ TableName: 'users' })
+      .promise()
+      .then(
+        res => res.Items
+          .map(item => ({ ...item, hash: undefined, salt: undefined }))
+          .filter((item: any) => !item.roles.includes(Role.Admin))
+      );
+  }
+
   async create(user) {
     const userId = randomUUID();
 

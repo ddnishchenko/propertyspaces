@@ -30,7 +30,7 @@ export class ProfileComponent implements OnInit {
     this.store.dispatch(loadAccount());
     this.profile$ = this.store.pipe(
       select(selectAccount),
-      skip(1)
+      // skip(1)
     );
   }
   save() {
