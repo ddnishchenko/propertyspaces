@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { DynamoDB, S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
@@ -144,27 +144,33 @@ export class ProjectsService {
     const ExpressionAttributeValues = isAdmin ? {} : { [`:userId`]: user.id };
     const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
 
-    const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
-
+    let panorama = data;
     const panoId = data.id || randomUUID();
-    const panoName = `${panoId}.${fileType}`;
-    const s3Object = await s3.upload({
-      Bucket: 'lidarama1media',
-      Key: `${projectId}/${panoName}`,
-      Body: file,
-      ContentEncoding: 'base64',
-      ACL: 'public-read',
-      ContentType: `image/${fileType}`
-    }).promise();
+    if (data.url.includes(';base64')) {
+      const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+      const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
 
-    const panorama = {
-      ...data,
-      id: panoId,
-      fileName: panoName,
-      url: s3Object.Location,
-      createdAt: Date.now()
-    };
+      const panoName = `${panoId}.${fileType}`;
+      const s3Object = await s3.upload({
+        Bucket: 'lidarama1media',
+        Key: `${projectId}/${panoName}`,
+        Body: file,
+        ContentEncoding: 'base64',
+        ACL: 'public-read',
+        ContentType: `image/${fileType}`
+      }).promise();
+
+      panorama = {
+        ...panorama,
+        id: panoId,
+        fileName: panoName,
+        url: s3Object.Location,
+        createdAt: Date.now()
+      };
+    } else {
+      throw new BadRequestException({ message: 'url parameter should be valid base64 string' });
+    }
+
 
     if (data.dark_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.dark_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
