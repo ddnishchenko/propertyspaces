@@ -175,7 +175,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     return `<iframe src="${this.shareFullscreen}" width="100%" height="720px" frameborder="0" allowfullscreen></iframe>`;
   }
   isQueryFullscreen;
-
+  isSidebarHidden;
   get shareFullscreen() {
     const projectId = this.route.snapshot.params.id;
     const link = location.origin + `/virtual-tour/${projectId}?fullscreen=true`;
@@ -219,6 +219,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.editor = new Editor();
     const projectId = this.route.snapshot.params.id;
     this.isQueryFullscreen = this.route.snapshot.queryParams.fullscreen == 'true';
+    this.isSidebarHidden = this.route.snapshot.queryParams.sidebarHidden == 'true';
     this.isEdit = this.router.url.includes('/projects/vr-tour-model');
     this.createForm();
 

@@ -365,216 +365,222 @@
     </nav>
 
     <main class="panorama-player d-block d-lg-flex"
-      [class.panorama-player-fullscreen]="isFullscreenActive.active || isQueryFullscreen">
+      [class.panorama-player-fullscreen]="isFullscreenActive.active || isQueryFullscreen"
+      [class.panorama-player-no-footer]="isSidebarHidden">
       <!-- [rzHandles]="sidebarSide === 'r' ? 'w' : 'e'" -->
       <div class="boxes navbar-expand-lg d-block d-lg-flex flex-lg-row">
-        <div *ngIf="!isQueryFullscreen" class="sidebar flex-column collapse navbar-collapse" [ngbCollapse]="isCollapsed"
-          [class.sidebar-hidden]="isFullscreenActive.active" #sidebar [class.stick-right]="sidebarSide === 'r'"
-          mwlResizable [style]="styleDeSidbar" (resizing)="onResizeEnd($event); resizeCanvas()"
-          (resizeEnd)="onResizeEnd($event)">
+        <ng-container *ngIf="!isSidebarHidden">
+          <div *ngIf="!isQueryFullscreen" class="sidebar flex-column collapse navbar-collapse"
+            [ngbCollapse]="isCollapsed" [class.sidebar-hidden]="isFullscreenActive.active" #sidebar
+            [class.stick-right]="sidebarSide === 'r'" mwlResizable [style]="styleDeSidbar"
+            (resizing)="onResizeEnd($event); resizeCanvas()" (resizeEnd)="onResizeEnd($event)">
 
-          <ngb-accordion type="dark" [closeOthers]="true" (panelChange)="isOneAccActive = !isOneAccActive"
-            class="sidebar-accordion w-100 h-100 flex-lg-fill" [class.sidebar-accordion-active]="acc.activeIds.length"
-            #acc="ngbAccordion">
-            <ngb-panel *ngIf="project.floors"
-              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/floorplan-white.svg" class="sidebar-header-icon-stroke mr-3">
-                    </svg-icon>
-                    <span class="text-uppercase">Floor Plan</span>
-                  </button>
-                  <button class="btn" (click)="
-                      openSectionModal(modalWrapper, floorplanTpl, 'Floor Plan')
-                    ">
-                    <svg-icon src="assets/img/icons/expand-white.svg"
-                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                  </button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <ng-container *ngTemplateOutlet="floorplanTpl; context: {navigation: true}"></ng-container>
-              </ng-template>
-            </ngb-panel>
+            <ngb-accordion type="dark" [closeOthers]="true" (panelChange)="isOneAccActive = !isOneAccActive"
+              class="sidebar-accordion w-100 h-100 flex-lg-fill" [class.sidebar-accordion-active]="acc.activeIds.length"
+              #acc="ngbAccordion">
+              <ngb-panel *ngIf="project.floors"
+                [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-floorplan')" id="panel-floorplan">
+                <ng-template ngbPanelHeader>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                      <svg-icon src="assets/img/icons/floorplan-white.svg" class="sidebar-header-icon-stroke mr-3">
+                      </svg-icon>
+                      <span class="text-uppercase">Floor Plan</span>
+                    </button>
+                    <button class="btn" (click)="
+                        openSectionModal(modalWrapper, floorplanTpl, 'Floor Plan')
+                      ">
+                      <svg-icon src="assets/img/icons/expand-white.svg"
+                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <ng-container *ngTemplateOutlet="floorplanTpl; context: {navigation: true}"></ng-container>
+                </ng-template>
+              </ngb-panel>
 
-            <ngb-panel *ngIf="project.dollhouse"
-              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-dollhouse')" id="panel-dollhouse">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/floorplan-white.svg" class="sidebar-header-icon-stroke mr-3">
-                    </svg-icon>
-                    <span class="text-uppercase">Dollhouse</span>
-                  </button>
-                  <button class="btn" (click)="
-                      openSectionModal(modalWrapper, dollhouseTpl, 'Dollhouse')
-                    ">
-                    <svg-icon src="assets/img/icons/expand-white.svg"
-                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                  </button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <ng-container *ngTemplateOutlet="dollhouseTpl;"></ng-container>
-              </ng-template>
-            </ngb-panel>
+              <ngb-panel *ngIf="project.dollhouse"
+                [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-dollhouse')" id="panel-dollhouse">
+                <ng-template ngbPanelHeader>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                      <svg-icon src="assets/img/icons/floorplan-white.svg" class="sidebar-header-icon-stroke mr-3">
+                      </svg-icon>
+                      <span class="text-uppercase">Dollhouse</span>
+                    </button>
+                    <button class="btn" (click)="
+                        openSectionModal(modalWrapper, dollhouseTpl, 'Dollhouse')
+                      ">
+                      <svg-icon src="assets/img/icons/expand-white.svg"
+                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <ng-container *ngTemplateOutlet="dollhouseTpl;"></ng-container>
+                </ng-template>
+              </ngb-panel>
 
-            <ngb-panel *ngIf="project.addr?.mapEnabled && +project.addr?.latitude || project.addr?.mapUrl"
-              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-map')" id="panel-map">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/map-marker-white.svg"
-                      class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
-                    <span class="text-uppercase">Map</span>
-                  </button>
-                  <button class="btn" (click)="
-                      openSectionModal(modalWrapper, mapTpl, 'Map')
-                    ">
-                    <svg-icon src="assets/img/icons/expand-white.svg"
-                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                  </button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <ng-container *ngTemplateOutlet="mapTpl"></ng-container>
-              </ng-template>
-            </ngb-panel>
+              <ngb-panel *ngIf="project.addr?.mapEnabled && +project.addr?.latitude || project.addr?.mapUrl"
+                [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-map')" id="panel-map">
+                <ng-template ngbPanelHeader>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                      <svg-icon src="assets/img/icons/map-marker-white.svg"
+                        class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
+                      <span class="text-uppercase">Map</span>
+                    </button>
+                    <button class="btn" (click)="
+                        openSectionModal(modalWrapper, mapTpl, 'Map')
+                      ">
+                      <svg-icon src="assets/img/icons/expand-white.svg"
+                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <ng-container *ngTemplateOutlet="mapTpl"></ng-container>
+                </ng-template>
+              </ngb-panel>
 
-            <ngb-panel *ngIf="project.addr?.streetViewEnabled && +project.addr?.latitude || project.addr?.streetViewUrl"
-              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-sv')" id="panel-sv">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/map-marker-white.svg"
-                      class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
-                    <span class="text-uppercase">Street view</span>
-                  </button>
-                  <button class="btn" (click)="
-                      openSectionModal(modalWrapper, streetViewTpl, 'Street View')
-                    ">
-                    <svg-icon src="assets/img/icons/expand-white.svg"
-                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                  </button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <ng-container *ngTemplateOutlet="streetViewTpl"></ng-container>
-              </ng-template>
-            </ngb-panel>
-
-
-            <ngb-panel *ngIf="project.gallery.length"
-              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')" id="panel-gallery">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/picture-white.svg" class="sidebar-header-icon-stroke mr-3">
-                    </svg-icon>
-                    <span class="text-uppercase">Photo Gallery</span>
-                  </button>
-                  <button class="btn" (click)="
-                      openSectionModal(
-                        modalWrapper,
-                        galleryEditorTpl,
-                        'Gallery'
-                      )
-                    ">
-                    <svg-icon src="assets/img/icons/expand-white.svg"
-                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                  </button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
-              </ng-template>
-            </ngb-panel>
+              <ngb-panel
+                *ngIf="project.addr?.streetViewEnabled && +project.addr?.latitude || project.addr?.streetViewUrl"
+                [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-sv')" id="panel-sv">
+                <ng-template ngbPanelHeader>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                      <svg-icon src="assets/img/icons/map-marker-white.svg"
+                        class="sidebar-header-icon-stroke sidebar-header-icon-fill mr-3"></svg-icon>
+                      <span class="text-uppercase">Street view</span>
+                    </button>
+                    <button class="btn" (click)="
+                        openSectionModal(modalWrapper, streetViewTpl, 'Street View')
+                      ">
+                      <svg-icon src="assets/img/icons/expand-white.svg"
+                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <ng-container *ngTemplateOutlet="streetViewTpl"></ng-container>
+                </ng-template>
+              </ngb-panel>
 
 
+              <ngb-panel *ngIf="project.gallery.length"
+                [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-gallery')" id="panel-gallery">
+                <ng-template ngbPanelHeader>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                      <svg-icon src="assets/img/icons/picture-white.svg" class="sidebar-header-icon-stroke mr-3">
+                      </svg-icon>
+                      <span class="text-uppercase">Photo Gallery</span>
+                    </button>
+                    <button class="btn" (click)="
+                        openSectionModal(
+                          modalWrapper,
+                          galleryEditorTpl,
+                          'Gallery'
+                        )
+                      ">
+                      <svg-icon src="assets/img/icons/expand-white.svg"
+                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
+                </ng-template>
+              </ngb-panel>
 
-            <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-contact')"
-              id="panel-contact">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/contact-white.svg" class="sidebar-header-icon-stroke mr-3">
-                    </svg-icon>
-                    <span class="text-uppercase">Contact</span>
-                  </button>
-                  <button class="btn" (click)="
-                      openSectionModal(modalWrapper, contactTpl, 'Contact')
-                    ">
-                    <svg-icon src="assets/img/icons/expand-white.svg"
-                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                  </button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <ng-container *ngTemplateOutlet="contactTpl"></ng-container>
-              </ng-template>
-            </ngb-panel>
 
 
-            <ngb-panel *ngIf="project.description"
-              [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-description')"
-              id="panel-description">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/contact-white.svg" class="sidebar-header-icon-stroke mr-3">
-                    </svg-icon>
-                    <span class="text-uppercase">Description</span>
-                  </button>
-                  <button class="btn" (click)="
-                      openSectionModal(modalWrapper, descriptionTpl, 'Description')
-                    ">
-                    <svg-icon src="assets/img/icons/expand-white.svg"
-                      class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
-                  </button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <ng-container *ngTemplateOutlet="descriptionTpl"></ng-container>
-              </ng-template>
-            </ngb-panel>
+              <ngb-panel [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-contact')"
+                id="panel-contact">
+                <ng-template ngbPanelHeader>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                      <svg-icon src="assets/img/icons/contact-white.svg" class="sidebar-header-icon-stroke mr-3">
+                      </svg-icon>
+                      <span class="text-uppercase">Contact</span>
+                    </button>
+                    <button class="btn" (click)="
+                        openSectionModal(modalWrapper, contactTpl, 'Contact')
+                      ">
+                      <svg-icon src="assets/img/icons/expand-white.svg"
+                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <ng-container *ngTemplateOutlet="contactTpl"></ng-container>
+                </ng-template>
+              </ngb-panel>
 
-            <ngb-panel *ngIf="isEdit" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-edit')"
-              id="panel-edit">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                  <button ngbPanelToggle class="btn flex-fill text-left p-0">
-                    <svg-icon src="assets/img/icons/edit-white.svg" class="sidebar-header-icon-stroke mr-3"></svg-icon>
-                    <span class="text-uppercase">Edit</span>
-                  </button>
-                  <button class="btn" (click)="
-                      openSectionModal(modalWrapper, editTpl, 'Edit')
-                    ">
-                    <svg-icon src="assets/img/icons/cog-white.svg"
-                      class="sidebar-header-icon-stroke sidebar-header-icon-fill"></svg-icon>
-                  </button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <ng-container *ngTemplateOutlet="editTpl"></ng-container>
-              </ng-template>
-            </ngb-panel>
 
-          </ngb-accordion>
+              <ngb-panel *ngIf="project.description"
+                [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-description')"
+                id="panel-description">
+                <ng-template ngbPanelHeader>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                      <svg-icon src="assets/img/icons/contact-white.svg" class="sidebar-header-icon-stroke mr-3">
+                      </svg-icon>
+                      <span class="text-uppercase">Description</span>
+                    </button>
+                    <button class="btn" (click)="
+                        openSectionModal(modalWrapper, descriptionTpl, 'Description')
+                      ">
+                      <svg-icon src="assets/img/icons/expand-white.svg"
+                        class="sidebar-header-icon-fill sidebar-header-icon-stroke"></svg-icon>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <ng-container *ngTemplateOutlet="descriptionTpl"></ng-container>
+                </ng-template>
+              </ngb-panel>
 
-          <button type="button" (click)="acc.collapseAll()" [ngbCollapse]="!acc.activeIds.length"
-            class="collapse btn btn-danger w-100 text-uppercase rounded-0 p-3 h5 mb-0">
-            <span class="mr-3">Menu</span><img src="assets/img/icons/angle.svg" alt="Collapse active menu">
-          </button>
+              <ngb-panel *ngIf="isEdit" [cardClass]="'sidebar-card ' + panelActiveClass(acc.activeIds, 'panel-edit')"
+                id="panel-edit">
+                <ng-template ngbPanelHeader>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <button ngbPanelToggle class="btn flex-fill text-left p-0">
+                      <svg-icon src="assets/img/icons/edit-white.svg" class="sidebar-header-icon-stroke mr-3">
+                      </svg-icon>
+                      <span class="text-uppercase">Edit</span>
+                    </button>
+                    <button class="btn" (click)="
+                        openSectionModal(modalWrapper, editTpl, 'Edit')
+                      ">
+                      <svg-icon src="assets/img/icons/cog-white.svg"
+                        class="sidebar-header-icon-stroke sidebar-header-icon-fill"></svg-icon>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                  <ng-container *ngTemplateOutlet="editTpl"></ng-container>
+                </ng-template>
+              </ngb-panel>
 
-          <div mwlResizeHandle [resizeEdges]="{
-              right: sidebarSide !== 'r',
-              left: sidebarSide === 'r'
-            }" class="resize-handle d-none d-lg-flex align-items-center justify-content-center"
-            [class.resize-handle-left]="sidebarSide !== 'r'" [class.resize-handle-right]="sidebarSide === 'r'">
-            <div><img src="assets/img/icons/resize.svg" alt="Resize" /></div>
+            </ngb-accordion>
+
+            <button type="button" (click)="acc.collapseAll()" [ngbCollapse]="!acc.activeIds.length"
+              class="collapse btn btn-danger w-100 text-uppercase rounded-0 p-3 h5 mb-0">
+              <span class="mr-3">Menu</span><img src="assets/img/icons/angle.svg" alt="Collapse active menu">
+            </button>
+
+            <div mwlResizeHandle [resizeEdges]="{
+                right: sidebarSide !== 'r',
+                left: sidebarSide === 'r'
+              }" class="resize-handle d-none d-lg-flex align-items-center justify-content-center"
+              [class.resize-handle-left]="sidebarSide !== 'r'" [class.resize-handle-right]="sidebarSide === 'r'">
+              <div><img src="assets/img/icons/resize.svg" alt="Resize" /></div>
+            </div>
           </div>
-        </div>
+        </ng-container>
+
         <div class="content">
           <div class="gallery-wrapper" *ngIf="project.gallery">
             <div class="close-gallery" *ngIf="isGalleryOpened" (click)="closeGallery()">
@@ -1029,10 +1035,13 @@
       </div>
     </main>
 
-    <footer *ngIf="!isQueryFullscreen" [class.d-none]="isFullscreenActive.active || isQueryFullscreen"
-      class="footer text-white text-center p-4">
-      © 2021 Copyright Lidarama
-    </footer>
+    <ng-container *ngIf="!isSidebarHidden">
+      <footer *ngIf="!isQueryFullscreen" [class.d-none]="isFullscreenActive.active || isQueryFullscreen"
+        class="footer text-white text-center p-4">
+        © 2021 Copyright Lidarama
+      </footer>
+    </ng-container>
+
   </ng-container>
 
 

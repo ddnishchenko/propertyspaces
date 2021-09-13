@@ -65,6 +65,9 @@
 .panorama-player {
   position: relative;
   height: calc(100vh - 67px - 72px);
+  &-no-footer {
+    height: calc(100vh - 67px);
+  }
   &-fullscreen {
     height: 100vh !important;
   }
