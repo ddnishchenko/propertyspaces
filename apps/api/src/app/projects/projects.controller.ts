@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Role } from '../roles/role.enum';
 import { ProjectsService } from './projects.service';
@@ -24,8 +24,8 @@ export class ProjectsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Req() req) {
-    const userId = req.user.roles.includes(Role.Admin) ? undefined : req.user.id;
+  async findAll(@Req() req, @Query('user') user) {
+    const userId = req.user.roles.includes(Role.Admin) ? user : req.user.id;
     const result = await this.projectService.list(userId);
     return result.Items;
   }

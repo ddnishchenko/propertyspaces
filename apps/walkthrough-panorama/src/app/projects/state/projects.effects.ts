@@ -24,6 +24,16 @@ export class ProjectsEffects {
   )
   );
 
+  loadProjectsByUser$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.loadProjectsByUser),
+    mergeMap(
+      ({ userId }) => this.projectsService.list(userId).pipe(
+        map(projects => ProjectsActions.loadProjectsSuccess({ projects }))
+      )
+    )
+  )
+  );
+
   loadProject$ = createEffect(() => this.actions$.pipe(
     ofType(ProjectsActions.loadProject),
     mergeMap(

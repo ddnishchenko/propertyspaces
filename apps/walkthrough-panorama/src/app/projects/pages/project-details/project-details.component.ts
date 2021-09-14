@@ -11,7 +11,7 @@ import { ConfirmationModalComponent } from '../../../shared/components/confirmat
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
-import { deletePanorama, deleteProjects, loadProject, updateAddressData, updatePanorama, updateProject } from '../../state/projects.actions';
+import { deletePanorama, deleteProjects, loadProject, updatePanorama, updateProject } from '../../state/projects.actions';
 import { selectProject } from '../../state/projects.selectors';
 
 @Component({

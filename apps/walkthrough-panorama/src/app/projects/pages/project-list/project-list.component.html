@@ -41,11 +41,20 @@
         <div class="card-body">
           <h4 class="text-center">Project Panoramas</h4>
 
+          <div *ngIf="isAdmin">
+            <h3>Filter by user</h3>
+            <select class="custom-select" (change)="filterByUser($event)">
+              <option value="" selected>---Select user---</option>
+              <option *ngFor="let user of users$ | async" [value]="user.id">{{user.email}}</option>
+            </select>
+          </div>
+
           <table class="table">
             <thead>
               <tr>
                 <th>#</th>
                 <th scope="col">Name</th>
+                <th>Created at</th>
                 <th>Address</th>
                 <th class="text-right" scope="col">Action</th>
               </tr>
@@ -62,6 +71,7 @@
                 <th scope="row">
                   <a [routerLink]="[project.id]">{{ project.name }}</a>
                 </th>
+                <td>{{project.createdAt | date}}</td>
                 <td>
                   {{ project.addr?.address }}
                 </td>

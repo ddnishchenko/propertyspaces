@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { logout } from '../../../core/state/core.actions';
+import { AuthService } from '../../../services/auth.service';
+import { UsersService } from '../../../services/users.service';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
-import { createProject, deleteProjects, loadProjects } from '../../state/projects.actions';
+import { createProject, deleteProjects, loadProjects, loadProjectsByUser } from '../../state/projects.actions';
 import { selectProjects } from '../../state/projects.selectors';
 
 @Component({
@@ -16,12 +18,20 @@ export class ProjectListComponent implements OnInit {
   isMenuCollapsed = true;
   projectIds = [];
   projects$ = this.store.pipe(select(selectProjects));
+  users$;
+  isAdmin;
   constructor(
     private modalService: NgbModal,
-    private store: Store
+    private store: Store,
+    private authService: AuthService,
+    private usersService: UsersService
   ) { }
 
   ngOnInit(): void {
+    this.isAdmin = this.authService.currentUser.roles.includes('admin');
+    if (this.isAdmin) {
+      this.users$ = this.usersService.getUsers();
+    }
     this.store.dispatch(loadProjects());
   }
 
@@ -67,6 +77,11 @@ export class ProjectListComponent implements OnInit {
         this.store.dispatch(logout())
       }
     })
+  }
+
+  filterByUser($event) {
+    const userId = $event.target.value;
+    this.store.dispatch(loadProjectsByUser({ userId }));
   }
 
 }

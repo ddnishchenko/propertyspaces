@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
@@ -20,8 +20,9 @@ export class ProjectsService {
     private http: HttpClient
   ) { }
 
-  list(): Observable<Project[]> {
-    return this.http.get<Project[]>(endpoint);
+  list(userId?): Observable<Project[]> {
+    const params = userId ? new HttpParams({ fromObject: { user: userId } }) : undefined;
+    return this.http.get<Project[]>(endpoint, { params });
   }
 
   create(project) {

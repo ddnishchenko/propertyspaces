@@ -22,7 +22,7 @@ export class ProjectsService {
       TableName: 'projects',
       ExpressionAttributeValues,
       ExpressionAttributeNames: { '#name': 'name' },
-      ProjectionExpression: 'id,#name,addr',
+      ProjectionExpression: 'id,#name,addr,userId,createdAt,updatedAt',
       FilterExpression
     }).promise();
   }
@@ -148,7 +148,8 @@ export class ProjectsService {
     const panoId = data.id || randomUUID();
     if (data.url.includes(';base64')) {
       const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
+      let fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
+      fileType = fileType === '9j' ? 'jpeg' : fileType;
 
       const panoName = `${panoId}.${fileType}`;
       const s3Object = await s3.upload({
@@ -174,7 +175,8 @@ export class ProjectsService {
 
     if (data.dark_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.dark_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.dark_pano.url.split(';')[0].split('/')[1] || 'jpeg';
+      let fileType = data.dark_pano.url.split(';')[0].split('/')[1] || 'jpeg';
+      fileType = fileType === '9j' ? 'jpeg' : fileType;
 
       const panoFileName = `${panoId}_dark`
       const panoName = `${panoFileName}.${fileType}`;
@@ -197,7 +199,8 @@ export class ProjectsService {
     }
     if (data.light_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.light_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.light_pano.url.split(';')[0].split('/')[1] || 'jpeg';
+      let fileType = data.light_pano.url.split(';')[0].split('/')[1] || 'jpeg';
+      fileType = fileType === '9j' ? 'jpeg' : fileType;
 
       const panoFileName = `${panoId}_light`
       const panoName = `${panoFileName}.${fileType}`;
@@ -257,7 +260,8 @@ export class ProjectsService {
 
     if (data.url.includes(';base64')) {
       const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
+      let fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
+      fileType = fileType === '9j' ? 'jpeg' : fileType;
 
       const panoName = `${key}.${fileType}`;
 
@@ -275,7 +279,8 @@ export class ProjectsService {
 
     if (data.dark_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.dark_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.dark_pano.url.split(';')[0].split('/')[1] || 'jpeg';
+      let fileType = data.dark_pano.url.split(';')[0].split('/')[1] || 'jpeg';
+      fileType = fileType === '9j' ? 'jpeg' : fileType;
 
       const panoFileName = `${key}_dark`
       const panoName = `${panoFileName}.${fileType}`;
@@ -298,7 +303,8 @@ export class ProjectsService {
     }
     if (data.light_pano?.url.includes(';base64')) {
       const file = Buffer.from(data.light_pano.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      const fileType = data.light_pano.url.split(';')[0].split('/')[1] || 'jpeg';
+      let fileType = data.light_pano.url.split(';')[0].split('/')[1] || 'jpeg';
+      fileType = fileType === '9j' ? 'jpeg' : fileType;
 
       const panoFileName = `${key}_light`
       const panoName = `${panoFileName}.${fileType}`;

@@ -7,6 +7,11 @@ export const loadProjects = createAction(
   `${prefix} Load Projects`
 );
 
+export const loadProjectsByUser = createAction(
+  `${prefix} Load Projects by user`,
+  props<{ userId: string }>()
+);
+
 export const loadProjectsSuccess = createAction(
   `${prefix} Load Projects Success`,
   props<{ projects: Project[] }>()
