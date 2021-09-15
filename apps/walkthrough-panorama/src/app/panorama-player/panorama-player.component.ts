@@ -469,7 +469,6 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.currentPanorama = pano;
     const floor = pano.floor;
     this.activeFloor = floor;
-
     this.panoForm.patchValue(pano);
     this.vrTourSettingsForm.patchValue({
       panoCameraStartAngle: this.virtualTour.virtualTourService.currentPano.panoCameraStartAngle || 0,
