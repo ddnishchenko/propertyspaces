@@ -226,11 +226,10 @@ export class ProjectsService {
     return db.update({
       TableName: 'projects',
       Key: { id: projectId },
-      // UpdateExpression: 'set #panoramas = list_append(if_not_exists(#panoramas, :empty_list), :panorama)',
       UpdateExpression: `set #panoramas.#id = :panorama`,
       ExpressionAttributeNames: {
         '#panoramas': 'panoramas',
-        '#id': panorama.id
+        '#id': panoId
       },
       ExpressionAttributeValues: {
         ':panorama': panorama,
