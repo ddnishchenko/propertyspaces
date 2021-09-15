@@ -63,7 +63,7 @@ export class ProjectsController {
   @Post(':id/panorama')
   async createPanorama(@Req() req, @Res() res, @Param('id') id: string, @Body() body) {
     const result = await this.projectService.createPanorama(id, body, req.user);
-    return objToArr(result.Attributes.panoramas);
+    return res.json(objToArr(result.Attributes.panoramas));
   }
 
   @UseGuards(JwtAuthGuard)
