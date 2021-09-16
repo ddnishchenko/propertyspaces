@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ChangeEmailDto } from '../request-dto/change-email.dto';
 import { Role } from '../roles/role.enum';
 import { UsersService } from './users.service';
 
@@ -34,6 +35,14 @@ export class UsersController {
   async deleteProfile(@Req() req) {
     await this.usersService.delete(req.user);
     req.logout();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('profile/change-email')
+  async changeEmail(@Req() req, @Body() body: ChangeEmailDto) {
+    if (body.email) {
+      await this.usersService.changeEmail(req.user.id, req.user.email, body.email);
+    }
   }
 
   @UseGuards(JwtAuthGuard)

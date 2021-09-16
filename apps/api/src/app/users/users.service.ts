@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { DynamoDB, S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
@@ -12,7 +12,9 @@ export type User = any;
 
 @Injectable()
 export class UsersService {
-  constructor(private projectService: ProjectsService) { }
+  constructor(
+    private projectService: ProjectsService
+  ) { }
 
   list() {
     return db.scan({ TableName: 'users' })
@@ -148,5 +150,60 @@ export class UsersService {
         }
       ]
     }).promise();
+  }
+
+  async changeEmail(userId, oldEmail, newEmail) {
+
+    return db.transactWrite({
+      TransactItems: [
+        {
+          Delete: {
+            TableName: 'uniques',
+            Key: { value: oldEmail }
+          }
+        },
+        {
+          Put: {
+            TableName: 'uniques',
+            ConditionExpression: 'attribute_not_exists(#pk)',
+            ExpressionAttributeNames: {
+              '#pk': 'value',
+            },
+            Item: {
+              value: newEmail,
+              type: 'email',
+              userId
+            }
+          }
+        },
+        {
+          Update: {
+            TableName: 'users',
+            Key: { id: userId },
+            UpdateExpression: 'set email = :email',
+            ExpressionAttributeValues: {
+              ':email': newEmail
+            }
+          }
+        }
+      ]
+    }).promise();
+
+  }
+
+  async changePassword(userId, hash, salt) {
+    await db.update({
+      TableName: 'users',
+      Key: { id: userId },
+      UpdateExpression: 'set #hash = :hash, #salt = :salt',
+      ExpressionAttributeValues: {
+        ':hash': hash,
+        ':salt': salt
+      },
+      ExpressionAttributeNames: {
+        '#hash': 'hash',
+        '#salt': 'salt',
+      }
+    }).promise()
   }
 }
