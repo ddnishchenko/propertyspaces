@@ -145,7 +145,8 @@ export class ProjectsService {
     const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
 
     let panorama = data;
-    const panoId = data.id || randomUUID();
+    panorama.id = data.id || randomUUID()
+    const panoId = panorama.id;
     if (data.url.includes(';base64')) {
       const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
       let fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';

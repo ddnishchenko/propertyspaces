@@ -113,7 +113,8 @@ export class PanoramaFormComponent implements OnInit {
   }
 
   submit(id) {
-    this.activeModal.close({ ...this.pano, ...this.form.value, id });
+    this.form.patchValue({ id });
+    this.activeModal.close({ ...this.pano, ...this.form.value });
   }
 
   async makeHdr(name) {

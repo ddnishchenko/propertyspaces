@@ -104,7 +104,7 @@
 #fullscreen {
   position: absolute;
   top: 0;
-  right: 13px;
+  left: 13px;
 }
 
 #share-fullscreen-embed {
@@ -115,10 +115,10 @@
 .edit-nav-points-form {
   font-size: 1rem;
   position: absolute;
-  top: 10px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  border-radius: 15px;
+  border-radius: 15px 15px 0 0;
   min-width: 300px;
 }
 
@@ -447,6 +447,17 @@ gallery {
   min-height: calc(68vh + 5px);
 }
 
+.main-scene-menu-bar {
+  position: absolute;
+  top: 37px;
+  right: 41px;
+}
+.main-scene-menu-bar-bg {
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
 @media screen and (min-height: 700px) {
   .canvas-modal {
     &-description {
@@ -488,7 +499,7 @@ gallery {
   }
   #fullscreen {
     top: 33px;
-    right: 50px;
+    left: 50px;
   }
   #share-fullscreen-embed {
     top: 33px;

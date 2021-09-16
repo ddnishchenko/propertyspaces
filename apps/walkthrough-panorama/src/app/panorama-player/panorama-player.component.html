@@ -339,20 +339,16 @@
 
         <div class="d-flex flex-wrap ml-auto">
 
-          <div>
-            <button type="button" class="btn btn-link text-white" (click)="openShareModal(shareModal)"><i
-                class="fa fa-lg fa-share-alt"></i></button>
-          </div>
-
-
           <button *ngIf="!isAuthenticated" type="button" routerLink="/auth"
             class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
             <span>Log in</span>
           </button>
+
           <button type="button" *ngIf="isAuthenticated" (click)="logout()"
             class="btn btn-lg btn-dark rounded-pill btn-black text-uppercase border-1 border-white ml-3 px-5">
-            <span>Log out</span>
+            <span>Log out <img src="assets/img/icons/exit-icon.svg" alt="Logout"></span>
           </button>
+
           <button *ngIf="isEdit && isAuthenticated" type="button"
             class="btn btn-danger rounded-pill text-uppercase border-1 border-white ml-3 px-5">
             <span>Publish</span>
@@ -369,7 +365,7 @@
       [class.panorama-player-no-footer]="isSidebarHidden">
       <!-- [rzHandles]="sidebarSide === 'r' ? 'w' : 'e'" -->
       <div class="boxes navbar-expand-lg d-block d-lg-flex flex-lg-row">
-        <ng-container *ngIf="!isSidebarHidden">
+        <ng-container *ngIf="false">
           <div *ngIf="!isQueryFullscreen" class="sidebar flex-column collapse navbar-collapse"
             [ngbCollapse]="isCollapsed" [class.sidebar-hidden]="isFullscreenActive.active" #sidebar
             [class.stick-right]="sidebarSide === 'r'" mwlResizable [style]="styleDeSidbar"
@@ -608,17 +604,62 @@
 
           <div class="main-scene-wrapper" #sceneWrapper [style.width]="canvasAspect(sceneWrapper)">
 
-            <ng-container *ngIf="!activeEditProperty">
-              <button (click)="toggleFullscreen()" type="button" class="btn" id="fullscreen">
-                <img src="assets/img/icons/expand.svg" alt="Fullscreen">
-              </button>
-              <button *ngIf="!isQueryFullscreen" (click)="openShareModal(shareFullscreen)" type="button"
-                id="share-fullscreen-embed" class="position-absolute btn"><i class="fa fa-lg fa-share-alt"></i></button>
-            </ng-container>
+            <div class="main-scene-menu-bar"
+              *ngIf="!activeEditProperty || (activeEditProperty === editProperties.allPoints || activeEditProperty === editProperties.activePoint)">
 
-            <button
-              *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty"
-              (click)="activeEditProperty = ''" type="button" class="btn" id="fullscreen">
+              <div class="main-scene-menu-bar-bg">
+
+                <div class="d-inline-block border-right border-dark p-1">
+
+                  <ng-container *ngIf="isAuthenticated">
+
+                    <button type="button" class="btn" (click)="activeEditProperty = editProperties.allPoints">
+                      <img src="assets/img/icons/edit.svg" alt="Edit nav points">
+                    </button>
+
+                    <button type="button" class="btn" (click)="activeEditProperty = editProperties.createGallery">
+                      <img src="assets/img/icons/camera-icon.svg" alt="Add photo gallery">
+                    </button>
+
+                  </ng-container>
+
+                  <button type="button" class="btn"
+                    (click)="openSectionModal(modalWrapper, galleryEditorTpl, 'Gallery')">
+                    <img src="assets/img/icons/picture.svg" alt="Open gallery">
+                  </button>
+
+                  <button *ngIf="!isQueryFullscreen" type="button" class="btn"
+                    (click)="openShareModal(shareFullscreen)"><i class="fa fa-lg fa-share-alt"></i></button>
+
+                  <button (click)="toggleFullscreen()" type="button" class="btn">
+                    <img src="assets/img/icons/expand.svg" alt="Fullscreen">
+                  </button>
+
+                </div>
+
+                <div *ngIf="isAuthenticated" class="d-inline-block py-1 px-3">
+                  <button type="button" class="btn btn-danger rounded-pill px-5">Publish Changes</button>
+                </div>
+
+              </div>
+
+              <div
+                *ngIf="activeEditProperty === editProperties.allPoints || activeEditProperty === editProperties.activePoint"
+                class="d-flex mt-4">
+                <button type="button" class="btn flex-fill mr-1"
+                  [class.main-scene-menu-bar-bg]="activeEditProperty !== editProperties.allPoints"
+                  [class.btn-danger]="activeEditProperty === editProperties.allPoints"
+                  (click)="activeEditProperty = editProperties.allPoints">EDIT ALL NAV POINTS</button>
+                <button type="button" class="btn flex-fill"
+                  [class.main-scene-menu-bar-bg]="activeEditProperty !== editProperties.activePoint"
+                  [class.btn-danger]="activeEditProperty === editProperties.activePoint"
+                  (click)="activeEditProperty = editProperties.activePoint">EDIT ACTIVE NAV POINT</button>
+              </div>
+
+            </div>
+
+            <button *ngIf="activeEditProperty" (click)="activeEditProperty = ''" type="button" class="btn"
+              id="fullscreen">
               <img src="assets/img/icons/cross-white.svg" alt="Fullscreen">
             </button>
 
