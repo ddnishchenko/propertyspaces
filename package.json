@@ -80,6 +80,8 @@
     "bcrypt": "^5.0.1",
     "bootstrap": "^4.6.0",
     "caniuse-lite": "^1.0.30001214",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "compress-base64": "^1.0.2",
     "compressorjs": "^1.0.7",
     "express": "^4.15.2",

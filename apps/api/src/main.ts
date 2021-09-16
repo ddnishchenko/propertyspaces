@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { ServerlessNestjsApplicationFactory } from 'serverless-lambda-nestjs';
 import { APIGatewayProxyHandler } from 'aws-lambda';
@@ -30,7 +30,7 @@ if (process.env.NX_CLI_SET) {
 
 // Run Nestjs application in AWS Lambda
 export const handler: APIGatewayProxyHandler = async (event, context) => {
-  const app = new ServerlessNestjsApplicationFactory<AppModule>(
+  const application = new ServerlessNestjsApplicationFactory<AppModule>(
     AppModule,
     {
       // NestFactory.create's option object
@@ -43,11 +43,12 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
       const { httpAdapter } = app.get(HttpAdapterHost);
       app.use(helmet());
       app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+      app.useGlobalPipes(new ValidationPipe());
       app.use(json({ limit: '30mb' }));
       app.use(urlencoded({ limit: '30mb', extended: true }));
       return app;
     }
   );
-  const result = await app.run(event, context);
+  const result = await application.run(event, context);
   return result;
 };
