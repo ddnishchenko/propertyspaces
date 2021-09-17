@@ -5,12 +5,14 @@ import { of, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 /** Same Origin regular expression */
-export const SAMEORIGIN = new InjectionToken<RegExp>("wizdm.sameorigin.regex", { factory: () => {
+export const SAMEORIGIN = new InjectionToken<RegExp>("wizdm.sameorigin.regex", {
+  factory: () => {
 
-  // Test the given URL to start with "data:" or "blob:" or the current host
-  return new RegExp(`^data:|^blob:|^http(?:s)?:\/\/${window.location.host}`);
+    // Test the given URL to start with "data:" or "blob:" or the current host
+    return new RegExp(`^data:|^blob:|^http(?:s)?:\/\/${window.location.host}`);
 
-}});
+  }
+});
 
 @Directive({
   selector: 'a[download]',
@@ -28,9 +30,9 @@ export class DownloadDirective implements OnDestroy {
   private href: string;
 
   constructor(@Inject(SAMEORIGIN) private sameOrigin: RegExp,
-                                  private http: HttpClient,
-                                  private ref: ElementRef<HTMLAnchorElement>,
-                                  private sanitizer: DomSanitizer) {}
+    private http: HttpClient,
+    private ref: ElementRef<HTMLAnchorElement>,
+    private sanitizer: DomSanitizer) { }
 
   // Turns the 'download' attribute into an input
   @HostBinding('attr.download')
@@ -40,7 +42,7 @@ export class DownloadDirective implements OnDestroy {
   @Input('href') set source(href: string) {
 
     // Revokes the previous URL object, if any
-    if(this.blob) { URL.revokeObjectURL(this.blob); this.blob = undefined; }
+    if (this.blob) { URL.revokeObjectURL(this.blob); this.blob = undefined; }
 
     // Resets possible errors
     this.error = false;
@@ -55,16 +57,16 @@ export class DownloadDirective implements OnDestroy {
   }
 
   // Listens to the click events
-  @HostListener('click') onClick() {
-
+  @HostListener('click', ['$event']) onClick($event) {
+    // $event.preventDefault();
     // Do nothing on empty href
-    if(!this.href || this.busy) { return false; }
+    if (!this.href || this.busy) { return false; }
 
     // Proceed with the download on files from the same origin
-    if(this.error || this.sameOrigin.test(this.href)) { return true; }
+    if (this.error || this.sameOrigin.test(this.href)) { return true; }
 
     // Unsubscribes previous subscription, if any
-    if(this.sub) { this.sub.unsubscribe(); }
+    if (this.sub) { this.sub.unsubscribe(); }
 
     // Starts processing
     this.busy = true;
@@ -73,10 +75,10 @@ export class DownloadDirective implements OnDestroy {
     this.sub = this.http.get(this.href, { responseType: "blob" }).pipe(
 
       // Creates the URL object ready for download
-      map( blob => this.blob = URL.createObjectURL(blob) ),
+      map(blob => this.blob = URL.createObjectURL(blob)),
 
       // Catches possible errors such as CORS not allowing the file download
-      catchError( error => {
+      catchError(error => {
 
         // Reports the error preventing the download
         console.error("Unable to download the source file", error);
@@ -88,7 +90,7 @@ export class DownloadDirective implements OnDestroy {
         return of(this.href);
       })
 
-    ).subscribe( url => {
+    ).subscribe(url => {
 
       // Updates the href with the blob url on success
       this.href = url;
@@ -97,7 +99,7 @@ export class DownloadDirective implements OnDestroy {
       this.busy = false;
 
       // Triggers another click event making sure the [href] gets updated first
-      setTimeout( () => this.ref.nativeElement.click() );
+      setTimeout(() => this.ref.nativeElement.click());
     });
 
     // Prevents default
@@ -107,9 +109,9 @@ export class DownloadDirective implements OnDestroy {
   ngOnDestroy() {
 
     // Revokes the URL object
-    if(this.blob) { URL.revokeObjectURL(this.blob); }
+    if (this.blob) { URL.revokeObjectURL(this.blob); }
 
     // Unsubscribes the encoder
-    if(this.sub) { this.sub.unsubscribe(); }
+    if (this.sub) { this.sub.unsubscribe(); }
   }
 }

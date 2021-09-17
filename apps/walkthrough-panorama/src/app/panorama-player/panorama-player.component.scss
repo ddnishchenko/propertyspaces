@@ -64,7 +64,7 @@
 
 .panorama-player {
   position: relative;
-  height: calc(100vh - 67px - 72px);
+  height: calc(100vh - 72px);
   &-no-footer {
     height: calc(100vh - 67px);
   }
@@ -74,6 +74,7 @@
 }
 
 .footer {
+  display: none;
   background: #231f20;
 }
 .boxes {
@@ -103,8 +104,8 @@
 
 #fullscreen {
   position: absolute;
-  top: 0;
-  left: 13px;
+  top: 30;
+  left: 20px;
 }
 
 #share-fullscreen-embed {
@@ -449,8 +450,8 @@ gallery {
 
 .main-scene-menu-bar {
   position: absolute;
-  top: 37px;
-  right: 41px;
+  top: 5px;
+  right: 16px;
 }
 .main-scene-menu-bar-bg {
   background: rgba(255, 255, 255, 0.55);
@@ -496,6 +497,10 @@ gallery {
     // transition: height 0.3s ease-in;
     // width: 100%;
     // border-right: 0;
+  }
+  .main-scene-menu-bar {
+    top: 37px;
+    right: 41px;
   }
   #fullscreen {
     top: 33px;

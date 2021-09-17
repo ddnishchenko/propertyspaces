@@ -162,6 +162,8 @@ export class ProjectsService {
         ContentType: `image/${fileType}`
       }).promise();
 
+      console.log(s3Object);
+
       panorama = {
         ...panorama,
         id: panoId,

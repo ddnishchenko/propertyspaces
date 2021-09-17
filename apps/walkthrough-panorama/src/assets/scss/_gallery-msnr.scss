@@ -62,6 +62,7 @@
   position: relative;
   margin: 0;
   padding: 0;
+  /*
   &:before,
   &:after {
     content: '';
@@ -76,6 +77,20 @@
   }
   &:after {
     border-width: 0;
+  }
+  */
+  &-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0, 0.75);
+  }
+  &-download {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
   }
   img {
     display: block;

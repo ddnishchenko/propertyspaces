@@ -120,6 +120,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   );
   loading = true;
   isCollapsed = true;
+  isCollapsedToolbar = true;
   isOneAccActive = false;
   editor: Editor;
   isGalleryOpened = false;
@@ -147,6 +148,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   editProperties = {
     allPoints: 'allPoints',
     activePoint: 'activePoint',
+    mobilePointsMenu: 'mobilePointsMenu',
     floorplan: 'floorplan',
     dollhouse: 'dollhouse',
     createGallery: 'createGallery',
@@ -155,7 +157,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     editContact: 'editContact',
     editPano: 'editPano',
     changeMenu: 'changeMenu',
-    description: 'description'
+    description: 'description',
   };
   activeEditProperty = '';
   isStreetViewVisible = true;

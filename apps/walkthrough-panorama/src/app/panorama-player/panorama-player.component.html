@@ -84,11 +84,17 @@
 
   <ng-template #galleryTpl let-closeModal>
     <div *ngIf="project.gallery.length" class="masonry-grid">
-      <div *ngFor="let img of project.gallery | gallery; index as i" class="masonry-grid-item"
-        (click)="openImage(i, closeModal)">
+      <div *ngFor="let img of project.gallery | gallery; index as i" class="masonry-grid-item">
         <figure class="gallery-image m-0">
           <img class="img-fluid gallery-img" [src]="img.data.src" [alt]="img.data.thumb" />
-          <figcaption>{{ img.data.name }}</figcaption>
+          <div class="d-flex align-items-center justify-content-center gallery-image-shadow"
+            (click)="openImage(i, closeModal)">
+            <img src="assets/img/icons/eye.svg" alt="eye">
+          </div>
+          <a class="btn btn-danger rounded-circle p-1 gallery-image-download" title="Download"
+            [download]="img.data.name" [href]="img.data.src"><img src="assets/img/icons/download.svg"
+              alt="Download"></a>
+          <!-- <figcaption>{{ img.data.name }}</figcaption> -->
         </figure>
       </div>
     </div>
@@ -605,61 +611,88 @@
           <div class="main-scene-wrapper" #sceneWrapper [style.width]="canvasAspect(sceneWrapper)">
 
             <div class="main-scene-menu-bar"
-              *ngIf="!activeEditProperty || (activeEditProperty === editProperties.allPoints || activeEditProperty === editProperties.activePoint)">
+              *ngIf="!activeEditProperty || ([editProperties.allPoints, editProperties.activePoint, editProperties.mobilePointsMenu].includes(activeEditProperty) )">
 
-              <div class="main-scene-menu-bar-bg">
+              <div class="collapse navbar-collapse">
+                <div class="main-scene-menu-bar-bg">
 
-                <div class="d-inline-block border-right border-dark p-1">
+                  <div class="d-inline-block border-right border-dark p-1">
 
-                  <ng-container *ngIf="isAuthenticated">
+                    <ng-container *ngIf="isAuthenticated">
 
-                    <button type="button" class="btn" (click)="activeEditProperty = editProperties.allPoints">
-                      <img src="assets/img/icons/edit.svg" alt="Edit nav points">
+                      <button type="button" class="btn" (click)="activeEditProperty = editProperties.allPoints">
+                        <img src="assets/img/icons/edit.svg" alt="Edit nav points">
+                      </button>
+
+                      <button type="button" class="btn" (click)="activeEditProperty = editProperties.createGallery">
+                        <img src="assets/img/icons/camera-icon.svg" alt="Add photo gallery">
+                      </button>
+
+                    </ng-container>
+
+                    <button type="button" class="btn"
+                      (click)="openSectionModal(modalWrapper, galleryEditorTpl, 'Gallery')">
+                      <img src="assets/img/icons/picture.svg" alt="Open gallery">
                     </button>
 
-                    <button type="button" class="btn" (click)="activeEditProperty = editProperties.createGallery">
-                      <img src="assets/img/icons/camera-icon.svg" alt="Add photo gallery">
+                    <button *ngIf="!isQueryFullscreen" type="button" class="btn"
+                      (click)="openShareModal(shareFullscreen)"><i class="fa fa-lg fa-share-alt"></i></button>
+
+                    <button (click)="toggleFullscreen()" type="button" class="btn">
+                      <img src="assets/img/icons/expand.svg" alt="Fullscreen">
                     </button>
 
-                  </ng-container>
+                  </div>
 
-                  <button type="button" class="btn"
-                    (click)="openSectionModal(modalWrapper, galleryEditorTpl, 'Gallery')">
-                    <img src="assets/img/icons/picture.svg" alt="Open gallery">
-                  </button>
-
-                  <button *ngIf="!isQueryFullscreen" type="button" class="btn"
-                    (click)="openShareModal(shareFullscreen)"><i class="fa fa-lg fa-share-alt"></i></button>
-
-                  <button (click)="toggleFullscreen()" type="button" class="btn">
-                    <img src="assets/img/icons/expand.svg" alt="Fullscreen">
-                  </button>
+                  <div *ngIf="isAuthenticated" class="d-inline-block py-1 px-3">
+                    <button type="button" class="btn btn-danger rounded-pill px-5">Publish Changes</button>
+                  </div>
 
                 </div>
 
-                <div *ngIf="isAuthenticated" class="d-inline-block py-1 px-3">
-                  <button type="button" class="btn btn-danger rounded-pill px-5">Publish Changes</button>
+                <div
+                  *ngIf="activeEditProperty === editProperties.allPoints || activeEditProperty === editProperties.activePoint"
+                  class="d-flex mt-4">
+                  <button type="button" class="btn flex-fill mr-1"
+                    [class.main-scene-menu-bar-bg]="activeEditProperty !== editProperties.allPoints"
+                    [class.btn-danger]="activeEditProperty === editProperties.allPoints"
+                    (click)="activeEditProperty = editProperties.allPoints">EDIT ALL NAV POINTS</button>
+                  <button type="button" class="btn flex-fill"
+                    [class.main-scene-menu-bar-bg]="activeEditProperty !== editProperties.activePoint"
+                    [class.btn-danger]="activeEditProperty === editProperties.activePoint"
+                    (click)="activeEditProperty = editProperties.activePoint">EDIT ACTIVE NAV POINT</button>
                 </div>
-
               </div>
 
-              <div
-                *ngIf="activeEditProperty === editProperties.allPoints || activeEditProperty === editProperties.activePoint"
-                class="d-flex mt-4">
-                <button type="button" class="btn flex-fill mr-1"
-                  [class.main-scene-menu-bar-bg]="activeEditProperty !== editProperties.allPoints"
-                  [class.btn-danger]="activeEditProperty === editProperties.allPoints"
-                  (click)="activeEditProperty = editProperties.allPoints">EDIT ALL NAV POINTS</button>
-                <button type="button" class="btn flex-fill"
-                  [class.main-scene-menu-bar-bg]="activeEditProperty !== editProperties.activePoint"
-                  [class.btn-danger]="activeEditProperty === editProperties.activePoint"
-                  (click)="activeEditProperty = editProperties.activePoint">EDIT ACTIVE NAV POINT</button>
-              </div>
+              <button
+                (click)="isCollapsedToolbar = !isCollapsedToolbar; activeEditProperty = activeEditProperty === '' ? editProperties.mobilePointsMenu : '';"
+                class="navbar-toggler border-0 p-0 btn btn-danger bg-danger rounded-circle"
+                [class.opened]="!isCollapsedToolbar" type="button" aria-controls="navbarSupportedContent"
+                [attr.aria-expanded]="isCollapsedToolbar" aria-label="Toggle navigation">
+                <svg width="40" height="40" viewBox="0 0 100 100">
+                  <path class="line line1"
+                    d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058" />
+                  <path class="line line2" d="M 20,50 H 80" />
+                  <path class="line line3"
+                    d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942" />
+                </svg>
+              </button>
 
             </div>
 
-            <button *ngIf="activeEditProperty" (click)="activeEditProperty = ''" type="button" class="btn"
-              id="fullscreen">
+            <div class="card p-2 py-lg-3 px-lg-5 edit-nav-points-form mobile-points"
+              *ngIf="activeEditProperty === editProperties.mobilePointsMenu">
+              <button type="button" class="btn mb-1" style="background-color: #F7F7F7;"
+                (click)="activeEditProperty = editProperties.allPoints">EDIT
+                ALL NAV
+                POINTS</button>
+              <button type="button" class="btn" style="background-color: #F7F7F7;"
+                (click)="activeEditProperty = editProperties.activePoint">EDIT ACTIVE
+                NAV POINT</button>
+            </div>
+
+            <button *ngIf="activeEditProperty" (click)="activeEditProperty = ''; isCollapsedToolbar = true"
+              type="button" class="btn" id="fullscreen">
               <img src="assets/img/icons/cross-white.svg" alt="Fullscreen">
             </button>
 
@@ -683,6 +716,8 @@
                   </div>
                 </ng-scrollbar>
               </div>
+              <button class="btn btn-danger rounded-0 rounded-bottom" type="button">Download all <img
+                  src="assets/img/icons/download.svg" alt="Download All"></button>
 
             </div>
 
@@ -1076,9 +1111,9 @@
       </div>
     </main>
 
-    <ng-container *ngIf="!isSidebarHidden">
+    <ng-container>
       <footer *ngIf="!isQueryFullscreen" [class.d-none]="isFullscreenActive.active || isQueryFullscreen"
-        class="footer text-white text-center p-4">
+        class="footer text-white text-center p-4 d-lg-block d-none">
         © 2021 Copyright Lidarama
       </footer>
     </ng-container>
