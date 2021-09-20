@@ -30,7 +30,7 @@ export class ProjectListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isMobileApp = this.authService.isMobileApp;
-    this.isAdmin = this.authService.currentUser.roles.includes('admin');
+    this.isAdmin = this.authService.currentUser ? this.authService.currentUser.roles.includes('admin') : false;
     if (this.isAdmin) {
       this.users$ = this.usersService.getUsers();
     }
