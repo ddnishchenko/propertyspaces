@@ -20,6 +20,7 @@ export class ProjectListComponent implements OnInit {
   projects$ = this.store.pipe(select(selectProjects));
   users$;
   isAdmin;
+  isMobileApp;
   constructor(
     private modalService: NgbModal,
     private store: Store,
@@ -28,6 +29,7 @@ export class ProjectListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.isMobileApp = this.authService.isMobileApp;
     this.isAdmin = this.authService.currentUser.roles.includes('admin');
     if (this.isAdmin) {
       this.users$ = this.usersService.getUsers();

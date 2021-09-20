@@ -13,6 +13,7 @@ import { MapModalComponent } from '../../components/map-modal/map-modal.componen
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
 import { deletePanorama, deleteProjects, loadProject, updatePanorama, updateProject } from '../../state/projects.actions';
 import { selectProject } from '../../state/projects.selectors';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'propertyspaces-project-details',
@@ -28,11 +29,13 @@ export class ProjectDetailsComponent implements OnInit {
   projectName;
   loadImageForm: FormGroup;
   compressedImage
+  isMobileApp = this.authService.isMobileApp;
   constructor(
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store
+    private store: Store,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {

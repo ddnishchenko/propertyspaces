@@ -24,7 +24,8 @@
     <div class="col">
       <h1 class="text-center my-5">Create panoramic walkthough</h1>
       <div class="card shadow mb-4">
-        <div class="card-header text-right d-md-flex justify-content-md-center align-items-md-center py-3">
+        <div *ngIf="isMobileApp"
+          class="card-header text-right d-md-flex justify-content-md-center align-items-md-center py-3">
           <div class="row">
             <div
               class="col d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center align-items-md-center align-items-lg-center justify-content-xl-end align-items-xl-center">
@@ -52,7 +53,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th>#</th>
+                <th *ngIf="isMobileApp">#</th>
                 <th scope="col">Name</th>
                 <th>Created at</th>
                 <th>Address</th>
@@ -61,7 +62,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let project of projects$ | async">
-                <td>
+                <td *ngIf="isMobileApp">
                   <div class="form-check">
                     <input type="checkbox" class="form-check-input" [value]="project.id"
                       [id]="'flexCheckChecked_' + project.id" (change)="onCheckChange($event)" />
@@ -77,7 +78,8 @@
                 </td>
                 <td class="text-right">
                   <div class="btn-group">
-                    <button (click)="deleteProjects(project.id)" type="button" class="btn btn-danger">
+                    <button *ngIf="isMobileApp" (click)="deleteProjects(project.id)" type="button"
+                      class="btn btn-danger">
                       <i class="fa fa-2x fa-trash"></i>
                     </button>
                     <a [routerLink]="[project.id]" class="btn btn-primary">

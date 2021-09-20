@@ -8,6 +8,7 @@ const api = environment.apiHost;
 const storePrefix = '_auth_';
 const tokenKey = `${storePrefix}_token`;
 const userKey = `${storePrefix}_user`;
+const isMobileAppKey = 'isMobileApp';
 @Injectable({
   providedIn: 'root'
 })
@@ -29,6 +30,14 @@ export class AuthService {
     return JSON.parse(localStorage.getItem(userKey));
   }
 
+  set isMobileApp(value) {
+    localStorage.setItem(isMobileAppKey, JSON.stringify(value));
+  }
+
+  get isMobileApp() {
+    return JSON.parse(localStorage.getItem(isMobileAppKey));
+  }
+
   constructor(private http: HttpClient) { }
 
   register(user) {
@@ -40,6 +49,8 @@ export class AuthService {
       tap((data: { accessToken: string; user: any; }) => {
         this.accessToken = data.accessToken;
         this.currentUser = data.user;
+        this.isMobileApp = data.user.roles.includes('admin');
+
       })
     );
   }
