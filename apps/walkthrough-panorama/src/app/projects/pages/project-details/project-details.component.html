@@ -1,6 +1,6 @@
 <ng-container *ngIf="project$ | async as project">
   <!-- NAV MENU BEGIN -->
-  <nav class="navbar navbar-dark bg-dark sticky-top navbar-expand-lg" *ngIf="isMobileApp">
+  <nav class="navbar navbar-dark bg-dark sticky-top navbar-expand-lg" *ngIf="!isMobileApp">
     <div class="container">
       <a class="navbar-brand" routerLink="/projects" title="Propertyspaces"><img src="assets/img/logo.svg"
           title="Lidarama" class="img-fluid" /></a>

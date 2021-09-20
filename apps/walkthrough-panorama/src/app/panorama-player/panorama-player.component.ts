@@ -178,6 +178,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   }
   isQueryFullscreen;
   isSidebarHidden;
+  isMobileApp;
   get shareFullscreen() {
     const projectId = this.route.snapshot.params.id;
     const link = location.origin + `/virtual-tour/${projectId}?fullscreen=true`;
@@ -223,6 +224,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.isQueryFullscreen = this.route.snapshot.queryParams.fullscreen == 'true';
     this.isSidebarHidden = this.route.snapshot.queryParams.sidebarHidden == 'true';
     this.isEdit = this.router.url.includes('/projects/vr-tour-model');
+    this.isMobileApp = this.authService.isMobileApp;
     this.createForm();
 
     this.store.dispatch(loadProject({ projectId }));
