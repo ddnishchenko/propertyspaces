@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, StreamableFile, UseGuards } from '@nestjs/common';
+import * as fs from 'fs';
+import { join } from 'path';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Role } from '../roles/role.enum';
 import { ProjectsService } from './projects.service';
@@ -28,6 +30,30 @@ export class ProjectsController {
     const userId = req.user.roles.includes(Role.Admin) ? user : req.user.id;
     const result = await this.projectService.list(userId);
     return result.Items;
+  }
+
+  @Get('file/:project/:key')
+  async getFile(@Param('project') project, @Param('key') key, @Res() res) {
+    // res.attachment(key);
+    /* const filePath = join(__dirname, key);
+    const tmpFile = fs.createWriteStream(filePath);
+    // const readStream = this.projectService.getS3Object(project, key).createReadStream().pipe(tmpFile);
+    // this.projectService.getS3Object(project, key).createReadStream().pipe(res);
+    const f = await this.projectService.getS3Object(project, key).promise();
+    tmpFile.write(f.Body);
+    tmpFile.close();
+    const file = fs.createReadStream(filePath);
+    return new StreamableFile(file); */
+    // tmpFile.pipe(res);
+    // tmpFile.pipe(res);
+    const u = this.projectService.getS3Object(project, key);
+    console.log(u);
+    // res.redirect(u);
+    res.json({ u });
+
+
+
+
   }
 
   @Get(':id')
@@ -105,4 +131,6 @@ export class ProjectsController {
   async deleteGalleryItem(@Req() req, @Param('id') id: string, @Param('key') key: string, @Body() body) {
     await this.projectService.deleteGalleryItem(id, key, body, req.user);
   }
+
+
 }

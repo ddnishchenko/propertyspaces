@@ -503,8 +503,22 @@ export class ProjectsService {
     }).promise().then(() => {
       s3.deleteObject({
         Bucket: 'lidarama1media',
-        Key: photo.fileName
+        Key: photo.fileName,
       }).promise();
     });
+  }
+
+  getS3Object(project, key) {
+    /* return s3.getObject({
+      Bucket: 'lidarama1media',
+      Key: project + '/' + key,
+    }); */
+    const signedUrlExpireSeconds = 60 * 2;
+    const url = s3.getSignedUrl('getObject', {
+      Bucket: 'lidarama1media',
+      Key: project + '/' + key,
+      Expires: signedUrlExpireSeconds
+    });
+    return url;
   }
 }

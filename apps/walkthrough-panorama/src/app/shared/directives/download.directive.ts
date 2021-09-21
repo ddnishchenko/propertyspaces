@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Directive, ElementRef, HostBinding, HostListener, Inject, InjectionToken, Input, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { of, Subscription } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 
 /** Same Origin regular expression */
 export const SAMEORIGIN = new InjectionToken<RegExp>("wizdm.sameorigin.regex", {
@@ -63,7 +63,9 @@ export class DownloadDirective implements OnDestroy {
     if (!this.href || this.busy) { return false; }
 
     // Proceed with the download on files from the same origin
-    if (this.error || this.sameOrigin.test(this.href)) { return true; }
+    if (this.error || this.sameOrigin.test(this.href)) { return true; } else {
+      $event.preventDefault();
+    }
 
     // Unsubscribes previous subscription, if any
     if (this.sub) { this.sub.unsubscribe(); }
@@ -72,35 +74,45 @@ export class DownloadDirective implements OnDestroy {
     this.busy = true;
 
     // Gets the source file as a blob
-    this.sub = this.http.get(this.href, { responseType: "blob" }).pipe(
+    const uParts = this.href.split('/');
+    const projectId = uParts[uParts.length - 2];
+    const fileId = uParts[uParts.length - 1];
+    const url = `http://localhost:3000/dev/projects/file/${projectId}/${fileId}`;
+    this.sub = this.http.get(url)
+      .pipe(
+        mergeMap(
+          (r: any) => this.http.get(r.u, { responseType: "blob" }).pipe(
 
-      // Creates the URL object ready for download
-      map(blob => this.blob = URL.createObjectURL(blob)),
+            // Creates the URL object ready for download
+            map(blob => this.blob = URL.createObjectURL(blob)),
 
-      // Catches possible errors such as CORS not allowing the file download
-      catchError(error => {
+            // Catches possible errors such as CORS not allowing the file download
+            catchError(error => {
 
-        // Reports the error preventing the download
-        console.error("Unable to download the source file", error);
+              // Reports the error preventing the download
+              console.error("Unable to download the source file", error);
 
-        // Tracks the error for the next round to complete anyhow
-        this.error = true;
+              // Tracks the error for the next round to complete anyhow
+              this.error = true;
 
-        // Reverts to the original href for the browser to open the file instead of downloading it
-        return of(this.href);
-      })
+              // Reverts to the original href for the browser to open the file instead of downloading it
+              return of(this.href);
+            })
 
-    ).subscribe(url => {
+          )
+        )
+      )
+      .subscribe(url => {
 
-      // Updates the href with the blob url on success
-      this.href = url;
+        // Updates the href with the blob url on success
+        this.href = url;
 
-      // Ends processing
-      this.busy = false;
+        // Ends processing
+        this.busy = false;
 
-      // Triggers another click event making sure the [href] gets updated first
-      setTimeout(() => this.ref.nativeElement.click());
-    });
+        // Triggers another click event making sure the [href] gets updated first
+        setTimeout(() => this.ref.nativeElement.click());
+      });
 
     // Prevents default
     return false;
