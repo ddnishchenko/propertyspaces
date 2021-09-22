@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Directive, ElementRef, HostBinding, HostListener, Inject, InjectionToken, Input, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
 import { of, Subscription } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 
@@ -77,7 +78,7 @@ export class DownloadDirective implements OnDestroy {
     const uParts = this.href.split('/');
     const projectId = uParts[uParts.length - 2];
     const fileId = uParts[uParts.length - 1];
-    const url = `http://localhost:3000/dev/projects/file/${projectId}/${fileId}`;
+    const url = `${environment.apiHost}/projects/file/${projectId}/${fileId}`;
     this.sub = this.http.get(url)
       .pipe(
         mergeMap(
