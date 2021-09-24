@@ -1,5 +1,9 @@
 service: nx-nestjs-api
 
+package:
+  excludeDevDependencies: false
+  individually: true
+
 custom:
   prune:
     automatic: true
@@ -10,12 +14,6 @@ custom:
 plugins:
  - serverless-plugin-optimize
  - serverless-offline
-
-package:
-  individually: true
-  patterns:
-    - dist/apps/api/**
-    - '!**'
 
 provider:
  name: aws
@@ -31,7 +29,7 @@ functions:
    handler: dist/apps/api/main.handler
    package:
     patterns:
-      - dist/apps/api/assets/**
+      - 'dist/apps/api/**'
    events:
      - http:
         cors: true

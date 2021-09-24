@@ -109,6 +109,7 @@
     "svg-pan-zoom": "^3.6.1",
     "three": "^0.125.2",
     "tslib": "^2.0.0",
+    "unzipper": "^0.10.11",
     "web-animations-js": "^2.3.2",
     "zone.js": "^0.11.4"
   },

@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, StreamableFile, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
 import * as fs from 'fs';
+import * as unzipper from 'unzipper';
 import { join } from 'path';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Role } from '../roles/role.enum';
@@ -44,26 +45,8 @@ export class ProjectsController {
 
   @Get('file/:project/:key')
   async getFile(@Param('project') project, @Param('key') key, @Res() res) {
-    // res.attachment(key);
-    /* const filePath = join(__dirname, key);
-    // const tmpFile = fs.createWriteStream(filePath);
-    // const readStream = this.projectService.getS3Object(project, key).createReadStream().pipe(tmpFile);
-    // this.projectService.getS3Object(project, key).createReadStream().pipe(res);
-    const f = await this.projectService.getS3Object(project, key).promise();
-    tmpFile.write(f.Body);
-    tmpFile.close();
-    const file = fs.createReadStream(filePath);
-    return new StreamableFile(file); */
-    // tmpFile.pipe(res);
-    // tmpFile.pipe(res);
     const u = this.projectService.getS3Object(project, key);
-    console.log(u);
-    // res.redirect(u);
     res.json({ u });
-
-
-
-
   }
 
   @Get(':id')
@@ -107,7 +90,15 @@ export class ProjectsController {
   async buildTour(@Param('id') id, @Req() req, @Res() res) {
     const project = await this.projectService.read(id);
 
-    const appPath = join(__dirname, 'assets/lidarama-app')
+    const lidaramaAppFileName = 'lidarama-app.zip';
+    const lidaramaApp = await this.projectService.getObject(lidaramaAppFileName).promise();
+    const lidaramaAppBuffer: any = lidaramaApp.Body;
+    const lidaramaAppPath = join(__dirname, lidaramaAppFileName)
+    fs.writeFileSync(lidaramaAppPath, lidaramaAppBuffer);
+    fs.createReadStream(lidaramaAppPath)
+      .pipe(unzipper.Extract({ path: join(__dirname, 'lidarama-app') }))
+
+    const appPath = join(__dirname, 'lidarama-app')
     const tmpPath = join(appPath, 'assets');
     fs.mkdirSync(tmpPath, { recursive: true });
     const tmpPanoramaPath = join(tmpPath, 'panoramas');
@@ -178,9 +169,7 @@ export class ProjectsController {
       }).promise();
       const build = { url: s3Obj.Location, builtAt: Date.now() };
       this.projectService.update(id, { build }, req.user);
-      fs.rmdirSync(tmpPanoramaPath, { recursive: true });
-      fs.rmdirSync(tmpGalleryPath, { recursive: true });
-      fs.unlinkSync(tmpPath + '/data.json');
+      fs.rmdirSync(appPath, { recursive: true });
       fs.unlinkSync(zipPath);
       res.json({ build });
     });
@@ -213,19 +202,6 @@ export class ProjectsController {
     archive.directory(appPath, false);
 
     archive.finalize();
-
-
-
-    // const files = await this.projectService.getListObjects(id).promise();
-    // res.json(files);
-    // fs.rmdirSync(tmpPath, { recursive: true });
-    // const arch = join(tmpPath);
-    // const tmpFile = fs.createWriteStream(filePath);
-    // const readStream = this.projectService.getS3Object(project, key).createReadStream().pipe(tmpFile);
-    // this.projectService.getS3Object(project, key).createReadStream().pipe(res);
-    // const f = await this.projectService.getS3Object(project, key).promise();
-    // tmpFile.write(f.Body);
-    // tmpFile.close();
   }
 
   @UseGuards(JwtAuthGuard)
