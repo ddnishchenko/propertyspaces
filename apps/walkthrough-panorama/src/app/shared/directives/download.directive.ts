@@ -78,7 +78,7 @@ export class DownloadDirective implements OnDestroy {
     const uParts = this.href.split('/');
     const projectId = uParts[uParts.length - 2];
     const fileId = uParts[uParts.length - 1];
-    const url = `${environment.apiHost}/projects/file/${projectId}/${fileId}`;
+    const url = `${environment.apiHost}projects/file/${projectId}/${fileId}`;
     this.sub = this.http.get(url)
       .pipe(
         mergeMap(

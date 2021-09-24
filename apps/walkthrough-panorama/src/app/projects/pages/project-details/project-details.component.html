@@ -83,6 +83,17 @@
             </button>
           </div>
           <div class="list-group-item list-group-item-action d-flex">
+            <button type="button" class="btn btn-link text-dark flex-fill text-left" (click)="buildProject(project.id)">
+              <i class="fa fa-gears"></i> Build Project
+            </button>
+          </div>
+          <div *ngIf="project.build" class="list-group-item list-group-item-action d-flex">
+            <a [href]="project.build.url" target="_blank" class="btn btn-link text-dark flex-fill text-left">
+              <i class="fa fa-file-archive-o"></i> Download project build. Built at: {{ project.build.builtAt | date:
+              'medium' }}
+            </a>
+          </div>
+          <div class="list-group-item list-group-item-action d-flex">
             <ng-template #tooltipTip>
               <button type="button" (click)="openCreateForm(project)" class="btn btn-link text-dark flex-fill text-left"
                 placement="top" ngbTooltip="In order to edit virtual-tour it should have at least one Nav Point">

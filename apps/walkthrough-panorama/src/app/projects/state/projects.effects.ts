@@ -178,6 +178,19 @@ export class ProjectsEffects {
   )
   );
 
+  buildProject$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.buildProject),
+    mergeMap(
+      payload => this.projectsService.buildProject(payload.projectId).pipe(
+        map(build => {
+          this.snotifyService.success('Project has been built and ready for download.');
+          return ProjectsActions.buildProjectSuccess(build);
+        })
+      )
+    )
+  )
+  );
+
 
   constructor(
     private actions$: Actions,

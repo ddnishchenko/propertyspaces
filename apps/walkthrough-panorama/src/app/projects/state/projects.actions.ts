@@ -210,3 +210,14 @@ export const deleteGalleryItemSuccess = createAction(
 export const deleteGalleryItemFailute = createAction(
   `${prefix} Delete Gallery Item Failure`
 );
+
+
+export const buildProject = createAction(
+  `${prefix} Build project`,
+  props<{ projectId: string; }>()
+);
+
+export const buildProjectSuccess = createAction(
+  `${prefix} Build project Success`,
+  props<{ build: { url: string; builtAt: number }; }>()
+);

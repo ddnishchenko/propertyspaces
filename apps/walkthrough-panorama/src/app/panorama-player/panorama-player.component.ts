@@ -7,7 +7,7 @@ import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
 import { selectProject, selectProjectHdrPanoramasFloors } from '../projects/state/projects.selectors';
-import { addGalleryItem, deleteGalleryItem, loadProject, updateContacts, updateGalleryItem, updatePanorama, updateProject } from '../projects/state/projects.actions';
+import { addGalleryItem, deleteGalleryItem, loadProject, updateGalleryItem, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
 // import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 
@@ -17,7 +17,7 @@ import { GalleryEditorComponent } from '../shared/components/gallery-editor/gall
 import { slideInAnimation } from '../utils/animations';
 import { ConfirmationModalComponent } from '../shared/components/confirmation-modal/confirmation-modal.component';
 import { ResizeEvent } from 'angular-resizable-element';
-import { Editor, toHTML, toDoc } from 'ngx-editor';
+import { Editor, toHTML } from 'ngx-editor';
 import { Fullscreen } from '../utils/fullscreen';
 import { combineLatest } from 'rxjs';
 import { AuthService } from '../services/auth.service';

@@ -83,6 +83,15 @@ export const reducer = createReducer(
         gallery: state.project.gallery.filter(p => !photoIds.includes(p.id))
       }
     };
+  }),
+  on(ProjectsActions.buildProjectSuccess, (state, { build }) => {
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        build
+      }
+    };
   })
 );
 

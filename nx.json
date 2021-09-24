@@ -47,6 +47,13 @@
     "virtual-tour": {
       "tags": []
     },
+    "vr-tour": {
+      "tags": []
+    },
+    "vr-tour-e2e": {
+      "tags": [],
+      "implicitDependencies": ["vr-tour"]
+    },
     "walkthrough-panorama": {
       "tags": []
     },

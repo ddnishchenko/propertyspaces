@@ -65,52 +65,8 @@ export class ProjectsService {
     return this.http.delete(`${endpoint}/${id}/gallery/${photo.id}`, { body: photo });
   }
 
-  updateDataProject(project_id, settings): Observable<Project> {
-    return this.http.post(host + 'update-data-project', { client_id: 1295, project_id, settings })
+  buildProject(id): Observable<any> {
+    return this.http.get(`${endpoint}/${id}/build`);
   }
 
-  makeHdr(project_id, name): Observable<Project> {
-    return this.http.post(host + 'create-hdr-panorama', { client_id: 1295, project_id, name }).pipe();
-  }
-
-  uploadGalleryPhoto(project_id, file: File): Observable<ImageGallery> {
-    const formData = new FormData();
-    formData.append('project_id', project_id);
-    formData.append('files', file);
-    return this.http.post(host + 'file-image-upload', formData)
-      .pipe(map((photo: any) => ({ url: photo.href, thumb: photo.href, name: photo.name })));
-  }
-
-  loadGallery(project_id): Observable<any> {
-    return this.http.post(host + 'project-files-list', { client_id: 1295, project_id });
-  }
-  removeGalleryImage(project_id, image_id) {
-    return this.http.post(host + 'remove-project-file', { client_id: 1295, project_id, image_id });
-  }
-  changeGalleryImageName(project_id, old_name, name): Observable<any> {
-    return this.http.post(host + 'change-name-project-file', { client_id: 1295, project_id, old_name, name });
-  }
-
-  updateAddress(project_id, data: any) {
-    return this.http.post(host + 'project-update-addresslink', { client_id: 1295, project_id, ...data }).pipe(
-      mergeMap(
-        addr => this.updateDataProject(project_id, {
-          mapEnabled: data.mapEnabled,
-          streetViewEnabled: data.streetViewEnabled,
-          map: data.map === '' ? null : data.map,
-          streetView: data.streetView === '' ? null : data.streetView
-        })
-      )
-    );
-  }
-
-  aws() {
-    return this.http.get('https://lb5vs7eoog.execute-api.us-west-2.amazonaws.com/dev').subscribe((r) => {
-      console.log(r);
-    });
-  }
-
-  awsUploadFile(id, body) {
-    return this.http.post(`http://localhost:3000/dev/projects/${id}/panorama`, body);
-  }
 }

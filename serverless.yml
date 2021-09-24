@@ -29,6 +29,9 @@ functions:
  main: # The name of the lambda function
    # The module 'handler' is exported in the file 'src/lambda'
    handler: dist/apps/api/main.handler
+   package:
+    patterns:
+      - dist/apps/api/assets/**
    events:
      - http:
         cors: true

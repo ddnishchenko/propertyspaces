@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { DynamoDB, S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
+import { createReadStream } from 'fs';
 
 import { Role } from '../roles/role.enum';
 const db = new DynamoDB.DocumentClient({});
@@ -519,6 +520,29 @@ export class ProjectsService {
       Key: project + '/' + key,
       Expires: signedUrlExpireSeconds
     });
+
+
     return url;
+  }
+
+  getObject(Key) {
+    return s3.getObject({
+      Bucket: 'lidarama1media',
+      Key
+    });
+  }
+
+  getListObjects(id) {
+    return s3.listObjects({
+      Bucket: 'lidarama1media',
+      Prefix: id + '/'
+    })
+  }
+
+  uploadObject(settings) {
+    return s3.upload({
+      Bucket: 'lidarama1media',
+      ...settings
+    });
   }
 }

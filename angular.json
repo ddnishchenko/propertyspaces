@@ -14,7 +14,9 @@
             "outputPath": "dist/apps/api",
             "main": "apps/api/src/main.ts",
             "tsConfig": "apps/api/tsconfig.app.json",
-            "assets": ["apps/api/src/assets"]
+            "assets": [
+              "apps/api/src/assets"
+            ]
           },
           "configurations": {
             "production": {
@@ -29,7 +31,9 @@
               ]
             }
           },
-          "outputs": ["{options.outputPath}"]
+          "outputs": [
+            "{options.outputPath}"
+          ]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -44,7 +48,10 @@
               "apps/api/tsconfig.app.json",
               "apps/api/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/api/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/api/**/*"
+            ]
           }
         },
         "test": {
@@ -53,7 +60,9 @@
             "jestConfig": "apps/api/jest.config.js",
             "passWithNoTests": true
           },
-          "outputs": ["coverage/apps/api"]
+          "outputs": [
+            "coverage/apps/api"
+          ]
         }
       }
     },
@@ -70,7 +79,10 @@
               "libs/api-interfaces/tsconfig.lib.json",
               "libs/api-interfaces/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/api-interfaces/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/api-interfaces/**/*"
+            ]
           }
         },
         "test": {
@@ -79,7 +91,9 @@
             "jestConfig": "libs/api-interfaces/jest.config.js",
             "passWithNoTests": true
           },
-          "outputs": ["coverage/libs/api-interfaces"]
+          "outputs": [
+            "coverage/libs/api-interfaces"
+          ]
         }
       }
     },
@@ -108,12 +122,17 @@
               "libs/drag-resize/tsconfig.lib.json",
               "libs/drag-resize/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/drag-resize/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/drag-resize/**/*"
+            ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/drag-resize"],
+          "outputs": [
+            "coverage/libs/drag-resize"
+          ],
           "options": {
             "jestConfig": "libs/drag-resize/jest.config.js",
             "passWithNoTests": true
@@ -129,7 +148,9 @@
       "architect": {
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/floorplan"],
+          "outputs": [
+            "coverage/libs/floorplan"
+          ],
           "options": {
             "jestConfig": "libs/floorplan/jest.config.js",
             "passWithNoTests": true
@@ -154,7 +175,9 @@
       "architect": {
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/pipes"],
+          "outputs": [
+            "coverage/libs/pipes"
+          ],
           "options": {
             "jestConfig": "libs/pipes/jest.config.js",
             "passWithNoTests": true
@@ -184,12 +207,17 @@
               "libs/subjx/tsconfig.lib.json",
               "libs/subjx/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/subjx/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/subjx/**/*"
+            ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/subjx"],
+          "outputs": [
+            "coverage/libs/subjx"
+          ],
           "options": {
             "jestConfig": "libs/subjx/jest.config.js",
             "passWithNoTests": true
@@ -205,7 +233,9 @@
       "architect": {
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/svgzoompan"],
+          "outputs": [
+            "coverage/libs/svgzoompan"
+          ],
           "options": {
             "jestConfig": "libs/svgzoompan/jest.config.js",
             "passWithNoTests": true
@@ -247,15 +277,153 @@
               "libs/virtual-tour/tsconfig.lib.json",
               "libs/virtual-tour/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/virtual-tour/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/virtual-tour/**/*"
+            ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/virtual-tour"],
+          "outputs": [
+            "coverage/libs/virtual-tour"
+          ],
           "options": {
             "jestConfig": "libs/virtual-tour/jest.config.js",
             "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "vr-tour": {
+      "projectType": "application",
+      "root": "apps/vr-tour",
+      "sourceRoot": "apps/vr-tour/src",
+      "prefix": "propertyspaces",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/vr-tour",
+            "index": "apps/vr-tour/src/index.html",
+            "main": "apps/vr-tour/src/main.ts",
+            "polyfills": "apps/vr-tour/src/polyfills.ts",
+            "tsConfig": "apps/vr-tour/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/vr-tour/src/favicon.ico",
+              "apps/vr-tour/src/assets"
+            ],
+            "styles": [
+              "apps/vr-tour/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/vr-tour/src/environments/environment.ts",
+                  "with": "apps/vr-tour/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "vr-tour:build:production"
+            },
+            "development": {
+              "browserTarget": "vr-tour:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "vr-tour:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/vr-tour/src/**/*.ts",
+              "apps/vr-tour/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/vr-tour"
+          ],
+          "options": {
+            "jestConfig": "apps/vr-tour/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "vr-tour-e2e": {
+      "root": "apps/vr-tour-e2e",
+      "sourceRoot": "apps/vr-tour-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/vr-tour-e2e/cypress.json",
+            "tsConfig": "apps/vr-tour-e2e/tsconfig.e2e.json",
+            "devServerTarget": "vr-tour:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "vr-tour:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/vr-tour-e2e/**/*.{js,ts}"
+            ]
           }
         }
       }
@@ -328,7 +496,9 @@
               ]
             }
           },
-          "outputs": ["{options.outputPath}"]
+          "outputs": [
+            "{options.outputPath}"
+          ]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -366,7 +536,9 @@
             "jestConfig": "apps/walkthrough-panorama/jest.config.js",
             "passWithNoTests": true
           },
-          "outputs": ["coverage/apps/walkthrough-panorama"]
+          "outputs": [
+            "coverage/apps/walkthrough-panorama"
+          ]
         },
         "server": {
           "builder": "@angular-devkit/build-angular:server",
@@ -433,7 +605,9 @@
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {
-            "routes": ["/"]
+            "routes": [
+              "/"
+            ]
           },
           "configurations": {
             "production": {
@@ -473,7 +647,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/walkthrough-panorama-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "apps/walkthrough-panorama-e2e/**/*.{js,ts}"
+            ]
           }
         }
       }

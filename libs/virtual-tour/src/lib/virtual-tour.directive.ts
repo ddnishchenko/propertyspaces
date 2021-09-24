@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Directive, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { Subscription } from "rxjs";
 import { VirtualTourService } from './virtual-tour.service';
 
@@ -15,14 +15,13 @@ export class VirtualTourDirective implements OnInit, OnDestroy {
   @Output() zoom = new EventEmitter();
   constructor(
     private el: ElementRef<HTMLCanvasElement>,
+    private ngZone: NgZone,
     public virtualTourService: VirtualTourService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.virtualTourService.createScene(this.el, this.propertyspacesVirtualTour);
-    this.virtualTourService.animate();
-    this._virtualTourEvents = this.virtualTourService.events.subscribe( e => {
-      switch(e.type) {
+    this.virtualTourService.createScene(this.el.nativeElement, this.propertyspacesVirtualTour, e => {
+      switch (e.type) {
         case VirtualTourService.EVENTS.INIT:
           this.init.emit();
           break;
@@ -36,6 +35,9 @@ export class VirtualTourDirective implements OnInit, OnDestroy {
           this.zoom.emit(e.data);
       }
     });
+    this.ngZone.runOutsideAngular(() => this.virtualTourService.animate());
+
+    // this._virtualTourEvents = this.virtualTourService.events.subscribe();
   }
 
   ngOnDestroy() {

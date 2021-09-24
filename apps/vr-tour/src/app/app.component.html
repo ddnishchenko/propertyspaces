@@ -1,0 +1,143 @@
+<ng-container *ngIf="data$ | async as data">
+
+  <ng-template #modalWrapper let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body fullscreen-map" *ngIf="modalContent">
+      <ng-container *ngTemplateOutlet="modalContent"></ng-container>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">
+        Close
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #galleryTpl let-closeModal>
+    <div *ngIf="data.gallery.length" class="masonry-grid">
+      <div *ngFor="let img of data.gallery | gallery; index as i" class="masonry-grid-item">
+        <figure class="image position-relative m-0">
+          <img class="img-fluid gallery-img" [src]="img.data.src" [alt]="img.data.thumb" />
+          <div class="d-flex align-items-center justify-content-center gallery-image-shadow"
+            (click)="openImage(i, closeModal)">
+            <img src="assets/img/icons/eye.svg" alt="eye">
+          </div>
+          <a class="btn btn-danger rounded-circle p-1 px-2 gallery-image-download" title="Download"
+            [download]="img.data.name" [href]="img.data.src"><img src="assets/img/icons/download.svg"
+              alt="Download"></a>
+          <!-- <figcaption>{{ img.data.name }}</figcaption> -->
+        </figure>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #galleryEditorTpl>
+    <div class="masonry-grid-fullscreen-modal">
+      <ng-container *ngTemplateOutlet="galleryTpl; context: {$implicit: true}"></ng-container>
+    </div>
+  </ng-template>
+
+  <ng-template #shareFullscreen>
+    <div class="modal-body">
+      <u class="text-underline text-uppercase">EMBED ON YOUR WEBSITE</u>
+      <p><strong class="text-dagnger">Click below</strong> to copy the HTML code for embedding this Lidorama tour in
+        another website:</p>
+      <div class="form-group position-relative text-center">
+        <textarea rows="3" class="form-control" #ta (click)="copyLink(ta)"
+          (blur)="textRecentlyCopied = false">{{embedCodeFullscreen}}</textarea>
+        <span class="text-primary position-relative copied-text bg-white"
+          [class.copied-text-show]="textRecentlyCopied">Link copied!</span>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="defaultCheck1" [(ngModel)]="copyBrandedLink">
+        <label class="form-check-label" for="defaultCheck1">
+          Unbranded (check only for posting to MLS)
+        </label>
+      </div>
+      <div class="alert alert-info">
+        After copying, <span class="text-danger">RIGHT CLICK</span> on
+        any text input in another site or app, and select <span class="text-danger">PASTE</span>.
+      </div>
+    </div>
+  </ng-template>
+
+  <main class="panorama-player d-block d-lg-flex">
+    <div class="boxes navbar-expand-lg d-block d-lg-flex flex-lg-row">
+      <div class="content">
+
+
+        <div class="gallery-wrapper" *ngIf="data.gallery">
+          <div class="close-gallery" *ngIf="isGalleryOpened" (click)="closeGallery()">
+            <span class="h1">&times;</span>
+          </div>
+          <div class="open-gallery-grid-modal" *ngIf="isGalleryOpened" (click)="openSectionModal(
+              modalWrapper,
+              galleryEditorTpl,
+              'Gallery'
+            )">
+            <i class="fa fa-lg fa-th"></i>
+          </div>
+          <gallery id="project-gallery" [class.d-none]="!isGalleryOpened" [items]="data.gallery | gallery"
+            [itemTemplate]="itemTemplate" [thumb]="false"></gallery>
+          <ng-template #itemTemplate let-index="index" let-type="type" let-data="data" let-currIndex="currIndex">
+            <div *ngIf="type === 'image' && index === currIndex" [@slideAnimation] class="item-description-block">
+              <span class="gallery-item-name mb-2">{{ data.name }}</span>
+              <a class="btn btn-link" [href]="data.url" [download]="data.name">
+                <span class="mr-1">Download</span> <img src="assets/img/icons/download.svg" alt="Download" />
+              </a>
+            </div>
+
+          </ng-template>
+        </div>
+
+        <div class="main-scene-wrapper" #sceneWrapper>
+
+          <div class="main-scene-menu-bar">
+
+            <div class="collapse navbar-collapse">
+              <div class="main-scene-menu-bar-bg">
+
+                <div class="d-inline-block border-right border-dark p-1">
+
+                  <button type="button" class="btn"
+                    (click)="openSectionModal(modalWrapper, galleryEditorTpl, 'Gallery')">
+                    <img src="assets/img/icons/picture.svg" alt="Open gallery">
+                  </button>
+
+                  <button type="button" class="btn" (click)="openShareModal(shareFullscreen)">
+                    <img src="assets/img/icons/share-icon.svg" alt="Share">
+                  </button>
+
+                  <button (click)="toggleFullscreen()" type="button" class="btn">
+                    <img src="assets/img/icons/expand.svg" alt="Fullscreen">
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div *ngIf="loading" id="loading" class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+
+          <canvas #virtualTour id="virtualTour" [propertyspacesVirtualTour]="data" (init)="tourInitiated(data)"
+            (navigationChange)="changeActive($event, data)" (change)="viewChange($event)"></canvas>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+  <div class="wrapper">
+
+  </div>
+
+</ng-container>
