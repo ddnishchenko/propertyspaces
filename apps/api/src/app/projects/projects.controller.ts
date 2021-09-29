@@ -191,7 +191,7 @@ export class ProjectsController {
         Body: zipBuild
       }).promise();
       const build = { url: s3Obj.Location, builtAt: Date.now() };
-      this.projectService.update(id, { build }, req.user);
+      this.projectService.update(id, { build }, req.user, false);
       fs.rmdirSync(appPath, { recursive: true });
       fs.unlinkSync(zipPath);
       res.json({ build });
@@ -245,6 +245,75 @@ export class ProjectsController {
   @Delete(':id/panorama/:key')
   async deletePanorama(@Req() req, @Param('id') id: string, @Param('key') key: string, @Body() body) {
     await this.projectService.deletePanorama(id, key, body, req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/gallery/build')
+  async achiveGallery(@Req() req, @Res() res, @Param('id') id: string) {
+    const result = await this.projectService.read(id);
+    const gallery = objToArr(result.Item.gallery);
+    const root = '/tmp';
+    const galleryZip = 'gallery.zip';
+    const tmpGalleryPath = join(root, 'gallery');
+    fs.mkdirSync(tmpGalleryPath, { recursive: true });
+
+    for (let val of gallery) {
+      const fileName = getFilename(val.url);
+      const key = `${id}/${fileName}`;
+      const obj = await this.projectService.getObject(key).promise();
+      const buf: any = obj.Body;
+      fs.writeFileSync(join(tmpGalleryPath, fileName), buf);
+    }
+
+    const zipPath = tmpGalleryPath + '.zip';
+    const output = fs.createWriteStream(zipPath);
+
+    // listen for all archive data to be written
+    // 'close' event is fired only when a file descriptor is involved
+    output.on('close', async () => {
+      console.log(archive.pointer() + ' total bytes');
+      console.log('archiver has been finalized and the output file descriptor has closed.');
+      const zipBuild = fs.createReadStream(zipPath);
+      const s3Obj = await this.projectService.uploadObject({
+        Key: `${id}/gallery.zip`,
+        Body: zipBuild
+      }).promise();
+      const buildGallery = { url: s3Obj.Location, builtAt: Date.now() };
+      this.projectService.update(id, { buildGallery }, req.user, false);
+      fs.rmdirSync(tmpGalleryPath, { recursive: true });
+      fs.unlinkSync(zipPath);
+      res.json({ buildGallery });
+    });
+
+    // This event is fired when the data source is drained no matter what was the data source.
+    // It is not part of this library but rather from the NodeJS Stream API.
+    // @see: https://nodejs.org/api/stream.html#stream_event_end
+    output.on('end', function () {
+      console.log('Data has been drained');
+    });
+
+    // good practice to catch warnings (ie stat failures and other non-blocking errors)
+    archive.on('warning', function (err) {
+      if (err.code === 'ENOENT') {
+        // log warning
+      } else {
+        // throw error
+        throw err;
+      }
+    });
+
+    // good practice to catch this error explicitly
+    archive.on('error', function (err) {
+      throw err;
+    });
+
+    // pipe archive data to the file
+    archive.pipe(output);
+
+    archive.directory(tmpGalleryPath, false);
+
+    archive.finalize();
+
   }
 
   @UseGuards(JwtAuthGuard)

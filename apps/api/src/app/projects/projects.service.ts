@@ -31,11 +31,15 @@ export class ProjectsService {
     const Item = { id: id ? id : uid(), active: true, ...data };
     return db.put({ TableName: 'projects', Item }).promise().then(() => Item);
   }
-  async update(id, body, user) {
+  async update(id, body, user, updateTimestamp = true) {
     const isAdmin = user.roles.includes(Role.Admin);
     const ExpressionAttributeValues = isAdmin ? {} : { [`:userId`]: user.id };
     const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
-    const data = { ...body, updatedAt: Date.now() };
+    const data = { ...body };
+    if (updateTimestamp) {
+      data.updatedAt = Date.now()
+    }
+
     const excludedKeys = ['id', 'panoramas', 'gallery'];
     const keys = Object.keys(data).filter(k => !excludedKeys.includes(k));
 

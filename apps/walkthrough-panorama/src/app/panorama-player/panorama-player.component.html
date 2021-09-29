@@ -742,8 +742,20 @@
                     </div>
                   </ng-scrollbar>
                 </div>
-                <button class="btn btn-danger rounded-0 rounded-bottom" type="button">Download all <img
-                    src="assets/img/icons/download.svg" alt="Download All"></button>
+
+
+                <ng-template #downloadGalleryBtn>
+                  <button class="btn btn-danger rounded-0 rounded-bottom" (click)="downloadGallery(project)"
+                    type="button">Download all
+                    <img src="assets/img/icons/download.svg" alt="Download All">
+                  </button>
+                </ng-template>
+                <ng-container
+                  *ngIf="project?.buildGallery && project?.buildGallery?.builtAt > project.updatedAt; else downloadGalleryBtn">
+                  <a class="btn btn-danger rounded-0 rounded-bottom" [href]="project.buildGallery.url" target="_blank">
+                    Download all <img src="assets/img/icons/download.svg" alt="Download All">
+                  </a>
+                </ng-container>
 
               </div>
 

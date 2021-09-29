@@ -222,6 +222,16 @@ export const buildProjectSuccess = createAction(
   props<{ build: { url: string; builtAt: number }; }>()
 );
 
+export const buildProjectGallery = createAction(
+  `${prefix} Build project gallery`,
+  props<{ projectId: string; }>()
+);
+
+export const buildProjectGallerySuccess = createAction(
+  `${prefix} Build project gallery Success`,
+  props<{ buildGallery: { url: string; builtAt: number }; }>()
+);
+
 
 export const activateProject = createAction(
   `${prefix} Activate project`,

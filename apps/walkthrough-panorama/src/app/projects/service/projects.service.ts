@@ -68,6 +68,10 @@ export class ProjectsService {
     return this.http.get(`${endpoint}/${id}/build`);
   }
 
+  buildProjectGallery(id): Observable<any> {
+    return this.http.get(`${endpoint}/${id}/gallery/build`);
+  }
+
   activate(id) {
     return this.http.patch(`${endpoint}/${id}/activate`, {});
   }

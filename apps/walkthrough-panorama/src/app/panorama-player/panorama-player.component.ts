@@ -7,7 +7,7 @@ import { NgbModal, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FloorplanEditorComponent } from './components/floorplan-editor/floorplan-editor.component';
 import { select, Store } from '@ngrx/store';
 import { selectProject, selectProjectHdrPanoramasFloors } from '../projects/state/projects.selectors';
-import { addGalleryItem, deleteGalleryItem, loadProject, updateGalleryItem, updatePanorama, updateProject } from '../projects/state/projects.actions';
+import { addGalleryItem, buildProjectGallery, deleteGalleryItem, loadProject, updateGalleryItem, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
 
 import { urlRegEx } from '../utils';
@@ -751,5 +751,20 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     const top = window.screenY + window.outerHeight / 2 - height / 2;
     const options = `${left > 0 && top > 0 ? `left=${left},top=${top},` : ''}width=${width},height=${height},toolbar=0,resizable=0`;
     window.open(url, '', options).moveTo(left, top);
+  }
+  downloadGallery(project) {
+    if (project.buildGallery) {
+      if (project.updatedAt > project.buildGallery.builtAt) {
+        this.store.dispatch(buildProjectGallery({ projectId: project.id }))
+      } else {
+        const a = document.createElement('a');
+        a.href = project.buildGallery.url;
+        a.target = '_blank';
+        a.click();
+        // window.open(project.buildGallery.url, '_blank');
+      }
+    } else {
+      this.store.dispatch(buildProjectGallery({ projectId: project.id }))
+    }
   }
 }

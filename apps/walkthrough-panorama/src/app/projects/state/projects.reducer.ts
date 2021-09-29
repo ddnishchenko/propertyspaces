@@ -111,6 +111,15 @@ export const reducer = createReducer(
         build
       }
     };
+  }),
+  on(ProjectsActions.buildProjectGallerySuccess, (state, { buildGallery }) => {
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        buildGallery
+      }
+    };
   })
 );
 

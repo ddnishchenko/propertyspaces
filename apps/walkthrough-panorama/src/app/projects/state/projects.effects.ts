@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 
 import { map, mergeMap } from 'rxjs/operators';
@@ -12,6 +12,18 @@ import { SnotifyService } from 'ng-snotify';
 
 @Injectable()
 export class ProjectsEffects {
+
+  a;
+
+  constructor(
+    private actions$: Actions,
+    private projectsService: ProjectsService,
+    private snotifyService: SnotifyService,
+    private ngZone: NgZone
+  ) {
+    this.a = document.createElement('a');
+    this.a.target = '_blank';
+  }
 
 
   loadProjects$ = createEffect(() => this.actions$.pipe(
@@ -184,7 +196,29 @@ export class ProjectsEffects {
       payload => this.projectsService.buildProject(payload.projectId).pipe(
         map(build => {
           this.snotifyService.success('Project has been built and ready for download.');
+          this.ngZone.runOutsideAngular(() => {
+            this.a.href = build.build.url;
+            this.a.click();
+          });
           return ProjectsActions.buildProjectSuccess(build);
+        })
+      )
+    )
+  )
+  );
+
+  buildProjectGallery$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.buildProjectGallery),
+    mergeMap(
+      payload => this.projectsService.buildProjectGallery(payload.projectId).pipe(
+        map(build => {
+          this.snotifyService.success('Project gallery has been built and ready for download.');
+          this.ngZone.runOutsideAngular(() => {
+            this.a.href = build.buildGallery.url;
+            this.a.click();
+            // window.open(build.buildGallery.url, '_blank');
+          });
+          return ProjectsActions.buildProjectGallerySuccess(build);
         })
       )
     )
@@ -217,12 +251,4 @@ export class ProjectsEffects {
     )
   )
   );
-
-
-  constructor(
-    private actions$: Actions,
-    private projectsService: ProjectsService,
-    private snotifyService: SnotifyService
-  ) { }
-
 }
