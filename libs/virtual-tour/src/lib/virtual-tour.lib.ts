@@ -222,7 +222,7 @@ export class VirtualTourLib {
     // this.OrbitControls.noPan = true;
 
     // Observable
-    this.currentPanoId = parseInt(this.config.settings.startingPanoIndex) || this.panos[0].index;
+    this.currentPanoId = parseInt(this.config?.settings?.startingPanoIndex) || this.panos[0].index;
     this.moveMark(this.currentPanoId);
   }
 
