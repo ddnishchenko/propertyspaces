@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { CheckForUpdatesService } from './services/check-for-updates.service';
 
 @Component({
   selector: 'propertyspaces-root',
@@ -6,4 +7,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent { }
+export class AppComponent {
+  constructor(private checkForUpdate: CheckForUpdatesService) { }
+}
