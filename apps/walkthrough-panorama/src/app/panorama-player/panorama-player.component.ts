@@ -9,7 +9,6 @@ import { select, Store } from '@ngrx/store';
 import { selectProject, selectProjectHdrPanoramasFloors } from '../projects/state/projects.selectors';
 import { addGalleryItem, deleteGalleryItem, loadProject, updateGalleryItem, updatePanorama, updateProject } from '../projects/state/projects.actions';
 import { Panorama } from '../interfaces/panorama';
-// import { changeOrderOfPhoto, loadProjectGallery, removeProjectGalleryPhoto, renamePhoto, uploadProjectGalleryPhoto } from '../projects/state/gallery/project-gallery.actions';
 
 import { urlRegEx } from '../utils';
 import { GalleryComponent } from 'ng-gallery';
@@ -179,6 +178,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
   isQueryFullscreen;
   isSidebarHidden;
   isMobileApp;
+  isViewMode;
   get shareFullscreen() {
     const projectId = this.route.snapshot.params.id;
     const link = location.origin + `/virtual-tour/${projectId}?fullscreen=true`;
@@ -224,6 +224,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     this.isQueryFullscreen = this.route.snapshot.queryParams.fullscreen == 'true';
     this.isSidebarHidden = this.route.snapshot.queryParams.sidebarHidden == 'true';
     this.isEdit = this.router.url.includes('/projects/vr-tour-model');
+    this.isViewMode = this.router.url.includes('virtual-tour');
     this.isMobileApp = this.authService.isMobileApp;
     this.createForm();
 
@@ -246,6 +247,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.editor.destroy();
+    this.modalService.dismissAll();
   }
   logout() {
     const modal = this.modalService.open(ConfirmationModalComponent);
@@ -278,7 +280,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       panoCameraStartAngle: new FormControl(''),
       visibilityRadius: new FormControl(0),
       panoVisibilityRadius: new FormControl(0),
-      neighborsFiltering: new FormControl(false)
+      neighborsFiltering: new FormControl(false),
+      startingPanoIndex: new FormControl(0)
     });
 
     this.mapForm = new FormGroup({
@@ -343,7 +346,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       rotationY: +this.virtualTour.virtualTourService.defaultY,
       zoom: this.virtualTour.virtualTourService.defaultZoom,
       neighborsFiltering: this.virtualTour.virtualTourService.neighborsFiltering,
-      visibilityRadius: this.virtualTour.virtualTourService.defaultVisibilityRadius
+      visibilityRadius: this.virtualTour.virtualTourService.defaultVisibilityRadius,
+      startingPanoIndex: this.virtualTour.virtualTourService.currentPanoId
     });
     this.contactForm.patchValue(contact);
     this.companyForm.patchValue(company);
@@ -411,6 +415,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
             rotationY: this.vrTourSettingsForm.value.rotationY,
             visibilityRadius: this.vrTourSettingsForm.value.visibilityRadius,
             neighborsFiltering: this.vrTourSettingsForm.value.neighborsFiltering,
+            startingPanoIndex: this.vrTourSettingsForm.value.startingPanoIndex
           };
           this.vrTourSettingsForm.patchValue({
             panoZoom: 0,

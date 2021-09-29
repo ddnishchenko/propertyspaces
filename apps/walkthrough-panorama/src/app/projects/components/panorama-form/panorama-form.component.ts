@@ -4,7 +4,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { environment } from '../../../../environments/environment';
 import { Panorama } from '../../../interfaces/panorama';
-import { fileToBase64 } from '../../../utils';
 import { createHdrPanorama, createPanorama, deletePanorama, updatePanorama } from '../../state/projects.actions';
 import { selectProjectPanoramaByName } from '../../state/projects.selectors';
 

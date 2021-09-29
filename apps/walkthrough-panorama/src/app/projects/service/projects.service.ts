@@ -8,7 +8,6 @@ import { ImageGallery } from '../../interfaces/image-gallery';
 import { Panorama } from '../../interfaces/panorama';
 import { Project } from '../../interfaces/project';
 
-const host = environment.apiHost;
 const endpoint = environment.apiHost + 'projects';
 
 @Injectable({
@@ -67,6 +66,14 @@ export class ProjectsService {
 
   buildProject(id): Observable<any> {
     return this.http.get(`${endpoint}/${id}/build`);
+  }
+
+  activate(id) {
+    return this.http.patch(`${endpoint}/${id}/activate`, {});
+  }
+
+  dectivate(id) {
+    return this.http.patch(`${endpoint}/${id}/deactivate`, {});
   }
 
 }

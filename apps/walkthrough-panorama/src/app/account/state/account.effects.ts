@@ -44,6 +44,17 @@ export class AccountEffects {
     );
   });
 
+  changePassowrd$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AccountActions.deleteAccount),
+      mergeMap(
+        () => this.accountService.deleteProfile().pipe(
+          map(() => AccountActions.deleteAccountSuccess())
+        )
+      ),
+    );
+  });
+
   constructor(
     private actions$: Actions,
     private accountService: AccountService

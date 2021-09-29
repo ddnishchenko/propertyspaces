@@ -41,3 +41,12 @@ export const deleteAccountFailure = createAction(
   '[Account] Delete Accounts Failure',
   props<{ error: any }>()
 );
+
+export const changePassword = createAction(
+  '[Account] Change password',
+  props<{ currentPassword: string; newPassword: string; }>()
+);
+
+export const changePasswordSuccess = createAction(
+  '[Account] Change password success'
+);

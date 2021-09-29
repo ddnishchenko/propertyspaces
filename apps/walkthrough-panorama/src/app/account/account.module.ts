@@ -9,16 +9,20 @@ import * as fromAccount from './state/account.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { AccountEffects } from './state/account.effects';
 import { SharedModule } from '../shared/shared.module';
+import { ChangePasswordComponent } from './pages/change-password/change-password.component';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
   declarations: [
     AccountComponent,
-    ProfileComponent
+    ProfileComponent,
+    ChangePasswordComponent
   ],
   imports: [
     CommonModule,
     AccountRoutingModule,
+    NgbNavModule,
     SharedModule,
     StoreModule.forFeature(fromAccount.accountFeatureKey, fromAccount.reducer),
     EffectsModule.forFeature([AccountEffects])

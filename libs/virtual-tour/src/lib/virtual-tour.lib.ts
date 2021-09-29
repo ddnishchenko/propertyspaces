@@ -222,7 +222,7 @@ export class VirtualTourLib {
     // this.OrbitControls.noPan = true;
 
     // Observable
-    // this.currentPanoId = this.panos[0].index;
+    this.currentPanoId = parseInt(this.config.settings.startingPanoIndex) || this.panos[0].index;
     this.moveMark(this.currentPanoId);
   }
 
@@ -324,7 +324,6 @@ export class VirtualTourLib {
     let pano = this.panos.find(p => p.index === panoId);
     this.activeIndex = panoId;
     this.currentPano = pano;
-    this.currentPanoId
     let cameraPos = this.scaleToModel(pano)
     this.transition.state = 0;
     let camPos = this.camera.position

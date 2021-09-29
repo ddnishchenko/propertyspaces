@@ -1,1 +1,17 @@
-<router-outlet></router-outlet>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+
+      <!-- your navs bound to current route fragments -->
+      <ul ngbNav class="nav-tabs">
+        <li ngbNavItem *ngFor="let link of routes">
+          <a ngbNavLink [routerLink]="link.path ? link.path : '.'">{{ link.data.title }}</a>
+        </li>
+      </ul>
+
+      <!-- and an actual outlet elsewhere -->
+      <router-outlet></router-outlet>
+
+    </div>
+  </div>
+</div>

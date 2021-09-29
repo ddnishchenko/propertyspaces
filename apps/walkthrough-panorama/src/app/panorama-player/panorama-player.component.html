@@ -327,7 +327,7 @@
 
     <ng-container *ngIf="!isMobileApp">
 
-      <nav *ngIf="!isQueryFullscreen"
+      <nav *ngIf="!isQueryFullscreen && isEdit"
         class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark flex-md-nowrap shadow"
         [class.d-none]="isFullscreenActive.active">
         <a class="navbar-brand" [routerLink]="this.isEdit ? '/projects/' + project.id : ''">
@@ -620,24 +620,26 @@
             <div class="main-scene-menu-bar"
               *ngIf="!activeEditProperty || ([editProperties.allPoints, editProperties.activePoint, editProperties.mobilePointsMenu].includes(activeEditProperty) )">
 
-              <div class="collapse navbar-collapse">
+              <div class="collapse navbar-collapse flex-column">
                 <div class="main-scene-menu-bar-bg">
 
                   <div class="d-inline-block border-right border-dark p-1">
 
                     <ng-container *ngIf="isAuthenticated">
 
-                      <button type="button" class="btn" (click)="activeEditProperty = editProperties.allPoints">
+                      <button *ngIf="isEdit" type="button" class="btn"
+                        (click)="activeEditProperty = editProperties.allPoints">
                         <img src="assets/img/icons/edit.svg" alt="Edit nav points">
                       </button>
 
-                      <button type="button" class="btn" (click)="activeEditProperty = editProperties.createGallery">
+                      <button *ngIf="isEdit" type="button" class="btn"
+                        (click)="activeEditProperty = editProperties.createGallery">
                         <img src="assets/img/icons/camera-icon.svg" alt="Add photo gallery">
                       </button>
 
                     </ng-container>
 
-                    <button type="button" class="btn"
+                    <button *ngIf="project.gallery.length" type="button" class="btn"
                       (click)="openSectionModal(modalWrapper, galleryEditorTpl, 'Gallery')">
                       <img src="assets/img/icons/picture.svg" alt="Open gallery">
                     </button>
@@ -651,7 +653,7 @@
 
                   </div>
 
-                  <div *ngIf="isAuthenticated" class="d-inline-block py-1 px-3">
+                  <div *ngIf="isAuthenticated && isEdit" class="d-inline-block py-1 px-3">
                     <button type="button" class="btn btn-danger rounded-pill px-5">Publish Changes</button>
                   </div>
 
@@ -659,7 +661,7 @@
 
                 <div
                   *ngIf="activeEditProperty === editProperties.allPoints || activeEditProperty === editProperties.activePoint"
-                  class="d-flex mt-4">
+                  class="d-flex flex-fill w-100 mt-4">
                   <button type="button" class="btn flex-fill mr-1"
                     [class.main-scene-menu-bar-bg]="activeEditProperty !== editProperties.allPoints"
                     [class.btn-danger]="activeEditProperty === editProperties.allPoints"
@@ -702,6 +704,9 @@
               type="button" class="btn" id="fullscreen">
               <img src="assets/img/icons/cross-white.svg" alt="Fullscreen">
             </button>
+
+            <img *ngIf="!activeEditProperty" id="fullscreen" src="assets/img/logo.svg" alt="Lidarama"
+              class="watermark-logo" />
 
 
             <button type="button" *ngIf="editProperties.createGallery === activeEditProperty" class="btn btn-danger"
@@ -775,11 +780,19 @@
                     [min]="0.1" [max]="2"></propertyspaces-slider>
                 </div>
 
-                <div class="form-group form-check">
+                <div class="form-group form-check" *ngIf="editProperties.allPoints === activeEditProperty">
                   <input type="checkbox" class="form-check-input" id="filterNeighbors"
                     formControlName="neighborsFiltering" (change)="changeNeighborsFiltering()">
                   <label class="form-check-label" for="filterNeighbors">Apply neighbors filtering</label>
                 </div>
+
+                <div class="form-group" *ngIf="editProperties.allPoints === activeEditProperty">
+                  <label>Starting panorama</label>
+                  <select formControlName="startingPanoIndex" class="custom-select">
+                    <option *ngFor="let p of project.panos" [value]="p.index">{{p.index}}</option>
+                  </select>
+                </div>
+
 
                 <div class="text-center">
                   <button type="button" (click)="saveSettings(project.id)" class="btn btn-dark rounded-pill px-5">
