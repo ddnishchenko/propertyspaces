@@ -55,6 +55,7 @@
               <tr>
                 <th *ngIf="!isMobileApp">#</th>
                 <th scope="col">Name</th>
+                <th>Status</th>
                 <th>Created at</th>
                 <th>Address</th>
                 <th class="text-right" scope="col">Action</th>
@@ -72,6 +73,12 @@
                 <th scope="row">
                   <a [routerLink]="[project.id]">{{ project.name }}</a>
                 </th>
+                <td>
+                  <button type="button" class="btn" [class.btn-primary]="!project.active"
+                    [class.btn-dark]="!!project.active" (click)="changeStatus(project)">
+                    {{ project.active ? 'deactivate' : 'activate' }}
+                  </button>
+                </td>
                 <td>{{project.createdAt | date}}</td>
                 <td>
                   {{ project.addr?.address }}

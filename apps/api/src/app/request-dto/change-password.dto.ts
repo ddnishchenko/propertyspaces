@@ -1,10 +1,8 @@
 import { MaxLength, MinLength, Matches } from "class-validator";
-
-
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\d\w]).{8,16}$/;
+import { PASSWORD_REGEX } from "./regex";
 
 export class ChangePasswordDto {
-  oldPassword: string;
+  currentPassword: string;
   @MinLength(8)
   @MaxLength(16)
   @Matches(PASSWORD_REGEX)

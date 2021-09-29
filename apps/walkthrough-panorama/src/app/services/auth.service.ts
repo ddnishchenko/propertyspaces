@@ -4,7 +4,7 @@ import { tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 const api = environment.apiHost;
-
+const endpoint = environment.apiHost + 'auth'
 const storePrefix = '_auth_';
 const tokenKey = `${storePrefix}_token`;
 const userKey = `${storePrefix}_user`;
@@ -41,11 +41,11 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   register(user) {
-    return this.http.post(`${api}auth/register`, user);
+    return this.http.post(`${endpoint}/register`, user);
   }
 
   login(creds) {
-    return this.http.post(`${api}auth/login`, creds).pipe(
+    return this.http.post(`${endpoint}/login`, creds).pipe(
       tap((data: { accessToken: string; user: any; }) => {
         this.accessToken = data.accessToken;
         this.currentUser = data.user;
@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.get(`${api}auth/logout`).pipe(
+    return this.http.get(`${endpoint}/logout`).pipe(
       tap(() => {
         localStorage.removeItem(tokenKey);
         localStorage.removeItem(userKey);
@@ -64,5 +64,11 @@ export class AuthService {
     );
 
   }
+
+  changePassword(body: { currentPassword: string; newPassword: string }) {
+    return this.http.post(`${endpoint}/change-password`, body)
+  }
+
+
 
 }

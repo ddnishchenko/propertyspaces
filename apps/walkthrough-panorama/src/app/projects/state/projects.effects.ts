@@ -191,6 +191,33 @@ export class ProjectsEffects {
   )
   );
 
+  activateProject$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.activateProject),
+    mergeMap(
+      payload => this.projectsService.activate(payload.projectId).pipe(
+        map(project => {
+          this.snotifyService.success('Project has been activated.');
+          return ProjectsActions.activateProjectSuccess({ project: { ...project, id: payload.projectId } });
+        })
+      )
+    )
+  )
+  );
+
+
+  deactivateProject$ = createEffect(() => this.actions$.pipe(
+    ofType(ProjectsActions.deactivateProject),
+    mergeMap(
+      payload => this.projectsService.deactivate(payload.projectId).pipe(
+        map(project => {
+          this.snotifyService.success('Project has been deactivated.');
+          return ProjectsActions.deactivateProjectSuccess({ project: { ...project, id: payload.projectId } });
+        })
+      )
+    )
+  )
+  );
+
 
   constructor(
     private actions$: Actions,

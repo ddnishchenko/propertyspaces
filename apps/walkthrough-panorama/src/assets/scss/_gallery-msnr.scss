@@ -79,6 +79,7 @@
     border-width: 0;
   }
   */
+
   &-shadow {
     position: absolute;
     top: 0;
@@ -86,6 +87,11 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0,0,0, 0.75);
+    opacity: 0;
+    transition: opacity .3s ease-in;
+  }
+  &:hover &-shadow{
+    opacity: 1;
   }
   &-download {
     position: absolute;

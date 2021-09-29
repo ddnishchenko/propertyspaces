@@ -72,6 +72,23 @@ export class ProjectsController {
     return result.Attributes;
   }
 
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/activate')
+  async activate(@Req() req, @Param('id') id: string) {
+    const body = { active: true };
+    const result = await this.projectService.update(id, body, req.user);
+    return result.Attributes;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/deactivate')
+  async deactivate(@Req() req, @Param('id') id: string) {
+    const body = { active: false };
+    const result = await this.projectService.update(id, body, req.user);
+    return result.Attributes;
+  }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Req() req, @Param('id') id: string) {
@@ -92,13 +109,19 @@ export class ProjectsController {
 
     const lidaramaAppFileName = 'lidarama-app.zip';
     const lidaramaApp = await this.projectService.getObject(lidaramaAppFileName).promise();
+    console.log('lidarama-app.zip downloaded.');
+    const root = '/tmp'
     const lidaramaAppBuffer: any = lidaramaApp.Body;
-    const lidaramaAppPath = join(__dirname, lidaramaAppFileName)
+    const lidaramaAppPath = join(root, lidaramaAppFileName);
+    console.log('lidarama-app.zip prepareing to be seved on:', lidaramaAppPath);
     fs.writeFileSync(lidaramaAppPath, lidaramaAppBuffer);
+    console.log('lidarama-app.zip saved:', lidaramaAppPath);
+    console.log('lidarama-app.zip start unzip:', lidaramaAppPath);
     fs.createReadStream(lidaramaAppPath)
-      .pipe(unzipper.Extract({ path: join(__dirname, 'lidarama-app') }))
+      .pipe(unzipper.Extract({ path: join(root, 'lidarama-app') }))
 
-    const appPath = join(__dirname, 'lidarama-app')
+    console.log('lidarama-app.zip unzipped:', lidaramaAppPath);
+    const appPath = join(root, 'lidarama-app')
     const tmpPath = join(appPath, 'assets');
     fs.mkdirSync(tmpPath, { recursive: true });
     const tmpPanoramaPath = join(tmpPath, 'panoramas');

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
 import { ChangeEmailDto } from '../request-dto/change-email.dto';
 import { ChangePasswordDto } from '../request-dto/change-password.dto';
+import { RegisterDto } from '../request-dto/register.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -13,7 +14,7 @@ export class AuthController {
   ) { }
 
   @Post('register')
-  async register(@Body() body) {
+  async register(@Body() body: RegisterDto) {
     return this.authService.register(body);
   }
 
@@ -30,6 +31,12 @@ export class AuthController {
   }
 
   @HttpCode(200)
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: ChangeEmailDto) {
+    return await this.authService.forgotPassword(body.email);
+  }
+
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   @Post('change-email')
   async changeEmail(@Req() req, @Body() body: ChangeEmailDto) {
@@ -40,7 +47,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('change-password')
   async changePassword(@Req() req, @Body() body: ChangePasswordDto) {
-    await this.authService.changePassword(req.user.id, body.oldPassword, body.newPassword);
+    await this.authService.changePassword(req.user.id, body.currentPassword, body.newPassword);
   }
 
 

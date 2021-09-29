@@ -230,6 +230,18 @@ gallery {
   }
 }
 
+.deactivated-project {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  h1 {
+    margin: auto;
+  }
+}
+
 .google-map {
   height: calc(68vh + 5px);
   &.container-contain {

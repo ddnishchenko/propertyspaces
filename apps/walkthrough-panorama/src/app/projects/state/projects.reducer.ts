@@ -21,12 +21,31 @@ export const reducer = createReducer(
   on(ProjectsActions.createProjectSuccess, (state, { project }) => ({ ...state, projects: state.projects.concat(project) })),
   on(ProjectsActions.loadProjectSuccess, (state, { project }) => ({ ...state, project })),
   on(ProjectsActions.deleteProjectsSuccess, (state, { projectIds }) => ({ ...state, projects: state.projects.filter(p => !projectIds.includes(p.id)) })),
-  on(ProjectsActions.updateProjectSuccess, (state, { project }) => ({
-    ...state, project: {
-      ...state.project,
-      ...project
-    }
-  })),
+  on(
+    ProjectsActions.updateProjectSuccess,
+    (state, { project }) => ({
+      ...state, project: {
+        ...state.project,
+        ...project
+      }
+    })),
+  on(
+    ProjectsActions.activateProjectSuccess,
+    ProjectsActions.deactivateProjectSuccess,
+    (state, { project }) => ({
+      ...state,
+      projects: state.projects.map(p => {
+        if (p.id === project.id) {
+          return { ...p, ...project };
+        }
+        return p;
+      }),
+      project: {
+        ...state.project,
+        ...project
+      }
+    }),
+  ),
   on(ProjectsActions.createPanoramaSuccess, (state, { panoramas }) => ({
     ...state,
     project: {

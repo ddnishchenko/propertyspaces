@@ -72,7 +72,7 @@ export class ProjectsService {
     return this.http.patch(`${endpoint}/${id}/activate`, {});
   }
 
-  dectivate(id) {
+  deactivate(id) {
     return this.http.patch(`${endpoint}/${id}/deactivate`, {});
   }
 

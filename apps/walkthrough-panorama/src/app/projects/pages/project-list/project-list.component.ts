@@ -6,7 +6,7 @@ import { AuthService } from '../../../services/auth.service';
 import { UsersService } from '../../../services/users.service';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { ProjectFormComponent } from '../../components/project-form/project-form.component';
-import { createProject, deleteProjects, loadProjects, loadProjectsByUser } from '../../state/projects.actions';
+import { activateProject, createProject, deactivateProject, deleteProjects, loadProjects, loadProjectsByUser } from '../../state/projects.actions';
 import { selectProjects } from '../../state/projects.selectors';
 
 @Component({
@@ -84,6 +84,11 @@ export class ProjectListComponent implements OnInit {
   filterByUser($event) {
     const userId = $event.target.value;
     this.store.dispatch(loadProjectsByUser({ userId }));
+  }
+
+  changeStatus(project) {
+    const action = project.active ? deactivateProject({ projectId: project.id }) : activateProject({ projectId: project.id });
+    this.store.dispatch(action);
   }
 
 }

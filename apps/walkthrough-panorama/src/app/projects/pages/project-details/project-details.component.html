@@ -83,6 +83,12 @@
             </button>
           </div>
           <div class="list-group-item list-group-item-action d-flex">
+            <button type="button" class="btn flex-fill" [class.btn-primary]="!project.active"
+              [class.btn-dark]="!!project.active" (click)="changeStatus(project)">
+              {{ project.active ? 'deactivate' : 'activate' }}
+            </button>
+          </div>
+          <div class="list-group-item list-group-item-action d-flex">
             <button type="button" class="btn btn-link text-dark flex-fill text-left" (click)="buildProject(project.id)">
               <i class="fa fa-gears"></i> Build Project
             </button>

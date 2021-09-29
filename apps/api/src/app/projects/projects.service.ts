@@ -1,10 +1,10 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-
+import ShortUniqueId from 'short-unique-id';
 import { DynamoDB, S3 } from 'aws-sdk';
-import { randomUUID } from 'crypto';
-import { createReadStream } from 'fs';
 
 import { Role } from '../roles/role.enum';
+
+const uid = new ShortUniqueId({ length: 10 })
 const db = new DynamoDB.DocumentClient({});
 const s3 = new S3({});
 
@@ -23,12 +23,12 @@ export class ProjectsService {
       TableName: 'projects',
       ExpressionAttributeValues,
       ExpressionAttributeNames: { '#name': 'name' },
-      ProjectionExpression: 'id,#name,addr,userId,createdAt,updatedAt',
+      ProjectionExpression: 'id,#name,addr,userId,createdAt,updatedAt,active',
       FilterExpression
     }).promise();
   }
   put(data, id?) {
-    const Item = { id: id ? id : randomUUID(), ...data };
+    const Item = { id: id ? id : uid(), active: true, ...data };
     return db.put({ TableName: 'projects', Item }).promise().then(() => Item);
   }
   async update(id, body, user) {
@@ -146,7 +146,7 @@ export class ProjectsService {
     const ConditionExpression = isAdmin ? undefined : 'userId = :userId';
 
     let panorama = data;
-    panorama.id = data.id || randomUUID()
+    panorama.id = data.id || uid()
     const panoId = panorama.id;
     if (data.url.includes(';base64')) {
       const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
@@ -401,7 +401,7 @@ export class ProjectsService {
     const file = Buffer.from(data.url.replace(/^data:image\/\w+;base64,/, ''), 'base64');
     const fileType = data.url.split(';')[0].split('/')[1] || 'jpeg';
 
-    const photoId = randomUUID();
+    const photoId = uid();
     const photoName = `${photoId}.${fileType}`;
     const s3Object = await s3.upload({
       Bucket: 'lidarama1media',

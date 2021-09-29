@@ -11,7 +11,7 @@ import { ConfirmationModalComponent } from '../../../shared/components/confirmat
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
-import { buildProject, deletePanorama, deleteProjects, loadProject, updatePanorama, updateProject } from '../../state/projects.actions';
+import { activateProject, buildProject, deactivateProject, deletePanorama, deleteProjects, loadProject, updatePanorama, updateProject } from '../../state/projects.actions';
 import { selectProject } from '../../state/projects.selectors';
 import { AuthService } from '../../../services/auth.service';
 
@@ -162,5 +162,9 @@ export class ProjectDetailsComponent implements OnInit {
   }
   buildProject(id) {
     this.store.dispatch(buildProject({ projectId: id }));
+  }
+  changeStatus(project) {
+    const action = project.active ? deactivateProject({ projectId: project.id }) : activateProject({ projectId: project.id });
+    this.store.dispatch(action);
   }
 }

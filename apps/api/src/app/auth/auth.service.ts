@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { hashPassword, validatePassword } from './password';
 
 
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -70,5 +71,10 @@ export class AuthService {
     } else {
       throw new UnauthorizedException({ message: 'Wrong old password' })
     }
+  }
+
+  async forgotPassword(email) {
+    const user = await this.usersService.findByEmail(email);
+    return !!user;
   }
 }

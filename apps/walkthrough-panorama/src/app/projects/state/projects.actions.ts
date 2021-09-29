@@ -221,3 +221,24 @@ export const buildProjectSuccess = createAction(
   `${prefix} Build project Success`,
   props<{ build: { url: string; builtAt: number }; }>()
 );
+
+
+export const activateProject = createAction(
+  `${prefix} Activate project`,
+  props<{ projectId: string; }>()
+);
+
+export const activateProjectSuccess = createAction(
+  `${prefix} Activate project success`,
+  props<{ project: Project }>()
+);
+
+export const deactivateProject = createAction(
+  `${prefix} Deactivate project`,
+  props<{ projectId: string; }>()
+);
+
+export const deactivateProjectSuccess = createAction(
+  `${prefix} Deactivate project success`,
+  props<{ project: Project }>()
+);
