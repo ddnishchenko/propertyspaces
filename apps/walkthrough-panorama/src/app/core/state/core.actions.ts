@@ -35,6 +35,17 @@ export const logout = createAction(
 );
 
 
+export const forgotPassword = createAction(
+  `${prefix} Forgot password`,
+  props<{ email: string }>()
+);
+
+export const resetPassword = createAction(
+  `${prefix} Reset Password`,
+  props<{ data: { password: string; passwordConfirmation: string; resetToken: string; } }>()
+)
+
+
 export const loadProfile = createAction(
   `${prefix} Load Profile`
 );

@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { map, mergeMap, tap } from "rxjs/operators";
 import { AuthService } from "../../services/auth.service";
 import * as CoreActions from './core.actions';
+import { SnotifyService } from "ng-snotify";
 
 @Injectable()
 export class CoreEffects {
@@ -46,11 +47,42 @@ export class CoreEffects {
       )
     ),
     { dispatch: false }
-  )
+  );
+
+  forgotPassword$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(CoreActions.forgotPassword),
+      mergeMap(
+        ({ email }) => this.authService.forgotPassword({ email }).pipe(
+          tap(() => {
+            this.snotifyService.success('Email with password reset link sent to your email!');
+            this.router.navigate(['/auth']);
+          })
+        )
+      )
+    ),
+    { dispatch: false }
+  );
+
+  resetPassword$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(CoreActions.resetPassword),
+      mergeMap(
+        ({ data }) => this.authService.resetPassword(data).pipe(
+          tap(() => {
+            this.snotifyService.success('Password has been changed. Login with new password!');
+            this.router.navigate(['/auth']);
+          })
+        )
+      )
+    ),
+    { dispatch: false }
+  );
 
   constructor(
     private actions$: Actions,
     private authService: AuthService,
+    private snotifyService: SnotifyService,
     private router: Router
   ) { }
 }

@@ -1,7 +1,8 @@
-import { Body, Controller, Get, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ChangeEmailDto } from '../request-dto/change-email.dto';
 import { ChangePasswordDto } from '../request-dto/change-password.dto';
 import { RegisterDto } from '../request-dto/register.dto';
+import { ResetPasswordDto } from '../request-dto/reset-password.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -32,8 +33,16 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('forgot-password')
-  async forgotPassword(@Body() body: ChangeEmailDto) {
-    return await this.authService.forgotPassword(body.email);
+  async forgotPassword(@Res() res, @Body() body: ChangeEmailDto) {
+    await this.authService.forgotPassword(body.email);
+    res.json({ message: 'Check you email please!' });
+  }
+
+  @HttpCode(200)
+  @Post('reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    await this.authService.resetPassword(body);
+    return { message: 'password changed' }
   }
 
   @HttpCode(200)

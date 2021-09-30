@@ -9,7 +9,6 @@ export class RegisterDto {
   @MaxLength(16)
   @Matches(PASSWORD_REGEX)
   password: string;
-  @Equals((o) => o.password)
   passwordConfirmation: string;
   @Equals(true)
   termsCheck: boolean;

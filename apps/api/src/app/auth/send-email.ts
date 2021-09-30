@@ -6,11 +6,11 @@ const charset = 'UTF-8';
 // Specify a configuration set. If you do not want to use a configuration
 // set, comment the following variable, and the
 // ConfigurationSetName : configuration_set argument below.
-const configuration_set = "ConfigSet";
+const configuration_set = "testing";
 
 // Replace sender@example.com with your "From" address.
 // This address must be verified with Amazon SES.
-const sender = 'Sender Name <sender@example.com>';
+const sender = 'Lidarama Developer <ddnishchenko.itera@gmail.com>';
 
 const ses = new SES();
 

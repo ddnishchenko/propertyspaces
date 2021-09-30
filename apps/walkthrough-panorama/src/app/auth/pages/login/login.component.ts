@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { login } from '../../../core/state/core.actions';
-import { REQUIRED_EMAIL_VALIDATOR, VALIDATORS_OF_PASSWORD } from '../../../utils/validators';
+import { REQUIRED_EMAIL_VALIDATOR } from '../../../utils/validators';
 
 @Component({
   selector: 'propertyspaces-login',
@@ -13,7 +13,7 @@ export class LoginComponent {
 
   form = new FormGroup({
     email: new FormControl('', REQUIRED_EMAIL_VALIDATOR),
-    password: new FormControl('', VALIDATORS_OF_PASSWORD),
+    password: new FormControl('', Validators.required),
   });
 
   constructor(private store: Store) { }

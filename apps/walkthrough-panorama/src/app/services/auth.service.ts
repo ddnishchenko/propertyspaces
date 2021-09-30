@@ -65,6 +65,14 @@ export class AuthService {
 
   }
 
+  forgotPassword(body) {
+    return this.http.post(`${endpoint}/forgot-password`, body);
+  }
+
+  resetPassword(body) {
+    return this.http.post(`${endpoint}/reset-password`, body);
+  }
+
   changePassword(body: { currentPassword: string; newPassword: string }) {
     return this.http.post(`${endpoint}/change-password`, body)
   }
