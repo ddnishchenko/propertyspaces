@@ -644,6 +644,11 @@
                         </button>
 
                         <button *ngIf="isEdit" type="button" class="btn"
+                          (click)="activeEditProperty = editProperties.startPoint">
+                          <img src="assets/img/icons/cog.svg" alt="Start pano">
+                        </button>
+
+                        <button *ngIf="isEdit" type="button" class="btn"
                           (click)="activeEditProperty = editProperties.createGallery">
                           <img src="assets/img/icons/camera-icon.svg" alt="Add photo gallery">
                         </button>
@@ -712,6 +717,9 @@
                 <button type="button" class="btn" style="background-color: #F7F7F7;"
                   (click)="activeEditProperty = editProperties.activePoint">EDIT ACTIVE
                   NAV POINT</button>
+
+                <button type="button" class="btn" style="background-color: #F7F7F7;"
+                  (click)="activeEditProperty = editProperties.startPoint">EDIT STARTING PANORAMA</button>
               </div>
 
               <button *ngIf="activeEditProperty" (click)="activeEditProperty = ''; isCollapsedToolbar = true"
@@ -772,58 +780,112 @@
               </div>
 
 
-              <div class="card p-2 py-lg-3 px-lg-5 edit-nav-points-form"
-                *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty">
-                <form [formGroup]="vrTourSettingsForm">
+              <div class="card p-2 pt-4 py-lg-3 px-lg-5 edit-nav-points-form"
+                *ngIf="activeEditProperty === editProperties.startPoint">
 
-                  <div class="form-group">
-                    <label>Nav point rotation</label>
-                    <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
-                      (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3">
-                    </propertyspaces-slider>
-                    <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
-                      (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1"
-                      [min]="0" [max]="6.3"></propertyspaces-slider>
-                  </div>
+                <button type="button" (click)="activeEditProperty = '';  isCollapsedToolbar = true"
+                  class="close position-absolute" data-bs-dismiss="modal" aria-label="Close">
+                  <div class="rounded-circle close-inner"><img src="assets/img/icons/cross.svg" alt="Close"></div>
+                </button>
 
-                  <div class="form-group">
-                    <label>Zoom</label>
-                    <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
-                      (slide)="zoomChange($event)" formControlName="zoom" [step]="1" [min]="30" [max]="120">
-                    </propertyspaces-slider>
-                    <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
-                      (slide)="panoZoomChange($event)" formControlName="panoZoom" [step]="1" [min]="30" [max]="120">
-                    </propertyspaces-slider>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Nav points visibility radius</label>
-                    <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
-                      (slide)="visibilityRadiusChange()" formControlName="visibilityRadius" [step]="0.1" [min]="0.1"
-                      [max]="2"></propertyspaces-slider>
-                    <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
-                      (slide)="panoVisibilityRadiusChange()" formControlName="panoVisibilityRadius" [step]="0.1"
-                      [min]="0.1" [max]="2"></propertyspaces-slider>
-                  </div>
-
-                  <div class="form-group form-check" *ngIf="editProperties.allPoints === activeEditProperty">
-                    <input type="checkbox" class="form-check-input" id="filterNeighbors"
-                      formControlName="neighborsFiltering" (change)="changeNeighborsFiltering()">
-                    <label class="form-check-label" for="filterNeighbors">Apply neighbors filtering</label>
-                  </div>
-
-                  <div class="form-group" *ngIf="editProperties.allPoints === activeEditProperty">
+                <form class="container" [formGroup]="vrTourSettingsForm">
+                  <div class="form-group mb-0">
                     <label>Starting panorama</label>
                     <select formControlName="startingPanoIndex" class="custom-select">
-                      <option *ngFor="let p of project.panos" [value]="p.index">{{p.index}}</option>
+                      <option *ngFor="let p of project.panos" [value]="p.order">{{p.order}}</option>
                     </select>
                   </div>
 
+                  <div class="text-center mt-2">
 
-                  <div class="text-center">
-                    <button type="button" (click)="saveSettings(project.id)" class="btn btn-dark rounded-pill px-5">
+                    <button type="button" (click)="saveSettings(project.id)"
+                      class="btn btn-dark rounded-pill mr-2 px-5">
                       Save
                     </button>
+
+                    <button type="button" (click)="saveSettings(project.id)"
+                      class="btn btn-danger rounded-pill mx-lg-3 ml-2 px-5">
+                      Publish
+                    </button>
+
+                  </div>
+                </form>
+
+              </div>
+
+
+              <div class="card p-2 pt-4 py-lg-3 px-lg-5 edit-nav-points-form"
+                *ngIf="editProperties.allPoints === activeEditProperty || editProperties.activePoint === activeEditProperty">
+
+                <button type="button" (click)="activeEditProperty = '';  isCollapsedToolbar = true"
+                  class="close position-absolute" data-bs-dismiss="modal" aria-label="Close">
+                  <div class="rounded-circle close-inner"><img src="assets/img/icons/cross.svg" alt="Close"></div>
+                </button>
+
+                <form class="container" [formGroup]="vrTourSettingsForm">
+
+                  <div class="d-block d-lg-flex justify-content-between">
+
+                    <div class="form-group mb-0">
+                      <label>Nav point rotation</label>
+                      <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
+                        (slide)="rotationYChange()" formControlName="rotationY" [step]="0.1" [min]="0" [max]="6.3">
+                      </propertyspaces-slider>
+                      <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
+                        (slide)="panoCameraStartAngleChange()" formControlName="panoCameraStartAngle" [step]="0.1"
+                        [min]="0" [max]="6.3"></propertyspaces-slider>
+                    </div>
+
+                    <div class="form-group mb-0">
+                      <label>Zoom</label>
+                      <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
+                        (slide)="zoomChange($event)" formControlName="zoom" [step]="1" [min]="30" [max]="120">
+                      </propertyspaces-slider>
+                      <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
+                        (slide)="panoZoomChange($event)" formControlName="panoZoom" [step]="1" [min]="30" [max]="120">
+                      </propertyspaces-slider>
+                    </div>
+
+                    <div class="form-group mb-0">
+                      <label>Nav points visibility radius</label>
+                      <propertyspaces-slider *ngIf="editProperties.allPoints === activeEditProperty"
+                        (slide)="visibilityRadiusChange()" formControlName="visibilityRadius" [step]="0.1" [min]="0.1"
+                        [max]="2"></propertyspaces-slider>
+                      <propertyspaces-slider *ngIf="editProperties.activePoint === activeEditProperty"
+                        (slide)="panoVisibilityRadiusChange()" formControlName="panoVisibilityRadius" [step]="0.1"
+                        [min]="0.1" [max]="2"></propertyspaces-slider>
+                    </div>
+
+
+
+                  </div>
+
+                  <div
+                    class="d-flex justify-content-center align-items-center flex-column flex-lg-row flex-lg-row-reverse">
+
+
+                    <div class="form-check mb-0 d-inline-block text-center"
+                      *ngIf="editProperties.allPoints === activeEditProperty">
+                      <input type="checkbox" class="form-check-input" id="filterNeighbors"
+                        formControlName="neighborsFiltering" (change)="changeNeighborsFiltering()">
+                      <label class="form-check-label" for="filterNeighbors">Apply neighbors filtering</label>
+                    </div>
+
+
+                    <div class="d-flex text-center mt-1">
+
+                      <button type="button" (click)="saveSettings(project.id)"
+                        class="btn btn-dark rounded-pill mr-2 px-5">
+                        Save
+                      </button>
+
+                      <button type="button" (click)="saveSettings(project.id)"
+                        class="btn btn-danger rounded-pill mx-lg-3 ml-2 px-5">
+                        Publish
+                      </button>
+
+                    </div>
+
                   </div>
 
                 </form>

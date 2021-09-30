@@ -14,7 +14,7 @@ export const selectProjectPanoramas =
       if (state?.panoramas?.length) {
         const panoramas = state.panoramas
           .slice()
-          .map((p, index) => ({ ...p, order: +p.order, floor: isNaN(+p.floor) ? 1 : +p.floor, index, transitionFrom: undefined }));
+          .map((p, index) => ({ ...p, order: +p.order + 1, floor: isNaN(+p.floor) ? 1 : +p.floor, index, transitionFrom: undefined }));
 
         const sortedFloors =
           panoramas

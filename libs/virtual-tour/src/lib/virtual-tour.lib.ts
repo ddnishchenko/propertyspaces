@@ -28,7 +28,7 @@ function ringsShape(pano, font) {
   const circleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 });
   const circleMesh = new THREE.Mesh(circleGeometry, circleMaterial);
 
-  const index = pano?.order || 0;
+  const index = pano?.order || 1;
 
   const matLite = new THREE.MeshBasicMaterial({ color: color, transparent: true });
   const shapesText = font.generateShapes(`${index}`, 1.5);
@@ -222,7 +222,7 @@ export class VirtualTourLib {
     // this.OrbitControls.noPan = true;
 
     // Observable
-    this.currentPanoId = parseInt(this.config?.settings?.startingPanoIndex) || this.panos[0].index;
+    this.currentPanoId = parseInt(this.config?.settings?.startingPanoIndex) || this.panos[0].order;
     this.moveMark(this.currentPanoId);
   }
 
@@ -246,7 +246,7 @@ export class VirtualTourLib {
         if (this.panos[i].object.visible) {
           const panoUuids = this.panos[i].object.children.map(m => m.uuid);
           if (panoUuids.includes(item.object.uuid)) {
-            target = this.panos[i].index;
+            target = this.panos[i].order;
           }
         }
       }
@@ -257,7 +257,7 @@ export class VirtualTourLib {
   changeVisibilityRadius(val, changeCurrent = false) {
     if (changeCurrent) {
       this.panos = this.panos.map(p => {
-        if (p.index === this.currentPano.index) {
+        if (p.order === this.currentPano.order) {
           return { ...p, visibilityRadius: val };
         }
         return p;
@@ -321,7 +321,7 @@ export class VirtualTourLib {
   moveMark(panoId) {
     this.toggleNavPoints(false);
 
-    let pano = this.panos.find(p => p.index === panoId);
+    let pano = this.panos.find(p => p.order === panoId);
     this.activeIndex = panoId;
     this.currentPano = pano;
     let cameraPos = this.scaleToModel(pano)
@@ -330,7 +330,7 @@ export class VirtualTourLib {
 
     this.transition.startPos = { x: camPos.x, y: camPos.y, z: camPos.z }
     this.transition.endPos = cameraPos;
-    const currentTexture = this.loadedTextures.find(t => t.index === panoId);
+    const currentTexture = this.loadedTextures.find(t => t.order === panoId);
     this.transition.texture = currentTexture.texture;
 
     this.transitionMesh.position.set(cameraPos.x, cameraPos.y, cameraPos.z)
@@ -379,7 +379,7 @@ export class VirtualTourLib {
               }
             }
           ),
-          index: pano.index
+          order: pano.order
         };
 
       }
@@ -469,7 +469,7 @@ export class VirtualTourLib {
       })
       let panoId = this.getPanoId(event)
       if (panoId !== null) {
-        const panoIndex = this.panos.findIndex(p => p.index === panoId)
+        const panoIndex = this.panos.findIndex(p => p.order === panoId)
         // this.panos[panoId].object.material.opacity = 0.5
         this.panos[panoIndex].object.children.forEach(mesh => {
           if (!(mesh.geometry instanceof THREE.CircleGeometry)) {

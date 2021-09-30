@@ -64,7 +64,7 @@
 
 .panorama-player {
   position: relative;
-  height: calc(100vh - 72px);
+  height: calc(100vh);
   &-no-footer {
     height: calc(100vh - 67px);
   }
@@ -104,7 +104,7 @@
 
 #fullscreen {
   position: absolute;
-  top: 30;
+  top: 5px;
   left: 20px;
 }
 
@@ -121,6 +121,11 @@
   transform: translateX(-50%);
   border-radius: 15px 15px 0 0;
   min-width: 300px;
+  width: 100%;
+  .close {
+    right: 1rem;
+    top: 1rem;
+  }
 }
 
 .sidebar {
@@ -499,6 +504,9 @@ gallery {
   }
   .navbar {
     padding: 25px 35px;
+  }
+  .edit-nav-points-form {
+    border-radius: 0;
   }
 
   .sidebar {
