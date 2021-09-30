@@ -369,7 +369,7 @@ export class VirtualTourLib {
       (pano, i) => {
         return {
           texture: loader.load(
-            `${pano.url}${pano.updatedAt ? '?_t=' + pano.updatedAt : ''}`,
+            `${pano.url}${'?_t=' + Date.now()}`,
             (t) => {
               this.panos[i].loaded = true;
               this.currentPano.loaded = true;
