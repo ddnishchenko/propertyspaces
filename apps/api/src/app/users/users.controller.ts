@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ChangeEmailDto } from '../request-dto/change-email.dto';
+import { SubscriptionDto } from '../request-dto/subscripion.dto';
 import { Role } from '../roles/role.enum';
 import { UsersService } from './users.service';
 
@@ -43,6 +44,12 @@ export class UsersController {
     if (body.email) {
       await this.usersService.changeEmail(req.user.id, req.user.email, body.email);
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('profile/subscription')
+  async subscribe(@Req() req, @Body() body: SubscriptionDto) {
+    return await this.usersService.updateSubsciption(req.user.id, body);
   }
 
   @UseGuards(JwtAuthGuard)

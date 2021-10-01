@@ -1,5 +1,7 @@
 service: nx-nestjs-api
 
+useDotenv: true
+
 package:
   excludeDevDependencies: false
   individually: true

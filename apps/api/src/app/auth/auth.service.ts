@@ -52,17 +52,17 @@ export class AuthService {
       createdUser.salt = undefined;
       const url = environment.frontentUrl + '/auth';
       try {
-        /* await sendEmail({
-          recipients: [user.email],
+        await sendEmail({
+          to: user.email,
           subject: 'Reset password from Lidarama',
-          bodyText: `
+          text: `
           Please do not replay on this email
           `,
-          bodyHtml: `
+          html: `
           Login to lidarama
           <a href="${url}" target="_blank">Lidarama</a>
           `
-        }); */
+        });
       } catch (e) {
         console.error(e.message);
       }
@@ -117,17 +117,17 @@ export class AuthService {
       // 3. Send email with reset token link
       const url = environment.frontentUrl + '/auth/reset-password?resetToken=' + resetPasswordToken;
       try {
-        /* await sendEmail({
-          recipients: [email],
+        await sendEmail({
+          to: email,
           subject: 'Reset password from Lidarama',
-          bodyText: `
+          text: `
           Please do not replay on this email
           `,
-          bodyHtml: `
+          html: `
           Follow this link to reset tour password
           <a href="${url}">${url}</a>
           `
-        }); */
+        });
       } catch (e) {
         console.error(e.message);
       }

@@ -20,6 +20,7 @@ export interface Project {
   dollhouse?: string;
   description?: string | any;
   settings?: any;
+  settingsPublished?: any;
   panoramas?: Panorama[];
   gallery?: ImageGallery[];
   gallerySort?: string[];

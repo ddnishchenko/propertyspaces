@@ -238,7 +238,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       map(
         ([project, floors]) => ({
           ...floors,
-          ...project
+          ...project,
+          settings: this.isEdit ? project.settings : project.settingsPublished
         })
       ),
       skip(1)
@@ -410,6 +411,7 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
       case this.editProperties.allPoints:
         const modal = this.modalService.open(ConfirmationModalComponent);
         modal.componentInstance.msg = 'Settings of Panoramas will be lost and default setting will be applied after saving defaults. Proceed?';
+        modal.componentInstance.yes = 'Yes'
 
         modal.result.then(answer => {
           if (answer) {
@@ -774,5 +776,20 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
     } else {
       this.store.dispatch(buildProjectGallery({ projectId: project.id }))
     }
+  }
+  publish(projectId) {
+    const modal = this.modalService.open(ConfirmationModalComponent);
+    modal.componentInstance.msg = 'Are you sure you want to publish this settings?';
+    modal.componentInstance.yes = 'Yes';
+    modal.result.then(res => {
+      if (res) {
+        this.store.dispatch(updateProject({
+          projectId, project: {
+            settingsPublished: this.vrTourSettingsForm.value
+          }
+        }));
+      }
+    })
+
   }
 }

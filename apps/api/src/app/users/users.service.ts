@@ -4,6 +4,7 @@ import { DynamoDB, S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
 import { ProjectsService } from '../projects/projects.service';
 import { Role } from '../roles/role.enum';
+import { Subscriptions } from './subscriptions.enum';
 
 
 const db = new DynamoDB.DocumentClient({});
@@ -30,7 +31,9 @@ export class UsersService {
 
   async create(user) {
     const userId = randomUUID();
-
+    const subscription = {
+      type: Subscriptions.Free
+    };
 
     return db.transactWrite({
       TransactItems: [
@@ -45,6 +48,7 @@ export class UsersService {
               id: userId,
               roles: [Role.User],
               createdAt: Date.now(),
+              subscription,
               ...user
             }
           }
@@ -207,5 +211,10 @@ export class UsersService {
         '#salt': 'salt',
       }
     }).promise()
+  }
+
+  updateSubsciption(userId, subscribtion) {
+    // TODO: Before updating subscription we need to handle payment
+    return this.update(userId, { subscribtion }).then(res => res.Attributes);
   }
 }

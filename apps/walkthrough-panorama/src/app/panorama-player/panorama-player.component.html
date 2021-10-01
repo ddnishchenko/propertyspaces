@@ -368,7 +368,7 @@
                 <span>Log out <img src="assets/img/icons/exit-icon.svg" alt="Logout"></span>
               </button>
 
-              <button *ngIf="isEdit && isAuthenticated" type="button"
+              <button (click)="publish(project.id)" *ngIf="isEdit && isAuthenticated" type="button"
                 class="btn btn-danger rounded-pill text-uppercase border-1 border-white ml-3 px-5">
                 <span>Publish</span>
               </button>
@@ -673,7 +673,8 @@
                     </div>
 
                     <div *ngIf="isAuthenticated && isEdit" class="d-inline-block py-1 px-3">
-                      <button type="button" class="btn btn-danger rounded-pill px-5">Publish Changes</button>
+                      <button (click)="publish(project.id)" type="button"
+                        class="btn btn-danger rounded-pill px-5">Publish Changes</button>
                     </div>
 
                   </div>
@@ -803,11 +804,6 @@
                       Save
                     </button>
 
-                    <button type="button" (click)="saveSettings(project.id)"
-                      class="btn btn-danger rounded-pill mx-lg-3 ml-2 px-5">
-                      Publish
-                    </button>
-
                   </div>
                 </form>
 
@@ -877,11 +873,6 @@
                       <button type="button" (click)="saveSettings(project.id)"
                         class="btn btn-dark rounded-pill mr-2 px-5">
                         Save
-                      </button>
-
-                      <button type="button" (click)="saveSettings(project.id)"
-                        class="btn btn-danger rounded-pill mx-lg-3 ml-2 px-5">
-                        Publish
                       </button>
 
                     </div>
