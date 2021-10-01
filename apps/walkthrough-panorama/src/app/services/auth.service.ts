@@ -60,6 +60,7 @@ export class AuthService {
       tap(() => {
         localStorage.removeItem(tokenKey);
         localStorage.removeItem(userKey);
+        localStorage.removeItem(isMobileAppKey);
       })
     );
 
