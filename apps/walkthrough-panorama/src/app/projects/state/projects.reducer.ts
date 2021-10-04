@@ -10,7 +10,7 @@ export interface ProjectsState {
 }
 
 export const initialState: ProjectsState = {
-  projects: [],
+  projects: null,
   project: null,
 };
 

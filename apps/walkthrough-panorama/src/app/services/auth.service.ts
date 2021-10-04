@@ -9,6 +9,7 @@ const storePrefix = '_auth_';
 const tokenKey = `${storePrefix}_token`;
 const userKey = `${storePrefix}_user`;
 const isMobileAppKey = 'isMobileApp';
+const phones = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
 @Injectable({
   providedIn: 'root'
 })
@@ -49,7 +50,8 @@ export class AuthService {
       tap((data: { accessToken: string; user: any; }) => {
         this.accessToken = data.accessToken;
         this.currentUser = data.user;
-        this.isMobileApp = !data.user.roles.includes('admin');
+        const isMob = data.user.roles.includes('admin') ? phones.test(navigator.userAgent) : true;
+        this.isMobileApp = isMob;
       })
     );
   }

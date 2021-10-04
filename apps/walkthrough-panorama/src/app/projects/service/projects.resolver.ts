@@ -22,7 +22,7 @@ export class ProjectsResolver implements Resolve<any> {
   waitForProjectsToLoad() {
     return this.store.pipe(
       select(selectProjects),
-      filter(projects => !!projects.length),
+      filter(projects => !!projects),
       take(1)
     );
   }
