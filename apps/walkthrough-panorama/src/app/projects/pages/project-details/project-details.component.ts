@@ -29,6 +29,7 @@ export class ProjectDetailsComponent implements OnInit {
   projectName;
   compressedImage
   isMobileApp = this.authService.isMobileApp;
+  isAdmin = this.authService.currentUser.roles.includes('admin');
   constructor(
     private modalService: NgbModal,
     private route: ActivatedRoute,

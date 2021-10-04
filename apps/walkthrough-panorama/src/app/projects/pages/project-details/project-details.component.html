@@ -49,7 +49,28 @@
         </h3>
       </div>
     </div>
-    <div class="row">
+    <div class="d-flex justify-content-between links">
+      <a class="card text-dark" [routerLink]="['/virtual-tour', project.id]" target="_blank"
+        [queryParams]="{sidebarHidden: 'true'}">
+        <div class="card-body">
+          <img class="mr-2" src="assets/img/icons/link.svg" alt="Link"> <span>Simple</span>
+        </div>
+      </a>
+
+      <a class="card text-dark" [routerLink]="['/virtual-tour', project.id]" target="_blank">
+        <div class="card-body">
+          <img class="mr-2" src="assets/img/icons/link.svg" alt="Link"> <span>Unbranded</span>
+        </div>
+      </a>
+
+      <a class="card text-dark" target="_blank">
+        <div class="card-body">
+          <img class="mr-2" src="assets/img/icons/link.svg" alt="Link"> <span>Branded</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="row d-none">
       <div class="col">
         <div class="list-group">
           <a [routerLink]="['/virtual-tour', project.id]" target="_blank" [queryParams]="{sidebarHidden: 'true'}"
@@ -72,7 +93,7 @@
     <div class="row">
       <div class="col-md-12">
         <h3 class="text-center mb-3">
-          <i class="fa fa-gear"></i> Edit Your Walkthrough
+          Edit Your Walkthrough
         </h3>
       </div>
     </div>
@@ -91,7 +112,8 @@
             <a [href]="project.build.url" target="_blank" placement="top"
               ngbTooltip="Built at: {{ project.build.builtAt | date:'medium' }}"
               class="btn btn-link text-dark flex-fill text-left d-flex align-content-center align-items-center">
-              <img src="assets/img/icons/download-cloud.svg" alt="Download"> Download project build
+              <img class="mr-2" src="assets/img/icons/download-cloud.svg" alt="Download"> <span>Download project
+                build</span>
             </a>
           </div>
 
@@ -99,7 +121,7 @@
             <button type="button"
               class="btn btn-link text-dark flex-fill text-left d-flex align-content-center align-items-center"
               (click)="buildProject(project.id)">
-              <img src="assets/img/icons/puzzle.svg" alt=""> Build Project
+              <img class="mr-2" src="assets/img/icons/puzzle.svg" alt="Build"> <span>Build Project</span>
             </button>
           </div>
 
@@ -107,7 +129,7 @@
             <button type="button"
               class="btn btn-link text-dark flex-fill text-left d-flex align-content-center align-items-center"
               (click)="deleteProject(project.id)">
-              <img src="assets/img/icons/trash-black.svg" alt="Delete project"> <span>Delete project</span>
+              <img class="mr-2" src="assets/img/icons/trash-black.svg" alt="Delete project"> <span>Delete project</span>
             </button>
           </div>
 
@@ -115,13 +137,13 @@
             <ng-template #tooltipTip>
               <button type="button" (click)="openCreateForm(project)" class="btn btn-link text-dark flex-fill text-left"
                 placement="top" ngbTooltip="In order to edit virtual-tour it should have at least one Nav Point">
-                <i class="mr-2 fa fa-plus"></i>Add Navigation Points
+                <i class="mr-2 fa fa-plus"></i> <span>Add Navigation Points</span>
               </button>
             </ng-template>
             <a *ngIf="project.panoramas?.length; else tooltipTip"
               class="btn btn-link text-dark flex-fill text-left d-flex align-content-center align-items-center"
               [routerLink]="['/projects/vr-tour-model', project.id]" target="_blank">
-              <img src="assets/img/icons/home.svg" alt="Edit"> <span>Edit virtual tour</span>
+              <img class="mr-2" src="assets/img/icons/home.svg" alt="Edit"> <span>Edit virtual tour</span>
             </a>
             <button type="button" class="btn btn-danger">Help Video</button>
           </div>
@@ -172,29 +194,34 @@
   </ng-template>
 
   <!-- EDIT PANORAMAS BEGIN -->
-  <div class="container py-5" *ngIf="project.panoramas?.length; else addPano">
-    <div class="row">
-      <div class="col-md-12">
-        <h3 class="text-center mb-3">
-          <i class="fa fa-gears"></i> Edit Panoramas
-        </h3>
+  <ng-container *ngIf="isAdmin">
+
+    <div class="container py-5" *ngIf="project.panoramas?.length; else addPano">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="text-center mb-3">
+            <i class="fa fa-gears"></i> Edit Panoramas
+          </h3>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <div class="list-group">
-          <li *ngFor="let panorama of project.panoramas | orderBy: 'order'"
-            class="list-group-item list-group-item-action d-flex align-items-center">
-            <a href="javascript:;" (click)="openEditPanorama(project, panorama)">{{ panorama.order }}) {{
-              panorama.name }}</a>
-            <div class="actions ml-auto">
-              <i *ngIf="!isMobileApp" (click)="openEditPanorama(project, panorama)" class="fa fa-gear fa-2x mx-2"></i>
-              <i *ngIf="!isMobileApp" (click)="deletePanoramas(panorama)" class="fa fa-trash-o fa-2x"></i>
-            </div>
-          </li>
+      <div class="row">
+        <div class="col">
+          <div class="list-group">
+            <li *ngFor="let panorama of project.panoramas | orderBy: 'order'"
+              class="list-group-item list-group-item-action d-flex align-items-center">
+              <a href="javascript:;" (click)="openEditPanorama(project, panorama)">{{ panorama.order }}) {{
+                panorama.name }}</a>
+              <div class="actions ml-auto">
+                <i *ngIf="!isMobileApp" (click)="openEditPanorama(project, panorama)" class="fa fa-gear fa-2x mx-2"></i>
+                <i *ngIf="!isMobileApp" (click)="deletePanoramas(panorama)" class="fa fa-trash-o fa-2x"></i>
+              </div>
+            </li>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
+  </ng-container>
+
   <!-- EDIT PANORAMAS END -->
 </ng-container>
