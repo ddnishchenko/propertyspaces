@@ -8,5 +8,5 @@ import { CheckForUpdatesService } from './services/check-for-updates.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  constructor(private checkForUpdate: CheckForUpdatesService) { }
+  // constructor(private checkForUpdate: CheckForUpdatesService) { }
 }
