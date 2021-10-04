@@ -27,3 +27,12 @@
 .actions .fa:hover {
   color: rgba(2, 32, 50, 1);
 }
+
+.page-cover-title .btn {
+  background: rgba(159, 31, 21, 0.6);
+  border: none;
+  font-size: 25px;
+  span {
+    padding-right: 8px;
+  }
+}

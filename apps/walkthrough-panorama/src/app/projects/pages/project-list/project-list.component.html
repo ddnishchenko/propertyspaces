@@ -19,30 +19,23 @@
     </div>
   </div>
 </nav>
+<div class="container-fluid py-5 bg-white">
+  <div class="text-center py-5">
+    <h1 class="text-uppercase">Create panoramic walkthough</h1>
+    <button type="button" class="btn btn-danger rounded-pill px-5">
+      <span class="mr-2">Help Video</span> <img src="assets/img/icons/play.svg" alt="Play Video">
+    </button>
+  </div>
+</div>
 <main class="container d-flex flex-column align-items-center justify-content-center">
   <div class="row col-12">
     <div class="col">
-      <h1 class="text-center my-5">Create panoramic walkthough</h1>
-      <div class="card shadow mb-4">
-        <div *ngIf="!isMobileApp"
-          class="card-header text-right d-md-flex justify-content-md-center align-items-md-center py-3">
-          <div class="row">
-            <div
-              class="col d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-sm-center align-items-md-center align-items-lg-center justify-content-xl-end align-items-xl-center">
-              <button class="btn btn-primary mx-3" type="button" (click)="openCreateForm()">
-                <i class="fa fa-plus"></i>Create New Project
-              </button>
-              <button class="btn btn-danger" type="button" *ngIf="projectIds.length" (click)="deleteProjects()">
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+      <h4 class="h1 my-5 text-center text-uppercase">Project Panoramas</h4>
+      <div class="card shadow border-0 mb-4 mx-0">
 
-        <div class="card-body">
-          <h4 class="text-center">Project Panoramas</h4>
+        <div class="card-body p-0">
 
-          <div *ngIf="isAdmin">
+          <div class="p-4" *ngIf="!isAdmin">
             <h3>Filter by user</h3>
             <select class="custom-select" (change)="filterByUser($event)">
               <option value="" selected>---Select user---</option>
@@ -86,11 +79,11 @@
                 <td class="text-right">
                   <div class="btn-group">
                     <button *ngIf="isAdmin || !isMobileApp" (click)="deleteProjects(project.id)" type="button"
-                      class="btn btn-danger">
-                      <i class="fa fa-2x fa-trash"></i>
+                      class="btn">
+                      <img src="assets/img/icons/trash-red-alt.svg" alt="Delete project">
                     </button>
-                    <a [routerLink]="[project.id]" class="btn btn-primary">
-                      <i class="fa fa-2x fa-chevron-right"></i>
+                    <a [routerLink]="[project.id]" class="btn">
+                      <img src="assets/img/icons/arrow.svg" alt="Open the project">
                     </a>
                   </div>
                 </td>

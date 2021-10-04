@@ -27,8 +27,7 @@ export class ProjectListComponent implements OnInit {
     private modalService: NgbModal,
     private store: Store,
     private authService: AuthService,
-    private usersService: UsersService,
-    private route: ActivatedRoute
+    private usersService: UsersService
   ) { }
 
   ngOnInit(): void {
