@@ -23,11 +23,10 @@ import { AuthService } from '../../../services/auth.service';
 export class ProjectDetailsComponent implements OnInit {
   host = environment.apiHost;
   isMenuCollapsed = true;
-  project$: Observable<Project>;
+  project$: Observable<Project> = this.store.pipe(select(selectProject));
   panoNames = [];
   isEditName = false;
   projectName;
-  loadImageForm: FormGroup;
   compressedImage
   isMobileApp = this.authService.isMobileApp;
   constructor(
@@ -38,21 +37,7 @@ export class ProjectDetailsComponent implements OnInit {
     private authService: AuthService
   ) { }
 
-  ngOnInit(): void {
-    const projectId = this.route.snapshot.params.id;
-    this.store.dispatch(loadProject({ projectId }));
-    this.project$ = this.store.pipe(select(selectProject), skip(1));
-    this.loadImageForm = new FormGroup({
-      src: new FormControl(''),
-      filename: new FormControl('')
-    });
-  }
-
-  fileInputChanged($event) {
-    this.loadImageForm.patchValue({
-      filename: $event.file.name
-    })
-  }
+  ngOnInit(): void { }
 
   numbersComparator(itemA, itemB) {
     return parseInt(itemA, 10) > parseInt(itemB, 10) ? 1 : -1;

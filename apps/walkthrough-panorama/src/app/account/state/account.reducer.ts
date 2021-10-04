@@ -8,7 +8,7 @@ export interface State {
 }
 
 export const initialState: State = {
-  account: {}
+  account: null
 };
 
 

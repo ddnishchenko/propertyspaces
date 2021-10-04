@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AccountComponent } from './account.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { ProfileResolver } from './services/profile.resolver';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,9 @@ export const routes: Routes = [
       {
         path: '',
         component: ProfileComponent,
+        resolve: {
+          profile: ProfileResolver
+        },
         data: {
           title: 'Account'
         }

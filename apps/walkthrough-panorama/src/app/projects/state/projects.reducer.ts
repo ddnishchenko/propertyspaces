@@ -11,7 +11,7 @@ export interface ProjectsState {
 
 export const initialState: ProjectsState = {
   projects: [],
-  project: {},
+  project: null,
 };
 
 

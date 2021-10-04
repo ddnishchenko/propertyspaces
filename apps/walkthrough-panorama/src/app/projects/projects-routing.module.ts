@@ -4,6 +4,8 @@ import { ProjectDetailsComponent } from './pages/project-details/project-details
 import { ProjectListComponent } from './pages/project-list/project-list.component';
 
 import { ProjectsComponent } from './projects.component';
+import { ProjectResolver } from './service/project.resolver';
+import { ProjectsResolver } from './service/projects.resolver';
 
 const routes: Routes = [
   {
@@ -12,13 +14,19 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: ProjectListComponent
+        component: ProjectListComponent,
+        resolve: {
+          projects: ProjectsResolver
+        }
       }
     ]
   },
   {
     path: ':id',
     component: ProjectDetailsComponent,
+    resolve: {
+      project: ProjectResolver
+    }
   },
   {
     path: 'vr-tour-model/:id',

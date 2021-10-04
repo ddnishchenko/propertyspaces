@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { logout } from '../core/state/core.actions';
 import { ConfirmationModalComponent } from '../shared/components/confirmation-modal/confirmation-modal.component';
-import { deleteUser, loadUsers } from './state/users.actions';
+import { deleteUser } from './state/users.actions';
 import { selectUsers } from './state/users.selectors';
 
 @Component({
@@ -13,15 +13,13 @@ import { selectUsers } from './state/users.selectors';
 })
 export class UsersComponent implements OnInit {
   isMenuCollapsed = true;
-  users$;
+  users$ = this.store.pipe(select(selectUsers));
   constructor(
     private modalService: NgbModal,
     private store: Store
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(loadUsers());
-    this.users$ = this.store.pipe(select(selectUsers));
   }
   logout() {
     const modal = this.modalService.open(ConfirmationModalComponent);

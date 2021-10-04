@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
-import { skip } from 'rxjs';
 import { logout } from '../../../core/state/core.actions';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
-import { deleteAccount, loadAccount, updateAccount } from '../../state/account.actions';
-import { selectAccount } from '../../state/account.selectors';
+import { deleteAccount, updateAccount } from '../../state/account.actions';
 
 @Component({
   selector: 'propertyspaces-profile',
@@ -14,25 +13,29 @@ import { selectAccount } from '../../state/account.selectors';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  profile$;
-  form = new FormGroup({
-    avatar: new FormControl(),
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    phone: new FormControl(''),
-  });
+  form;
+  profile;
   constructor(
     private store: Store,
     private modalService: NgbModal,
+    private route: ActivatedRoute,
+    private changeRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(loadAccount());
-    this.profile$ = this.store.pipe(
-      select(selectAccount),
-      // skip(1)
-    );
+    this.createForm(this.route.snapshot.data.profile)
   }
+
+  createForm(data) {
+    this.profile = data;
+    this.form = new FormGroup({
+      avatar: new FormControl(data.avatar),
+      firstName: new FormControl(data.firstName),
+      lastName: new FormControl(data.lastName),
+      phone: new FormControl(data.phone),
+    })
+  }
+
   save() {
     this.store.dispatch(updateAccount({ data: this.form.value }));
   }

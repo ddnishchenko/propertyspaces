@@ -49,8 +49,7 @@ export class AuthService {
       tap((data: { accessToken: string; user: any; }) => {
         this.accessToken = data.accessToken;
         this.currentUser = data.user;
-        this.isMobileApp = data.user.roles.includes('admin');
-
+        this.isMobileApp = !data.user.roles.includes('admin');
       })
     );
   }

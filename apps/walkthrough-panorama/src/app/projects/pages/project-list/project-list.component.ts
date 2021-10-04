@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
+import { of } from 'rxjs';
 import { logout } from '../../../core/state/core.actions';
 import { AuthService } from '../../../services/auth.service';
 import { UsersService } from '../../../services/users.service';
@@ -25,7 +27,8 @@ export class ProjectListComponent implements OnInit {
     private modalService: NgbModal,
     private store: Store,
     private authService: AuthService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -34,7 +37,6 @@ export class ProjectListComponent implements OnInit {
     if (this.isAdmin) {
       this.users$ = this.usersService.getUsers();
     }
-    this.store.dispatch(loadProjects());
   }
 
   openCreateForm() {

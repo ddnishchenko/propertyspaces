@@ -1,4 +1,4 @@
-<div class="container" *ngIf="profile$ | async as profile">
+<div class="container">
   <main>
     <div class="py-5 text-center">
       <label for="avatarField" style="cursor: pointer;">
@@ -16,10 +16,10 @@
 
     <div class="row g-5">
       <div class="col-12">
-        <form class="needs-validation" (ngSubmit)="save()" [formGroup]="form" [propertyspacesConnectForm]="profile">
+        <form class="needs-validation" (ngSubmit)="save()" [formGroup]="form">
           <div class="row g-3">
             <div class="col-sm-6">
-              <input type="file" formControlName="avatar" (changed)="$event"
+              <input type="file" formControlName="avatar"
                 [propertyspacesInputFileReader]="{compress: true, maxWidth: 128, maxHeight: 128}" class="d-none"
                 name="avatarField" id="avatarField">
               <label class="input">

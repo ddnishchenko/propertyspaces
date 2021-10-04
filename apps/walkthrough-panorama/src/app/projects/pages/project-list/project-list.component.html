@@ -79,7 +79,7 @@
                     {{ project.active ? 'deactivate' : 'activate' }}
                   </button>
                 </td>
-                <td>{{project.createdAt | date}}</td>
+                <td>{{project.createdAt | date: 'medium'}}</td>
                 <td>
                   {{ project.addr?.address }}
                 </td>

@@ -1,4 +1,4 @@
-import { Directive, EventEmitter, forwardRef, HostListener, Output, Input, OnInit } from '@angular/core';
+import { Directive, EventEmitter, forwardRef, HostListener, Output, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import Compressor from 'compressorjs';
 import { fileToBase64 } from '../../utils';
@@ -25,6 +25,7 @@ export interface InputFileReaderOptions {
 })
 export class InputFileReaderDirective implements OnInit, ControlValueAccessor {
   value: string | ArrayBuffer;
+  private fileReader = new FileReader();
   @Input() propertyspacesInputFileReader: InputFileReaderOptions = {};
   @Output() changed = new EventEmitter();
   onChange = (value) => { };
@@ -42,22 +43,23 @@ export class InputFileReaderDirective implements OnInit, ControlValueAccessor {
             $this.value = await fileToBase64(file);
             $this.changed.emit({ file, result: $this.value });
             $this.onChange($this.value);
+            $this.changeRef.detectChanges();
           }
         });
       } else {
-        const fileReader = new FileReader();
-        fileReader.onload = ev => {
+        this.fileReader.onload = ev => {
           this.value = ev.target.result;
           this.changed.emit({ file: $event.target.files[0], result: this.value });
           this.onChange(this.value);
+          this.changeRef.detectChanges();
         }
-        fileReader[`readAs${this.propertyspacesInputFileReader.readAs}`]($event.target.files[0]);
+        this.fileReader[`readAs${this.propertyspacesInputFileReader.readAs}`]($event.target.files[0]);
       }
 
     }
 
   }
-
+  constructor(private changeRef: ChangeDetectorRef) { }
   ngOnInit() {
     const defaultOptions: InputFileReaderOptions = {
       compress: false,
