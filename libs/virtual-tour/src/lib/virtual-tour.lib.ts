@@ -13,11 +13,11 @@ export interface VRScreenshot {
 }
 
 
-function ringsShape(pano, font) {
+function ringsShape(pano, font, addNumber = true) {
   // const color = isNaN(pano?.transitionFrom) ? 0xffffff :0xff00ff;
   const color = 0xffffff;
   const outerRingGeometry = new THREE.RingGeometry(1.90, 2, 314, 1, 0);
-  const outerRingMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true });
+  const outerRingMaterial = new THREE.MeshBasicMaterial({ color, transparent: true });
   const outerRingMesh = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
 
   const innerRingGeometry = new THREE.RingGeometry(1.5, 1.8, 314, 1, 0);
@@ -30,7 +30,7 @@ function ringsShape(pano, font) {
 
   const index = pano?.order || 1;
 
-  const matLite = new THREE.MeshBasicMaterial({ color: color, transparent: true });
+  const matLite = new THREE.MeshBasicMaterial({ color, transparent: true });
   const shapesText = font.generateShapes(`${index}`, 1.5);
   const shapesTextGeometry = new THREE.ShapeGeometry(shapesText);
   shapesTextGeometry.computeBoundingBox();
@@ -56,7 +56,7 @@ function ringsShape(pano, font) {
   group.add(outerRingMesh);
   group.add(innerRingMesh);
   group.add(circleMesh);
-  group.add(shapesTextMesh);
+  if (addNumber) group.add(shapesTextMesh);
   group.rotation.set(11, 0, 0);
   group.children[2].position.set(0, 0, -0.001);
 
@@ -392,7 +392,7 @@ export class VirtualTourLib {
   addPanosMarks() {
     this.panos.forEach((pano) => {
       if (!pano.object && !(pano.object instanceof THREE.Group)) {
-        const mesh = ringsShape(pano, this.font);
+        const mesh = ringsShape(pano, this.font, this.config.numberVisible);
         pano.object = mesh;
         this.scene.add(mesh);
 

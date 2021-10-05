@@ -239,7 +239,8 @@ export class PanoramaPlayerComponent implements OnInit, OnDestroy {
         ([project, floors]) => ({
           ...floors,
           ...project,
-          settings: this.isEdit ? project.settings : project.settingsPublished
+          settings: this.isEdit ? project.settings : project.settingsPublished,
+          numberVisible: this.isEdit
         })
       ),
       skip(1)
