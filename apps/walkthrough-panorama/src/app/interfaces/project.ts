@@ -26,4 +26,6 @@ export interface Project {
   gallerySort?: string[];
   contact?: any;
   company?: any;
+  build?: any;
+  building?: boolean;
 }

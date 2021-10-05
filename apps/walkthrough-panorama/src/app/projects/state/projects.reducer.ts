@@ -103,12 +103,20 @@ export const reducer = createReducer(
       }
     };
   }),
+  on(ProjectsActions.buildProject, (state) => ({
+    ...state,
+    project: {
+      ...state.project,
+      building: true
+    }
+  })),
   on(ProjectsActions.buildProjectSuccess, (state, { build }) => {
     return {
       ...state,
       project: {
         ...state.project,
-        build
+        build,
+        building: false
       }
     };
   }),

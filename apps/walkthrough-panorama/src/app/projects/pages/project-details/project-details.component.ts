@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
-import { Observable, skip } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { logout } from '../../../core/state/core.actions';
 import { Project } from '../../../interfaces/project';
@@ -11,7 +10,7 @@ import { ConfirmationModalComponent } from '../../../shared/components/confirmat
 import { ContactInfoModalComponent } from '../../components/contact-info-modal/contact-info-modal.component';
 import { MapModalComponent } from '../../components/map-modal/map-modal.component';
 import { PanoramaFormComponent } from '../../components/panorama-form/panorama-form.component';
-import { activateProject, buildProject, deactivateProject, deletePanorama, deleteProjects, loadProject, updatePanorama, updateProject } from '../../state/projects.actions';
+import { activateProject, buildProject, deactivateProject, deletePanorama, deleteProjects, updatePanorama, updateProject } from '../../state/projects.actions';
 import { selectProject } from '../../state/projects.selectors';
 import { AuthService } from '../../../services/auth.service';
 
@@ -30,6 +29,7 @@ export class ProjectDetailsComponent implements OnInit {
   compressedImage
   isMobileApp = this.authService.isMobileApp;
   isAdmin = this.authService.currentUser.roles.includes('admin');
+  virtualTourLink;
   constructor(
     private modalService: NgbModal,
     private route: ActivatedRoute,
@@ -38,7 +38,9 @@ export class ProjectDetailsComponent implements OnInit {
     private authService: AuthService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.virtualTourLink = location.origin + '/virtual-tour/' + this.route.snapshot.params.id;
+  }
 
   numbersComparator(itemA, itemB) {
     return parseInt(itemA, 10) > parseInt(itemB, 10) ? 1 : -1;
@@ -93,7 +95,9 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   saveName(project: Project) {
-    this.store.dispatch(updateProject({ projectId: project.id, project: { name: this.projectName } }));
+    if (project.name !== this.projectName) {
+      this.store.dispatch(updateProject({ projectId: project.id, project: { name: this.projectName } }));
+    }
     this.isEditName = false;
   }
 
@@ -152,5 +156,20 @@ export class ProjectDetailsComponent implements OnInit {
   changeStatus(project) {
     const action = project.active ? deactivateProject({ projectId: project.id }) : activateProject({ projectId: project.id });
     this.store.dispatch(action);
+  }
+
+  downloadProject(project) {
+    if (project.build) {
+      if (project.updatedAt > project.build.builtAt) {
+        this.store.dispatch(buildProject({ projectId: project.id }))
+      } else {
+        const a = document.createElement('a');
+        a.href = project.build.url;
+        a.target = '_blank';
+        a.click();
+      }
+    } else {
+      this.store.dispatch(buildProject({ projectId: project.id }))
+    }
   }
 }

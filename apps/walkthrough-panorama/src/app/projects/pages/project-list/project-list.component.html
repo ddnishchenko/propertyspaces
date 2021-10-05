@@ -35,7 +35,7 @@
 
         <div class="card-body p-0">
 
-          <div class="p-4" *ngIf="!isAdmin">
+          <div class="p-4" *ngIf="isAdmin">
             <h3>Filter by user</h3>
             <select class="custom-select" (change)="filterByUser($event)">
               <option value="" selected>---Select user---</option>
