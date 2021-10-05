@@ -79,5 +79,4 @@ export class ProjectsService {
   deactivate(id) {
     return this.http.patch(`${endpoint}/${id}/deactivate`, {});
   }
-
 }
