@@ -58,7 +58,7 @@ const port = 465;
 
 // Replace sender@example.com with your "From" address.
 // This address must be verified with Amazon SES.
-const senderAddress = "Lidarama Developer <ddnishchenko.itera@gmail.com>";
+const senderAddress = "Lidarama Developer <developer@lidarama.com>";
 
 // Create the SMTP transport.
 let transporter = createTransport({

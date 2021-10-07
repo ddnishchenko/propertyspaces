@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  frontentUrl: 'http://localhost:4200/'
+  frontentUrl: 'http://dev.lidarama.com/'
 };

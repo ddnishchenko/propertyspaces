@@ -50,7 +50,7 @@ export class AuthService {
       createdUser.password = undefined;
       createdUser.hash = undefined;
       createdUser.salt = undefined;
-      const url = environment.frontentUrl + '/auth';
+      const url = environment.frontentUrl + 'auth';
       try {
         await sendEmail({
           to: user.email,
@@ -115,7 +115,7 @@ export class AuthService {
         }
       }).promise();
       // 3. Send email with reset token link
-      const url = environment.frontentUrl + '/auth/reset-password?resetToken=' + resetPasswordToken;
+      const url = environment.frontentUrl + 'auth/reset-password?resetToken=' + resetPasswordToken;
       try {
         await sendEmail({
           to: email,
