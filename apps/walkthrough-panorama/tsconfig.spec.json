@@ -3,21 +3,12 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
-    "types": [
-      "jest",
-      "node",
-      "google.maps"
-    ]
+    "types": ["jest", "node", "google.maps"]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictTemplates": true
   },
-  "files": [
-    "src/test-setup.ts"
-  ],
-  "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
-  ]
+  "files": ["src/test-setup.ts"],
+  "include": ["**/*.spec.ts", "**/*.test.ts", "**/*.d.ts"]
 }

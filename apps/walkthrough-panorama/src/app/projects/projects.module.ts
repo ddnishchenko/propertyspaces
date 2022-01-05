@@ -34,28 +34,24 @@ import * as fromProjects from './state/projects.reducer';
 import { ProjectsEffects } from './state/projects.effects';
 
 @NgModule({
-  declarations: [
-    ProjectsComponent,
-    ProjectListComponent,
-    ProjectDetailsComponent,
-    ProjectFormComponent,
-    PanoramaFormComponent,
-    FloorplanFormComponent,
-    MapModalComponent,
-    ContactInfoModalComponent,
-    GalleryModalComponent
-  ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    ProjectsRoutingModule,
-    StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
-    EffectsModule.forFeature([ProjectsEffects]),
-    ...ngbs,
-  ],
-  entryComponents: [
-    ProjectFormComponent,
-    FloorplanFormComponent,
-  ]
+    declarations: [
+        ProjectsComponent,
+        ProjectListComponent,
+        ProjectDetailsComponent,
+        ProjectFormComponent,
+        PanoramaFormComponent,
+        FloorplanFormComponent,
+        MapModalComponent,
+        ContactInfoModalComponent,
+        GalleryModalComponent
+    ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        ProjectsRoutingModule,
+        StoreModule.forFeature(fromProjects.projectsFeatureKey, fromProjects.reducer),
+        EffectsModule.forFeature([ProjectsEffects]),
+        ...ngbs,
+    ]
 })
 export class ProjectsModule { }

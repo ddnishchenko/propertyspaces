@@ -2,22 +2,17 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "emitDecoratorMetadata": true,
     "target": "es2015",
-    /* Experimental Options */
     "experimentalDecorators": true,
-    /* Advanced Options */
     "forceConsistentCasingInFileNames": true
   },
   "exclude": [
     "**/*.spec.ts",
+    "**/*.test.ts",
     "@types/google.maps/**/*",
     "@types/hammer"
   ],
-  "include": [
-    "**/*.ts"
-  ]
+  "include": ["**/*.ts"]
 }
