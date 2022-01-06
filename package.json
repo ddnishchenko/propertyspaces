@@ -32,7 +32,8 @@
     "help": "nx help",
     "dev:ssr": "ng run walkthrough-panorama:serve-ssr",
     "serve:ssr": "node dist/walkthrough-panorama/server/main.js",
-    "prerender": "ng run walkthrough-panorama:prerender"
+    "prerender": "ng run walkthrough-panorama:prerender",
+    "serve:api": "sls offline"
   },
   "private": true,
   "dependencies": {
