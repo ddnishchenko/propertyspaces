@@ -41,7 +41,6 @@ export class AuthService {
     const { hash, salt } = hashPassword(user.password);
     user.password = undefined;
     user.passwordConfirmation = undefined;
-    user.termsCheck = undefined;
     user.hash = hash;
     user.salt = salt;
 

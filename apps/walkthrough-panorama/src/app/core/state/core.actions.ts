@@ -4,7 +4,7 @@ const prefix = '[Core]';
 
 export const register = createAction(
   `${prefix} Register`,
-  props<{ user: { email: string; password: string; passwordConfirmation: string; termsCheck: boolean } }>()
+  props<{ user: { email: string; password: string; passwordConfirmation: string; } }>()
 );
 
 export const registerSuccess = createAction(

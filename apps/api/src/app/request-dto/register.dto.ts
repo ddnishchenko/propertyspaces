@@ -1,4 +1,4 @@
-import { Equals, IsEmail, IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
 import { PASSWORD_REGEX } from "./regex";
 
 export class RegisterDto {
@@ -10,6 +10,4 @@ export class RegisterDto {
   @Matches(PASSWORD_REGEX)
   password: string;
   passwordConfirmation: string;
-  @Equals(true)
-  termsCheck: boolean;
 }

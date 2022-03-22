@@ -10,8 +10,6 @@
         characters with at least 1 letter, 1 number, and 1 special character.</div>
       <div class="error" *ngIf="form.get('passwordConfirmation').invalid && passwordConfirmationIsInvalid">Passwords
         doesn't match.</div>
-      <div class="error" *ngIf="form.get('termsCheck').hasError('required') && termsCheckIsInvalid">You must agree to
-        the Terms & Conditions to proceed.</div>
     </div>
   </div>
 
@@ -29,11 +27,6 @@
     <input formControlName="passwordConfirmation" type="password" class="input__field" maxlength="16" placeholder=" " />
     <span class="input__label">Repeat Password<sup>*</sup> </span>
   </label>
-
-  <div class="custom-control custom-checkbox text-left my-3">
-    <input formControlName="termsCheck" type="checkbox" class="custom-control-input" id="isForBranded">
-    <label class="custom-control-label" for="isForBranded">Agree with terms <sup>*</sup></label>
-  </div>
 
   <button [disabled]="form.invalid" class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
 </form>

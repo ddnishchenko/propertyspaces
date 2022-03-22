@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { register } from '../../../core/state/core.actions';
 import { equalityValidator, REQUIRED_EMAIL_VALIDATOR, VALIDATORS_OF_PASSWORD } from '../../../utils/validators';
@@ -13,8 +13,7 @@ export class RegisterComponent {
   form = new FormGroup({
     email: new FormControl('', REQUIRED_EMAIL_VALIDATOR),
     password: new FormControl('', VALIDATORS_OF_PASSWORD),
-    passwordConfirmation: new FormControl('', VALIDATORS_OF_PASSWORD.concat([equalityValidator('password')])),
-    termsCheck: new FormControl(false, [Validators.requiredTrue])
+    passwordConfirmation: new FormControl('', VALIDATORS_OF_PASSWORD.concat([equalityValidator('password')]))
   });
 
   get emailIsInvalid() {
@@ -29,12 +28,8 @@ export class RegisterComponent {
     return this.fieldIsInvalid('passwordConfirmation');
   }
 
-  get termsCheckIsInvalid() {
-    return this.fieldIsInvalid('termsCheck');
-  }
-
   get isFormInvalid() {
-    return this.emailIsInvalid || this.passwordIsInvalid || this.passwordConfirmationIsInvalid || this.termsCheckIsInvalid;
+    return this.emailIsInvalid || this.passwordIsInvalid || this.passwordConfirmationIsInvalid;
   }
 
   constructor(private store: Store) { }
